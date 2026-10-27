@@ -854,6 +854,12 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
   .sthead{flex-wrap:wrap}.sthead>.ib{margin-left:auto}.stsearch{order:3;flex:1 0 100%}
   .kbt .cat,.kbt th.cat,.kbt .src,.kbt th.src{display:none}
 }
+.xtag{font-size:10px;font-weight:600;color:#1a1100;background:var(--warn);border-radius:999px;padding:0 7px;margin-left:4px;line-height:16px}
+.kosample{max-height:260px;overflow:auto;white-space:pre;font-size:12px}
+.kodict{margin-top:10px}.kodict summary{cursor:pointer;color:var(--accent);font-size:12px}
+.kodict h5{margin:12px 0 4px;font-size:11px;color:var(--mute);font-weight:600}
+.kotbl{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2px 14px;font-size:11.5px}
+.kotbl span{display:flex;gap:8px;align-items:baseline;min-width:0}.kotbl b{font-weight:600;white-space:nowrap}.kotbl i{font-style:normal;font:11px var(--f-mono);color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .edwrap{font-size:var(--ed-fs,13px)}
 /* 스크립트 미리보기 (타일 팔레트 패널) */
 .spv{display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -866,6 +872,86 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
 .spvc{display:flex;align-items:flex-start;background:#101013;border:1px solid var(--line2);border-radius:12px;font:12px/1.6 var(--f-mono);overflow:auto;min-height:80px}
 .spvg{position:sticky;left:0;margin:0;padding:10px 8px 10px 12px;text-align:right;color:rgba(255,255,255,.28);user-select:none;border-right:1px solid var(--line);background:#101013;white-space:pre;font:inherit;flex:none}
 .spvt{margin:0;padding:10px 14px;white-space:pre;tab-size:4;color:#e6e6ea;font:inherit;flex:1}
+
+/* 스크립트 저장: 초록 반짝 */
+.sed{position:relative}
+.sed.saved::after{content:"";position:absolute;inset:0;pointer-events:none;border:2px solid var(--ok);border-radius:inherit;background:rgba(76,217,138,.14);box-shadow:inset 0 0 24px rgba(76,217,138,.35);animation:sedFlash .9s ease-out forwards;z-index:3}
+.sed.saved.bad::after{border-color:var(--warn);background:rgba(255,210,74,.12);box-shadow:inset 0 0 24px rgba(255,210,74,.3)}
+@keyframes sedFlash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+.sedsaved{font:600 11px var(--f-body);color:var(--ok);opacity:0;transition:opacity .25s;white-space:nowrap;margin-bottom:8px}
+.sedsaved.on{opacity:1}.sedsaved.bad{color:var(--warn)}
+.pclose{background:none;border:0;color:var(--mute);width:22px;height:22px;padding:0;border-radius:5px;flex:none;align-self:center;display:inline-flex;align-items:center;justify-content:center;font-size:12px;line-height:1}
+.pclose:hover{background:rgba(255,107,120,.22);color:var(--danger)}
+.phide{background:none;border:1px solid var(--line2);color:var(--mute);height:20px;padding:0 8px;border-radius:999px;flex:none;align-self:center;font-size:11px;line-height:1;margin-right:2px}
+.phide:hover{background:var(--hover);color:var(--fg)}
+#bFull.on{color:var(--accent)}
+/* 콘솔 오류 더블클릭 → 해당 줄이 빨갛게 반짝 */
+.edwrap{position:relative}
+.edline{position:absolute;left:0;right:0;pointer-events:none;z-index:2;background:rgba(255,60,80,.45);box-shadow:inset 4px 0 0 #ff4058,0 0 0 1px rgba(255,90,110,.7),0 0 26px 4px rgba(255,60,80,.55);animation:edLine 2.6s ease-out forwards}
+@keyframes edLine{0%,24%,48%,72%{opacity:1}12%,36%,60%{opacity:.2}100%{opacity:0}}
+.cl[data-sid]{cursor:pointer}
+.cl .cln{opacity:.6;font-size:10px;white-space:nowrap}
+/* 플레이 중: 인스펙터·계층 구조에 색을 입혀 '되돌아가는 값'임을 표시 (Unity의 플레이 모드 틴트) */
+html.is-playing .panel[data-id="insp"] .pbody,html.is-playing .panel[data-id="hier"] .pbody{background:linear-gradient(rgba(76,140,255,.10),rgba(76,140,255,.10))}
+html.is-playing .panel[data-id="insp"] .pbody::before{content:"▶ 플레이 중 · 실시간 값 표시 · 여기서 바꾼 값은 정지하면 원래대로 돌아갑니다";display:block;position:sticky;top:0;z-index:3;padding:5px 10px;font:600 10.5px var(--f-body);color:#cfe0ff;background:rgba(40,80,160,.85);border-bottom:1px solid rgba(120,170,255,.4)}
+.cl{flex-wrap:wrap}
+.cl[data-sid]:hover{filter:brightness(1.18)}
+.cl .cx{flex:none;align-self:flex-start;width:18px;height:18px;margin:-1px -4px 0 -6px;padding:0;border:0;border-radius:4px;background:none;color:inherit;opacity:.7;font-size:10px;line-height:18px;transition:transform .15s}
+.cl .cx:hover{background:var(--btn-h);opacity:1}
+.cl.open .cx{transform:rotate(90deg)}
+.cdet{flex:1 0 100%;margin:4px 0 6px 18px;padding:9px 11px;border:1px solid var(--line2);border-radius:8px;background:rgba(0,0,0,.32);color:var(--fg);font:11.5px/1.55 var(--f-body);white-space:normal;cursor:default;-webkit-user-select:text;user-select:text}
+.cdet dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0}
+.cdet dt{color:var(--mute);white-space:nowrap}.cdet dd{margin:0;min-width:0}
+.cdet code{font:11px var(--f-mono);background:rgba(255,255,255,.07);padding:0 4px;border-radius:3px}
+.cdet pre{margin:6px 0 0;padding:6px 0;background:#101013;border:1px solid var(--line);border-radius:6px;font:11.5px/1.6 var(--f-mono);overflow-x:auto;white-space:pre}
+.cdet pre span{display:block;padding:0 10px 0 0}.cdet pre i{display:inline-block;width:38px;padding-right:10px;text-align:right;color:rgba(255,255,255,.3);font-style:normal}
+.cdet pre .bad{background:rgba(255,80,96,.22);box-shadow:inset 3px 0 0 #ff5060;color:#fff}
+.cdet .fix{color:var(--ok)}
+.cdet .go{margin-top:8px;height:22px;padding:0 10px;border:1px solid var(--line2);border-radius:999px;background:var(--btn);color:var(--fg);font-size:11px}
+.cdet .go:hover{background:var(--btn-h)}
+.ppop{background:none;border:0;color:var(--mute);width:22px;height:22px;padding:0;border-radius:5px;flex:none;align-self:center;display:none;align-items:center;justify-content:center}
+.ppop:hover{background:var(--hover);color:var(--fg)}
+.panel.float .ppop,.panel.popped .ppop{display:inline-flex}
+.panel.popped .ppop .ic{transform:rotate(180deg)}
+/* 겹친 오브젝트 선택 창 */
+.stkpick{position:fixed;z-index:9000;display:flex;flex-direction:column;gap:8px;padding:10px 10px 8px;background:rgba(24,24,30,.94);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);animation:stkIn .14s ease-out;max-width:calc(100vw - 16px)}
+@keyframes stkIn{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+.stkpick h5{margin:0;display:flex;align-items:center;gap:8px;font:600 11px var(--f-body);color:var(--mute);letter-spacing:.02em}
+.stkpick h5 b{color:var(--fg)}.stkpick h5 .spacer{flex:1}
+.stkpick h5 kbd{font:500 9.5px var(--f-mono);border:1px solid var(--line2);border-radius:3px;padding:0 4px;color:var(--mute)}
+.stkrow{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:thin}
+.stkc{position:relative;flex:none;width:112px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px 7px;background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:11px;color:var(--fg);cursor:pointer;transition:transform .12s,border-color .12s,background .12s}
+.stkc:hover,.stkc.hov{transform:translateY(-3px);background:rgba(255,255,255,.09);border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+.stkc.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 6px 18px rgba(233,189,12,.22);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.stkc .lv{position:absolute;left:6px;top:6px;font:700 9.5px var(--f-mono);padding:1px 5px;border-radius:999px;background:rgba(0,0,0,.55);color:var(--fg)}
+.stkc.top .lv{background:var(--accent);color:var(--sel-fg)}
+.stkc .num{position:absolute;right:7px;top:6px;font:500 9px var(--f-mono);color:var(--mute)}
+.stkc canvas{width:64px;height:64px;image-rendering:pixelated;border-radius:8px;background:repeating-conic-gradient(rgba(255,255,255,.05) 0 25%,transparent 0 50%) 0 0/12px 12px}
+.stkc .nm{max-width:100%;font-weight:600;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stkc .ty{max-width:100%;font-size:10px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stkc .ud{display:flex;gap:3px}
+.stkc .ud button{width:22px;height:18px;padding:0;border:1px solid var(--line2);border-radius:4px;background:var(--btn);color:var(--fg);font-size:9px;line-height:1}
+.stkc .ud button:hover:not(:disabled){background:var(--btn-h)}
+.stkc .ud button:disabled{opacity:.3;cursor:default}
+.stkc.off canvas{opacity:.35}
+/* 실행 취소 알림 (하단 구석) */
+.histtoast{position:fixed;right:18px;bottom:34px;z-index:9500;display:flex;align-items:center;gap:10px;min-width:220px;max-width:min(380px,calc(100vw - 32px));padding:9px 12px 9px 10px;background:rgba(24,24,30,.94);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--line2);border-radius:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .2s,transform .2s}
+.histtoast.on{opacity:1;transform:none}
+.histtoast .hi{flex:none;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent)}
+.histtoast .ht{min-width:0;display:flex;flex-direction:column;gap:1px}
+.histtoast .ht b{font-size:11.5px}
+.histtoast .ht span{font-size:11px;color:var(--fg);opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.histtoast .hc{flex:none;margin-left:auto;text-align:right;font:500 10px var(--f-mono);color:var(--mute);line-height:1.35}
+.histtoast .hc b{display:block;font:700 15px var(--f-mono);color:var(--fg)}
+.histtoast.empty .hc b{color:var(--danger)}
+@media (prefers-reduced-motion:reduce){.histtoast,.stkpick,.stkc,.sed.saved::after{transition:none;animation:none}}
+/* 엔진 밖으로 꺼낸 패널 (별도 브라우저 창) */
+body.popbody{margin:0;padding:0;height:100vh;overflow:hidden;background:var(--win)}
+body.popbody>.panel{position:fixed;inset:0;margin:0;border-radius:0;border:0;display:flex;flex-direction:column}
+body.popbody>.panel>.pbody{flex:1;min-height:0;overflow:auto}
+body.popbody>.panel[data-id="script"]>.pbody{overflow:hidden}
+body.popbody .phead{cursor:default}
+body.popbody .pcol{display:none}
 </style>
 
 <div class="app" id="app">
@@ -877,6 +963,7 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
     <span class="spacer"></span>
     <span class="plabel" id="projLabel"></span>
     <button class="ib" id="bSettings" data-ic="gear" title="설정 (Ctrl+,)" aria-label="설정"></button>
+    <button class="ib" id="bFull" title="전체 화면 (F11)" aria-label="전체 화면"></button>
   </header>
 
   <div class="toolbar" id="toolbar">
@@ -951,7 +1038,7 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
 
 <div id="panelStore" hidden>
   <section class="panel" data-id="hier">
-    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="hier"></span><span class="ptitle">계층 구조</span></span><span class="spacer"></span><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
+    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="hier"></span><span class="ptitle">계층 구조</span></span><span class="spacer"></span><button class="ppop" aria-label="엔진 밖 새 창으로 꺼내기" title="엔진 밖 새 창으로 꺼내기" data-ic="popout"></button><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
     <div class="pbody">
       <div class="ptool"><button class="ib" id="hAdd" title="만들기" aria-label="만들기" data-ic="plus"></button><input type="search" id="hFilter" class="search" placeholder="검색" aria-label="계층 구조 검색"><label class="hzc" title="항목 크기 (Ctrl+휠로도 조절) · 더블클릭: 100%"><span data-ic="zoomlg"></span><input type="range" id="hZoom" min="70" max="170" step="5" aria-label="계층 구조 항목 크기"></label><button class="ib" id="hCollapse" title="모두 접기" aria-label="모두 접기" data-ic="collapse"></button><button class="ib" id="hExpand" title="모두 펼치기" aria-label="모두 펼치기" data-ic="expand"></button></div>
       <div class="tree" id="hier"></div>
@@ -959,12 +1046,12 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
   </section>
 
   <section class="panel" data-id="insp">
-    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="info"></span><span class="ptitle">인스펙터</span></span><span class="spacer"></span><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
+    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="info"></span><span class="ptitle">인스펙터</span></span><span class="spacer"></span><button class="ppop" aria-label="엔진 밖 새 창으로 꺼내기" title="엔진 밖 새 창으로 꺼내기" data-ic="popout"></button><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
     <div class="pbody"><div id="insp"></div></div>
   </section>
 
   <section class="panel" data-id="assets">
-    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="folder"></span><span class="ptitle">프로젝트</span></span><span class="spacer"></span><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
+    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="folder"></span><span class="ptitle">프로젝트</span></span><span class="spacer"></span><button class="ppop" aria-label="엔진 밖 새 창으로 꺼내기" title="엔진 밖 새 창으로 꺼내기" data-ic="popout"></button><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
     <div class="pbody">
       <div class="ptool"><button class="btn pri sm" id="aAdd">＋ PNG 가져오기</button><button class="btn sm" id="aNewDir" title="현재 폴더에 새 폴더 만들기">＋ 새 폴더</button><button class="btn sm" id="aPixel" data-ic="pencil" title="Pixel-meow로 새 픽셀 아트 직접 그리기">직접 그리기</button><input type="search" id="aSearch" class="search" placeholder="에셋 검색" aria-label="에셋 검색"><select id="aFilter" aria-label="태그 필터" style="width:96px;flex:none"></select><label class="pjz" title="아이콘 크기 · 맨 왼쪽은 목록 보기"><span data-ic="list"></span><input type="range" id="aZoom" min="0" max="100" step="1" aria-label="아이콘 크기"><span data-ic="grid"></span></label><button class="ib" id="aSaveAll" title="모두 저장" aria-label="모두 저장" data-ic="save"></button><button class="ib" id="aMax" title="크게 보기 (Esc로 돌아가기)" aria-label="크게 보기" data-ic="max"></button></div>
       <div id="aList"></div>
@@ -974,7 +1061,7 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
   </section>
 
   <section class="panel" data-id="console">
-    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="term"></span><span class="ptitle">콘솔</span></span><span class="spacer"></span><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
+    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="term"></span><span class="ptitle">콘솔</span></span><span class="spacer"></span><button class="ppop" aria-label="엔진 밖 새 창으로 꺼내기" title="엔진 밖 새 창으로 꺼내기" data-ic="popout"></button><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
     <div class="pbody">
       <div class="ptool"><button class="btn sm" id="conClear">지우기</button><span class="spacer"></span><button class="cf" id="conI" title="로그"><i class="d info"></i><b>0</b></button><button class="cf" id="conW" title="경고"><i class="d warn"></i><b>0</b></button><button class="cf" id="conE" title="오류"><i class="d error"></i><b>0</b></button></div>
       <div id="conList" class="conlist"></div>
@@ -982,12 +1069,12 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
   </section>
 
   <section class="panel" data-id="script">
-    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="script"></span><span class="ptitle">스크립트</span></span><span class="spacer"></span><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
+    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="script"></span><span class="ptitle">스크립트</span></span><span class="spacer"></span><button class="ppop" aria-label="엔진 밖 새 창으로 꺼내기" title="엔진 밖 새 창으로 꺼내기" data-ic="popout"></button><button class="phide" id="sedH" aria-label="스크립트 창 숨기기" title="숨기기 (열린 스크립트 탭은 그대로 유지)">숨기기</button><button class="pclose" id="sedX" aria-label="스크립트 창 닫기" title="닫기 (열린 스크립트 탭도 모두 닫음)">✕</button></header>
     <div class="pbody"><div id="sedBox" class="sed"></div></div>
   </section>
 
   <section class="panel" data-id="palette">
-    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="tilemap"></span><span class="ptitle" id="palTitle">타일 팔레트</span></span><span class="spacer"></span><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
+    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="tilemap"></span><span class="ptitle" id="palTitle">타일 팔레트</span></span><span class="spacer"></span><button class="ppop" aria-label="엔진 밖 새 창으로 꺼내기" title="엔진 밖 새 창으로 꺼내기" data-ic="popout"></button><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
     <div class="pbody"><div class="sec" id="palBox"></div></div>
   </section>
 </div>
@@ -1038,6 +1125,18 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
 <script>
 (()=>{
 'use strict';
+/* ===================== 엔진 밖으로 꺼낸 패널 (별도 브라우저 창) 지원 =====================
+   패널 DOM을 새 창으로 옮기므로, 문서 전체에 거는 이벤트(단축키·툴팁·메뉴 닫기 등)를 꺼낸 창에도 똑같이 걸어 줍니다. */
+let play=null;
+const POPPED=new Map(),POPDOCS=new Set(),DOC_LS=[],WIN_LS=[],WIN_POP_TYPES=new Set(['keydown','keyup','paste']);
+{
+  const dAdd=document.addEventListener.bind(document),dRem=document.removeEventListener.bind(document);
+  document.addEventListener=function(t,f,o){DOC_LS.push([t,f,o]);dAdd(t,f,o);POPDOCS.forEach(d=>{try{d.addEventListener(t,f,o)}catch(e){}})};
+  document.removeEventListener=function(t,f,o){const i=DOC_LS.findIndex(x=>x[0]===t&&x[1]===f);if(i>=0)DOC_LS.splice(i,1);dRem(t,f,o);POPDOCS.forEach(d=>{try{d.removeEventListener(t,f,o)}catch(e){}})};
+  const wAdd=window.addEventListener.bind(window),wRem=window.removeEventListener.bind(window);
+  window.addEventListener=function(t,f,o){if(WIN_POP_TYPES.has(t)){WIN_LS.push([t,f,o]);POPDOCS.forEach(d=>{try{d.defaultView.addEventListener(t,f,o)}catch(e){}})}wAdd(t,f,o)};
+  window.removeEventListener=function(t,f,o){const i=WIN_LS.findIndex(x=>x[0]===t&&x[1]===f);if(i>=0)WIN_LS.splice(i,1);POPDOCS.forEach(d=>{try{d.defaultView.removeEventListener(t,f,o)}catch(e){}});wRem(t,f,o)};
+}
 /* ===================== 상수 / 용어 ===================== */
 const TS=32, MAXS=100, MAXOBJ=1000, PER=4096;
 const KEY='dungeon-map-maker.v2', LKEY='dungeon-map-maker.layout.v2';
@@ -1092,6 +1191,9 @@ const ICON=(()=>{
   const s=(d,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 16 16" aria-hidden="true">${d}</svg>`;
   return{
     hand:s('<path d="M5.2 8.3V4a1 1 0 012 0v3.2M7.2 7V2.9a1 1 0 012 0V7M9.2 7V3.9a1 1 0 012 0v5l.9-1.1a1.1 1.1 0 011.7 1.4l-2.4 3.6c-.6.9-1.5 1.3-2.7 1.3H8c-1.3 0-2.1-.5-2.8-1.4L3 9.2a1 1 0 011.5-1.3l.7.8"/>'),
+    popout:s('<path d="M9.5 2.5h4v4M13.5 2.5L8 8"/><path d="M11.5 9.5v3a1 1 0 01-1 1h-7a1 1 0 01-1-1v-7a1 1 0 011-1h3"/>'),
+    fsOn:s('<path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/>'),
+    fsOff:s('<path d="M6 2.5V6H2.5M13.5 6H10V2.5M10 13.5V10h3.5M2.5 10H6v3.5"/>'),
     term:s('<rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M4.8 6.3l2 1.7-2 1.7M8.6 10h2.8"/>'),
     script:s('<path d="M4 2.5h5.5l3 3v8h-8.5z"/><path d="M6.2 8l-1.2 1.2 1.2 1.2M9.8 8l1.2 1.2-1.2 1.2"/>'),
     select:s('<path d="M3.5 2.5l9 4.6-4 1.3-1.4 4z"/>'),
@@ -1148,15 +1250,18 @@ const ICON=(()=>{
 function ico(n){return ICON[n]||''}
 
 /* ===================== 유틸 ===================== */
-function $(s,r=document){return r.querySelector(s)}
-function $$(s,r=document){return [...r.querySelectorAll(s)]}
+function $(s,r=document){const e=r.querySelector(s);if(e||r!==document||!POPDOCS.size)return e;for(const d of POPDOCS){const x=d.querySelector(s);if(x)return x}return null}
+function $$(s,r=document){const a=[...r.querySelectorAll(s)];if(r===document)POPDOCS.forEach(d=>a.push(...d.querySelectorAll(s)));return a}
+/* 요소가 들어 있는 문서/창 (꺼낸 창 안의 요소도 올바른 창 크기·위치로 계산) */
+const docOf=el=>el&&el.ownerDocument||document,winOf=el=>docOf(el).defaultView||window;
+let lastPtrDoc=document;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,9);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 $$('[data-ic]').forEach(el=>el.insertAdjacentHTML('afterbegin',ico(el.dataset.ic)));
-const APP_VER='v10.26-13';
+const APP_VER='v10.26-15';
 $('#brand').innerHTML=ico('logo')+'Thaniya Engine<small class="bver" title="이 파일의 수정 버전 · 설정 > 정보">'+APP_VER+'</small>';
 
 /* ===================== 에셋 ===================== */
@@ -1342,9 +1447,9 @@ function openAnchorPop(btn){
     <div class="angrid"><span></span>${H.map(h=>`<small>${h[1]}</small>`).join('')}
     ${V.map(v=>`<small class="rl">${v[1]}</small>`+H.map(h=>{const k=v[0]+h[0];return`<button type="button" data-ak="${k}" class="${u.anchor===k?'on':''}" title="${UI_ANCH[k][0]}">${anchorIcon(k)}</button>`}).join('')).join('')}</div>
     <label class="chk"><input type="checkbox" id="anSnap">위치·크기도 앵커에 맞추기 <small style="opacity:.7">(Alt+클릭)</small></label>`;
-  document.body.append(el);
-  const r=btn.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight;
-  el.style.left=clamp(r.right-w,8,innerWidth-w-8)+'px';el.style.top=(r.bottom+6+h>innerHeight-8?Math.max(8,r.top-h-6):r.bottom+6)+'px';
+  docOf(btn).body.append(el);
+  const r=btn.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,bw=winOf(btn);
+  el.style.left=clamp(r.right-w,8,bw.innerWidth-w-8)+'px';el.style.top=(r.bottom+6+h>bw.innerHeight-8?Math.max(8,r.top-h-6):r.bottom+6)+'px';
   el.addEventListener('click',e=>{const b=e.target.closest('[data-ak]');if(!b)return;const snap=$('#anSnap').checked||e.altKey;el.remove();setUiAnchor(getUi(),b.dataset.ak,snap)});
   const off=e=>{if(!el.isConnected){document.removeEventListener('pointerdown',off,true);return}if(!el.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){el.remove();document.removeEventListener('pointerdown',off,true)}};
   setTimeout(()=>document.addEventListener('pointerdown',off,true),0);
@@ -1587,7 +1692,7 @@ function uiGroupInspHtml(m,g){
       `<div class="ugchips">${mem.map(u=>`<span class="ugchip"><i style="background:${UI_COLOR[u.type]}"></i>${esc(u.name)}</span>`).join('')||'<span class="hint">비어 있는 그룹입니다.</span>'}</div>`+
       `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><button class="btn sm" data-uga="dissolve" data-g="${g.id}">그룹 해제 (요소 유지)</button><button class="btn sm danger" data-uga="delete" data-g="${g.id}">그룹째 삭제</button></div>`,
       '씬 뷰에서 그룹을 선택하고 아무 요소나 끌면 그룹 전체가 함께 움직입니다.')+
-    comp('ugs','script','스크립트에서 쓰기'+compEn('C#'),`<pre class="ugcode" id="ugCode">${esc(code)}</pre><div style="display:flex;justify-content:flex-end;margin-top:6px"><button class="btn sm" data-uga="copy" data-g="${g.id}">예제 복사</button></div><p class="hint" style="margin-top:6px">위치는 그룹을 처음 위치에서 얼마나 옮길지(px), localScale은 그룹 영역의 가운데를 기준으로 한 배율입니다. 글자 크기도 함께 커지고 작아집니다. 그 밖의 대입(alpha, color, text, visible…)은 그룹 안 모든 요소에 똑같이 적용됩니다.</p>`);
+    comp('ugs','script','스크립트에서 쓰기'+compEn('C#'),`<pre class="ugcode" id="ugCode">${esc(setv.ko?enToKo(code):code)}</pre><div style="display:flex;justify-content:flex-end;margin-top:6px"><button class="btn sm" data-uga="copy" data-g="${g.id}">예제 복사</button></div><p class="hint" style="margin-top:6px">위치는 그룹을 처음 위치에서 얼마나 옮길지(px), localScale은 그룹 영역의 가운데를 기준으로 한 배율입니다. 글자 크기도 함께 커지고 작아집니다. 그 밖의 대입(alpha, color, text, visible…)은 그룹 안 모든 요소에 똑같이 적용됩니다.</p>`);
 }
 function createUiAtCenter(type){
   const m=cur();if(m.ui.length>=MAXUI){toast('UI 요소는 씬당 '+MAXUI+'개까지 만들 수 있습니다');return}
@@ -1800,10 +1905,13 @@ let cam={x:20,y:20,z:1},hover=null,spaceDown=false,drag=null;
 let undo=[],redo=[],baseline='',dirty=false,lastSave=null,saveTimer=0,raf=0;
 
 function newMap(name,w,h,theme){const n=w*h;return{id:uid(),name,w,h,theme:theme||'기본',l:[new Array(n).fill(0)],lm:[{name:'타일맵 1',wall:false}],dark:{on:false,color:'#05060d',level:.88},col:new Array(n).fill(0),objs:[],groups:[],ui:[],uiGroups:[],uiCv:{w:640,h:360,mode:'expand',match:.5}}}
-const cur=()=>P&&P.maps.find(m=>m.id===curId);
+/* 플레이 중에는 실행 중인 씬 사본을 보여 주고 편집합니다 → 인스펙터에 실시간 상태 표시, 정지하면 사본을 버려 원래대로 */
+const cur=()=>play&&play.m?play.m:P&&P.maps.find(m=>m.id===curId);
 const getSel=()=>{const m=cur();return m&&sel?m.objs.find(o=>o.id===sel):null};
 const getUi=()=>{const m=cur();return m&&selUi?(m.ui||[]).find(u=>u.id===selUi)||null:null};
-const objAt=(m,x,y)=>m.objs.find(o=>o.x===x&&o.y===y);
+/* 한 칸에 오브젝트를 여러 개 쌓을 수 있음: objsAt은 아래(먼저 그려짐) → 위 순서, objAt은 맨 위 오브젝트 */
+const objsAt=(m,x,y)=>sortedObjs(m).filter(o=>o.x===x&&o.y===y);
+const objAt=(m,x,y)=>{const a=objsAt(m,x,y);return a.length?a[a.length-1]:null};
 function isSolid(m,x,y){
   if(x<0||y<0||x>=m.w||y>=m.h)return true;
   const i=y*m.w+x,c=m.col[i];
@@ -1885,6 +1993,7 @@ function load(){
   try{const s=localStorage.getItem(KEY);if(s){const p=JSON.parse(s);if(validProject(p))return normProject(p)}}catch(e){}
   return normProject(sampleProject());
 }
+const save0=auto=>save(auto);
 async function save(auto){
   clearTimeout(saveTimer);
   try{localStorage.setItem(KEY,JSON.stringify(P));lastSave=new Date();dirty=false}
@@ -1892,12 +2001,13 @@ async function save(auto){
   renderStatus();
   if(!auto){const un=assets.filter(a=>!a.saved);if(un.length)await saveAssets(un,true);renderStatus();toast('프로젝트를 저장했습니다')}
 }
-function markDirty(){dirty=true;renderStatus();clearTimeout(saveTimer);saveTimer=setTimeout(()=>save(true),1500)}
+function markDirty(){if(play&&play.m)return;dirty=true;renderStatus();clearTimeout(saveTimer);saveTimer=setTimeout(()=>save(true),1500)}
 
 /* ===================== 실행 취소 ===================== */
 const snap=()=>JSON.stringify(cur());
 function resetHistory(){undo=[];redo=[];baseline=snap();renderHistBtns()}
 function commit(){
+  if(play&&play.m){renderHier();return}
   const s=snap();if(s===baseline)return;
   undo.push(baseline);if(undo.length>60)undo.shift();redo=[];baseline=s;
   markDirty();renderHistBtns();renderHier();
@@ -1908,8 +2018,67 @@ function restore(s){
   if(selUi&&!(m.ui||[]).some(u=>u.id===selUi))selUi=null;
   renderAll();markDirty();
 }
-function doUndo(){if(!undo.length)return;redo.push(baseline);restore(undo.pop());renderHistBtns()}
-function doRedo(){if(!redo.length)return;undo.push(baseline);restore(redo.pop());renderHistBtns()}
+function doUndo(){if(!undo.length){histToast('undo','더 이상 되돌릴 작업이 없습니다');return}const now=baseline,prev=undo.pop();redo.push(now);restore(prev);renderHistBtns();histToast('undo',histDesc(prev,now))}
+function doRedo(){if(!redo.length){histToast('redo','다시 실행할 작업이 없습니다');return}const now=baseline,next=redo.pop();undo.push(now);restore(next);renderHistBtns();histToast('redo',histDesc(now,next))}
+/* 두 씬 상태(before → after)를 비교해 무엇이 바뀌었는지 짧은 문장으로 */
+function histDesc(aS,bS){
+  let a,b;try{a=JSON.parse(aS);b=JSON.parse(bS)}catch(e){return'변경 사항'}
+  if(!a||!b)return'변경 사항';
+  const out=[],J=JSON.stringify,nm=o=>`'${String(o.name||'이름 없음').slice(0,18)}'`;
+  const list=(arr,verb)=>arr.length===1?`${nm(arr[0])} ${verb}`:`${nm(arr[0])} 외 ${arr.length-1}개 ${verb}`;
+  const diffSet=(A,B,kind)=>{
+    A=A||[];B=B||[];const am=new Map(A.map(o=>[o.id,o])),bm=new Map(B.map(o=>[o.id,o]));
+    const add=B.filter(o=>!am.has(o.id)),del=A.filter(o=>!bm.has(o.id));
+    if(add.length)out.push(kind+' '+list(add,'추가'));
+    if(del.length)out.push(kind+' '+list(del,'삭제'));
+    const mv=[],ren=[],par=[],prop=[];
+    B.forEach(o=>{const p=am.get(o.id);if(!p)return;
+      if(p.name!==o.name){ren.push(o);return}
+      if(p.x!==o.x||p.y!==o.y||p.l!==o.l||p.t!==o.t||p.r!==o.r||p.b!==o.b||p.w!==o.w||p.h!==o.h)mv.push(o);
+      else if(p.parent!==o.parent||p.group!==o.group)par.push(o);
+      else if(J(p)!==J(o))prop.push(o)});
+    if(ren.length)out.push(`이름 바꾸기 ${nm(am.get(ren[0].id))} → ${nm(ren[0])}`);
+    if(mv.length)out.push(kind+' '+list(mv,'이동'));
+    if(par.length)out.push(kind+' '+list(par,'부모·그룹 변경'));
+    if(prop.length)out.push(kind+' '+list(prop,'속성 변경'));
+    if(!add.length&&!del.length&&!mv.length&&!ren.length&&!par.length&&!prop.length&&A.length&&J(A.map(o=>o.id))!==J(B.map(o=>o.id)))out.push(kind+' 순서 변경');
+  };
+  if(a.name!==b.name)out.push(`씬 이름 '${a.name}' → '${b.name}'`);
+  if(a.w!==b.w||a.h!==b.h)out.push(`씬 크기 ${a.w}×${a.h} → ${b.w}×${b.h}`);
+  diffSet(a.objs,b.objs,'오브젝트');
+  diffSet(a.ui,b.ui,'UI');
+  const la=(a.l||[]).length,lb=(b.l||[]).length;
+  if(la!==lb)out.push(lb>la?'타일맵 추가':'타일맵 삭제');
+  else if(a.w===b.w&&a.h===b.h){
+    let put=0,rm=0,chg=0;
+    for(let L=0;L<la;L++){const A=a.l[L]||[],B=b.l[L]||[];for(let i=0;i<B.length;i++)if(A[i]!==B[i]){if(!A[i])put++;else if(!B[i])rm++;else chg++}}
+    const t=put+rm+chg;
+    if(t)out.push(`타일 ${t}칸 `+(rm===t?'지우기':put===t?'칠하기':'칠하기·지우기'));
+    let c=0;const A=a.col||[],B=b.col||[];for(let i=0;i<B.length;i++)if(A[i]!==B[i])c++;
+    if(c)out.push(`콜라이더 ${c}칸 변경`);
+    if(J(a.lm)!==J(b.lm))out.push('타일맵 설정 변경');
+  }
+  if(!out.length){
+    const skip=new Set(['objs','ui','l','col','lm','name','w','h','id']),ks=[...new Set([...Object.keys(a),...Object.keys(b)])].filter(k=>!skip.has(k)&&J(a[k])!==J(b[k]));
+    const KN={dark:'어둠(조명) 설정',groups:'그룹',uiGroups:'UI 그룹',theme:'테마',gv:'게임 뷰 설정',ui0:'UI 캔버스'};
+    out.push(ks.length?ks.map(k=>KN[k]||'씬 설정').filter((v,i,arr)=>arr.indexOf(v)===i).join(', ')+' 변경':'씬 변경');
+  }
+  return out.slice(0,2).join(' · ')+(out.length>2?` 외 ${out.length-2}건`:'');
+}
+/* 실행 취소/다시 실행 알림: 하단 오른쪽 구석에 잠깐 나타났다 사라짐 (남은 횟수 + 되돌린 내용) */
+let histT=0;
+function histToast(kind,desc){
+  let t=$('#histToast');
+  if(!t){t=document.createElement('div');t.id='histToast';t.className='histtoast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');document.body.append(t)}
+  const u=kind==='undo',n=u?undo.length:redo.length,o=u?redo.length:undo.length;
+  t.classList.toggle('empty',!n);
+  t.innerHTML=`<span class="hi">${u?'↶':'↷'}</span><span class="ht"><b>${u?'실행 취소':'다시 실행'}</b><span title="${esc(desc)}">${esc(desc)}</span></span><span class="hc"><b>${n}</b>${u?'남은 Ctrl+Z':'남은 다시 실행'}<br><span style="opacity:.75">${u?'다시 실행 '+o:'실행 취소 '+o}</span></span>`;
+  /* 키를 누른 창(꺼낸 창 포함) 안에 표시 */
+  const d=lastPtrDoc&&POPDOCS.has(lastPtrDoc)&&lastPtrDoc.hasFocus&&lastPtrDoc.hasFocus()?lastPtrDoc:document;
+  if(t.ownerDocument!==d)d.body.append(t);
+  t.classList.remove('on');void t.offsetWidth;t.classList.add('on');
+  clearTimeout(histT);histT=setTimeout(()=>t.classList.remove('on'),2200);
+}
 function renderHistBtns(){$('#bUndo').disabled=!undo.length;$('#bRedo').disabled=!redo.length}
 
 /* ===================== 씬 뷰 렌더 ===================== */
@@ -2054,14 +2223,23 @@ function render(){
   g.strokeStyle=css('--bound');g.lineWidth=2/cam.z;g.strokeRect(0,0,m.w*TS,m.h*TS);
   sortedObjs(m).filter(o=>ordOf(m,o)>m.l.length*10).forEach(drawObj);g.globalAlpha=1;
   if(m.dark&&m.dark.on&&$('#optLight').checked)drawLighting(g,m,lightsOf(m),dpr*cam.z,dpr*cam.x,dpr*cam.y);
+  /* 겹친 칸: 이름표는 맨 위 오브젝트만 (“외 N”), 오른쪽 위에 겹친 개수 배지 */
+  const stkC=new Map();
+  if(!PL)sortedObjs(m).forEach(o=>{if(!shown(o))return;const k=o.x+','+o.y;let a=stkC.get(k);if(!a)stkC.set(k,a=[]);a.push(o)});
   m.objs.forEach(o=>{
     if(!shown(o))return;
     const q=pos(o);if(q.x<x0-1||q.x>x1+1||q.y<y0-1||q.y>y1+1)return;
-    if(cam.z>=.6&&objOn(m,o))label(g,o.name,q.x*TS+TS/2,q.y*TS-2);
+    const sk=PL?null:stkC.get(o.x+','+o.y);
+    if(cam.z>=.6&&objOn(m,o)){if(!sk||sk.length<2)label(g,o.name,q.x*TS+TS/2,q.y*TS-2);else if(sk[sk.length-1]===o)label(g,o.name+' 외 '+(sk.length-1),q.x*TS+TS/2,q.y*TS-2)}
+    if(stk&&stk.list[stk.i]===o&&!isSel(o)){g.save();g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=1.5/cam.z;g.setLineDash([3/cam.z,2/cam.z]);g.strokeRect(q.x*TS+1,q.y*TS+1,TS-2,TS-2);g.restore()}
     if(isSel(o)){g.save();g.strokeStyle=css('--accent');g.lineWidth=2/cam.z;if(!objOn(m,o))g.setLineDash([4/cam.z,3/cam.z]);g.strokeRect(q.x*TS+1,q.y*TS+1,TS-2,TS-2);g.setLineDash([]);g.fillStyle='rgba(90,162,240,.16)';g.fillRect(q.x*TS+1,q.y*TS+1,TS-2,TS-2);
       const lt=o.props.light;if(lt){const cx=(q.x+.5)*TS,cy=(q.y+.5)*TS,R=lt.radius*TS,an=clamp(lt.angle,5,360)*Math.PI/180,di=(lt.dir||0)*Math.PI/180;g.setLineDash([5/cam.z,4/cam.z]);g.strokeStyle=lt.color||'#ffd88a';g.lineWidth=1.5/cam.z;g.beginPath();if(an>=Math.PI*2-.01)g.arc(cx,cy,R,0,7);else{g.moveTo(cx,cy);g.arc(cx,cy,R,di-an/2,di+an/2);g.closePath()}g.stroke()}
       g.restore()}
   });
+  if(!PL&&cam.z>=.35)stkC.forEach((a,k)=>{if(a.length<2)return;const[x,y]=k.split(',').map(Number);if(x<x0-1||x>x1+1||y<y0-1||y>y1+1)return;
+    const s=Math.min(1.6,1/cam.z),bw=(a.length>9?17:13)*s,bh=11*s,bx=(x+1)*TS-bw-1,by=y*TS+1;
+    g.save();g.fillStyle=layerSel==='obj'?css('--accent'):'rgba(20,20,26,.85)';rr(g,bx,by,bw,bh,bh/2);g.fill();
+    g.fillStyle=layerSel==='obj'?'#1a1400':'#f2f2f5';g.font='700 '+(8.5*s)+'px "IBM Plex Mono",monospace';g.textAlign='center';g.textBaseline='middle';g.fillText('×'+a.length,bx+bw/2,by+bh/2+.5*s);g.restore()});
   {const vr=gvRes(m),asp=vr.w/Math.max(1,vr.h);
    m.objs.forEach(o=>{const c=o.props&&o.props.camera;if(!c||!objOn(m,o))return;const on=o.id===sel||hsel.has(o.id),live=PL&&startCamera(m)===o;if(!on&&!live&&!(layerSel==='obj'&&c.start))return;
     const w=objWorld(m,o,PL),vh=2*(+c.size||5)*TS,vw=vh*asp;
@@ -2135,13 +2313,18 @@ cv.addEventListener('pointerdown',e=>{
   if(layerSel==='ui'){if($('#optUiHide').checked){toast('UI 숨기기가 켜져 있습니다 · 끄면 UI를 편집할 수 있어요');return}uiDown(e,m);return}
   const c=cellAt(e);hover=c;if(!inB(m,c))return;
   if(layerSel==='obj'){
-    const o=objAt(m,c.x,c.y);
-    if(tool==='select'||tool==='pick'){sel=o?o.id:null;if(o)drag={t:'move',id:o.id,moved:false};renderInsp();renderHier();need();return}
+    stkClose();
+    const stack=objsAt(m,c.x,c.y),o=stack.length?stack[stack.length-1]:null;
+    if(tool==='select'||tool==='pick'){
+      /* 겹친 칸: 이미 선택된 오브젝트가 그 칸에 있으면 그것을, 아니면 맨 위를 잡음. 끌지 않고 놓으면 선택 창이 열림 */
+      const pk=stack.find(q=>q.id===sel)||o;
+      sel=pk?pk.id:null;if(pk)drag={t:'move',id:pk.id,moved:false,stack:stack.length>1,cx:c.x,cy:c.y,ex:e.clientX,ey:e.clientY};renderInsp();renderHier();need();return}
     if(tool==='erase'){if(o){removeObjCascade(m,[o.id]);if(sel===o.id)sel=null;commit();renderInsp();need()}return}
     if(tool==='brush'){
-      if(o){sel=o.id;renderInsp();renderHier();need();return}
+      /* 브러시: 이미 오브젝트가 있는 칸에도 위로 쌓아서 배치 */
       if(m.objs.length>=MAXOBJ){toast('게임 오브젝트는 씬당 '+MAXOBJ+'개까지 배치할 수 있습니다');return}
       sel=addObj(m,objType,c.x,c.y).id;commit();renderInsp();need();
+      if(stack.length)toast(`${stack.length+1}개가 겹쳐 있습니다 · 이동 도구(W)로 칸을 클릭하면 골라서 선택할 수 있어요`);
     }
     return;
   }
@@ -2166,7 +2349,7 @@ cv.addEventListener('pointermove',e=>{
     if(drag.t==='pan'){cam.x=drag.cx+e.clientX-drag.sx;cam.y=drag.cy+e.clientY-drag.sy}
     else if(drag.t==='paint'){bres(drag.lx,drag.ly,c.x,c.y,(x,y)=>{if(paintAt(m,x,y))drag.ch=true});drag.lx=c.x;drag.ly=c.y}
     else if(drag.t==='uimove'||drag.t==='uisize'){uiDrag(e,m)}
-    else if(drag.t==='move'){const o=m.objs.find(q=>q.id===drag.id),ds=o?descOf(m,o):[];if(o&&inB(m,c)&&(o.x!==c.x||o.y!==c.y)&&!m.objs.some(q=>q.x===c.x&&q.y===c.y&&q!==o&&!ds.includes(q))){const dx=c.x-o.x,dy=c.y-o.y;o.x=c.x;o.y=c.y;ds.forEach(q=>{q.x=clamp(q.x+dx,0,m.w-1);q.y=clamp(q.y+dy,0,m.h-1)});drag.moved=true}}
+    else if(drag.t==='move'){const o=m.objs.find(q=>q.id===drag.id),ds=o?descOf(m,o):[];if(o&&inB(m,c)&&(o.x!==c.x||o.y!==c.y)){const dx=c.x-o.x,dy=c.y-o.y;o.x=c.x;o.y=c.y;ds.forEach(q=>{q.x=clamp(q.x+dx,0,m.w-1);q.y=clamp(q.y+dy,0,m.h-1)});drag.moved=true}}
   }
   need();
 });
@@ -2178,9 +2361,70 @@ function endDrag(){
     const a=clamp(Math.min(drag.sx,hover.x),0,m.w-1),b=clamp(Math.min(drag.sy,hover.y),0,m.h-1),c=clamp(Math.max(drag.sx,hover.x),0,m.w-1),d=clamp(Math.max(drag.sy,hover.y),0,m.h-1);
     for(let y=b;y<=d;y++)for(let x=a;x<=c;x++)if(paintCell(m,x,y,v))ch=true;
     if(ch)commit();
-  }else if(drag.t==='move'){if(drag.moved){commit();renderInsp()}}
+  }else if(drag.t==='move'){if(drag.moved){commit();renderInsp()}else if(drag.stack){const d0=drag;drag=null;cv.classList.remove('panning');openStackPicker(m,d0.cx,d0.cy,d0.ex,d0.ey);need();return}}
   else if(drag.t==='uimove'||drag.t==='uisize'){if(drag.moved){commit();renderInsp()}}
   drag=null;cv.classList.remove('panning');need();
+}
+/* ===================== 겹친 오브젝트 선택 창 (캐릭터 선택창 형태: 썸네일 + 높이) ===================== */
+let stk=null;
+function stkClose(){if(stk){stk.el.remove();removeEventListener('keydown',stk.key,true);document.removeEventListener('pointerdown',stk.off,true);stk=null;need()}}
+function stkThumb(o){
+  const c=document.createElement('canvas'),k=2,d=window.devicePixelRatio||1;c.width=c.height=Math.round(TS*k*d);
+  const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.setTransform(k*d,0,0,k*d,0,0);
+  try{objArt(g,o.type,0,0,0,o.props)}catch(e){}
+  return c;
+}
+function openStackPicker(m,cx,cy,px,py){
+  stkClose();
+  const draw=()=>{
+    const list=objsAt(m,cx,cy).reverse();if(list.length<2){stkClose();return}
+    const n=list.length;
+    if(stk.i>=n)stk.i=n-1;
+    stk.list=list;
+    stk.el.innerHTML=`<h5>${ico('cube')}<b>겹친 오브젝트 ${n}개</b><span>(${cx}, ${cy})</span><span class="spacer"></span><kbd>←→</kbd><kbd>Enter</kbd><kbd>Esc</kbd></h5><div class="stkrow" role="listbox" aria-label="겹친 오브젝트">`+
+      list.map((o,i)=>{const lv=n-i,on=o.id===sel;return`<div class="stkc${on?' on':''}${i===stk.i?' hov':''}${i===0?' top':''}${objOn(m,o)?'':' off'}" role="option" aria-selected="${on}" data-i="${i}" title="${esc(o.name)} · ${lv}층 (배치 순서 ${ordOf(m,o)})">
+        <span class="lv">${i===0?'▲ 맨 위':lv+'층'}</span>${i<9?`<span class="num">${i+1}</span>`:''}<span class="cvs"></span>
+        <span class="nm">${esc(o.name)}</span><span class="ty">${esc(TYPES[o.type]?TYPES[o.type].label:o.type)} · 순서 ${ordOf(m,o)}</span>
+        <span class="ud"><button type="button" data-mv="up" title="한 칸 위로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="down" title="한 칸 아래로" ${i===n-1?'disabled':''}>▼</button></span></div>`}).join('')+`</div>`;
+    stk.el.querySelectorAll('.stkc').forEach((card,i)=>card.querySelector('.cvs').replaceWith(stkThumb(list[i])));
+    place();
+  };
+  const place=()=>{
+    const el=stk.el,w=el.offsetWidth,h=el.offsetHeight;
+    el.style.left=clamp(px-w/2,8,Math.max(8,innerWidth-w-8))+'px';
+    el.style.top=(py+18+h>innerHeight-8?Math.max(8,py-h-18):py+18)+'px';
+  };
+  const choose=i=>{const o=stk.list[i];if(!o)return;sel=o.id;hsel=new Set([o.id]);syncSel=sel;stkClose();renderInsp();renderHier();need()};
+  /* 높이 바꾸기: 같은 칸 안에서 바로 위/아래 오브젝트와 순서를 맞바꿈 */
+  const move=(i,dir)=>{
+    const L2=stk.list,a=L2[i],b=L2[i+(dir==='up'?-1:1)];if(!a||!b)return;
+    const oa=ordOf(m,a),ob=ordOf(m,b);
+    if(oa!==ob){a.order=ob;b.order=oa}
+    else{const ia=m.objs.indexOf(a),ib=m.objs.indexOf(b);m.objs[ia]=b;m.objs[ib]=a}
+    stk.i=i+(dir==='up'?-1:1);commit();renderInsp();draw();need();
+  };
+  const el=document.createElement('div');el.className='stkpick';el.setAttribute('role','dialog');el.setAttribute('aria-label','겹친 오브젝트 선택');
+  document.body.append(el);
+  stk={el,i:0,list:[],cx,cy};
+  {const l=objsAt(m,cx,cy).reverse(),k=l.findIndex(o=>o.id===sel);stk.i=k<0?0:k}
+  el.addEventListener('pointerdown',e=>e.stopPropagation());
+  el.addEventListener('click',e=>{const mv=e.target.closest('[data-mv]'),c=e.target.closest('.stkc');if(!c)return;const i=+c.dataset.i;if(mv){move(i,mv.dataset.mv);return}choose(i)});
+  el.addEventListener('pointerover',e=>{const c=e.target.closest('.stkc');if(!c)return;stk.i=+c.dataset.i;el.querySelectorAll('.stkc').forEach((x,j)=>x.classList.toggle('hov',j===stk.i));need()});
+  stk.key=e=>{
+    if(!stk)return;const n=stk.list.length;
+    if(e.key==='Escape'){stkClose()}
+    else if(e.key==='ArrowRight'||e.key==='ArrowDown'||(e.key==='Tab'&&!e.shiftKey)){stk.i=(stk.i+1)%n}
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||(e.key==='Tab'&&e.shiftKey)){stk.i=(stk.i-1+n)%n}
+    else if(e.key==='Enter'||e.key===' '){choose(stk.i)}
+    else if(/^[1-9]$/.test(e.key)&&+e.key<=n){choose(+e.key-1)}
+    else return;
+    e.preventDefault();e.stopImmediatePropagation();
+    if(stk){el.querySelectorAll('.stkc').forEach((x,j)=>x.classList.toggle('hov',j===stk.i));const h=el.querySelector('.stkc.hov');if(h)h.scrollIntoView({block:'nearest',inline:'nearest'});need()}
+  };
+  stk.off=e=>{if(stk&&!stk.el.contains(e.target))stkClose()};
+  addEventListener('keydown',stk.key,true);
+  setTimeout(()=>{if(stk)document.addEventListener('pointerdown',stk.off,true)},0);
+  draw();
 }
 cv.addEventListener('pointerup',endDrag);cv.addEventListener('pointercancel',endDrag);
 cv.addEventListener('pointerleave',()=>{if(!drag){hover=null;$('#stPos').textContent='';need()}});
@@ -3137,7 +3381,7 @@ function renderInsp(){
   const T=TYPES[o.type],p=o.props;
   let h=`<div class="ihead"><span class="ibadge" style="background:${T.color}">${ico('cube')}</span><input type="checkbox" class="iact" data-p="active"${o.active!==false?' checked':''} title="활성화 (SetActive) · 끄면 씬과 플레이에서 숨겨지고 스크립트도 멈춥니다" aria-label="활성화"><input type="text" class="iname" data-p="name" maxlength="24" value="${esc(o.name)}" aria-label="이름"><span class="tag">${T.label}</span></div>`;
   h+=comp('transform','select','변환'+compEn('Transform'),
-    fr('위치',num('X','data-p="x"',o.x,0,m.w-1)+num('Y','data-p="y"',o.y,0,m.h-1),false,'position','씬 안에서의 칸 좌표입니다. 왼쪽 위가 (0, 0)입니다.')+
+    fr('위치',num('X','data-p="x"',insPos(m,o).x,0,m.w-1)+num('Y','data-p="y"',insPos(m,o).y,0,m.h-1),false,'position','씬 안에서의 칸 좌표입니다. 왼쪽 위가 (0, 0)입니다.')+
     fr('배치 순서',num('#','data-p="order"',o.order==null?ordOf(m,o):o.order,-999,999),false,'sortingOrder','값이 클수록 위에 그려집니다. 타일맵은 10, 20, 30… 순서이므로, 값이 작으면 해당 타일맵 뒤에 그려집니다.')+
     `<div class="fr"><label class="scl">${lb('크기','localScale','라벨을 좌우로 끌면 X·Y가 함께 바뀝니다. ↺ 버튼으로 1배로 되돌립니다.')}</label><div class="fv">`+(num('X','data-p="sx" data-step="0.01"',(o.props.sx||1),0.1,10)+num('Y','data-p="sy" data-step="0.01"',(o.props.sy||1),0.1,10)+`<button class="ib" id="iScaleReset" title="크기 초기화" aria-label="크기 초기화">↺</button>`)+'</div></div>'+
     fr('방향',num('Z°','data-p="rot" data-step="1"',+(o.props.rot||0),-360,360)+`<button class="ib" id="iRotReset" title="방향 초기화" aria-label="방향 초기화">↺</button>`,false,'rotation','게임 오브젝트가 회전한 각도(도)입니다. 0°가 기본 방향이고, 값이 커질수록 시계 방향으로 돌아갑니다. 라벨(Z°)을 좌우로 끌어 조절할 수 있습니다.'),
@@ -3146,11 +3390,14 @@ function renderInsp(){
   if(o.type==='event')h+=comp('c','gear','이벤트 트리거'+compEn('EventTrigger'),fr('메시지',`<textarea data-p="text">${esc(p.text)}</textarea>`,1,'text','주인공이 이 칸에 닿으면 표시되는 메시지입니다.')+fr('한 번만 실행',`<input type="checkbox" data-p="once"${p.once?' checked':''}>`,false,'once','체크하면 한 번 발동한 뒤에는 다시 발동하지 않습니다.'),'주인공이 이 칸에 닿으면 메시지를 표시합니다.');
   if(o.type==='npc')h+=comp('c','gear','대화'+compEn('Npc'),fr('대사',`<textarea data-p="text">${esc(p.text)}</textarea>`,1,'text','주인공이 말을 걸면 표시되는 대사입니다.'),'주인공이 말을 걸면 대사를 표시하는 NPC입니다.');
   if(o.type==='spawn'){
-    const mi=heroMoveInst(o),ms=mi&&scriptOf(mi.sid),hs=heroScript(),changed=ms&&hs&&ms.id===hs.id&&ms.code!==HERO_CODE;
+    const mi=heroMoveInst(o),ms=mi&&scriptOf(mi.sid),hs=heroScript(),changed=ms&&hs&&ms.id===hs.id&&ms.code!==HERO_CODE&&ms.code!==enToKo(HERO_CODE);
     h+=comp('c','user','주인공'+compEn('Hero'),
       fr('이동 스크립트',ms?`<span style="display:inline-flex;align-items:center;gap:5px;flex:1;min-width:0;color:var(--accent)">${ico('script')}<b style="color:var(--fg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(ms.name)}.cs</b></span><button class="btn sm pri" data-editsc="${ms.id}">스크립트 편집</button>`:`<button class="btn sm pri" id="iHeroScript" style="flex:1">기본 이동 스크립트 붙이기</button>`,false,'movement','주인공을 움직이는 C# 스크립트입니다. 방향키/WASD 입력, 속도, 대각선 처리, 달리기 등 이동 로직이 모두 이 스크립트에 있어 “스크립트 편집”으로 직접 고칠 수 있습니다. 스크립트를 떼면 주인공이 움직이지 않습니다.')+
       (changed?`<div style="display:flex;justify-content:flex-end;margin-top:4px"><button class="btn sm" id="iHeroReset">기본 코드로 되돌리기</button></div>`:'')+
-      `<p class="hint" style="margin:6px 0 0">${ms?'속도 등은 아래 스크립트 컴포넌트에서, 이동 방식은 “스크립트 편집”으로 고칩니다.':'이동 스크립트가 없어 플레이 중 주인공이 움직이지 않습니다.'}</p>`,
+      `<p class="hint" style="margin:6px 0 0">${ms?'속도 등은 아래 스크립트 컴포넌트에서, 이동 방식은 “스크립트 편집”으로 고칩니다.':'이동 스크립트가 없어 플레이 중 주인공이 움직이지 않습니다.'}</p>`+(play&&play.m===m&&startSpawn(m)===o?(()=>{const fa=((((play.fa!=null?play.fa:Math.atan2(play.fy,play.fx))*180/Math.PI)%360)+360)%360;
+        return fr('체력 (실시간)',`<span style="font-family:var(--f-mono)">${play.hp} / 100</span>`,false,'hp','플레이 중 주인공의 현재 체력입니다. 스크립트: hero.GetComponent&lt;Hero&gt;().hp')+
+        fr('바라보는 방향',`<span style="font-family:var(--f-mono)">(${play.fx}, ${play.fy}) · ${fa.toFixed(0)}°</span>`,false,'facing / facingAngle','플레이 중 주인공이 바라보는 방향입니다. 각도 0은 오른쪽, 90은 아래쪽으로, 빛의 dir과 기준이 같습니다. 스크립트: hero.GetComponent&lt;Hero&gt;().facingAngle')+
+        fr('움직이는 중',`<span style="font-family:var(--f-mono)">${play.moved?'예':'아니요'}</span>`,false,'isMoving')})():''),
       '플레이를 시작할 때 조작하는 주인공입니다. 이동은 붙어 있는 이동 스크립트가 담당합니다. 주인공의 자식 게임 오브젝트(예: 카메라)는 주인공을 따라 움직입니다.')}
   if(o.type==='item')h+=comp('c','gear','아이템 픽업'+compEn('Item'),fr('수량',num('#','data-p="qty"',p.qty,1,999),false,'qty','획득할 때 인벤토리에 추가되는 개수입니다.'),'주인공이 닿으면 인벤토리에 추가되는 아이템입니다.');
   if(o.type==='monster')h+=comp('c','gear','몬스터 AI'+compEn('Monster'),fr('체력',num('HP','data-p="hp"',p.hp,1,99),false,'hp','몬스터의 체력입니다.')+fr('이동 속도',num('V','data-p="speed"',p.speed,10,200),false,'speed','주인공을 쫓을 때의 이동 속도입니다. 클수록 빠릅니다.')+fr('감지 범위(칸)',num('R','data-p="range"',p.range,1,20),false,'range','주인공이 이 거리(칸) 안에 들어오면 쫓아오기 시작합니다.'),'주인공이 가까이 오면 쫓아오는 몬스터입니다.');
@@ -3192,6 +3439,7 @@ $('#insp').addEventListener('input',e=>{
   else if(k==='group')o.group=t.value||null;
   else if(k==='parent')o.parent=t.value||null;
   else if(k==='order')o.order=clamp(parseInt(t.value)||0,-999,999);
+  else if((k==='x'||k==='y')&&play&&play.m===m){const v=parseFloat(t.value)||0,q=insPos(m,o);setObjTile(m,o,k==='x'?v:q.x,k==='y'?v:q.y)}
   else if(k==='x'||k==='y'){const lim=(k==='x'?m.w:m.h)-1,old=o[k];o[k]=clamp(parseInt(t.value)||0,0,lim);const dd=o[k]-old;if(dd)descOf(m,o).forEach(q=>{q[k]=clamp(q[k]+dd,0,lim)})}
   else if(k==='sx'||k==='sy'){o.props[k]=clamp(parseFloat(t.value)||1,0.1,10)}
   else if(k==='rot'){const v=clamp(parseFloat(t.value)||0,-360,360);if(v)o.props.rot=v;else delete o.props.rot}
@@ -3225,7 +3473,7 @@ $('#insp').addEventListener('click',e=>{
   const rmb=e.target.closest('[data-rm]');if(rmb){removeComponent(rmb.dataset.rm);return}
   if(id==='iRotReset'||e.target.closest('#iRotReset')){const o=getSel();if(o){delete o.props.rot;commit();renderInsp();need()}return}
   if(id==='iHeroScript'){const o=getSel();if(o){giveHeroScript(o);commit();markDirty();renderInsp();renderScripts();toast('기본 이동 스크립트를 붙였습니다')}return}
-  if(id==='iHeroReset'){const hs=heroScript();if(hs)openModal('기본 코드로 되돌리기',`<p style="margin:0"><b>${esc(hs.name)}.cs</b>의 내용을 기본 이동 코드로 바꿉니다. 고친 내용은 사라집니다.</p>`,[{t:'취소'},{t:'되돌리기',cls:'danger',fn:()=>{hs.code=HERO_CODE;delete ed.draft[hs.id];markDirty();compileScript(hs,true);renderScripts();renderEditor();renderInsp();toast('기본 이동 코드로 되돌렸습니다')}}]);return}
+  if(id==='iHeroReset'){const hs=heroScript();if(hs)openModal('기본 코드로 되돌리기',`<p style="margin:0"><b>${esc(hs.name)}.cs</b>의 내용을 기본 이동 코드로 바꿉니다. 고친 내용은 사라집니다.</p>`,[{t:'취소'},{t:'되돌리기',cls:'danger',fn:()=>{hs.code=heroCodeDef();delete ed.draft[hs.id];markDirty();compileScript(hs,true);renderScripts();renderEditor();renderInsp();toast('기본 이동 코드로 되돌렸습니다')}}]);return}
   if(id==='iScaleReset'||e.target.closest('#iScaleReset')){const o=getSel();if(o){delete o.props.sx;delete o.props.sy;commit();renderInsp();need()}return}
   if(id==='iUngroup'){dissolveGroups((cur().groups||[]).filter(g=>hsel.has(g.id)).map(g=>g.id));return}
   const ch=e.target.closest('.chead');if(ch){const c=ch.closest('.comp'),closed=c.classList.toggle('closed'),key=c.dataset.comp;if(closed)insFold.add(key);else insFold.delete(key)}
@@ -3239,8 +3487,9 @@ $('#insp').addEventListener('click',e=>{
   const hide=()=>{if(cur)cur.classList.remove('on');cur=null;tip.classList.remove('on')};
   const show=q=>{
     if(cur===q)return;hide();cur=q;q.classList.add('on');
+    const qd=docOf(q);if(tip.ownerDocument!==qd)qd.body.appendChild(tip);tip.style.display='';
     tip.textContent=q.dataset.tip||'';tip.style.left='0px';tip.style.top='0px';tip.classList.add('on');
-    const r=q.getBoundingClientRect(),w=tip.offsetWidth,h=tip.offsetHeight,vw=document.documentElement.clientWidth,vh=window.innerHeight;
+    const r=q.getBoundingClientRect(),w=tip.offsetWidth,h=tip.offsetHeight,vw=qd.documentElement.clientWidth,vh=winOf(q).innerHeight;
     const x=Math.min(Math.max(8,r.left+r.width/2-w/2),Math.max(8,vw-w-8));
     let y=r.bottom+6;if(y+h>vh-8)y=Math.max(8,r.top-h-6);
     tip.style.left=x+'px';tip.style.top=y+'px';
@@ -3349,10 +3598,145 @@ function csDefault(type,def){
   if(type==='Color'){const m=/Color\.(\w+)/.exec(d);if(m&&CS_COLORS[m[1]])return CS_COLORS[m[1]];const n=/\(([^)]*)\)/.exec(d);if(n){const a=n[1].split(',').map(x=>clamp(parseFloat(x)||0,0,1));return'#'+[0,1,2].map(i=>Math.round((a[i]==null?1:a[i])*255).toString(16).padStart(2,'0')).join('')}return'#ffffff'}
   return null;
 }
+/* ===================== 한글 스크립트 (실험) =====================
+   한글 단어를 C# 단어로 바꿔(koCode) 실행·검사하고, 반대로 C# 예제를 한글로 바꿔(enToKo) 보여 줍니다.
+   한글·영어 코드는 섞어 써도 되며, 실행기는 항상 둘 다 인식합니다.
+   문맥: '[' 뒤 = 특성 · '.' 뒤 = 멤버(앞 단어 종류별) · 뒤에 '(' '<' = 함수 · 그 밖 = 키워드·형식
+   코드에서 변수로 선언한 한글 이름(예: 실수 시간 = 0;)은 바꾸지 않습니다. */
+const KO_HAN=/[가-힣]/;
+const KO_KW={공개:'public',비공개:'private',보호:'protected',내부:'internal',정적:'static',읽기전용:'readonly',상수:'const',클래스:'class',사용:'using',
+  동작:'void',반환없음:'void',반환:'return',만약:'if',아니면:'else',동안:'while',반복:'for',각각:'foreach',하기:'do',중단:'break',계속:'continue',
+  참:'true',거짓:'false',없음:'null',널:'null',새:'new',새로:'new',자신:'this',변수:'var'};
+const KO_TY={정수:'int',실수:'float',배실수:'double',논리:'bool',문자열:'string',벡터2:'Vector2',벡터3:'Vector3',색:'Color',쿼터니언:'Quaternion',
+  게임오브젝트:'GameObject',변환:'Transform',트랜스폼:'Transform',행동스크립트:'MonoBehaviour',주인공:'Hero',입력:'Input',시간:'Time',수학:'Mathf',
+  디버그:'Debug',무작위:'Random',랜덤:'Random',키코드:'KeyCode',카메라:'Camera',빛:'Light',몬스터:'Monster',엔피시:'Npc',아이템:'Item',포탈:'Portal',
+  이벤트트리거:'EventTrigger',스프라이트렌더러:'SpriteRenderer',UI그룹:'UIGroup',텍스트:'Text',버튼:'Button',이미지:'Image',
+  씬관리자:'SceneManager',애플리케이션:'Application',유니티엔진:'UnityEngine'};
+const KO_SELF={내변환:'transform',내오브젝트:'gameObject',이오브젝트:'gameObject'};
+const KO_CALL={컴포넌트가져오기:'GetComponent',출력:'print',파괴:'Destroy',깨어날때:'Awake',시작:'Start',업데이트:'Update',매프레임:'Update',
+  고정업데이트:'FixedUpdate',늦은업데이트:'LateUpdate',켜질때:'OnEnable',꺼질때:'OnDisable',파괴될때:'OnDestroy',클릭시:'OnClick',
+  마우스들어옴:'OnPointerEnter',마우스나감:'OnPointerExit',트리거들어옴:'OnTriggerEnter2D',트리거나감:'OnTriggerExit2D',충돌시:'OnCollisionEnter2D'};
+const KO_ATTR={제목:'Header',범위:'Range',설명:'Tooltip',툴팁:'Tooltip',직렬화:'SerializeField',간격:'Space',숨김:'HideInInspector'};
+const KO_MEM={위치:'position',지역위치:'localPosition',배율:'localScale',회전:'rotation',회전각:'eulerAngles',옮기기:'Translate',돌리기:'Rotate',
+  자식가져오기:'GetChild',찾기:'Find',자식수:'childCount',부모:'parent',게임오브젝트:'gameObject',변환:'transform',이름:'name',태그:'tag',
+  활성:'activeSelf',활성화:'SetActive',태그비교:'CompareTag',컴포넌트가져오기:'GetComponent',켜짐:'enabled',
+  바라보는방향:'facing',바라보는각도:'facingAngle',체력:'hp',최대체력:'maxHp',이동중:'isMoving',반지름:'radius',이동:'Move',바라보기:'Face',
+  이동가능:'CanMove',공격:'Attack',색:'color',밝기:'intensity',퍼짐각:'angle',방향:'dir',그림자:'shadows',화면크기:'orthographicSize',
+  맵밖가리기:'clampToMap',속도:'speed',감지범위:'range',수량:'qty',글자:'text',대사:'text',글자크기:'fontSize',투명도:'alpha',보임:'visible',
+  값:'value',크기:'sizeDelta',길이:'magnitude',정규화:'normalized',정규화하기:'Normalize',글자수:'Length',대문자로:'ToUpper',
+  소문자로:'ToLower',포함:'Contains',문자열로:'ToString',다듬기:'Trim'};
+const KO_VEC={영:'zero',하나:'one',위:'up',아래:'down',왼쪽:'left',오른쪽:'right',거리:'Distance',보간:'Lerp',향해이동:'MoveTowards',내적:'Dot',길이제한:'ClampMagnitude'};
+const KO_OWN={
+  Debug:{출력:'Log',경고:'LogWarning',오류:'LogError'},
+  Mathf:{절댓값:'Abs',사인:'Sin',코사인:'Cos',탄젠트:'Tan',아크사인:'Asin',아크코사인:'Acos',아크탄젠트:'Atan',아크탄젠트2:'Atan2',제곱근:'Sqrt',
+    거듭제곱:'Pow',내림:'Floor',올림:'Ceil',반올림:'Round',부호:'Sign',최소:'Min',최대:'Max',제한:'Clamp',제한01:'Clamp01',보간:'Lerp',
+    향해이동:'MoveTowards',정수반올림:'RoundToInt',정수내림:'FloorToInt',정수올림:'CeilToInt',원주율:'PI',도를라디안:'Deg2Rad',
+    라디안을도:'Rad2Deg',무한대:'Infinity',되풀이:'Repeat',왕복:'PingPong'},
+  Time:{프레임시간:'deltaTime',경과시간:'time',프레임수:'frameCount',시간배율:'timeScale',고정프레임시간:'fixedDeltaTime'},
+  Input:{키누르는중:'GetKey',키눌렀을때:'GetKeyDown',키뗐을때:'GetKeyUp',축값:'GetAxis',축값즉시:'GetAxisRaw',버튼누르는중:'GetButton',
+    버튼눌렀을때:'GetButtonDown',마우스누르는중:'GetMouseButton',마우스눌렀을때:'GetMouseButtonDown',아무키:'anyKey',마우스위치:'mousePosition'},
+  Random:{범위:'Range',값:'value'},
+  Vector2:KO_VEC,Vector3:KO_VEC,
+  Color:{빨강:'red',초록:'green',파랑:'blue',하양:'white',흰색:'white',검정:'black',노랑:'yellow',청록:'cyan',자홍:'magenta',회색:'gray'},
+  KeyCode:Object.assign({스페이스:'Space',엔터:'Return',이스케이프:'Escape',탭:'Tab',백스페이스:'Backspace',왼쪽시프트:'LeftShift',오른쪽시프트:'RightShift',
+    왼쪽컨트롤:'LeftControl',오른쪽컨트롤:'RightControl',왼쪽알트:'LeftAlt',오른쪽알트:'RightAlt',위화살표:'UpArrow',아래화살표:'DownArrow',
+    왼쪽화살표:'LeftArrow',오른쪽화살표:'RightArrow',마우스왼쪽:'Mouse0',마우스오른쪽:'Mouse1',마우스가운데:'Mouse2'},
+    Object.fromEntries([0,1,2,3,4,5,6,7,8,9].map(n=>['숫자'+n,'Alpha'+n]))),
+  Camera:{메인:'main'},
+  GameObject:{찾기:'Find',태그로찾기:'FindWithTag'},
+  UIGroup:{찾기:'Find'},
+  SceneManager:{씬불러오기:'LoadScene'},
+  Application:{종료:'Quit'},
+  Quaternion:{오일러:'Euler',회전없음:'identity'}
+};
+const KO_FINDS=new Set(['찾기','태그로찾기','Find','FindWithTag']);
+const KO_NODECL=new Set(['return','new','else','throw','case','in','is','as','await','yield','goto','using','class','namespace']);
+const koRev=o=>{const r={};for(const k in o)if(!(o[k] in r))r[o[k]]=k;return r};
+const KO_KW_R=koRev(KO_KW),KO_TY_R=koRev(KO_TY),KO_SELF_R=koRev(KO_SELF),KO_CALL_R=koRev(KO_CALL),KO_ATTR_R=koRev(KO_ATTR),KO_MEM_R=koRev(KO_MEM);
+const KO_OWN_R={};for(const k in KO_OWN)KO_OWN_R[k]=koRev(KO_OWN[k]);
+const koStandEn=w=>KO_SELF[w]||KO_KW[w]||KO_TY[w]||w;
+const KO_IDC=/[\p{L}\p{N}_]/u,KO_IDS=/[\p{L}_]/u;
+function koCtx(s,i,j){
+  let a=i-1;while(a>=0&&/\s/.test(s[a]))a--;
+  let b=j;while(b<s.length&&/\s/.test(s[b]))b++;
+  let nw='';if(s[b]==='.'){const q=/^\s*([\p{L}_][\p{L}\p{N}_]*)/u.exec(s.slice(b+1,b+80));if(q)nw=q[1]}
+  return{prev:a>=0?s[a]:'',pi:a,next:s[b]||'',nw};
+}
+/* 단어 하나씩 바꾸기: fn(word, ctx, owner) → 바꾼 단어 (owner = '.' 앞 단어를 바꾼 결과) */
+function koWalk(code,fn){
+  const bl=csBlank(code,false),re=/[\p{L}_][\p{L}\p{N}_]*/gu;let out='',last=0,prev=null,m;
+  while((m=re.exec(bl))){
+    const w=m[0],i=m.index,j=i+w.length;
+    if(i>0&&/[0-9]/.test(bl[i-1]))continue;
+    const c=koCtx(bl,i,j),owner=c.prev==='.'&&prev&&!bl.slice(prev.j,c.pi).trim()?prev.en:'';
+    const t=fn(w,c,owner,bl);
+    prev={j,en:/[A-Za-z_]/.test(t)&&!KO_HAN.test(t)?t:w};
+    if(t!==w){out+=code.slice(last,i)+t;last=j}
+  }
+  return out+code.slice(last);
+}
+/* 한글 → C# (실행·검사·자동완성 해석에 사용) */
+/* $"... {식} ..." 문자열 보간 구멍 안의 코드도 바꿈 */
+const koHoles=(code,fn)=>code.replace(/\$"((?:[^"\\\n]|\\.)*)"/g,(q,b)=>'$"'+b.replace(/\{([^{}]+)\}/g,(z,e)=>{const k=e.search(/:[A-Za-z0-9.]+$/);return'{'+(k>0?fn(e.slice(0,k))+e.slice(k):fn(e))+'}'})+'"');
+function koCode(code,decl0){
+  if(!KO_HAN.test(code))return code;
+  const decl=decl0||new Set(),bl=csBlank(code,false);let m;
+  if(!decl0){const dr=/(?<![\p{L}\p{N}_])([\p{L}_][\p{L}\p{N}_]*)(?:\s*<[^<>;(){}]*>)?(?:\s*\[\s*\])?\s+([\p{L}_][\p{L}\p{N}_]*)\s*(?=[=;,)])/gu;
+  while((m=dr.exec(bl))){if(!KO_NODECL.has(koStandEn(m[1])))decl.add(m[2])}}
+  if(code.includes('$"'))code=koHoles(code,e=>koCode(e,decl));
+  return koWalk(code,(w,c,owner)=>{
+    if(!KO_HAN.test(w))return w;
+    if(c.prev==='['&&KO_ATTR[w])return KO_ATTR[w];
+    if(c.prev==='.'){const om=KO_OWN[owner];if(om&&om[w])return om[w];if(decl.has(w))return w;return KO_MEM[w]||w}
+    const typeCtx=c.prev==='<'||c.next==='>'||KO_IDS.test(c.next);
+    if(decl.has(w)&&!typeCtx){const te=KO_TY[w];if(!(c.next==='.'&&te&&KO_OWN[te]&&KO_OWN[te][c.nw]))return w}
+    if(w==='게임오브젝트'&&c.next==='.')return KO_FINDS.has(c.nw)?'GameObject':'gameObject';
+    if((w==='변환'||w==='트랜스폼')&&c.next==='.')return 'transform';
+    if((c.next==='('||c.next==='<')&&KO_CALL[w])return KO_CALL[w];
+    return koStandEn(w);
+  });
+}
+/* C# → 한글 (예제·템플릿·자동완성 삽입에 사용) */
+function enToKo(code){
+  if(code.includes('$"'))code=koHoles(code,enToKo);
+  return koWalk(code,(w,c,owner)=>{
+    if(KO_HAN.test(w))return w;
+    if(c.prev==='['&&KO_ATTR_R[w])return KO_ATTR_R[w];
+    if(c.prev==='.')return (KO_OWN_R[owner]||{})[w]||KO_MEM_R[w]||w;
+    if((c.next==='('||c.next==='<')&&KO_CALL_R[w])return KO_CALL_R[w];
+    return KO_SELF_R[w]||KO_KW_R[w]||KO_TY_R[w]||w;
+  }).replace(/"Horizontal"/g,'"가로"').replace(/"Vertical"/g,'"세로"');
+}
+/* 설명 글 속 형식 이름만 한글로 (예: "(KeyCode key) → bool" → "(키코드 key) → 논리") */
+const koTypes=s=>String(s||'').replace(/[A-Za-z_]\w*/g,w=>KO_TY_R[w]||KO_KW_R[w]||w);
+/* 자동완성 후보의 한글 이름 */
+function acKoName(it,owner,dot,attr){
+  if(it.u||it.k==='var')return null;
+  if(attr)return KO_ATTR_R[it.n]||null;
+  if(dot)return (KO_OWN_R[owner]||{})[it.n]||KO_MEM_R[it.n]||null;
+  if(it.k==='kw'||it.k==='ty'||it.k==='sn')return KO_KW_R[it.n]||KO_TY_R[it.n]||null;
+  if(it.k==='ev'||it.k==='fn')return KO_CALL_R[it.n]||KO_SELF_R[it.n]||null;
+  return KO_SELF_R[it.n]||null;
+}
+const KO_SAMPLE=`private Hero hero;
+
+void Start()
+{
+    hero = GetComponent<Hero>();
+}
+
+void Update()
+{
+    float h = Input.GetAxisRaw("Horizontal");
+    if (Input.GetKeyDown(KeyCode.Space))
+        Debug.Log("공격!");
+    hero.Move(new Vector2(h, 0) * 4f * Time.deltaTime);
+}`;
 const CS_UIT=new Set(['RectTransform','Button','Text','Image','Slider','CanvasGroup','TMP_Text','TextMeshProUGUI']);
 const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','UIGroup',...CS_UIT]);
 const csKind=t=>CS_OBJT.has(t)?'obj':t in CS_NUM?'num':t==='bool'?'bool':t==='string'?'str':t==='Vector2'||t==='Vector3'?'vec':t==='Color'?'color':'ref';
 function parseCS(code){
+  code=koCode(code);
   const res={cls:null,members:[],errs:[],methods:{},fields:[]},errs=res.errs;
   const clean=csBlank(code,false),nc=csBlank(code,true);
   const lineAt=i=>clean.slice(0,i).split('\n').length;
@@ -3372,15 +3756,22 @@ function parseCS(code){
     const line=lineAt(a+nc.slice(a,b).search(/\S/));
     const attrs=[];let m;
     while((m=/^\[\s*([A-Za-z_]\w*)\s*(?:\(([\s\S]*?)\))?\s*\]\s*/.exec(s))){attrs.push({n:m[1],a:m[2]||''});s=s.slice(m[0].length)}
-    if(block){const mm=/([A-Za-z_]\w*)\s*\(/.exec(s);if(mm)res.methods[mm[1]]={body:nc.slice(a,b),line};return}
+    if(block){
+      /* 'private T x = y' 다음에 ; 없이 메서드가 이어지면 (Unity: CS1002) */
+      const hd=s.slice(0,Math.max(0,s.indexOf('(')));
+      if(/=/.test(hd)){const eq=nc.indexOf('=',a);errs.push({line:lineAt(eq>=0?eq:a),msg:"error CS1002: ; expected — 필드 선언 끝에 ';'이(가) 빠졌습니다"});return}
+      const mm=/([\p{L}_][\p{L}\p{N}_]*)\s*\(/u.exec(s);if(mm){res.methods[mm[1]]={body:nc.slice(a,b),line};if(mm[1]===res.cls)errs.push({line,msg:`error CS0542: '${mm[1]}': 멤버 이름은 바깥 클래스 이름과 같을 수 없습니다`})}return}
     const mods=[];while((m=/^(public|private|protected|internal|static|readonly|const|new|volatile)\s+/.exec(s))){mods.push(m[1]);s=s.slice(m[0].length)}
     if(!s&&attrs.length)return;
-    const fm=/^([A-Za-z_][\w.<>,\[\]?]*)\s+([A-Za-z_]\w*)\s*(?:=\s*([\s\S]+))?$/.exec(s.replace(/\s+/g,' '));
+    const fm=/^([\p{L}_][\p{L}\p{N}_.<>,\[\]?]*)\s+([\p{L}_][\p{L}\p{N}_]*)\s*(?:=\s*([\s\S]+))?$/u.exec(s.replace(/\s+/g,' '));
     if(!fm){if(s.includes('('))return;errs.push({line,msg:'error CS1002: ; expected'});return}
     const type=fm[1].replace(/\s/g,''),name=fm[2],def=fm[3];
     if(def&&/\b(public|private|protected|internal)\s/.test(def)){errs.push({line,msg:'error CS1002: ; expected'});return}
     const has=x=>attrs.find(q=>q.n===x),exposed=(mods.includes('public')||has('SerializeField'))&&!mods.includes('static')&&!mods.includes('const')&&!has('HideInInspector');
-    res.fields.push({type,name,def,exposed});
+    res.fields.push({type,name,def,exposed,line});
+    if(name===res.cls)errs.push({line,msg:`error CS0542: '${name}': 멤버 이름은 바깥 클래스 이름과 같을 수 없습니다 (클래스 '${res.cls}' 안에 같은 이름의 변수)`});
+    if(def&&!mods.includes('static')&&!mods.includes('const')){const dm=/\b(transform|gameObject|GetComponent|this|name|tag|enabled)\b/.exec(def.replace(/"(?:[^"\\]|\\.)*"/g,'""'));
+      if(dm)errs.push({line,msg:`error CS0236: 필드 이니셜라이저는 비정적 필드, 메서드 또는 속성 '${dm[1]}'을(를) 참조할 수 없습니다`})}
     if(!exposed)return;
     attrs.filter(q=>q.n==='Space').forEach(()=>res.members.push({kind:'space'}));
     attrs.filter(q=>q.n==='Header').forEach(q=>{const t=/"((?:[^"\\]|\\.)*)"/.exec(q.a);if(t)res.members.push({kind:'header',text:t[1]})});
@@ -3403,9 +3794,12 @@ const scPath=s=>'Assets/Scripts/'+s.name+'.cs';
 
 /* ---- 콘솔 ---- */
 let conLog=[],conFilter={info:true,warn:true,error:true};
-function clog(type,msg,sid){
+let conSeq=0;
+function clog(type,msg,sid,det){
   const last=conLog[conLog.length-1];
-  if(last&&last.type===type&&last.msg===msg&&last.sid===sid)last.n++;else conLog.push({type,msg,sid,n:1,t:new Date()});
+  /* 메시지 속 줄 번호: 컴파일 “파일.cs(12,1)” · 실행 “12번째 줄” */
+  const lm=/\.cs\((\d+),\d+\)/.exec(msg)||/(\d+)번째 줄/.exec(msg);
+  if(last&&last.type===type&&last.msg===msg&&last.sid===sid)last.n++;else conLog.push({id:++conSeq,type,msg,sid,n:1,t:new Date(),line:det&&det.line||(lm?+lm[1]:0),det:det||null,open:false});
   if(conLog.length>500)conLog.shift();
   renderConsole();
 }
@@ -3415,21 +3809,87 @@ function renderConsole(){
   [['info','conI'],['warn','conW'],['error','conE']].forEach(([k,id])=>{const b=CON_EL.querySelector('#'+id);if(b){b.querySelector('b').textContent=cnt[k]>999?'999+':cnt[k];b.classList.toggle('off',!conFilter[k])}});
   const atEnd=box.scrollTop+box.clientHeight>=box.scrollHeight-24;
   const hh=t=>String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')+':'+String(t.getSeconds()).padStart(2,'0');
-  box.innerHTML=conLog.filter(l=>conFilter[l.type]).map((l,i)=>`<div class="cl ${l.type}"${l.sid?` data-sid="${l.sid}"`:''}><span class="ct">${hh(l.t)}</span><span class="cm">${esc(l.msg)}</span>${l.n>1?`<span class="cn">${l.n}</span>`:''}</div>`).join('')||'<p class="hint" style="padding:10px 12px">콘솔이 비어 있습니다. Debug.Log 출력과 스크립트 컴파일 결과가 여기에 표시됩니다.</p>';
+  box.innerHTML=conLog.filter(l=>conFilter[l.type]).map((l,i)=>`<div class="cl ${l.type}${l.open?' open':''}" data-cid="${l.id}"${l.sid?` data-sid="${l.sid}"`:''}${l.sid&&l.line?` data-line="${l.line}"`:''} title="${l.sid?'클릭: 스크립트에서 문제 줄 보기'+(l.type!=='info'?' · ▸ 자세한 원인':''):''}">${l.sid&&l.type!=='info'?`<button class="cx" type="button" aria-label="자세한 원인 펼치기" title="자세한 원인 펼치기/접기">▶</button>`:''}<span class="ct">${hh(l.t)}</span><span class="cm">${esc(l.msg)}${l.sid&&l.line&&l.type!=='info'?` <span class="cln">↗ ${l.line}번째 줄</span>`:''}</span>${l.n>1?`<span class="cn">${l.n}</span>`:''}${l.open?conDetail(l):''}</div>`).join('')||'<p class="hint" style="padding:10px 12px">콘솔이 비어 있습니다. Debug.Log 출력과 스크립트 컴파일 결과가 여기에 표시됩니다.</p>';
   if(atEnd)box.scrollTop=box.scrollHeight;
 }
 function compileScript(s,quiet){
   const r=parseCS(s.code);
-  if(r.errs.length)r.errs.forEach(e=>clog('error',`${scPath(s)}(${e.line},1): ${e.msg}`,s.id));
+  if(r.errs.length)r.errs.forEach(e=>clog('error',`${scPath(s)}(${e.line},1): ${e.msg}`,s.id,{kind:'compile',line:e.line,err:e.msg}));
   else{
     if(r.cls&&r.cls!==s.name)clog('warn',`${scPath(s)}: 클래스 '${r.cls}' 이름이 파일 이름 '${s.name}' 과(와) 다릅니다`,s.id);
+    (r.fields||[]).filter(x=>['transform','gameObject','name','tag','enabled'].includes(x.name)).forEach(x=>{
+      const ln=(s.code.slice(0,Math.max(0,s.code.search(new RegExp('\\b'+x.name+'\\s*[;=]')))).match(/\n/g)||[]).length+1;
+      clog('warn',`${scPath(s)}(${ln},1): 경고 CS0108: 필드 '${x.name}'이(가) 상속된 멤버 MonoBehaviour.${x.name}을(를) 숨깁니다. 이름을 바꾸거나 기본 제공 ${x.name}을(를) 그대로 쓰세요.`,s.id)});
     if(!quiet)clog('info',`${s.name}.cs 컴파일 완료 (공개 변수 ${r.members.filter(m=>m.kind==='field').length}개)`,s.id);
   }
   return r;
 }
 $('#conClear').onclick=()=>{conLog=[];renderConsole()};
 [['info','conI'],['warn','conW'],['error','conE']].forEach(([k,id])=>$('#'+id).onclick=()=>{conFilter[k]=!conFilter[k];renderConsole()});
-$('#conList').addEventListener('dblclick',e=>{const r=e.target.closest('.cl[data-sid]');if(r&&scriptOf(r.dataset.sid))openScriptEditor(scriptOf(r.dataset.sid))});
+/* 콘솔: 줄 클릭 → 스크립트를 열고 문제 줄을 빨갛게 반짝 · ▶ → 자세한 원인 펼치기 */
+function conGo(l){
+  const s=scriptOf(l.sid);if(!s)return;openScriptEditor(s);
+  let ln=l.line;
+  if(!ln){/* 줄 번호가 없는 메시지: “→ 코드” 부분을 스크립트에서 찾아 줄을 정함 */
+    const m=/→\s+(.+)$/.exec(l.msg);if(m){const k=s.code.indexOf(m[1].trim().slice(0,24));if(k>=0)ln=s.code.slice(0,k).split('\n').length}}
+  if(ln){l.line=ln;setTimeout(()=>edGoLine(ln,true),120)}
+}
+$('#conList').addEventListener('click',e=>{
+  if(e.target.closest('.cdet')&&!e.target.closest('.go'))return;
+  const r=e.target.closest('.cl[data-cid]');if(!r)return;const l=conLog.find(q=>q.id===+r.dataset.cid);if(!l)return;
+  if(e.target.closest('.cx')){l.open=!l.open;renderConsole();return}
+  if(e.target.closest('.go')||l.sid){const sel0=winOf(r).getSelection&&String(winOf(r).getSelection());if(!sel0)conGo(l)}
+});
+/* 자세한 원인: 위치 · 문제 코드 발췌 · 원인 설명 · 해결 방법 */
+function csExplain(msg){
+  const R=[
+    [/CS1002/,'문장이 끝나는 곳에 세미콜론(;)이 없어서 다음 줄까지 한 문장으로 이어져 버렸습니다. 필드 선언 바로 다음에 메서드가 오면 메서드 이름까지 잘못 읽힙니다.','표시된 줄 끝에 <code>;</code>를 붙이세요.'],
+    [/CS1513|짝이 맞지|닫히지 않/,'괄호 { } ( ) [ ]의 열고 닫는 짝이 맞지 않습니다.','표시된 줄 근처에서 빠지거나 남는 괄호를 찾아 짝을 맞추세요.'],
+    [/CS0542/,'C#에서는 클래스 이름과 똑같은 이름의 변수·메서드를 만들 수 없습니다.','변수 이름을 바꾸세요 (예: <code>private Light lightComp;</code>). 클래스 이름은 대문자로 시작하는 것이 관례입니다 (예: <code>HeroLight</code>, 파일 이름도 같이).'],
+    [/CS0236/,'필드 선언(메서드 밖)은 오브젝트가 준비되기 전에 실행되므로 transform · gameObject · GetComponent 같은 인스턴스 멤버를 쓸 수 없습니다.','선언은 <code>private Transform heroTrans;</code>로만 두고, <code>Start()</code> 안에서 <code>heroTrans = transform;</code>처럼 대입하세요.'],
+    [/CS0108/,'기본으로 있는 멤버(transform 등)와 같은 이름의 변수를 만들어 원래 것을 가리고 있습니다.','변수 이름을 바꾸거나, 변수 없이 기본 제공 멤버를 그대로 쓰세요.'],
+    [/Quaternion/,'회전값 <code>rotation</code>은 Quaternion(x, y, z, w 네 값) 형식이라 숫자(float) 하나가 필요한 곳에 넣을 수 없습니다.','각도(도)가 필요하면 <code>transform.eulerAngles.z</code>를 쓰세요. 예: <code>light.dir = hero.transform.eulerAngles.z;</code>'],
+    [/CS0029/,'값의 형식이 맞지 않습니다.','대입하려는 값과 받는 쪽의 형식(숫자 · 벡터 · Color 등)을 맞추세요.'],
+    [/NullReferenceException|null 값/,'변수가 비어 있는(null) 상태에서 그 안의 값을 쓰려 했습니다.','인스펙터에서 public 변수 슬롯에 오브젝트를 넣었는지, GetComponent로 가져온 컴포넌트가 그 오브젝트에 실제로 붙어 있는지 확인하세요.'],
+    [/GetComponent<(\w+)>/,'이 엔진에서 아직 가져올 수 없는 컴포넌트 타입입니다.','GetComponent로 가져올 수 있는 타입: <code>Hero</code> · <code>Transform</code> · <code>GameObject</code> · <code>Camera</code> · <code>Light</code>'],
+    [/MissingComponent/,'컴포넌트가 이미 제거되었습니다.','enabled로 껐다 켜거나, 인스펙터에서 컴포넌트를 다시 추가하세요.'],
+    [/아직 실행할 수 없습니다/,'C# 문법으로는 맞지만 Thaniya Engine 스크립트 실행기가 아직 지원하지 않는 기능입니다.','같은 동작을 지원되는 문법으로 바꾸세요. 지원: Input · Time · Mathf · Debug · Random · Vector2/3 · KeyCode · Camera.main · transform · GetComponent&lt;Hero/Transform/Camera/Light&gt;()'],
+    [/파일 이름/,'클래스 이름과 스크립트 파일 이름이 다르면 Unity에서는 컴포넌트로 붙일 수 없습니다.','클래스 이름을 파일 이름과 똑같이 맞추세요.'],
+    [/반복이 너무 많/,'반복문이 끝나지 않는 것 같습니다.','반복 조건이 언젠가 거짓이 되는지 확인하세요.'],
+  ];
+  for(const[re,c,f]of R)if(re.test(msg))return{cause:c,fix:f};
+  return{cause:null,fix:null};
+}
+function conDetail(l){
+  const s=scriptOf(l.sid),d=l.det||{},ex=csExplain(l.msg),ln=l.line||d.line||0;
+  let snip='';
+  if(s&&ln){const L=s.code.split('\n'),a=Math.max(1,ln-2),b=Math.min(L.length,ln+2);
+    for(let i=a;i<=b;i++)snip+=`<span class="${i===ln?'bad':''}"><i>${i}</i>${esc(L[i-1]||' ')}</span>`}
+  const raw=String(l.msg).replace(/^\[[^\]]+\]\s*/,'');
+  return`<div class="cdet"><dl>
+    <dt>위치</dt><dd>${s?esc(scPath(s)):'-'}${ln?` · <b>${ln}번째 줄</b>`:''}${d.fn?` · <code>${esc(d.fn)}()</code>`:''}${d.kind?` · ${d.kind==='compile'?'컴파일 오류':'실행 중 오류'}`:''}</dd>
+    ${d.stmt?`<dt>실행한 문장</dt><dd><code>${esc(String(d.stmt).trim().replace(/\s+/g,' ').slice(0,160))}</code></dd>`:''}
+    <dt>메시지</dt><dd>${esc(d.err||raw)}</dd>
+    ${ex.cause?`<dt>원인</dt><dd>${ex.cause}</dd>`:''}
+    ${ex.fix?`<dt>해결 방법</dt><dd class="fix">${ex.fix}</dd>`:''}
+  </dl>${snip?`<pre>${snip}</pre>`:''}${s?`<button class="go" type="button">스크립트에서 이 줄 보기</button>`:''}</div>`;
+}
+/* 편집기에서 n번째 줄로 이동해 선택하고, 그 줄을 빨간색으로 반짝여 강조 */
+function edGoLine(n,flash){
+  const ta=SED_EL.querySelector('#edTa'),wrap=SED_EL.querySelector('.edwrap');if(!ta||!wrap)return;
+  const lines=ta.value.split('\n');n=clamp(n,1,lines.length);
+  let a=0;for(let i=0;i<n-1;i++)a+=lines[i].length+1;const b=a+lines[n-1].length;
+  const cs=winOf(ta).getComputedStyle(ta),lh=parseFloat(cs.lineHeight)||21,pt=parseFloat(cs.paddingTop)||12;
+  ta.focus({preventScroll:true});ta.setSelectionRange(a+(lines[n-1].length-lines[n-1].trimStart().length),a+(lines[n-1].length-lines[n-1].trimStart().length));
+  ta.scrollTop=Math.max(0,pt+(n-1)*lh-ta.clientHeight/3);ta.dispatchEvent(new Event('scroll'));
+  ta.dispatchEvent(new Event('keyup'));
+  if(!flash)return;
+  wrap.querySelectorAll('.edline').forEach(x=>x.remove());
+  const f=docOf(wrap).createElement('div');f.className='edline';wrap.append(f);
+  const pos=()=>{f.style.top=(ta.offsetTop+pt+(n-1)*lh-ta.scrollTop)+'px';f.style.height=lh+'px';f.style.display=(pt+(n-1)*lh-ta.scrollTop<-lh||pt+(n-1)*lh-ta.scrollTop>ta.clientHeight)?'none':''};
+  pos();ta.addEventListener('scroll',pos);
+  setTimeout(()=>{ta.removeEventListener('scroll',pos);f.remove()},2700);
+}
 
 /* ---- 스크립트 목록 (프로젝트 패널) ---- */
 function renderScripts(){
@@ -3476,7 +3936,12 @@ function attachScript(o,s,silent){
 /* ---- 스크립트 편집기 (패널 · 큰 창 ↔ 패널 전환) ---- */
 const SED_EL=document.querySelector('.panel[data-id="script"]');
 const ed={open:[],cur:null,draft:{}};
-const CS_RE=/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*")|\b(public|private|protected|internal|static|void|class|using|new|return|if|else|for|foreach|while|switch|case|break|continue|true|false|null|this|readonly|const|override|virtual|namespace|in|out|ref|var|struct|enum|interface|abstract|sealed|get|set)\b|\b(int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Rigidbody2D|Rigidbody|Transform|GameObject|MonoBehaviour|Collider2D|Debug|Time|Input|Mathf|Quaternion|SpriteRenderer|Animator|Camera|AudioSource|KeyCode|Header|SerializeField|Range|Tooltip|Space|RectTransform|Button|Text|Image|Slider|CanvasGroup|SceneManager|Application|UIGroup|Hero|Random)\b|\b(\d+\.?\d*[fFdD]?)\b|\b([A-Za-z_]\w*)(?=\s*\()/g;
+const CS_RE=(()=>{
+  const kw='public|private|protected|internal|static|void|class|using|new|return|if|else|for|foreach|while|switch|case|break|continue|true|false|null|this|readonly|const|override|virtual|namespace|in|out|ref|var|struct|enum|interface|abstract|sealed|get|set'.split('|').concat(Object.keys(KO_KW));
+  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Rigidbody2D|Rigidbody|Transform|GameObject|MonoBehaviour|Collider2D|Debug|Time|Input|Mathf|Quaternion|SpriteRenderer|Animator|Camera|AudioSource|KeyCode|Header|SerializeField|Range|Tooltip|Space|RectTransform|Button|Text|Image|Slider|CanvasGroup|SceneManager|Application|UIGroup|Hero|Random|Light|Monster|Npc|Item|Portal|EventTrigger'.split('|').concat(Object.keys(KO_TY),Object.keys(KO_SELF));
+  const alt=a=>[...new Set(a)].sort((x,y)=>y.length-x.length).join('|'),B0='(?<![\\p{L}\\p{N}_])',B1='(?![\\p{L}\\p{N}_])';
+  return new RegExp('(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)|("(?:[^"\\\\\\n]|\\\\.)*")|'+B0+'('+alt(kw)+')'+B1+'|'+B0+'('+alt(ty)+')'+B1+'|'+B0+'(\\d+\\.?\\d*[fFdD]?)'+B1+'|'+B0+'([\\p{L}_][\\p{L}\\p{N}_]*)(?=\\s*\\()','gu');
+})();
 function csHighlight(code){
   let out='',last=0,m;CS_RE.lastIndex=0;
   const e=x=>x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -3537,7 +4002,7 @@ const CS_API={
 };
 function _mathf(){return['Abs','Sin','Cos','Tan','Asin','Acos','Atan','Sqrt','Floor','Ceil','Round','Sign','Clamp01'].map(n=>_F(n,'float','float f')).concat(['RoundToInt','FloorToInt','CeilToInt'].map(n=>_F(n,'int','float f')))}
 CS_API.Light2D=CS_API.Light;CS_API.NPC=CS_API.Npc;
-CS_API.Hero=[_P('position','Vector2'),_P('facing','Vector2'),_P('hp','int'),_P('maxHp','int'),_P('isMoving','bool'),_P('radius','float'),_F('Move','bool','Vector2 delta'),_F('Face','void','Vector2 dir'),_F('CanMove','bool','Vector2 delta'),_F('Attack','void'),..._base];
+CS_API.Hero=[_P('position','Vector2'),_P('facing','Vector2'),_P('facingAngle','float'),_P('hp','int'),_P('maxHp','int'),_P('isMoving','bool'),_P('radius','float'),_F('Move','bool','Vector2 delta'),_F('Face','void','Vector2 dir'),_F('CanMove','bool','Vector2 delta'),_F('Attack','void'),..._base];
 CS_API['Random:static']=[_F('Range','float','float min, float max'),_P('value','float')];
 CS_API.Camera.unshift(_P('clampToMap','bool'));
 const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AudioSource','Camera','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary'];
@@ -3549,13 +4014,13 @@ const AC_ICON={fn:'ƒ',pr:'◆',var:'v',ty:'T',kw:'k',sn:'{}',ev:'⚡'};
 const AC_ORDER={var:0,pr:1,fn:2,ev:3,sn:4,ty:5,kw:6};
 function acDecls(clean){
   const d={},meth={};let m;
-  const re=/\b([A-Za-z_]\w*)(?:\s*<[^<>;(){}]*>)?(\[\])?\s+([A-Za-z_]\w*)(?=\s*(?:[=;,)]|\bin\b))/g;
+  const re=/(?<![\p{L}\p{N}_])([\p{L}_][\p{L}\p{N}_]*)(?:\s*<[^<>;(){}]*>)?(\[\])?\s+([\p{L}_][\p{L}\p{N}_]*)(?=\s*(?:[=;,)]|\bin\b))/gu;
   while((m=re.exec(clean))){if(AC_NOTYPE.has(m[1]))continue;if(!(m[3] in d))d[m[3]]=m[2]?'Array':m[1]}
-  const rv=/\bvar\s+([A-Za-z_]\w*)\s*=\s*([^;]+);/g;
+  const rv=/(?<![\p{L}\p{N}_])var\s+([\p{L}_][\p{L}\p{N}_]*)\s*=\s*([^;]+);/gu;
   while((m=rv.exec(clean))){const r=m[2].trim();let t=null,q;
     if((q=/^new\s+([A-Za-z_]\w*)/.exec(r)))t=q[1];else if((q=/GetComponent\s*<\s*(\w+)\s*>\s*\(\s*\)\s*$/.exec(r)))t=q[1];else if(/^gameObject$/.test(r))t='GameObject';else if(/^transform$/.test(r))t='Transform';
     if(t)d[m[1]]=t}
-  const rm=/\b([A-Za-z_]\w*(?:\[\])?)\s+([A-Za-z_]\w*)\s*\(/g;
+  const rm=/(?<![\p{L}\p{N}_])([\p{L}_][\p{L}\p{N}_]*(?:\[\])?)\s+([\p{L}_][\p{L}\p{N}_]*)\s*\(/gu;
   while((m=rm.exec(clean))){if(['return','new','else','if','while','for','foreach','switch','case','throw','in','is','as','using','typeof','catch','lock','await','class','struct','enum','interface','namespace'].includes(m[1]))continue;meth[m[2]]=m[1]}
   return{vars:d,methods:meth};
 }
@@ -3576,7 +4041,7 @@ function acChain(lhs){
     while(i>0&&/\s/.test(lhs[i-1]))i--;
     if(lhs[i-1]===')'){if(!skip('(',')'))return null;while(i>0&&/\s/.test(lhs[i-1]))i--}
     if(lhs[i-1]==='>'){if(!skip('<','>'))return null}
-    let j=i;while(j>0&&/\w/.test(lhs[j-1]))j--;
+    let j=i;while(j>0&&/[\p{L}\p{N}_]/u.test(lhs[j-1]))j--;
     if(j===i)return null;
     i=j;let k=i;while(k>0&&/\s/.test(lhs[k-1]))k--;
     if(lhs[k-1]==='.'){i=k-1;continue}
@@ -3588,13 +4053,16 @@ function acSegs(chain){
   const out=[];let cur='',d=0;
   for(const c of chain){if('(<'.includes(c))d++;else if(')>'.includes(c))d--;if(c==='.'&&d===0){out.push(cur);cur=''}else cur+=c}
   out.push(cur);
-  return out.map(s=>{const m=/^\s*([A-Za-z_]\w*)\s*(?:<\s*([\w.]+(?:\s*,\s*[\w.]+)*)\s*>)?\s*(?:\([\s\S]*\))?\s*$/.exec(s);return m?{name:m[1],gen:m[2]||null}:null});
+  return out.map(s=>{const m=/^\s*([\p{L}_][\p{L}\p{N}_]*)\s*(?:<\s*([\p{L}\p{N}_.]+(?:\s*,\s*[\p{L}\p{N}_.]+)*)\s*>)?\s*(?:\([\s\S]*\))?\s*$/u.exec(s);return m?{name:m[1],gen:m[2]||null}:null});
 }
 function acResolve(chain,dc){
   const segs=acSegs(chain);if(!segs.length||segs.some(s=>!s))return null;
   let cur=null;
   for(let s=0;s<segs.length;s++){
-    const{name,gen}=segs[s];
+    let{name,gen}=segs[s];
+    if(gen)gen=gen.split(',').map(x=>{x=x.trim();return KO_TY[x]||x}).join(',');
+    if(s===0&&!dc.vars[name]){if(name==='게임오브젝트')name=segs[1]&&KO_FINDS.has(segs[1].name)?'GameObject':'gameObject';else if(name==='변환'||name==='트랜스폼')name='transform';else name=koStandEn(name)}
+    else if(s>0){const om=KO_OWN[cur.t];name=(om&&om[name])||KO_MEM[name]||name}
     if(s===0){
       if(name==='this'){cur={t:'MonoBehaviour',self:true};continue}
       if(name==='gameObject'){cur={t:'GameObject'};continue}
@@ -3616,7 +4084,7 @@ function acCompute(v,pos,force){
   const pm=/[\wÀ-￿]*$/.exec(line),prefix=pm?pm[0]:'',start=pos-prefix.length;
   const clean=csBlank(v,false);
   if(clean.slice(Math.max(ls,start-1),pos)!==v.slice(Math.max(ls,start-1),pos))return null;
-  const before=v.slice(ls,start),dc=acDecls(clean);
+  const before=v.slice(ls,start),dc=acDecls(koCode(clean)),attrCtx=/^\s*\[\s*$/.test(before);
   let items=null,dot=false,owner='';
   const dm=/\.\s*$/.exec(before);
   if(dm){
@@ -3626,7 +4094,7 @@ function acCompute(v,pos,force){
     items=acMembersOf(cur.t,!!cur.st).slice();owner=cur.t;
     if(cur.self){_base.forEach(b=>{if(!items.some(q=>q.n===b.n))items.push(b)});Object.keys(dc.vars).forEach(n=>items.push(Object.assign(_P(n,dc.vars[n]),{u:1})));Object.keys(dc.methods).forEach(n=>items.push(Object.assign(_F(n,dc.methods[n]),{u:1})))}
     if(!items.length)return null;
-  }else if(/GetComponent\s*<\s*$/.test(before)){
+  }else if(/(?:GetComponent|컴포넌트가져오기)\s*<\s*$/.test(before)){
     items=AC_COMPS.concat(SC().map(s=>parseCS(s.code).cls||s.name)).filter((x,i,a)=>a.indexOf(x)===i).map(n=>({n,k:'ty',t:'',d:'컴포넌트'}));
   }else if(/^\s*\[\s*$/.test(before)){
     items=AC_ATTR.map(([n,sn])=>({n,k:'sn',d:'특성',sn}));
@@ -3634,7 +4102,7 @@ function acCompute(v,pos,force){
     items=AC_NS.map(n=>({n,k:'ty',d:'네임스페이스'}));
   }else{
     if(!prefix&&!force)return null;
-    const pw=/([A-Za-z_]\w*)\s+$/.exec(before);
+    const pw0=/([\p{L}_][\p{L}\p{N}_]*)\s+$/u.exec(before),pw=pw0?[pw0[0],koStandEn(pw0[1])]:null;
     if(pw&&!force&&!AC_NOTYPE.has(pw[1])&&pw[1]!=='void'&&(AC_PRIM.includes(pw[1])||acIsType(pw[1])||/^[A-Z]/.test(pw[1])))return null;
     const afterNew=!!pw&&pw[1]==='new';
     const types=AC_TYPES.concat(SC().map(s=>parseCS(s.code).cls||s.name)).filter((x,i,a)=>a.indexOf(x)===i).map(n=>({n,k:'ty',d:'타입'}));
@@ -3651,16 +4119,19 @@ function acCompute(v,pos,force){
     }
   }
   const p=prefix.toLowerCase(),seen=new Set(),res=[];
-  items.forEach(it=>{
-    const key=it.n+'|'+it.k;if(seen.has(key))return;seen.add(key);
-    const nl=it.n.toLowerCase();let sc;
-    if(!p)sc=1;else if(it.n.startsWith(prefix))sc=0;else if(nl.startsWith(p))sc=1;else if(p.length>=2&&it.n.replace(/[^A-Z]/g,'').toLowerCase().startsWith(p))sc=2;else if(nl.includes(p))sc=3;else return;
-    res.push(Object.assign({sc,o:owner},it));
+  const scOf=nm=>{if(!nm)return 9;const nl=nm.toLowerCase();if(!p)return 1;if(nm.startsWith(prefix))return 0;if(nl.startsWith(p))return 1;if(p.length>=2&&nm.replace(/[^A-Z]/g,'').toLowerCase().startsWith(p))return 2;if(nl.includes(p))return 3;return 9};
+  const koOn=!!(typeof setv!=='undefined'&&setv.ko);
+  items.forEach(it0=>{
+    const key=it0.n+'|'+it0.k;if(seen.has(key))return;seen.add(key);
+    const kn=acKoName(it0,owner,dot,attrCtx),sc=Math.min(scOf(it0.n),scOf(kn));if(sc>=9)return;
+    const it=Object.assign({sc,o:owner},it0);if(kn)it.ko=kn;
+    if(koOn&&it.sn)it.sn=attrCtx?(kn?it.sn.replace(it0.n,kn):it.sn):enToKo(it.sn);
+    res.push(it);
   });
   if(!res.length)return null;
-  res.sort((a,b)=>a.sc-b.sc||(AC_ORDER[a.k]-AC_ORDER[b.k])||a.n.localeCompare(b.n));
+  const dn=x=>koOn&&x.ko?x.ko:x.n;res.sort((a,b)=>a.sc-b.sc||(AC_ORDER[a.k]-AC_ORDER[b.k])||(koOn?(!!b.ko)-(!!a.ko):0)||dn(a).localeCompare(dn(b),'ko'));
   /* 단어를 끝까지 입력한 경우: 목록 없이 도움말만 (스니펫·유니티 메시지는 Enter로 틀을 넣을 수 있게 목록 유지) */
-  const exact=res.find(r=>r.n===prefix);
+  const exact=res.find(r=>r.n===prefix||r.ko===prefix);
   if(exact&&!force&&!exact.sn)return{items:[exact],start,prefix,guide:true};
   return{items:res.slice(0,80),start,prefix};
 }
@@ -3907,11 +4378,13 @@ function acDoc(it){
 }
 function acGuide(it){
   if(!it)return'';
-  const d=acDoc(it);
+  const d=acDoc(it),ko=!!setv.ko,nm=ko&&it.ko?it.ko:it.n,T=x=>ko?koTypes(x):x;
   let sig='';
-  if(it.k==='fn')sig=it.gen?'T '+it.n+'<T>()':(it.t||'void')+' '+it.n+((it.d||'').split(' → ')[0]||'()');
-  else if((it.k==='pr'||it.k==='var')&&it.t)sig=it.t+' '+it.n;
-  return`<div class="acg-h"><b>${esc(it.n)}</b>${it.o?`<span>${esc(it.o)}</span>`:''}</div>`+(sig?`<code class="acg-s">${esc(sig)}</code>`:'')+(d.ko?`<p class="acg-d">${esc(d.ko)}</p>`:'')+(d.ex?`<div class="acg-l">예시</div><pre class="acg-x">${esc(d.ex)}</pre>`:'');
+  if(it.k==='fn')sig=it.gen?'T '+nm+'<T>()':T(it.t||'void')+' '+nm+T((it.d||'').split(' → ')[0]||'()');
+  else if((it.k==='pr'||it.k==='var')&&it.t)sig=T(it.t)+' '+nm;
+  const sub=ko&&it.ko?(it.o?it.o+'.':'')+it.n:it.o;
+  const ex=d.ex&&ko?enToKo(d.ex):d.ex;
+  return`<div class="acg-h"><b>${esc(nm)}</b>${sub?`<span>${esc(sub)}</span>`:''}</div>`+(sig?`<code class="acg-s">${esc(sig)}</code>`:'')+(d.ko?`<p class="acg-d">${esc(d.ko)}</p>`:'')+(ex?`<div class="acg-l">예시</div><pre class="acg-x">${esc(ex)}</pre>`:'');
 }
 const ac={on:false,items:[],sel:0,start:0,ta:null,mute:false,el:null,guide:false};
 function acEl(){
@@ -3926,20 +4399,21 @@ function acHide(){ac.on=false;if(ac.el)ac.el.style.display='none'}
 function acCharW(cs){const c=acCharW.c||(acCharW.c=document.createElement('canvas').getContext('2d'));c.font=cs.fontSize+' '+cs.fontFamily;return c.measureText('0').width}
 function acPlace(){
   const b=ac.el,ta=ac.ta;if(!b||!ta)return;
-  const cs=getComputedStyle(ta),lh=parseFloat(cs.lineHeight)||21,cw=acCharW(cs),r=ta.getBoundingClientRect();
+  const tw=winOf(ta);if(b.ownerDocument!==ta.ownerDocument)ta.ownerDocument.body.append(b);
+  const cs=tw.getComputedStyle(ta),lh=parseFloat(cs.lineHeight)||21,cw=acCharW(cs),r=ta.getBoundingClientRect();
   const lines=ta.value.slice(0,ac.start).split('\n'),ln=lines.length-1;let vc=0;
   for(const ch of lines[ln])vc=ch==='\t'?((vc/4)|0)*4+4:vc+1;
   let x=r.left+parseFloat(cs.paddingLeft)+vc*cw-ta.scrollLeft,y=r.top+parseFloat(cs.paddingTop)+(ln+1)*lh-ta.scrollTop;
   b.style.display='block';const w=b.offsetWidth,h=b.offsetHeight;
-  if(y+h>innerHeight-8)y=Math.max(8,y-lh-h);
-  x=clamp(x,8,Math.max(8,innerWidth-w-8));
+  if(y+h>tw.innerHeight-8)y=Math.max(8,y-lh-h);
+  x=clamp(x,8,Math.max(8,tw.innerWidth-w-8));
   b.style.left=Math.round(x)+'px';b.style.top=Math.round(y)+'px';
 }
 function acRender(){
   const b=acEl();
   b.classList.toggle('guide',!!ac.guide);
   if(ac.guide){b.innerHTML=`<div class="acg">${acGuide(ac.items[0])}</div><div class="acf">. 입력 시 멤버 목록 · Ctrl+Space 후보 보기 · Esc 닫기</div>`;acPlace();return}
-  b.innerHTML=`<div class="acl">`+ac.items.map((it,i)=>`<div class="aci${i===ac.sel?' on':''}" data-i="${i}" role="option"><span class="ack ${it.k}">${AC_ICON[it.k]}</span><span class="acn">${esc(it.n)}</span><span class="acd">${esc(it.d||'')}</span></div>`).join('')+`</div><div class="acg">${acGuide(ac.items[ac.sel])}</div><div class="acf">↑↓ 선택 · Enter/Tab 삽입 · Esc 닫기</div>`;
+  b.innerHTML=`<div class="acl">`+ac.items.map((it,i)=>`<div class="aci${i===ac.sel?' on':''}" data-i="${i}" role="option"><span class="ack ${it.k}">${AC_ICON[it.k]}</span><span class="acn">${esc(setv.ko&&it.ko?it.ko:it.n)}</span><span class="acd">${esc(setv.ko?(it.ko?it.n+' · ':'')+koTypes(it.d):(it.d||''))}</span></div>`).join('')+`</div><div class="acg">${acGuide(ac.items[ac.sel])}</div><div class="acf">↑↓ 선택 · Enter/Tab 삽입 · Esc 닫기</div>`;
   acPlace();
   const on=b.querySelector('.aci.on');if(on)on.scrollIntoView({block:'nearest'});
 }
@@ -3955,11 +4429,12 @@ function acAccept(i){
   const it=ac.items[i],ta=ac.ta;if(!it||!ta)return;
   const v=ta.value,a=ac.start,b=ta.selectionStart;
   const ls=v.lastIndexOf('\n',a-1)+1,ind=/^[ \t]*/.exec(v.slice(ls,a))[0];
-  let txt=it.n,cur=a+txt.length,retrig=false;
+  const nm=setv.ko&&it.ko?it.ko:it.n;
+  let txt=nm,cur=a+txt.length,retrig=false;
   if(it.sn){const s=it.sn.replace(/\n/g,'\n'+ind),ci=s.indexOf('|');txt=s.replace('|','');cur=ci>=0?a+ci:a+txt.length}
   else if(it.k==='fn'&&v[b]!=='('){
-    if(it.gen){txt=it.n+'<>()';cur=a+it.n.length+1;retrig=true}
-    else{txt=it.n+'()';cur=a+it.n.length+(it.a?1:2)}
+    if(it.gen){txt=nm+'<>()';cur=a+nm.length+1;retrig=true}
+    else{txt=nm+'()';cur=a+nm.length+(it.a?1:2)}
   }
   ta.setRangeText(txt,a,b,'end');ta.setSelectionRange(cur,cur);
   ac.mute=true;ta.dispatchEvent(new Event('input'));ac.mute=false;
@@ -3996,9 +4471,13 @@ function renderEditor(){
   ed.open=ed.open.filter(id=>scriptOf(id));if(!scriptOf(ed.cur))ed.cur=ed.open[0]||null;
   const floating=!!L.float.script;
   const tabs=ed.open.map(id=>{const s=scriptOf(id);return`<button class="sedtab${id===ed.cur?' on':''}" data-sid="${id}">${ico('script')}<span>${esc(s.name)}.cs</span>${edDirty(id)?'<i class="dot" title="저장되지 않음"></i>':''}<span class="x" data-close="${id}" title="닫기">✕</span></button>`}).join('');
-  if(!ed.cur){box.innerHTML=`<div class="sedbar"><div class="sedtabs"></div><span class="spacer"></span><button class="btn sm" id="edHide" title="스크립트 창 숨기기">숨기기</button></div><div class="sedempty"><div>${ico('script')}<b>열린 스크립트가 없습니다</b><span>프로젝트 패널의 스크립트를 클릭하거나, 인스펙터의 “스크립트 추가”로 만들어 보세요.</span></div></div>`;return}
+  if(!ed.cur){box.innerHTML=`<div class="sedbar"><div class="sedtabs"></div><span class="spacer"></span></div><div class="sedempty"><div>${ico('script')}<b>열린 스크립트가 없습니다</b><span>프로젝트 패널의 스크립트를 클릭하거나, 인스펙터의 “스크립트 추가”로 만들어 보세요.</span></div></div>`;return}
   const s=scriptOf(ed.cur),code=ed.cur in ed.draft?ed.draft[ed.cur]:s.code;ed.draft[ed.cur]=code;
-  box.innerHTML=`<div class="sedbar"><div class="sedtabs">${tabs}</div><span class="spacer"></span><button class="btn sm" id="edHide" title="스크립트 창 숨기기">숨기기</button><button class="btn sm" id="edDock">${floating?'패널로 축소':'큰 창으로 확대'}</button><button class="btn sm pri" id="edSave">저장 <kbd>Ctrl S</kbd></button></div>
+  /* 같은 스크립트를 다시 그릴 때는 스크롤·커서 위치를 그대로 유지 (저장·실행 취소 후 맨 위로 튀지 않도록) */
+  const ota=box.querySelector('#edTa'),keep=ota&&box.dataset.sid===ed.cur?{st:ota.scrollTop,sl:ota.scrollLeft,a:ota.selectionStart,b:ota.selectionEnd,f:ota.ownerDocument.activeElement===ota}:null;
+  box.dataset.sid=ed.cur;
+  const popped=POPPED.has('script');
+  box.innerHTML=`<div class="sedbar"><div class="sedtabs">${tabs}</div><span class="spacer"></span><span class="sedsaved" id="edSaved" aria-live="polite"></span>${popped?'':`<button class="btn sm" id="edDock">${floating?'패널로 축소':'큰 창으로 확대'}</button>`}${setv.ko?'<button class="btn sm" id="edKo" title="이 스크립트를 한글 코드 ↔ 영어(C#) 코드로 바꿉니다">한↔영</button>':''}<button class="btn sm pri" id="edSave">저장 <kbd>Ctrl S</kbd></button></div>
   <div class="edwrap"><pre class="gut" id="edGut"></pre><div class="edcode"><pre class="hl" id="edHl" aria-hidden="true"></pre><textarea id="edTa" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea></div></div>
   <div class="sedfoot"><span id="edStat"></span><span class="spacer"></span><span id="edPos">줄 1, 열 1</span><span>Ctrl Space 자동완성</span><span>C# · UTF-8</span></div>`;
   const ta=box.querySelector('#edTa'),hl=box.querySelector('#edHl'),gut=box.querySelector('#edGut'),st=box.querySelector('#edStat'),pos=box.querySelector('#edPos');
@@ -4016,13 +4495,21 @@ function renderEditor(){
   ta.addEventListener('scroll',syncScroll);
   ta.addEventListener('input',()=>{ed.draft[ed.cur]=ta.value;paint();where();const tb=box.querySelector('.sedtab.on');if(tb&&!tb.querySelector('.dot'))tb.insertBefore(Object.assign(document.createElement('i'),{className:'dot',title:'저장되지 않음'}),tb.querySelector('.x'))});
   ['keyup','click','focus'].forEach(ev=>ta.addEventListener(ev,where));
-  const save=()=>{s.code=ta.value;ed.draft[s.id]=s.code;markDirty();compileScript(s);renderScripts();renderInsp();renderEditor()};
-  box.querySelector('#edSave').onclick=save;
+  /* 저장: 편집기를 다시 그리지 않고 그 자리에서 저장 → 스크롤·커서 유지, 창이 초록색으로 반짝 */
+  const save=()=>{
+    s.code=ta.value;ed.draft[s.id]=s.code;
+    const r=compileScript(s,true);renderScripts();renderInsp();
+    $$('.sedtab',box).forEach(t=>{if(!edDirty(t.dataset.sid)){const d=t.querySelector('.dot');if(d)d.remove()}});
+    edFlash(box,r.errs.length?`저장됨 · 오류 ${r.errs.length}개`:'✓ 저장됨',!!r.errs.length);
+    markDirty();save0(true);
+  };
+  box.querySelector('#edSave').onclick=()=>{save();ta.focus({preventScroll:true})};
+  {const kb0=box.querySelector('#edKo');if(kb0)kb0.onclick=()=>{const v=ta.value,en=koCode(v),t=en!==v?en:enToKo(v);if(t===v){toast('바꿀 단어가 없습니다');return}ta.focus();ta.setSelectionRange(0,v.length);ta.setRangeText(t,0,v.length,'start');ta.dispatchEvent(new Event('input'));toast(en!==v?'영어(C#) 코드로 바꿨습니다':'한글 코드로 바꿨습니다')}}
   acHook(ta);
   ta.addEventListener('keydown',e=>{
     const k=e.key,a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
     const ins=(txt,s0,e0,cur)=>{ta.setRangeText(txt,s0,e0,'end');if(cur!=null)ta.setSelectionRange(cur,cur);ta.dispatchEvent(new Event('input'))};
-    if((e.ctrlKey||e.metaKey)&&k.toLowerCase()==='s'){e.preventDefault();save();return}
+    if((e.ctrlKey||e.metaKey)&&(k.toLowerCase()==='s'||e.code==='KeyS')){e.preventDefault();e.stopPropagation();save();return}
     if(k==='Tab'){
       e.preventDefault();
       if(a!==b&&v.slice(a,b).includes('\n')){
@@ -4044,7 +4531,29 @@ function renderEditor(){
     }else if(k==='"'&&a===b&&v[a]==='"'){e.preventDefault();ta.setSelectionRange(a+1,a+1)}
   });
   paint();where();
+  if(keep){ta.scrollTop=keep.st;ta.scrollLeft=keep.sl;try{ta.setSelectionRange(keep.a,keep.b)}catch(err){}syncScroll();where();if(keep.f)ta.focus({preventScroll:true})}
 }
+/* 저장 확인: 편집기 전체가 초록색으로 한 번 반짝이고, 상단에 '저장됨'이 잠깐 표시됨 (화면 이동 없음) */
+let edFlashT=0;
+function edFlash(box,msg,bad){
+  box.classList.remove('saved','bad');void box.offsetWidth;box.classList.add('saved');box.classList.toggle('bad',!!bad);
+  const t=box.querySelector('#edSaved');if(t){t.textContent=msg;t.classList.toggle('bad',!!bad);t.classList.add('on')}
+  clearTimeout(edFlashT);edFlashT=setTimeout(()=>{box.classList.remove('saved','bad');const q=box.querySelector('#edSaved');if(q)q.classList.remove('on')},1400);
+}
+/* 숨기기: 창만 감춤(열린 탭 유지) · ✕ 닫기: 열린 스크립트 탭까지 모두 닫고 감춤 (저장 안 한 변경이 있으면 확인) */
+function closeScriptPanel(){
+  if(POPPED.has('script')){popIn('script',true);return}
+  L.hidden.script=true;saveLayout();renderLayout();
+}
+function closeScriptAll(){
+  const go=()=>{ed.open=[];ed.cur=null;ed.draft={};renderEditor();closeScriptPanel()};
+  const dirty=ed.open.filter(edDirty).map(id=>scriptOf(id)).filter(Boolean);
+  if(dirty.length)openModal('저장하지 않은 변경',`<p style="margin:0">${dirty.map(x=>'<b>'+esc(x.name)+'.cs</b>').join(', ')}에 저장하지 않은 변경이 있습니다.</p>`,[{t:'취소'},{t:'저장 안 함',cls:'danger',fn:go},{t:'모두 저장 후 닫기',cls:'pri',fn:()=>{dirty.forEach(x=>{x.code=ed.draft[x.id];compileScript(x,true)});markDirty();save0(true);renderScripts();renderInsp();go()}}]);
+  else go();
+}
+$('#sedX').addEventListener('click',e=>{e.stopPropagation();closeScriptAll()});
+$('#sedH').addEventListener('click',e=>{e.stopPropagation();closeScriptPanel()});
+['#sedX','#sedH'].forEach(q=>$(q).addEventListener('pointerdown',e=>e.stopPropagation()));
 SED_EL.addEventListener('click',e=>{
   const x=e.target.closest('[data-close]');
   if(x){e.stopPropagation();const id=x.dataset.close;
@@ -4052,7 +4561,6 @@ SED_EL.addEventListener('click',e=>{
     if(edDirty(id)){const s=scriptOf(id);openModal('저장하지 않은 변경',`<p style="margin:0"><b>${esc(s.name)}.cs</b>에 저장하지 않은 변경이 있습니다. 닫으면 변경 내용이 사라집니다.`,[{t:'취소'},{t:'저장 안 함',cls:'danger',fn:go}])}else go();
     return}
   const tb=e.target.closest('.sedtab');if(tb){ed.cur=tb.dataset.sid;renderEditor();return}
-  if(e.target.closest('#edHide')){L.hidden.script=true;saveLayout();renderLayout();return}
   if(e.target.closest('#edDock')){
     if(L.float.script){
       const z=['left','right','bottom'].find(zz=>L[zz].includes(rootOf('assets')));
@@ -4066,6 +4574,7 @@ function bigFloat(){const w=Math.max(320,Math.min(1280,innerWidth-64)),h=Math.ma
 /* 편집기가 닫혀(숨겨져) 있으면 기본으로 큰 창으로 엽니다 (설정 > 스크립트 편집기 > 열기 방식) */
 function openScriptEditor(s){
   if(!ed.open.includes(s.id))ed.open.push(s.id);ed.cur=s.id;
+  if(POPPED.has('script')){renderEditor();try{POPPED.get('script').win.focus()}catch(e){}setTimeout(()=>{const ta=SED_EL.querySelector('#edTa');if(ta)ta.focus()},60);return}
   const uncol=()=>{const r=rootOf('script');if([r,...kidsOf(r)].some(k=>L.collapsed[k])){[r,...kidsOf(r)].forEach(k=>{delete L.collapsed[k];panelEl[k].classList.remove('collapsed')});saveLayout()}};
   if(mqN.matches){L.hidden.script=false;L.nActive='script';saveLayout();renderLayout()}
   else if(L.hidden.script&&setv.edOpen!=='dock'){delete L.collapsed.script;movePanel('script','float',0,bigFloat(),true);raise('script')}
@@ -4173,7 +4682,9 @@ function csEvalArg(expr,o,inst,fields,m0){
     const f=fields.find(x=>x.name===p||('this.'+x.name)===p);
     if(f){const v=inst.vals&&f.name in inst.vals?inst.vals[f.name]:f.def;if(f.fk==='obj'){if(typeof v==='string'&&v.startsWith('uig:')){const g=m0&&(m0.uiGroups||[]).find(z=>'uig:'+z.id===v);return g?g.name:'null'}const q=m0&&(m0.objs.find(z=>z.id===v)||(m0.ui||[]).find(z=>z.id===v));return q?q.name:'null'}return Array.isArray(v)?'('+v.join(', ')+')':String(v)}
     if(/^transform\.position$/.test(p))return `(${o.x}, ${o.y}, 0)`;
-    return p;
+    /* 그 밖의 식(transform.position.x, hp * 2 …)은 정식 계산기로 값을 구함 — 계산할 수 없으면 오류로 알림 */
+    if(csCur){const e=csParser(csTok(p),p).exprOnly();return csFmt(csE(e,csCur))}
+    throw csUnsup(p);
   }).join('');
 }
 /* Start()/Awake() 본문을 한 문장씩 실행: Debug.Log, 다른 게임 오브젝트의 변환·컴포넌트 값 변경 */
@@ -4406,6 +4917,9 @@ const csErr=(msg,p)=>{const e=new Error(msg);e.p=p;return e};
 const csUnsup=(msg,p)=>{const e=new CsUnsup(msg);if(p!=null)e.p=p;return e};
 const CsV=(x,y,z,v3)=>({__v:1,x:+x||0,y:+y||0,z:+z||0,v3:!!v3});
 const isCsV=v=>!!v&&v.__v===1;
+/* Quaternion (2D 엔진이라 z축 회전만): deg = 각도(도) */
+const CsQ=deg=>{const r=(+deg||0)*Math.PI/360;return{__q:1,x:0,y:0,z:Math.sin(r),w:Math.cos(r),deg:+deg||0}};
+const isCsQ=v=>!!v&&v.__q===1;
 const CS_KW=new Set(['return','new','else','if','while','for','foreach','do','switch','case','break','continue','throw','using','goto','yield','await','this','base','true','false','null','typeof','is','as','in','out','ref','default','try','catch','finally']);
 const CS_OP3=['<<=','>>='],CS_OP2=['==','!=','<=','>=','&&','||','++','--','+=','-=','*=','/=','%=','=>','??'];
 function csTok(src,from,to){
@@ -4556,6 +5070,7 @@ function csFmt(v,f){
   if(typeof v==='boolean')return v?'True':'False';
   if(typeof v==='number')return Number.isInteger(v)?String(v):String(+v.toFixed(6));
   if(isCsV(v))return'('+v.x.toFixed(2)+', '+v.y.toFixed(2)+(v.v3?', '+v.z.toFixed(2):'')+')';
+  if(isCsQ(v))return'('+[v.x,v.y,v.z,v.w].map(q=>q.toFixed(5)).join(', ')+')';
   if(v.__h)return v.name||v.__h;
   return String(v);
 }
@@ -4565,6 +5080,7 @@ function csN(v){
   if(v==null)throw new Error('null 값은 숫자로 쓸 수 없습니다');
   if(typeof v==='boolean')throw new Error('true/false 값은 숫자로 쓸 수 없습니다');
   if(isCsV(v))throw new Error('벡터는 숫자로 쓸 수 없습니다 (.x / .y 를 쓰세요)');
+  if(isCsQ(v))throw new Error("error CS0029: 'Quaternion' 형식을 'float' 형식으로 암시적으로 변환할 수 없습니다 (각도가 필요하면 .eulerAngles.z 를 쓰세요)");
   throw new Error(`'${csFmt(v)}'은(는) 숫자가 아닙니다`);
 }
 function csEq(a,b){
@@ -4671,8 +5187,19 @@ function csE(e,cx){
 }
 function csField(n,cx){
   const f=cx.rt.f;
-  if(Object.prototype.hasOwnProperty.call(f,n)){const v=f[n];if(v&&v.__ref)throw csUnsup(n);return{ok:true,v}}
+  if(Object.prototype.hasOwnProperty.call(f,n)){const v=f[n];if(v&&v.__ref)return{ok:true,v:csRefVal(v,(cx.rt.ty||{})[n],cx)};return{ok:true,v}}
   return{ok:false};
+}
+/* 오브젝트 참조 필드(GameObject·Transform·컴포넌트 타입) 읽기:
+   인스펙터 슬롯에 넣은 오브젝트 → 해당 프록시, 비어 있으면 null (private Transform t; 처럼 코드에서 채우는 필드 포함) */
+function csRefVal(v,T,cx){
+  const id=v.id||'';if(!id)return null;
+  const m=cx.m;
+  if(id.startsWith('uig:'))throw csUnsup('UIGroup 필드');
+  const o=m.objs.find(z=>z.id===id)||(m.ui||[]).find(z=>z.id===id);if(!o)return null;
+  if(!T||T==='GameObject')return isUiEl(o)?(()=>{throw csUnsup('UI 요소 필드')})():goProxy(m,o);
+  if(CS_UIT.has(T)||isUiEl(o))throw csUnsup(T+' 필드');
+  return csGetComp(m,o,T);
 }
 function csIdNoLocal(n,cx){
   const r=csField(n,cx);if(r.ok)return r.v;
@@ -4689,7 +5216,7 @@ function csId(n,cx){
 }
 function csSetField(n,v,cx){
   const f=cx.rt.f;
-  if(Object.prototype.hasOwnProperty.call(f,n)){if(f[n]&&f[n].__ref)throw csUnsup(n);f[n]=v;return}
+  if(Object.prototype.hasOwnProperty.call(f,n)){f[n]=v;return}
   if(n==='name'){cx.o.name=csFmt(v);return}
   throw csUnsup(n);
 }
@@ -4716,6 +5243,8 @@ function csGet(b,n){
     if(n==='normalized')return L>1e-9?CsV(b.x/L,b.y/L,b.z/L,b.v3):CsV(0,0,0,b.v3);
     throw csUnsup('Vector.'+n);
   }
+  if(b==null)throw new Error(`NullReferenceException: 비어 있는(null) 값에서 '.${n}'을(를) 읽으려 했습니다 — 변수에 오브젝트가 들어 있는지(인스펙터 슬롯·GetComponent 결과) 확인하세요`);
+  if(isCsQ(b)){if(n==='x'||n==='y'||n==='z'||n==='w')return b[n];if(n==='eulerAngles')return CsV(0,0,((b.deg%360)+360)%360,true);throw csUnsup('Quaternion.'+n)}
   if(typeof b==='string'){if(n==='Length')return b.length;throw csUnsup('string.'+n)}
   if(b.__h)return b.get(n);
   throw csUnsup(n);
@@ -4780,7 +5309,7 @@ function csKeyCode(n){
 function csKeyArg(v){
   const s=String(v);if(/^(Key[A-Z]|Digit\d|Numpad\d|F\d+|Mouse\d|Arrow|Shift|Control|Alt|Space$|Enter$|Escape$|Tab$|Backspace$|NumpadEnter$)/.test(s))return s;
   if(/^[a-z]$/i.test(s))return'Key'+s.toUpperCase();if(/^\d$/.test(s))return'Digit'+s;
-  return({space:'Space',enter:'Enter',return:'Enter',escape:'Escape',tab:'Tab',up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight','left shift':'ShiftLeft','right shift':'ShiftRight'})[s.toLowerCase()]||s;
+  return({스페이스:'Space',엔터:'Enter',이스케이프:'Escape',탭:'Tab',위:'ArrowUp',아래:'ArrowDown',왼쪽:'ArrowLeft',오른쪽:'ArrowRight',왼쪽시프트:'ShiftLeft',오른쪽시프트:'ShiftRight',space:'Space',enter:'Enter',return:'Enter',escape:'Escape',tab:'Tab',up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight','left shift':'ShiftLeft','right shift':'ShiftRight'})[s.toLowerCase()]||s;
 }
 const CS_MATH={Abs:Math.abs,Sin:Math.sin,Cos:Math.cos,Tan:Math.tan,Asin:Math.asin,Acos:Math.acos,Atan:Math.atan,Atan2:Math.atan2,Sqrt:Math.sqrt,Pow:Math.pow,Exp:Math.exp,
   Log:(x,b)=>b==null?Math.log(x):Math.log(x)/Math.log(b),Log10:Math.log10,Floor:Math.floor,Ceil:Math.ceil,Round:Math.round,Sign:x=>x>=0?1:-1,
@@ -4809,13 +5338,13 @@ const CS_STAT={
   Time:csH('Time',n=>{switch(n){case'deltaTime':case'smoothDeltaTime':return csCur?csCur.dt:0;case'fixedDeltaTime':return .02;case'time':case'timeSinceLevelLoad':return play?play.tm:0;case'frameCount':return play?play.frame||0:0;case'timeScale':return 1}throw csUnsup('Time.'+n)}),
   Input:csH('Input',n=>{const p=play;if(n==='anyKey')return!!(p&&p.kraw&&p.kraw.size);if(n==='anyKeyDown')return!!(p&&p.kdown&&p.kdown.size);throw csUnsup('Input.'+n)},(n,a)=>{
     const p=play;if(!p)return 0;const kk=p.keys||{};
-    if(n==='GetAxis'||n==='GetAxisRaw'){const ax=String(a[0]);
+    if(n==='GetAxis'||n==='GetAxisRaw'){const ax=({가로:'Horizontal',세로:'Vertical'})[String(a[0])]||String(a[0]);
       if(ax==='Horizontal')return(kk.right?1:0)-(kk.left?1:0);
       if(ax==='Vertical')return(kk.down?1:0)-(kk.up?1:0);
       throw new Error(`입력 축 '${ax}'이(가) 없습니다 (Horizontal, Vertical)`)}
     const set=suf=>suf==='Down'?p.kdown:suf==='Up'?p.kup:p.kraw;
     let m=/^GetKey(Down|Up)?$/.exec(n);if(m){const s=set(m[1]);return!!s&&s.has(csKeyArg(a[0]))}
-    m=/^GetButton(Down|Up)?$/.exec(n);if(m){const c={Jump:'Space',Fire1:'Mouse0',Submit:'Enter',Cancel:'Escape'}[a[0]];if(!c)throw new Error(`버튼 '${a[0]}'이(가) 없습니다 (Jump, Fire1, Submit)`);const s=set(m[1]);return!!s&&s.has(c)}
+    m=/^GetButton(Down|Up)?$/.exec(n);if(m){const c={Jump:'Space',Fire1:'Mouse0',Submit:'Enter',Cancel:'Escape',점프:'Space',발사:'Mouse0',확인:'Enter',취소:'Escape'}[a[0]];if(!c)throw new Error(`버튼 '${a[0]}'이(가) 없습니다 (Jump, Fire1, Submit)`);const s=set(m[1]);return!!s&&s.has(c)}
     m=/^GetMouseButton(Down|Up)?$/.exec(n);if(m){const s=set(m[1]);return!!s&&s.has('Mouse'+csN(a[0]))}
     throw csUnsup('Input.'+n+'()');
   }),
@@ -4840,6 +5369,7 @@ function csGetComp(m,o,T){
     case'Transform':return isUiEl(o)?(()=>{throw csUnsup('UI Transform')})():trProxy(m,o);
     case'GameObject':return goProxy(m,o);
     case'Camera':return o.props&&o.props.camera?camProxy(m,o):null;
+    case'Light':case'Light2D':return o.props&&o.props.light?lightProxy(m,o):null;
   }
   throw csUnsup('GetComponent<'+T+'>()');
 }
@@ -4851,6 +5381,8 @@ function csDestroy(cx,x){
 }
 /* 칸 좌표(실수)로 위치 읽기·쓰기. 부모가 있으면 부모 기준 오프셋(_lx,_ly)을 고쳐 계속 따라가게 합니다 */
 function objTileF(m,o){const w=objWorld(m,o,play&&play.m===m?play:null);return{x:w.x/TS-.5,y:w.y/TS-.5}}
+/* 인스펙터 위치: 플레이 중에는 실제 위치(주인공·몬스터·스크립트 이동 반영) */
+function insPos(m,o){if(play&&play.m===m){const w=objWorld(m,o,play);return{x:+(w.x/TS-.5).toFixed(2),y:+(w.y/TS-.5).toFixed(2)}}return{x:o.x,y:o.y}}
 function setObjTile(m,o,x,y){
   x=+(+x).toFixed(4);y=+(+y).toFixed(4);
   const inPlay=play&&play.m===m;
@@ -4866,6 +5398,7 @@ function trProxy(m,o){
       if(n==='position'||n==='localPosition'){const t=objTileF(m,o);return CsV(t.x,t.y)}
       if(n==='localScale')return CsV(o.props.sx||1,o.props.sy||1,1,true);
       if(n==='eulerAngles'||n==='localEulerAngles')return CsV(0,0,+o.props.rot||0,true);
+      if(n==='rotation'||n==='localRotation')return CsQ(+o.props.rot||0);
       if(n==='gameObject')return goProxy(m,o);
       if(n==='name')return o.name;
       if(n==='childCount')return m.objs.filter(q=>q.parent===o.id).length;
@@ -4876,6 +5409,7 @@ function trProxy(m,o){
       if(n==='position'||n==='localPosition'){const q=csVArg([v]);setObjTile(m,o,q.x,q.y);return}
       if(n==='localScale'){const q=csVArg([v]);o.props.sx=clamp(q.x,.1,10);o.props.sy=clamp(q.y,.1,10);return}
       if(n==='eulerAngles'||n==='localEulerAngles'){const q=csVArg([v]);o.props.rot=+(q.z%360).toFixed(3);return}
+      if(n==='rotation'||n==='localRotation'){if(!isCsQ(v))throw new Error("error CS0029: rotation에는 Quaternion이 필요합니다 (각도는 eulerAngles 로 넣으세요)");o.props.rot=+(v.deg%360).toFixed(3);return}
       throw csUnsup('transform.'+n+' 대입');
     },
     call(n,a){
@@ -4903,6 +5437,23 @@ function camProxy(m,o){
     set(n,v){if(n==='orthographicSize'||n==='size'){c.size=clamp(csN(v),.5,100);return}if(n==='clampToMap'){c.clamp=!!v;return}throw csUnsup('Camera.'+n+' 대입')},
     call(n){throw csUnsup('Camera.'+n+'()')}};
 }
+/* 빛 (Light) 컴포넌트: GetComponent<Light>() */
+function lightProxy(m,o){
+  const L=()=>{const l=o.props.light;if(!l)throw new Error('MissingComponentException: 이 오브젝트의 빛(Light) 컴포넌트가 제거되었습니다');return l};
+  const K={radius:'radius',range:'radius',pointLightOuterRadius:'radius',intensity:'intensity',angle:'angle',spotAngle:'angle',pointLightOuterAngle:'angle',dir:'dir',shadows:'shadow',shadow:'shadow',color:'color'};
+  const LIM={radius:[.5,30],intensity:[.1,1],angle:[5,360],dir:[-360,360]};
+  return{__h:'Light',__o:o,name:o.name,
+    get(n){if(n==='gameObject')return goProxy(m,o);if(n==='transform')return trProxy(m,o);if(n==='enabled')return !!o.props.light;
+      const k=K[n];if(!k)throw csUnsup('Light.'+n);const l=L();return k==='shadow'?l.shadow!==false:k==='color'?l.color:+l[k]},
+    set(n,v){
+      if(n==='enabled'){if(!v){o._lightOff=o.props.light;delete o.props.light}else if(!o.props.light)o.props.light=o._lightOff||{color:'#ffd88a',intensity:1,radius:6,angle:360,dir:0,shadow:true,follow:o.type==='spawn'};return}
+      const k=K[n];if(!k)throw csUnsup('Light.'+n+' 대입');const l=L();
+      if(k==='shadow'){l.shadow=!!v;return}
+      if(k==='color'){if(typeof v!=='string')throw new Error("error CS0029: color에는 Color 값이 필요합니다 (예: Color.red, new Color(1, 0.8f, 0.5f))");l.color=v;return}
+      l[k]=clamp(csN(v),LIM[k][0],LIM[k][1]);
+    },
+    call(n){throw csUnsup('Light.'+n+'()')}};
+}
 /* 주인공 (Hero) 컴포넌트: 이동 스크립트가 쓰는 기능 */
 function heroFace(p,x,y){if(!x&&!y)return;if(Math.abs(x)>=Math.abs(y)){p.fx=Math.sign(x);p.fy=0}else{p.fx=0;p.fy=Math.sign(y)}}
 function heroProxy(m,o){
@@ -4911,6 +5462,7 @@ function heroProxy(m,o){
     get(n){switch(n){
       case'position':return CsV(p.px/TS-.5,p.py/TS-.5);
       case'facing':return CsV(p.fx,p.fy);
+      case'facingAngle':return +((((p.fa!=null?p.fa:Math.atan2(p.fy,p.fx))*180/Math.PI)%360+360)%360).toFixed(3);
       case'hp':return p.hp;case'maxHp':return 100;
       case'isMoving':return!!p.moved;
       case'radius':return(p.hr==null?9:p.hr)/TS;
@@ -4949,7 +5501,7 @@ function csFieldInit(fd,inst){
 function csRtOf(inst,pr){
   if(!play.rt)play.rt=new Map();
   let rt=play.rt.get(inst.id);
-  if(!rt||rt.pr!==pr){rt={pr,off:{},f:{}};(pr.r.fields||[]).forEach(fd=>{rt.f[fd.name]=csFieldInit(fd,inst)});play.rt.set(inst.id,rt)}
+  if(!rt||rt.pr!==pr){rt={pr,off:{},f:{},ty:{}};(pr.r.fields||[]).forEach(fd=>{rt.f[fd.name]=csFieldInit(fd,inst);rt.ty[fd.name]=fd.type});play.rt.set(inst.id,rt)}
   return rt;
 }
 /* perFrame: Update 처럼 매 프레임 부르는 메서드 — 오류가 나면 한 번만 알리고 그 메서드를 멈춥니다 */
@@ -4968,15 +5520,39 @@ function csRun(m,o,inst,fn,dt,perFrame){
     return csExec(txt,o,inst,old);
   };
   const fail=(e,txt)=>{
-    const ln=e&&e.line!=null?e.line:e&&e.p!=null?csLine(me,e.p):null;
+    let ln=e&&e.line!=null?e.line:e&&e.p!=null?csLine(me,e.p):null;
+    if(ln==null&&txt){const k=me.body.indexOf(String(txt).trim().slice(0,24));if(k>=0)ln=csLine(me,k)}
     const msg=e instanceof CsUnsup?'이 구문은 아직 실행할 수 없습니다: '+e.message:(e&&e.message)||String(e);
-    clog('error',`[${s.name}] ${fn}()${ln?' '+ln+'번째 줄':''}: ${msg}${txt?'  →  '+String(txt).trim().replace(/\s+/g,' ').slice(0,80):''}`,s.id);
+    clog('error',`[${s.name}] ${fn}()${ln?' '+ln+'번째 줄':''}: ${msg}${txt?'  →  '+String(txt).trim().replace(/\s+/g,' ').slice(0,80):''}`,s.id,{kind:'runtime',fn,line:ln||0,stmt:txt||'',err:msg});
     if(perFrame){rt.off[fn]=1;clog('warn',`[${s.name}] 오류 때문에 이번 플레이에서는 ${fn}()을(를) 더 실행하지 않습니다`,s.id)}
   };
   if(ast.err){
     if(perFrame||!(ast.err instanceof CsUnsup)&&fn!=='Start'&&fn!=='Awake'){fail(ast.err);return}
-    /* 해석할 수 없는 Start/Awake/이벤트 본문은 예전 한 줄 실행기로 */
-    csStatements(me.body).forEach(st=>{try{if(!runOld(st))clog('warn',`[${s.name}] ${fn}(): 이 구문은 아직 실행할 수 없습니다  →  ${st.slice(0,80)}`,s.id)}catch(e){fail(e,st)}});
+    /* 본문 전체를 해석할 수 없으면 문장 하나씩: 먼저 정식 실행기로 실행하고(식 계산·지역 변수 유지),
+       그 문장만 지원되지 않을 때 예전 한 줄 실행기로 넘깁니다.
+       (예전에는 이 경우 Debug.Log(transform.position.x)가 값 대신 글자 그대로 찍혔습니다) */
+    const cx={m,o,inst,rt,pr,dt,scopes:[new Map()],me,depth:0,loops:0,s};
+    const prev=csCur;csCur=cx;
+    try{
+      let from=0;
+      for(const st of csStatements(me.body)){
+        if(!play||play.m!==m)return;
+        /* 이 문장의 실제 줄 번호 (오류 메시지 · 콘솔 더블클릭 이동용) */
+        const off=me.body.indexOf(st.slice(0,24),from);if(off>=0)from=off+1;
+        const stLine=off>=0?csLine(me,off):null;
+        const failAt=(e,t)=>{if(e&&typeof e==='object'&&stLine!=null)e.line=stLine;fail(e,t)};
+        let nodes=null;try{const src=st+';';nodes=csParser(csTok(src),src).stmts()}catch(e){nodes=null}
+        if(nodes){
+          try{for(const n of nodes)csX(n,cx);continue}
+          catch(e){
+            if(e&&e.__c==='ret')return;
+            if(e&&e.__c)continue;
+            if(!(e instanceof CsUnsup)){failAt(e,st);continue}
+          }
+        }
+        try{if(!runOld(st))clog('warn',`[${s.name}] ${fn}()${stLine?' '+stLine+'번째 줄':''}: 이 구문은 아직 실행할 수 없습니다  →  ${st.replace(/\s+/g,' ').slice(0,80)}`,s.id)}catch(e){failAt(e,st)}
+      }
+    }finally{csCur=prev}
     return;
   }
   const cx={m,o,inst,rt,pr,dt,scopes:[new Map()],me,depth:0,loops:0,s};
@@ -5000,6 +5576,7 @@ function csRun(m,o,inst,fn,dt,perFrame){
 }
 /* 주인공 기본 이동 스크립트 */
 const HERO_SCRIPT='HeroMovement';
+const heroCodeDef=()=>typeof setv!=='undefined'&&setv.ko?enToKo(HERO_CODE):HERO_CODE;
 const HERO_CODE=`using UnityEngine;
 
 // 주인공 이동 스크립트
@@ -5053,7 +5630,7 @@ function heroScript(p,create){
   p=p||P;if(!p)return null;if(!Array.isArray(p.scripts))p.scripts=[];
   let s=p.heroScript&&p.scripts.find(x=>x.id===p.heroScript);
   if(!s)s=p.scripts.find(x=>x.name===HERO_SCRIPT);
-  if(!s&&create){s={id:uid(),name:HERO_SCRIPT,code:HERO_CODE};p.scripts.push(s)}
+  if(!s&&create){s={id:uid(),name:HERO_SCRIPT,code:heroCodeDef()};p.scripts.push(s)}
   if(s)p.heroScript=s.id;
   return s||null;
 }
@@ -5104,6 +5681,7 @@ function scriptsPlayCheck(){
 })();
 /* ===================== 모달 / 설정 / 입출력 ===================== */
 function openModal(title,body,buttons){
+  {const mo=$('#modal'),md=lastPtrDoc&&lastPtrDoc.defaultView&&POPDOCS.has(lastPtrDoc)?lastPtrDoc:document;if(mo&&mo.ownerDocument!==md)md.body.append(mo)}
   $('#mTitle').textContent=title;$('#mBody').innerHTML=body;const f=$('#mFoot');f.innerHTML='';
   (buttons&&buttons.length?buttons:[{t:'닫기'}]).forEach(b=>{const x=document.createElement('button');x.className='btn '+(b.cls||'');x.style.height='26px';x.textContent=b.t;x.onclick=()=>{if(!b.fn||b.fn()!==false)closeModal()};f.append(x)});
   $('#modal').hidden=false;const first=$('#mBody input,#mBody textarea,#mBody select');if(first)first.focus();
@@ -5583,10 +6161,12 @@ const menuEl=$('#menu');let menuAnchor=null;
 function hideMenu(){menuEl.hidden=true;if(menuAnchor)menuAnchor.classList.remove('open');menuAnchor=null}
 function openMenu(items,x,y,anchor,right){
   menuEl.innerHTML=items.map((it,i)=>it.sep?'<hr>':`<button class="mi" data-i="${i}"${it.disabled?' disabled':''}><span class="mc">${it.checked?'✓':''}</span><span class="ml">${esc(it.label)}</span><span class="mk">${esc(it.key||'')}</span></button>`).join('');
+  const md=anchor?docOf(anchor):(lastPtrDoc&&lastPtrDoc.defaultView?lastPtrDoc:document),mw=md.defaultView||window;
+  if(menuEl.ownerDocument!==md||!menuEl.isConnected)md.body.append(menuEl);
   menuEl._items=items;menuEl.hidden=false;
   const w=menuEl.offsetWidth,h=menuEl.offsetHeight;
-  let px=clamp(right?x-w:x,6,Math.max(6,innerWidth-w-6)),py=y;
-  if(py+h>innerHeight-6)py=Math.max(6,(anchor?anchor.getBoundingClientRect().top-2:y)-h);
+  let px=clamp(right?x-w:x,6,Math.max(6,mw.innerWidth-w-6)),py=y;
+  if(py+h>mw.innerHeight-6)py=Math.max(6,(anchor?anchor.getBoundingClientRect().top-2:y)-h);
   menuEl.style.left=px+'px';menuEl.style.top=py+'px';
   menuAnchor=anchor;if(anchor)anchor.classList.add('open');
 }
@@ -5597,6 +6177,7 @@ function showMenu(anchor,items,right){
 }
 function showMenuAt(x,y,items){hideMenu();openMenu(items,x,y,null,false)}
 menuEl.addEventListener('click',e=>{const b=e.target.closest('.mi');if(!b||b.disabled)return;const it=menuEl._items[+b.dataset.i];hideMenu();if(it&&it.fn)it.fn()});
+document.addEventListener('pointerdown',e=>{lastPtrDoc=e.target&&e.target.ownerDocument||document},true);
 document.addEventListener('pointerdown',e=>{if(!menuEl.hidden&&!e.target.closest('#menu,[data-menu],.pmenu,#hAdd,#sdd,#iAddComp,#uAddComp,#uAddScript'))hideMenu()});
 const menuDefs={
   file:()=>[{label:'새 씬',fn:addScene},{label:'저장',key:kb('file.save'),fn:()=>save(false)},{sep:1},{label:'프로젝트 설정…',fn:openProjectSettings},{label:'설정…',key:kb('app.settings'),fn:openSettings},{sep:1},{label:'가져오기…',fn:doImport},{label:'내보내기…',fn:doExport}],
@@ -5605,7 +6186,7 @@ const menuDefs={
     {label:'이름 바꾸기',key:kb('edit.rename'),fn:renameSelection},{label:'복제',key:kb('edit.duplicate'),disabled:!getSel(),fn:duplicateSel},{label:'그룹으로 묶기…',key:kb('edit.group'),disabled:!getSel()&&!(cur().objs.some(o=>hsel.has(o.id))),fn:groupSelected},{label:'삭제',key:kb('edit.delete'),disabled:!hsel.size,fn:deleteSelection},{sep:1},{label:'씬 설정',fn:openSceneSettings}],
   asset:()=>[{label:'PNG 가져오기…',fn:()=>$('#aFile').click()},{label:'직접 그리기 (Pixel-meow)…',fn:()=>openPixel()},{label:'선택한 에셋 수정 (Pixel-meow)…',disabled:!byId.get(aSelId),fn:()=>editInPixel(byId.get(aSelId))},{label:'새 폴더',fn:()=>newFolder(aFol)},{label:'모든 에셋 저장',disabled:!assets.some(a=>!a.saved),fn:()=>saveAssets()}],
   go:()=>[{label:'빈 게임 오브젝트 만들기',fn:()=>createObjectAtView('empty')},{label:'새 그룹',fn:newGroup}],
-  win:()=>Object.keys(PANELS).map(id=>({label:PANELS[id],checked:!L.hidden[id],fn:()=>{L.hidden[id]=!L.hidden[id];saveLayout();renderLayout()}})).concat([{sep:1},{label:'도구 모음 위치 초기화',fn:resetSbar},{label:'레이아웃 초기화',fn:()=>{L=defLayout();saveLayout();renderLayout()}}]),
+  win:()=>Object.keys(PANELS).map(id=>({label:PANELS[id]+(POPPED.has(id)?' (새 창)':''),checked:POPPED.has(id)||!L.hidden[id],fn:()=>{if(POPPED.has(id)){popIn(id,true);return}L.hidden[id]=!L.hidden[id];saveLayout();renderLayout()}})).concat([{sep:1},{label:'도구 모음 위치 초기화',fn:resetSbar},{label:'레이아웃 초기화',fn:()=>{[...POPPED.keys()].forEach(k=>popIn(k));L=defLayout();saveLayout();renderLayout()}}]),
   ui:()=>Object.keys(UI_NAMES).map(k=>({label:UI_NAMES[k]+' 만들기',fn:()=>createUiAtCenter(k)})).concat([{sep:1},{label:'UI 캔버스 설정',fn:()=>{setLayer('ui');selUi=null;renderInsp();renderHier();focusInspector()}},{label:'UI 숨기기 (씬 뷰)',checked:$('#optUiHide').checked,fn:()=>{const c=$('#optUiHide');c.checked=!c.checked;need()}}]),
   help:()=>[{label:'단축키 목록',fn:showHelp},{label:'단축키 설정…',key:kb('app.keybindings'),fn:()=>openSettings('keys')},{sep:1},{label:'공식 홈페이지 (thaniya.co.kr)',fn:()=>window.open(HOME_URL,'_blank','noopener')},{label:'Thaniya Engine 정보',fn:()=>openSettings('about')}]
 };
@@ -5689,7 +6270,7 @@ function loadLayout(){
 function saveLayout(){try{localStorage.setItem(LKEY,JSON.stringify(L))}catch(e){}}
 const kidsOf=id=>Object.keys(L.tabs).filter(k=>L.tabs[k]===id);
 const rootOf=id=>L.tabs[id]||id;
-const groupMembers=root=>[root,...kidsOf(root)].filter(x=>!L.hidden[x]);
+const groupMembers=root=>[root,...kidsOf(root)].filter(x=>!L.hidden[x]&&!POPPED.has(x));
 function activeOf(root){const mem=groupMembers(root);if(!mem.length)return null;return mem.includes(L.active[root])?L.active[root]:mem[0]}
 function detach(id){
   if(L.tabs[id]){delete L.tabs[id];return}
@@ -5756,9 +6337,9 @@ function renderLayout(){
   const narrow=mqN.matches;
   $('#app').classList.toggle('narrow',narrow);document.documentElement.classList.toggle('narrow',narrow);
   $$('.ntabs').forEach(b=>b.remove());
-  Object.values(panelEl).forEach(el=>{el.remove();el.classList.remove('float','nhide');el.style.cssText=''});
+  Object.entries(panelEl).forEach(([id,el])=>{if(POPPED.has(id))return;el.remove();el.classList.remove('float','nhide');el.style.cssText=''});
   if(narrow){
-    const vis=['hier','palette','assets','console','script','insp'].filter(id=>!L.hidden[id]);
+    const vis=['hier','palette','assets','console','script','insp'].filter(id=>!L.hidden[id]&&!POPPED.has(id));
     if(!vis.includes(L.nActive))L.nActive=vis[0];
     const bar=document.createElement('div');bar.className='ntabs';bar.innerHTML=vis.map(id=>`<button data-id="${id}" class="${id===L.nActive?'on':''}">${PANELS[id]}</button>`).join('');
     bar.onclick=e=>{const b=e.target.closest('button');if(b){L.nActive=b.dataset.id;saveLayout();renderLayout()}};
@@ -5784,7 +6365,7 @@ function renderLayout(){
     $('#spR').classList.toggle('hide',zoneEl.right.classList.contains('empty'));
     $('#spB').classList.toggle('hide',zoneEl.bottom.classList.contains('empty'));
   }
-  Object.keys(panelEl).forEach(id=>panelEl[id].classList.toggle('collapsed',!!L.collapsed[id]));
+  Object.keys(panelEl).forEach(id=>panelEl[id].classList.toggle('collapsed',!!L.collapsed[id]&&!POPPED.has(id)));
   buildStrips();
   need();
 }
@@ -5820,7 +6401,7 @@ function tabInto(did,rootId,solo){
 function raise(id){zTop=Math.min(zTop+1,99000);L.z[id]=zTop;if(panelEl[id].classList.contains('float'))panelEl[id].style.zIndex=zTop}
 function findTarget(cx,cy,id,solo){
   for(const k of Object.keys(panelEl)){
-    const el=panelEl[k];if(!el.isConnected||el.parentElement.id==='panelStore')continue;
+    const el=panelEl[k];if(!el.isConnected||POPPED.has(k)||el.ownerDocument!==document||el.parentElement.id==='panelStore')continue;
     if(rootOf(k)===rootOf(id))continue;
     const r=$('.phead',el).getBoundingClientRect();
     if(cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom)return{tab:rootOf(k),r};
@@ -5871,10 +6452,12 @@ function showTarget(t){
 Object.entries(panelEl).forEach(([id,el])=>{
   const head=$('.phead',el);
   el.addEventListener('pointerdown',()=>{if(el.classList.contains('float'))raise(id)},true);
+  $('.ppop',el).addEventListener('click',e=>{e.stopPropagation();if(POPPED.has(id))popIn(id);else popOut(id)});
   const toggleCol=()=>{const v=!L.collapsed[id],r=rootOf(id);[r,...kidsOf(r)].forEach(k=>{L.collapsed[k]=v;panelEl[k].classList.toggle('collapsed',v)});saveLayout()};
   $('.pcol',el).onclick=toggleCol;
-  $('.pmenu',el).onclick=e=>{
+  if($('.pmenu',el))$('.pmenu',el).onclick=e=>{
     const isF=el.classList.contains('float');
+    if(POPPED.has(id)){showMenu(e.currentTarget,[{label:'엔진 창으로 되돌리기',fn:()=>popIn(id)},{sep:1},{label:'닫기',fn:()=>popIn(id,true)}],true);return}
     showMenu(e.currentTarget,[
       {label:L.collapsed[id]?'펼치기':'접기',fn:toggleCol},
       isF?{label:'도크에 고정',fn:()=>movePanel(rootOf(id),id==='assets'||id==='palette'?'bottom':id==='insp'?'right':'left',99)}:{label:'창으로 분리',disabled:mqN.matches,fn:()=>{const r=el.getBoundingClientRect();movePanel(rootOf(id),'float',0,{x:clamp(r.left+30,0,innerWidth-300),y:clamp(r.top+30,0,innerHeight-200),w:Math.max(280,Math.min(380,r.width)),h:Math.max(200,Math.min(380,r.height))});raise(id);saveLayout()}},
@@ -5882,12 +6465,14 @@ Object.entries(panelEl).forEach(([id,el])=>{
       ...(!isF&&!mqN.matches&&['left','right'].some(zz=>L[zz].includes(rootOf(id)))?[
         {label:'◀ 왼쪽 열로 이동',disabled:!canSideMove(id,-1),fn:()=>sideMove(id,-1)},
         {label:'▶ 오른쪽 열로 이동',disabled:!canSideMove(id,1),fn:()=>sideMove(id,1)}]:[]),
-      {label:'탭 분리',disabled:!L.tabs[id]&&!kidsOf(id).length,fn:()=>{const r0=rootOf(id);detach(id);if(L.float[id]){L.float[id].x+=32;L.float[id].y+=32}saveLayout();renderLayout()}},
+      {label:'엔진 밖 새 창으로 꺼내기',disabled:mqN.matches,fn:()=>popOut(id)},
+      {label:'탭 분리',disabled:!L.tabs[id]&&!kidsOf(id).length,fn:()=>{detach(id);if(L.float[id]){L.float[id].x+=32;L.float[id].y+=32}saveLayout();renderLayout()}},
       {sep:1},{label:'닫기',fn:()=>{L.hidden[id]=true;saveLayout();renderLayout()}}
     ],true);
   };
-  head.addEventListener('dblclick',e=>{if(e.target.closest('button'))return;toggleCol()});
+  head.addEventListener('dblclick',e=>{if(e.target.closest('button')||POPPED.has(id))return;toggleCol()});
   head.addEventListener('pointerdown',e=>{
+    if(POPPED.has(id))return;
     const tb=e.target.closest('.ptabbtn');
     if(e.button!==0||(e.target.closest('button,input,select')&&!tb)||mqN.matches)return;
     const solo=!!tb,did=tb?tb.dataset.id:rootOf(id);
@@ -5907,6 +6492,9 @@ Object.entries(panelEl).forEach(([id,el])=>{
       if(!st.on){if(tb&&ev.type==='pointerup'){L.active[rootOf(id)]=did;saveLayout();renderLayout()}return}
       document.body.classList.remove('dock-drag');showTarget(null);if(st.ghost)st.ghost.remove();el.style.opacity='';
       const t=ev.type==='pointercancel'?null:st.target;
+      /* 브라우저 창 밖에서 놓으면 그 자리에 새 창으로 꺼냄 */
+      const outside=ev.type==='pointerup'&&(ev.clientX<0||ev.clientY<0||ev.clientX>innerWidth||ev.clientY>innerHeight);
+      if(outside){const pid=solo?did:activeOf(rootOf(id))||did;if(!ghostMode)renderLayout();popOut(pid,{sx:ev.screenX-60,sy:ev.screenY-14});return}
       if(t&&t.keep){}
       else if(t&&t.tab)tabInto(did,t.tab,solo);
       else if(t)movePanel(did,t.zone,t.idx,undefined,solo,t);
@@ -5920,6 +6508,67 @@ let szT=0;
 const ro=new ResizeObserver(es=>{es.forEach(en=>{const el=en.target,id=rootOf(el.dataset.id);if(!el.classList.contains('float')||L.collapsed[el.dataset.id]||!L.float[id])return;
   const w=Math.round(el.offsetWidth),h=Math.round(el.offsetHeight);if(Math.abs(w-L.float[id].w)>1||Math.abs(h-L.float[id].h)>1){L.float[id].w=w;L.float[id].h=h;kidsOf(id).forEach(k=>{if(L.float[k]){L.float[k].w=w;L.float[k].h=h}});clearTimeout(szT);szT=setTimeout(saveLayout,300)}})});
 Object.values(panelEl).forEach(el=>ro.observe(el));
+/* ===================== 패널을 Thaniya Engine 밖(별도 브라우저 창)으로 꺼내기 =====================
+   · 떠 있는 패널의 ↗ 버튼, 패널 메뉴 > “엔진 밖 새 창으로 꺼내기”, 또는 패널을 브라우저 창 밖으로 끌어서 놓기
+   · 꺼낸 창을 닫거나 ↙ 버튼을 누르면 원래 있던 자리로 돌아옵니다 */
+function popRefresh(id){
+  if(id==='script')renderEditor();else if(id==='palette')renderPal();else if(id==='assets'){renderAssets();renderScripts()}
+  else if(id==='hier')renderHier();else if(id==='insp')renderInsp();else if(id==='console')renderConsole();
+}
+function popTitle(el,on){const b=$('.ppop',el);if(b){const t=on?'엔진 창으로 되돌리기':'엔진 밖 새 창으로 꺼내기 (창을 브라우저 밖으로 끌어서 놓아도 됩니다)';b.title=t;b.setAttribute('aria-label',t)}}
+function popOut(id,at){
+  if(mqN.matches){toast('좁은 화면에서는 패널을 새 창으로 꺼낼 수 없습니다');return false}
+  if(POPPED.has(id)){try{POPPED.get(id).win.focus()}catch(e){}return true}
+  const el=panelEl[id];if(!el)return false;
+  const r=el.isConnected?el.getBoundingClientRect():{left:80,top:80,width:420,height:360};
+  const W=Math.round(clamp(r.width||420,320,screen.availWidth||1600)),H=Math.round(clamp(r.height||360,220,screen.availHeight||1000));
+  const bx=window.screenX+Math.max(0,(window.outerWidth-window.innerWidth)/2),by=window.screenY+Math.max(0,window.outerHeight-window.innerHeight);
+  const sx=at&&at.sx!=null?at.sx:bx+r.left+24,sy=at&&at.sy!=null?at.sy:by+r.top+24;
+  let w=null;try{w=window.open('','thaniya-pop-'+id+'-'+Date.now().toString(36),`popup=yes,width=${W},height=${H},left=${Math.round(sx)},top=${Math.round(sy)}`)}catch(e){w=null}
+  if(!w){toast('브라우저가 새 창을 막았습니다. 주소창에서 이 페이지의 팝업을 허용한 뒤 다시 시도하세요');return false}
+  let d;try{d=w.document;d.open();d.write('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title></title></head><body class="popbody"></body></html>');d.close()}
+  catch(e){try{w.close()}catch(_){}toast('이 환경에서는 새 창을 열 수 없습니다');return false}
+  d.title=(PANELS[id]||id)+' — Thaniya Engine';
+  [...document.querySelectorAll('style,link[rel="stylesheet"],link[rel="preconnect"]')].forEach(n=>d.head.append(d.importNode(n,true)));
+  [...document.documentElement.attributes].forEach(a=>{try{d.documentElement.setAttribute(a.name,a.value)}catch(e){}});
+  detach(id);delete L.collapsed[id];
+  const rec={win:w,doc:d,timer:0};POPPED.set(id,rec);POPDOCS.add(d);
+  DOC_LS.forEach(([t,f,o])=>{try{d.addEventListener(t,f,o)}catch(e){}});
+  WIN_LS.forEach(([t,f,o])=>{try{w.addEventListener(t,f,o)}catch(e){}});
+  el.classList.remove('float','nhide','collapsed','pjmax');el.style.cssText='';el.classList.add('popped');
+  d.body.append(el);popTitle(el,true);
+  saveLayout();renderLayout();
+  const back=()=>{if(POPPED.get(id)===rec)popIn(id)};
+  w.addEventListener('pagehide',back);w.addEventListener('beforeunload',back);
+  rec.timer=setInterval(()=>{let c=true;try{c=w.closed}catch(e){}if(c)back()},700);
+  w.addEventListener('resize',()=>{if(id==='palette')renderPal()});
+  w.addEventListener('focus',()=>{lastPtrDoc=d});
+  try{w.focus()}catch(e){}
+  setTimeout(()=>popRefresh(id),30);
+  return true;
+}
+function popIn(id,hide){
+  const rec=POPPED.get(id);if(!rec)return;
+  POPPED.delete(id);clearInterval(rec.timer);
+  const el=panelEl[id],d=rec.doc;
+  /* 꺼낸 창으로 옮겨 갔던 공용 요소(메뉴·툴팁·자동완성)는 엔진 창으로 되돌림 */
+  try{if(menuEl.ownerDocument===d){hideMenu();document.body.append(menuEl)}
+    d.querySelectorAll('#qtip,.acbox').forEach(x=>{x.classList.remove('on');x.style.display='none';document.body.append(x)});
+    d.querySelectorAll('#histToast').forEach(x=>{x.classList.remove('on');document.body.append(x)});
+    d.querySelectorAll('#modal').forEach(x=>{document.body.append(x)});
+    d.querySelectorAll('#anpop,.stkpick').forEach(x=>x.remove());}catch(e){}
+  POPDOCS.delete(d);
+  DOC_LS.forEach(([t,f,o])=>{try{d.removeEventListener(t,f,o)}catch(e){}});
+  WIN_LS.forEach(([t,f,o])=>{try{rec.win.removeEventListener(t,f,o)}catch(e){}});
+  el.classList.remove('popped');el.style.cssText='';$('#panelStore').append(el);popTitle(el,false);
+  if(hide)L.hidden[id]=true;
+  saveLayout();renderLayout();popRefresh(id);
+  try{if(!rec.win.closed)rec.win.close()}catch(e){}
+  try{window.focus()}catch(e){}
+}
+addEventListener('focus',()=>{lastPtrDoc=document});
+addEventListener('beforeunload',()=>POPPED.forEach(p=>{try{p.win.close()}catch(e){}}));
+Object.values(panelEl).forEach(el=>popTitle(el,false));
 [['#spL','left'],['#spR','right'],['#spB','bottom']].forEach(([sl,z])=>{
   const sp=$(sl);
   sp.addEventListener('pointerdown',e=>{
@@ -5974,7 +6623,7 @@ mqN.addEventListener('change',()=>{renderLayout();fitView()});
 addEventListener('resize',()=>{if(!mqN.matches)renderLayout()});
 
 /* ===================== 플레이 모드 ===================== */
-let play=null,playRaf=0,plast=0;
+let playRaf=0,plast=0;
 const pv=$('#pv'),pg=pv.getContext('2d');
 function enter(id,tx,ty){
   const src=P.maps.find(x=>x.id===id);if(!src)return false;
@@ -6006,9 +6655,21 @@ function placePlay(mode){
 async function playFull(on){
   const el=$('#play');
   if(on){placePlay('window');try{if(el.requestFullscreen)await el.requestFullscreen();else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();placePlay('full')}catch(e){toast('이 브라우저에서는 전체 화면을 쓸 수 없어 창 가득 채우기로 실행합니다')}}
-  else{if(document.fullscreenElement){try{await document.exitFullscreen()}catch(e){}}placePlay(playMode==='full'?'window':playMode)}
+  else{if(isPlayFs()){try{await document.exitFullscreen()}catch(e){}}placePlay(playMode==='full'?'window':playMode)}
 }
-document.addEventListener('fullscreenchange',()=>{if(play&&!document.fullscreenElement&&play.view==='full')placePlay(playMode==='full'?'window':playMode)});
+/* 우측 위 전체 화면 버튼: 엔진 화면 전체를 전체 화면으로 */
+function syncFullBtn(){const b=$('#bFull');if(!b)return;const on=document.fullscreenElement===document.documentElement||(!document.fullscreenElement&&!!document.webkitFullscreenElement);
+  b.innerHTML=ico(on?'fsOff':'fsOn');b.title=on?'전체 화면 끝내기 (Esc)':'전체 화면';b.setAttribute('aria-label',b.title);b.classList.toggle('on',on)}
+async function toggleAppFull(){
+  try{
+    if(document.fullscreenElement){await document.exitFullscreen()}
+    else{const de=document.documentElement;if(de.requestFullscreen)await de.requestFullscreen();else if(de.webkitRequestFullscreen)de.webkitRequestFullscreen();else throw 0}
+  }catch(e){toast('이 브라우저에서는 전체 화면을 쓸 수 없습니다')}
+  syncFullBtn();
+}
+$('#bFull').onclick=toggleAppFull;syncFullBtn();
+document.addEventListener('fullscreenchange',syncFullBtn);
+document.addEventListener('fullscreenchange',()=>{if(play&&!isPlayFs()&&play.view==='full')placePlay(playMode==='full'?'window':playMode)});
 $('#pFull').onclick=()=>playFull(!(play&&play.view==='full'));
 $('#bPlayOpt').addEventListener('click',e=>showMenu(e.currentTarget,[
   {label:'게임 뷰에서 실행 (기본 · 고른 기기 해상도)',checked:playMode==='embed',fn:()=>setPlayMode('embed')},
@@ -6017,8 +6678,12 @@ $('#bPlayOpt').addEventListener('click',e=>showMenu(e.currentTarget,[
   {sep:1},{label:'플레이 중 ⛶ 버튼으로 언제든 전체 화면을 켜고 끌 수 있습니다',disabled:true}
 ]));
 new ResizeObserver(()=>{if(play)sizePlay()}).observe($('#play'));
+/* 플레이 화면 자체가 전체 화면인지 (엔진 전체 화면은 정지해도 유지) */
+function isPlayFs(){const f=document.fullscreenElement||document.webkitFullscreenElement;return !!f&&f===$('#play')}
 function startPlay(){
-  hideMenu();if(play){stopPlay();return}if(!scriptsPlayCheck())return;
+  hideMenu();if(play){stopPlay();return}
+  conLog=[];renderConsole();
+  if(!scriptsPlayCheck())return;
   play=freshPlay();
   if(!enter(curId,null,null)){play=null;return}
   gvBack=GV.view;
@@ -6028,8 +6693,11 @@ function startPlay(){
   $('#bPlay').classList.add('on');$('#bPlay').innerHTML=ico('stop')+'정지';
   plast=performance.now();playRaf=requestAnimationFrame(loop);
   clog('info','▶ 플레이 시작 · '+play.m.name);
+  document.documentElement.classList.add('is-playing');liveSig='';
+  if(sel&&!play.m.objs.some(o=>o.id===sel))sel=null;
+  renderHier();renderInsp();
 }
-function stopPlay(){if(play)clog('info','■ 플레이 종료');const wasEmbed=play&&play.view==='embed';play=null;cancelAnimationFrame(playRaf);if(wasEmbed&&gvBack==='scene')setView('scene');else setTimeout(gvLayout,0);if(document.fullscreenElement){document.exitFullscreen().catch(()=>{})}$('#play').hidden=true;stage.classList.remove('playing');$('#bPlay').classList.remove('on');$('#bPlay').innerHTML=ico('play')+'플레이';need()}
+function stopPlay(){if(play){clog('info','■ 플레이 종료 · 플레이 중 바꾼 값은 원래대로 되돌렸습니다');setTimeout(()=>{document.documentElement.classList.remove('is-playing');if(sel&&!(cur()||{objs:[]}).objs.some(o=>o.id===sel))sel=null;hsel=new Set(sel?[sel]:[]);syncSel=sel;renderHier();renderInsp()},0)}const wasEmbed=play&&play.view==='embed';play=null;cancelAnimationFrame(playRaf);if(wasEmbed&&gvBack==='scene')setView('scene');else setTimeout(gvLayout,0);if(isPlayFs()){document.exitFullscreen().catch(()=>{})}$('#play').hidden=true;stage.classList.remove('playing');$('#bPlay').classList.remove('on');$('#bPlay').innerHTML=ico('play')+'플레이';need()}
 function sizePlay(){
   const d=window.devicePixelRatio||1,el=$('#play'),w=el.clientWidth||innerWidth,h=el.clientHeight||innerHeight;
   pv.width=Math.max(1,Math.round(w*d));pv.height=Math.max(1,Math.round(h*d));
@@ -6219,13 +6887,26 @@ function drawPlay(p,g,W,H,d){
   }
   if(p.dead){g.fillStyle='rgba(0,0,0,.7)';g.fillRect(0,0,W,H);g.textAlign='center';g.fillStyle='#ef5b6b';g.font='600 30px "IBM Plex Sans KR",sans-serif';g.fillText('쓰러졌습니다',W/2,H/2-6);g.fillStyle='#fff';g.font='13px "IBM Plex Sans KR",sans-serif';g.fillText('Space 또는 행동 버튼으로 다시 시작',W/2,H/2+20)}
 }
+/* 플레이 중 인스펙터를 실시간 갱신 — 인스펙터 입력칸을 만지는 중이면 건너뜀 */
+let liveSig='';
+function liveInsp(){
+  const box=$('#insp');if(!box||!box.isConnected)return;
+  const ae=box.ownerDocument.activeElement;if(ae&&box.contains(ae)&&/INPUT|SELECT|TEXTAREA/.test(ae.tagName))return;
+  if(drag||document.body.classList.contains('scrub'))return;
+  const o=getSel(),m=play&&play.m;let sig=JSON.stringify(o||null);
+  if(o&&m){const q=insPos(m,o);sig+=q.x+','+q.y+(o.type==='spawn'?play.fx+','+play.fy+','+play.hp+','+Math.round((play.fa||0)*57.3)+','+!!play.moved:'')}
+  if(sig===liveSig)return;liveSig=sig;
+  const sc=box.parentElement?box.parentElement.scrollTop:0;renderInsp();if(box.parentElement)box.parentElement.scrollTop=sc;
+}
 function loop(t){
   if(!play)return;
   const dt=Math.min(.05,(t-plast)/1000);plast=t;
   if(play.needStart){play.needStart=false;runScriptsStart(play.m);if(!play)return}
   update(dt);if(!play)return;
   play.kdown.clear();play.kup.clear();play.frame=(play.frame||0)+1;
-  drawPlay();if(GV.view==='scene')need();playRaf=requestAnimationFrame(loop);
+  drawPlay();if(GV.view==='scene')need();
+  if(t-(play.insT||0)>150){play.insT=t;liveInsp()}
+  playRaf=requestAnimationFrame(loop);
 }
 
 /* ===================== 게임 뷰 (기기 화면 미리보기 · 플레이 화면) ===================== */
@@ -6345,12 +7026,13 @@ new ResizeObserver(()=>{if(gvDevice().k==='free'&&GV.view==='scene'&&getUi())try
 const SETK='thaniya.settings.v1';
 const HOME_URL='https://thaniya.co.kr/';
 const LOGO_URI='data:image/png;base64,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';
-const ST_DEF={btn:100,edOpen:'float',edFs:13};
-let setv={btn:100,edOpen:'float',edFs:13,kb:{},tpl:{}};
+const ST_DEF={btn:100,edOpen:'float',edFs:13,ko:false};
+let setv={btn:100,edOpen:'float',edFs:13,ko:false,kb:{},tpl:{}};
 try{const v=JSON.parse(localStorage.getItem(SETK+'.y'));if(v&&typeof v==='object'){
   if(+v.btn>=40&&+v.btn<=160)setv.btn=+v.btn;
   if(v.edOpen==='float'||v.edOpen==='dock')setv.edOpen=v.edOpen;
   if(+v.edFs>=10&&+v.edFs<=24)setv.edFs=Math.round(+v.edFs);
+  setv.ko=!!v.ko;
   if(v.kb&&typeof v.kb==='object')Object.keys(v.kb).forEach(k=>{if(Array.isArray(v.kb[k]))setv.kb[k]=v.kb[k].filter(x=>typeof x==='string'&&x)});
   if(v.tpl&&typeof v.tpl==='object')['go','ui'].forEach(k=>{if(typeof v.tpl[k]==='string')setv.tpl[k]=v.tpl[k]});
 }}catch(e){}
@@ -6425,7 +7107,9 @@ refreshKbHints();
 
 /* ---- 새 스크립트 기본 템플릿 ---- */
 const TPL_TOKEN='#SCRIPTNAME#';
-const tplText=k=>typeof setv.tpl[k]==='string'?setv.tpl[k]:CS_TPL_DEF[k];
+const tplDef=k=>setv.ko?enToKo(CS_TPL_DEF[k]):CS_TPL_DEF[k];
+const tplText=k=>typeof setv.tpl[k]==='string'?setv.tpl[k]:tplDef(k);
+function koApply(){try{renderEditor();renderInsp();if(palScript)renderPal()}catch(e){}}
 function tplFill(k,n){
   const d=new Date(),pad=x=>String(x).padStart(2,'0');
   return tplText(k).split(TPL_TOKEN).join(n).split('#DATE#').join(d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())).split('#PROJECT#').join(P&&P.name||'');
@@ -6433,13 +7117,19 @@ function tplFill(k,n){
 
 /* ---- 설정 창 ---- */
 const stOv=$('#stOv'),stCont=$('#stCont'),stToc=$('#stToc'),stQ=$('#stQ');
-const ST_TOC=[['general','일반',0],['appearance','화면',1],['editor','스크립트 편집기',1],['keys','단축키',0],['templates','스크립트 템플릿',0],['tpl-go','게임 오브젝트',1],['tpl-ui','UI 요소',1],['about','정보',0]];
+const ST_TOC=[['general','일반',0],['appearance','화면',1],['editor','스크립트 편집기',1],['keys','단축키',0],['templates','스크립트 템플릿',0],['tpl-go','게임 오브젝트',1],['tpl-ui','UI 요소',1],['experimental','실험 기능',0],['about','정보',0]];
 const ST_TPL={go:{label:'게임 오브젝트 스크립트',id:'scripts.template.gameObject',desc:'게임 오브젝트의 “새 C# 스크립트…”와 프로젝트 패널의 “새 C# 스크립트”로 만들 때 처음 들어가는 코드입니다.'},
   ui:{label:'UI 요소 스크립트',id:'scripts.template.ui',desc:'UI 요소(버튼·텍스트 등)의 인스펙터에서 “새 C# 스크립트…”로 만들 때 처음 들어가는 코드입니다.'}};
 const stItem=(key,cat,label,id,desc,ctl,q)=>`<div class="sti" data-st="${key}" data-id="${id}" data-q="${esc((cat+' '+label+' '+id+' '+desc.replace(/<[^>]+>/g,'')+' '+(q||'')).toLowerCase())}">
   <button class="ib stgear" type="button" data-stgear="${key}" title="설정 동작" aria-label="${esc(label)} 설정 동작">${ico('gear')}</button>
   <div class="stit"><span><span class="cat">${esc(cat)}: </span><b data-hl="${esc(label)}">${esc(label)}</b></span><span class="mtag">수정됨</span></div>
   <div class="stid">${desc}</div><div class="stctl">${ctl}</div></div>`;
+function koDictHtml(){
+  const g=(t,o,pre)=>`<h5>${t}</h5><div class="kotbl">${Object.keys(o).map(k=>`<span><b>${esc(k)}</b><i>${esc((pre||'')+o[k])}</i></span>`).join('')}</div>`;
+  let h=g('키워드',KO_KW)+g('형식 · 컴포넌트',Object.assign({},KO_TY,KO_SELF))+g('함수 · 유니티 메시지 (뒤에 ( 또는 &lt;)',KO_CALL)+g('특성 ([ 뒤)',KO_ATTR)+g('멤버 (. 뒤)',KO_MEM,'.');
+  ['Input','Time','Mathf','Debug','Random','Vector2','KeyCode','Color','Camera','GameObject','SceneManager','Application','Quaternion'].forEach(k=>{h+=g((KO_TY_R[k]||k)+' ('+k+') 의 멤버',KO_OWN[k],k+'.')});
+  return h+'<p class="hint" style="margin-top:8px">입력 축 이름: "가로" = "Horizontal", "세로" = "Vertical" · 버튼: "점프", "발사", "확인", "취소"</p>';
+}
 function stBuild(){
   const ver=APP_VER;
   stToc.innerHTML=ST_TOC.map(([id,t,d])=>`<button class="toc" type="button" data-toc="${id}" data-d="${d}" style="--d:${d}">${esc(t)}<span class="n"></span></button>`).join('');
@@ -6474,6 +7164,13 @@ function stBuild(){
     <div class="stgrp" data-sec="tpl-go"><h3 data-anc="tpl-go">게임 오브젝트</h3>${tplBox('go')}</div>
     <div class="stgrp" data-sec="tpl-ui"><h3 data-anc="tpl-ui">UI 요소</h3>${tplBox('ui')}</div>
   </section>
+  <section class="stgrp" data-sec="experimental"><h2 data-anc="experimental">실험 기능</h2>
+    <p class="lead">아직 다듬는 중인 기능입니다. 동작이 바뀌거나 빠질 수 있습니다.</p>
+    ${stItem('ko','실험 기능','한글 스크립트','experimental.koreanScript','켜면 자동완성 후보·예제·새 스크립트 템플릿이 한글 코드로 바뀝니다. 예: <code>hero = GetComponent&lt;Hero&gt;();</code> → <code>hero = 컴포넌트가져오기&lt;주인공&gt;();</code><br>컴포넌트 이름·명령어·키워드는 이 설정과 상관없이 <b>한글과 영어를 모두 인식</b>하므로 한 스크립트 안에 섞어 써도 됩니다. 스크립트 편집기의 <b>한↔영</b> 버튼으로 열린 스크립트를 통째로 바꿀 수도 있습니다.',
+      `<label class="chk"><input type="checkbox" id="stKo">한글 스크립트 사용 <span class="xtag">실험</span></label>
+      <div style="flex:1 0 100%"><div class="acg-l" style="margin:8px 0 4px">예시</div><pre class="ugcode kosample">${csHighlight(enToKo(KO_SAMPLE))}</pre>
+      <details class="kodict"><summary>한글 단어 목록</summary>${koDictHtml()}</details></div>`,'한국어 korean 한글코드 한글 코딩 실험 experimental 자동완성 컴포넌트가져오기 주인공')}
+  </section>
   <section class="stgrp" data-sec="about"><h2 data-anc="about">정보</h2>
     <div class="sti" data-st="about" data-q="정보 버전 version about 홈페이지 공식 사이트 thaniya.co.kr 타니아 링크">
       <div class="stabout"><img src="${LOGO_URI}" alt="Thaniya 로고"><div>
@@ -6495,6 +7192,7 @@ function stBuild(){
   r.addEventListener('change',saveSettings);
   r.addEventListener('dblclick',()=>stReset('btn'));
   $('#stEdOpen').addEventListener('change',e=>{setv.edOpen=e.target.value;saveSettings();stSync()});
+  $('#stKo').addEventListener('change',e=>{setv.ko=e.target.checked;saveSettings();stSync();koApply();toast(setv.ko?'한글 스크립트를 켰습니다 (실험)':'한글 스크립트를 껐습니다')});
   $('#stEdFs').addEventListener('change',e=>{setv.edFs=clamp(Math.round(+e.target.value)||13,10,24);applySettings();saveSettings();stSync()});
   /* 템플릿 편집 칸 */
   $$('textarea[data-tpl]',stCont).forEach(ta=>{
@@ -6509,7 +7207,7 @@ function stBuild(){
     };
     ta._paint=paint;
     ta.addEventListener('scroll',()=>{hl.scrollTop=gut.scrollTop=ta.scrollTop;hl.scrollLeft=ta.scrollLeft});
-    ta.addEventListener('input',()=>{if(ta.value===CS_TPL_DEF[k])delete setv.tpl[k];else setv.tpl[k]=ta.value;saveSettings();paint();stMarks()});
+    ta.addEventListener('input',()=>{if(ta.value===tplDef(k))delete setv.tpl[k];else setv.tpl[k]=ta.value;saveSettings();paint();stMarks()});
     ta.addEventListener('keydown',e=>{
       const a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
       if(e.key==='Tab'&&!e.ctrlKey&&!e.altKey){e.preventDefault();
@@ -6525,6 +7223,7 @@ function stSync(){
   if(stOv.hidden)return;
   const r=$('#stBtn');if(r){r.value=setv.btn;$('#stBtnV').textContent=setv.btn+'%'}
   const eo=$('#stEdOpen');if(eo)eo.value=setv.edOpen;
+  const ko=$('#stKo');if(ko)ko.checked=!!setv.ko;
   const fs=$('#stEdFs');if(fs&&document.activeElement!==fs)fs.value=setv.edFs;
   $$('textarea[data-tpl]',stCont).forEach(ta=>{const v=tplText(ta.dataset.tpl);if(ta.value!==v)ta.value=v;ta._paint()});
   stMarks();
@@ -6538,7 +7237,7 @@ function stMarks(){$$('.sti[data-st]',stCont).forEach(el=>el.classList.toggle('m
 function stReset(key){
   if(key in ST_DEF)setv[key]=ST_DEF[key];
   else if(key.startsWith('tpl.'))delete setv.tpl[key.slice(4)];
-  applySettings();saveSettings();stSync();
+  applySettings();saveSettings();stSync();if(key==='ko')koApply();
 }
 /* 단축키 표 */
 function kbRows(){
@@ -6667,7 +7366,7 @@ stCont.addEventListener('click',e=>{
     closeSettings();newScript(null);return}
   if(e.target.closest('#stResetAll')){
     openModal('모든 설정 초기화','<p style="margin:0">화면·편집기·단축키·스크립트 템플릿 설정을 모두 기본값으로 되돌립니다. 프로젝트 데이터는 바뀌지 않습니다.</p>',[{t:'취소'},{t:'초기화',cls:'danger',fn:()=>{
-      setv={btn:ST_DEF.btn,edOpen:ST_DEF.edOpen,edFs:ST_DEF.edFs,kb:{},tpl:{}};applySettings();saveSettings();kbRebuild();refreshKbHints();kbRows();stSync();toast('모든 설정을 기본값으로 되돌렸습니다')}}]);
+      setv={btn:ST_DEF.btn,edOpen:ST_DEF.edOpen,edFs:ST_DEF.edFs,ko:false,kb:{},tpl:{}};koApply();applySettings();saveSettings();kbRebuild();refreshKbHints();kbRows();stSync();toast('모든 설정을 기본값으로 되돌렸습니다')}}]);
   }
 });
 stCont.addEventListener('dblclick',e=>{const tr=e.target.closest('#kbBody tr');if(tr&&!e.target.closest('button'))kbRecord(tr.dataset.kb,'replace')});
