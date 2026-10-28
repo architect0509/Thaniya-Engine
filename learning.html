@@ -311,6 +311,14 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .tk.ok b{color:inherit}
 .tk code,.brief-pn code{font:11.5px var(--fm);background:rgba(255,255,255,.08);padding:0 5px;border-radius:5px}
 .tkfoot{display:flex;align-items:center;gap:8px;padding:0 14px 12px;color:var(--mute);font-size:11.5px}
+.objslot{flex:1;min-width:0;display:flex;align-items:center;gap:6px;height:24px;padding:0 8px;border:1px dashed var(--line2);border-radius:10px;background:var(--field);color:var(--mute);font:inherit;font-size:12px;cursor:pointer;text-align:left}
+.objslot.set{border-style:solid;color:var(--fg)}
+.objslot.over{border-color:var(--accent);border-style:solid;background:rgba(233,189,12,.14);color:var(--fg)}
+.objslot span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.objslot small{margin-left:auto;color:var(--mute);font-size:10.5px;flex:none}
+.objslot .ic{width:13px;height:13px;flex:none}
+.tr[draggable=true]{cursor:grab}
+.tr.dragging{opacity:.45}
 .pmenu{position:fixed;z-index:80;min-width:200px;padding:5px;background:#24242b;border:1px solid rgba(255,255,255,.14);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.5);font:12.5px "IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
 .pmenu button{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border:0;border-radius:8px;background:none;color:#e9eaee;text-align:left;cursor:pointer;font:inherit}
 .pmenu button:hover:not(:disabled),.pmenu button:focus-visible{background:rgba(255,255,255,.09);outline:none}
@@ -367,7 +375,7 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 <div id="lessonView" hidden>
 <header class="top">
   <button class="back" type="button" id="toHome" aria-label="레슨 목록으로">← 레슨 목록</button>
-  <a class="brand" href="mypage.html" data-home title="마이페이지로 (내 프로젝트)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a>
+  <a class="brand" href="#" id="lvHome" title="학습 메인으로 (레슨 목록)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a>
   <div class="lesson"><b id="lNo"></b><span id="lTitle"></span></div>
   <div class="prog"><span id="progT"></span><div class="bar"><i id="progB"></i></div></div>
   <button class="treset" type="button" id="topReset" aria-haspopup="menu" title="초기화">초기화</button>
@@ -472,7 +480,9 @@ function runOnce(code,over,sc){
   const rt={f:{},ty:{}};
   res.fields.forEach(f=>{rt.f[f.name]=csDefault(f.type,f.def);rt.ty[f.name]=f.type});
   Object.assign(rt.f,over||{});
-  const cx={m:{objs:sc||[],ui:[],uiGroups:[]},o:(sc&&sc.find(q=>q.id==='quiz'))||{name:'Quiz',props:{}},rt,s:{id:1,name:res.cls||'Quiz'},pr:{r:res,ast:{}},scopes:[],me:null,loops:0,depth:0,dt:.016};
+  const mm={objs:sc||[],ui:[],uiGroups:[]};
+  Object.keys(rt.f).forEach(k=>{const v=rt.f[k];if(v&&typeof v==='object'&&!v.__h&&v.ref!==undefined){const o=mm.objs.find(q=>q.id===v.ref);rt.f[k]=o?refProxy(mm,o,rt.ty[k]):null}});
+  const cx={m:mm,o:(sc&&sc.find(q=>q.id==='quiz'))||{name:'Quiz',props:{}},rt,s:{id:1,name:res.cls||'Quiz'},pr:{r:res,ast:{}},scopes:[],me:null,loops:0,depth:0,dt:.016};
   let fatal=false;
   csCur=cx;
   try{
@@ -503,7 +513,8 @@ function snTestScene(over){
   return a;
 }
 function gradeProblem(p,code){
-  const runs=p.tests.map(t=>{const sc=p.scene?snTestScene(t.sc):null;return{t,sc,r:runOnce(code,t.f,sc)}});
+  const refs=p.scene?refsOf(p,code):{};
+  const runs=p.tests.map(t=>{const sc=p.scene?snTestScene(t.sc):null;return{t,sc,r:runOnce(code,Object.assign({},refs,t.f),sc)}});
   const first=runs[0].r;
   for(let i=0;i<runs.length;i++){
     const{t,sc,r}=runs[i];
@@ -570,26 +581,26 @@ const L3P=[
  must:[/GetComponent\s*<\s*Transform\s*>/,'출력은 맞아요. 이번에는 GetComponent<Transform>()으로 컴포넌트를 꺼내서 풀어 보세요.'],
  hint:'Transform tr = GetComponent<Transform>();\nDebug.Log($"위치: {tr.position.x}, {tr.position.y}");'},
 {id:'c-light',scene:true,view:'pGame',title:'다른 오브젝트의 컴포넌트 바꾸기',
- desc:'다른 오브젝트는 먼저 <code>GameObject.Find("이름")</code>으로 찾고, 그 오브젝트에서 <code>GetComponent&lt;Light&gt;()</code>로 컴포넌트를 꺼냅니다. 꺼낸 컴포넌트의 값(<code>intensity</code>)에 새 값을 대입하면 인스펙터와 게임 뷰가 바로 바뀌어요. GetComponent는 <b>그 오브젝트에 붙은</b> 컴포넌트만 찾아서, Light가 없는 퀴즈에서 꺼내면 null이 나옵니다.',
+ desc:'다른 오브젝트는 먼저 <code>GameObject.Find("이름")</code>으로 찾고, 그 오브젝트에서 <code>GetComponent&lt;Light&gt;()</code>로 컴포넌트를 꺼냅니다. 꺼낸 컴포넌트의 값(<code>intensity</code>)에 새 값을 대입하면 인스펙터와 게임 뷰가 바로 바뀌어요. GetComponent는 <b>그 오브젝트에 붙은</b> 컴포넌트만 찾아서, Light가 없는 퀴즈에서 꺼내면 null이 나옵니다.<br><br><b>이름으로 찾지 않는 방법</b>도 있어요. 스크립트에 <code>public GameObject torch;</code>를 만들고 실행(또는 퀴즈 선택)하면 인스펙터에 <b>Torch</b> 칸이 생겨요. 계층 구조의 <b>횃불</b>을 그 칸으로 끌어다 놓으면 <code>GameObject.Find</code> 없이 바로 <code>torch</code>로 쓸 수 있어요. 이름이 바뀌어도 연결이 끊기지 않아서 실제 게임에서는 이 방법을 더 많이 써요.',
  goal:'<b>횃불</b>의 Light 밝기(<code>intensity</code>)를 <b>0.3</b>으로 낮추고, <b>횃불 밝기: 0.3</b> 을 출력하세요. 게임 뷰가 어두워져요.',
  fields:'',body:'        // 횃불의 Light 밝기를 0.3으로\n',
  tests:[{f:{},out:[['info','횃불 밝기: 0.3']]}],
  verify:sc=>Math.abs(snO(sc,'torch').intensity-.3)<1e-6?'':'출력은 맞지만 횃불의 밝기는 0.3이 아니에요. 출력만 하지 말고 intensity에 값을 대입하세요.',
- hint:'GameObject torch = GameObject.Find("횃불");\nLight light = torch.GetComponent<Light>();\nlight.intensity = 0.3f;\nDebug.Log("횃불 밝기: " + light.intensity);'},
+ hint:'GameObject torch = GameObject.Find("횃불");\nLight light = torch.GetComponent<Light>();\nlight.intensity = 0.3f;\nDebug.Log("횃불 밝기: " + light.intensity);\n\n// 끌어다 놓기로 연결하는 방법\npublic GameObject torch;   // Start() 위에 쓰고, 인스펙터 Torch 칸에 횃불을 끌어다 놓기\n...\nLight light = torch.GetComponent<Light>();'},
 {id:'c-enabled',scene:true,view:'pGame',title:'컴포넌트 켜고 끄기',
  desc:'컴포넌트 이름 옆의 체크박스처럼, 코드에서는 <code>enabled</code>로 컴포넌트를 켜고 끕니다. <code>light.enabled = false;</code>라고 쓰면 빛이 꺼지고, 값을 읽으면 지금 켜져 있는지 알 수 있어요. true/false 값을 글자와 이어 붙이면 True / False로 출력돼요.',
  goal:'횃불의 Light를 <code>lightOn</code> 값에 맞춰 켜거나 끄고, 마지막에 <b>켜짐 여부: False</b> 처럼 <code>enabled</code> 값을 출력하세요. 인스펙터에서 lightOn을 바꿔 다시 실행해 보세요.',
  fields:'    public bool lightOn = false;\n\n',body:'        // lightOn 값에 맞춰 횃불 빛을 켜거나 끄세요\n',
  tests:[{f:{lightOn:false},out:[['info','켜짐 여부: False']]},{f:{lightOn:true},sc:{torch:{enabled:false}},why:'빛이 꺼진 채로 시작해 lightOn = true 로 시험했더니 ',out:[['info','켜짐 여부: True']]}],
  verify:(sc,f)=>{const on=snO(sc,'torch').enabled!==false;return on===!!f.lightOn?'':'횃불의 빛이 '+(on?'켜져':'꺼져')+' 있어요. lightOn이 '+(f.lightOn?'true':'false')+'이면 빛을 '+(f.lightOn?'켜야':'꺼야')+' 해요.'},
- hint:'Light light = GameObject.Find("횃불").GetComponent<Light>();\nlight.enabled = lightOn;\nDebug.Log("켜짐 여부: " + light.enabled);'},
+ hint:'Light light = GameObject.Find("횃불").GetComponent<Light>();\nlight.enabled = lightOn;\nDebug.Log("켜짐 여부: " + light.enabled);\n\n// gameObject.enabled 는 없어요. 컴포넌트는 enabled, 오브젝트 전체는 SetActive(…)\n// public Light torchLight; 를 만들고 인스펙터 칸에 횃불을 끌어다 놓아도 돼요.'},
 {id:'c-move',scene:true,view:'pScene',title:'오브젝트 위치 옮기기',
  desc:'Transform의 <code>position</code>은 읽기만 하는 값이 아니에요. 새 위치를 대입하면 오브젝트가 그 자리로 이동합니다. 위치끼리 더할 수도 있고, <code>Vector2.right</code>는 오른쪽으로 한 칸 (1, 0)이에요. 게임 오브젝트에서는 <code>.transform</code>으로 Transform을 바로 꺼낼 수 있어요. 씬 좌표는 왼쪽 위가 (0, 0)입니다.',
  goal:'<b>슬라임</b>을 <b>주인공</b>의 오른쪽 한 칸 옆으로 옮기고, <b>슬라임 위치: 4, 4</b> 를 출력하세요. 주인공 위치가 바뀌어도 맞아야 해요.',
  fields:'',body:'        // 슬라임을 주인공 오른쪽 옆으로\n',
  tests:[{f:{},out:[['info','슬라임 위치: 4, 4']]},{f:{},sc:{hero:{x:5,y:3}},why:'주인공을 (5, 3)에 두고 시험했더니 ',out:[['info','슬라임 위치: 6, 3']]}],
  verify:sc=>{const h=snO(sc,'hero'),s=snO(sc,'slime');return s.x===h.x+1&&s.y===h.y?'':'슬라임이 주인공의 오른쪽 한 칸 옆에 있지 않아요. (지금 '+s.x+', '+s.y+')'},
- hint:'GameObject hero = GameObject.Find("주인공");\nGameObject slime = GameObject.Find("슬라임");\nslime.transform.position = hero.transform.position + Vector2.right;\nDebug.Log($"슬라임 위치: {slime.transform.position.x}, {slime.transform.position.y}");'},
+ hint:'// public GameObject hero; public GameObject slime; 을 만들고 인스펙터 칸에 끌어다 놓아도 돼요\nGameObject hero = GameObject.Find("주인공");\nGameObject slime = GameObject.Find("슬라임");\nslime.transform.position = hero.transform.position + Vector2.right;\nDebug.Log($"슬라임 위치: {slime.transform.position.x}, {slime.transform.position.y}");'},
 {id:'c-combo',scene:true,view:'pGame',title:'컴포넌트 함께 쓰기',
  desc:'한 번에 여러 컴포넌트를 다룰 수 있어요. 주인공의 <code>Hero</code> 컴포넌트에는 체력 <code>hp</code>가, 카메라에는 확대 정도 <code>orthographicSize</code>가 있습니다. 메인 카메라는 <code>Camera.main</code>으로 바로 가져와요. 크기 값이 작을수록 화면이 더 확대돼요.',
  goal:'주인공의 <code>hp</code>를 절반으로 줄이고 카메라 크기를 <b>2</b>로 바꿔 화면을 확대한 뒤, <b>HP: 50</b> 을 출력하세요. 처음 hp가 60이어도 맞아야 해요.',
@@ -1059,8 +1070,9 @@ function goProxy(m,o){
       if(n==='transform')return trProxy(m,o);
       if(n==='activeSelf'||n==='activeInHierarchy')return o.active!==false;
       if(n==='tag')return'';
+      if(n==='enabled')throw new Error('GameObject에는 enabled가 없어요. 빛 같은 컴포넌트를 켜고 끄려면 GetComponent<Light>()로 꺼낸 뒤 light.enabled를 쓰고, 오브젝트 전체를 켜고 끄려면 SetActive(true / false)를 쓰세요.');
       throw csUnsup('gameObject.'+n)},
-    set(n){throw csUnsup('gameObject.'+n+' 대입')},
+    set(n){if(n==='enabled')throw new Error('GameObject에는 enabled가 없어요. 빛 같은 컴포넌트를 켜고 끄려면 GetComponent<Light>()로 꺼낸 뒤 light.enabled를 쓰고, 오브젝트 전체를 켜고 끄려면 SetActive(true / false)를 쓰세요.');throw csUnsup('gameObject.'+n+' 대입')},
     call(n,a){
       if(n==='SetActive'){if(a[0])delete o.active;else o.active=false;return null}
       if(n==='CompareTag')return''===csFmt(a[0]);
@@ -1234,7 +1246,7 @@ function renderHier(){
     if(L.length){h+=fold('folder','타일맵',2);h+=L.map(r=>row('L:'+r[0],r[2],r[3],r[1],r[4])).join('')}}
   if(open&&tk)h+=fold('folder','게임 오브젝트',list.length);
   if(open)h+=list.map(o=>{const K=KUI[o.kind],on=o.id===SN.sel;
-    return`<div class="tr${on?' on':''}" style="--d:${D};${o.active===false?'opacity:.45':''}" data-id="${o.id}" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${K.c}">${ico(K.ic)}</span><span class="tl">${esc(o.name)}${o.kind==='camera'?'<span class="wbadge">시작 카메라</span>':''}</span><span class="ts">${o.kind==='camera'?'':o.x+','+o.y}</span></div>`}).join('');
+    return`<div class="tr${on?' on':''}" style="--d:${D};${o.active===false?'opacity:.45':''}" data-id="${o.id}" draggable="true" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${K.c}">${ico(K.ic)}</span><span class="tl">${esc(o.name)}${o.kind==='camera'?'<span class="wbadge">시작 카메라</span>':''}</span><span class="ts">${o.kind==='camera'?'':o.x+','+o.y}</span></div>`}).join('');
   if(open&&tk&&(pr.ui||SN_UI.length)){const U=SN_UI.filter(u=>!q||u.name.toLowerCase().includes(q));h+=fold('folder','UI (캔버스)',U.length);
     h+=U.map(u=>row('U:'+u.id,u.type==='button'?'uibtn':'uitext','#e9bd0c',esc(u.name),ANC_N[u.anchor]||'')).join('')}
   $('#hier').innerHTML=h;
@@ -1264,6 +1276,9 @@ $('#hier').addEventListener('keydown',e=>{
   else if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const n=e.key==='ArrowDown'?r.nextElementSibling:r.previousElementSibling;if(n&&n.dataset.id)n.focus()}
 });
 $('#hFilter').addEventListener('input',renderHier);
+$('#hier').addEventListener('dragstart',e=>{const r=e.target.closest('.tr[data-id]');if(!r||r.dataset.id[1]===':'){e.preventDefault();return}
+  e.dataTransfer.setData('text/plain','obj:'+r.dataset.id);e.dataTransfer.effectAllowed='link';r.classList.add('dragging')});
+$('#hier').addEventListener('dragend',e=>{const r=e.target.closest('.tr');if(r)r.classList.remove('dragging');$$('.objslot.over').forEach(x=>x.classList.remove('over'))});
 $('#hCollapse').onclick=()=>{hOpen=false;renderHier()};
 $('#hExpand').onclick=()=>{hOpen=true;renderHier()};
 
@@ -1287,6 +1302,8 @@ function scriptFields(){
     if(m.fk==='num')ctl=numIn('#',a,v,/^(float|double|decimal)$/.test(m.type)?.1:1,m.min,m.max,m.name);
     else if(m.fk==='bool')ctl=chkIn(a,!!v,m.name);
     else if(m.fk==='str')ctl=`<input type="text" ${a} value="${esc(v)}" aria-label="${esc(m.name)}">`;
+    else if(slotType(m.type)){const r=v&&typeof v==='object'?v.ref:null,o=r&&SN_OBJS.find(q=>q.id===r);
+      ctl=`<button type="button" class="objslot${o?' set':''}" data-slot="${esc(m.name)}" data-type="${esc(m.type)}" title="계층 구조에서 오브젝트를 끌어다 놓거나, 눌러서 고르세요">${o?ico(KUI[o.kind].ic)+'<span>'+esc(o.name)+'</span>':'<span>None</span>'}<small>${esc(m.type)}</small></button>`}
     else ctl=`<input type="text" value="None (${esc(m.type)})" readonly aria-label="${esc(m.name)}">`;
     return fr(esc(prettyName(m.name)),ctl+(has?`<button class="ib" type="button" data-rs="${esc(m.name)}" title="되돌리기" aria-label="${esc(m.name)} 되돌리기">↺</button>`:''),esc(m.type),m.tip||'');
   }).join('')};
@@ -1399,6 +1416,13 @@ $('#insp').addEventListener('click',e=>{
   const b=e.target.closest('[data-rs]');if(!b)return;
   const v=st.vals[P().id];if(v){delete v[b.dataset.rs];save()}renderInsp();
 });
+/* 오브젝트 슬롯: 끌어다 놓기 · 눌러서 고르기 */
+$('#insp').addEventListener('dragover',e=>{const sl=e.target.closest('.objslot');if(!sl)return;e.preventDefault();e.dataTransfer.dropEffect='link';sl.classList.add('over')});
+$('#insp').addEventListener('dragleave',e=>{const sl=e.target.closest('.objslot');if(sl&&!sl.contains(e.relatedTarget))sl.classList.remove('over')});
+$('#insp').addEventListener('drop',e=>{const sl=e.target.closest('.objslot');if(!sl)return;e.preventDefault();sl.classList.remove('over');
+  const d=e.dataTransfer.getData('text/plain')||'';if(d.startsWith('obj:'))setSlot(sl.dataset.slot,sl.dataset.type,d.slice(4))});
+$('#insp').addEventListener('click',e=>{const sl=e.target.closest('.objslot');if(!sl)return;const T=sl.dataset.type,name=sl.dataset.slot;
+  popMenu(sl,SN_OBJS.map(o=>({t:o.name,ic:KUI[o.kind].ic,note:slotOk(T,o)?'':(T+' 없음'),dis:!slotOk(T,o),fn:()=>setSlot(name,T,o.id)})).concat([{t:'None (비우기)',fn:()=>{const v=st.vals[P().id];if(v){delete v[name];save()}renderInsp()}}]))});
 /* 숫자 라벨(X · Y · HP …)을 좌우로 끌어 값 조절 (index와 같은 동작) */
 $('#insp').addEventListener('pointerdown',e=>{
   const lab=e.target.closest('.num>i');if(!lab||e.button!==0)return;
@@ -1627,6 +1651,34 @@ window.addEventListener('resize',snRedraw);
 
 /* ---- 스크립트 편집기 (강조 · 줄 번호 · 상태 표시) ---- */
 const ta=$('#code'),hl=$('#hl'),gut=$('#gut');
+/* 코드 편집기 실행 취소: 자동 들여쓰기(Tab · Enter · 자동완성)가 브라우저 기본 실행 취소 기록을 끊기 때문에 직접 기록합니다.
+   Ctrl+Z 되돌리기 · Ctrl+Y / Ctrl+Shift+Z 다시 실행 · 이어서 친 글자는 한 번에 되돌려요 */
+function edUndo(ta){
+  if(ta._undo)return;const H=ta._undo={st:[],i:-1,t:0,typing:false,busy:false};
+  const snap=()=>({v:ta.value,s:ta.selectionStart,e:ta.selectionEnd});
+  const sync=()=>{if(!H.st.length||H.st[H.i].v!==ta.value){H.st=[snap()];H.i=0;H.typing=false}};
+  const apply=q=>{H.busy=true;ta.value=q.v;try{ta.setSelectionRange(q.s,q.e)}catch(e){}ta.dispatchEvent(new Event('input',{bubbles:true}));H.busy=false;H.typing=false};
+  ta.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&!e.altKey&&(e.code==='KeyZ'||e.code==='KeyY')){
+      e.preventDefault();e.stopImmediatePropagation();sync();
+      if(e.code==='KeyY'||e.shiftKey){if(H.i<H.st.length-1){H.i++;apply(H.st[H.i])}}
+      else if(H.i>0){H.i--;apply(H.st[H.i])}
+      return;
+    }
+    sync();
+  },true);
+  ta.addEventListener('focus',sync);
+  ta.addEventListener('input',e=>{
+    if(H.busy)return;
+    const q=snap(),now=Date.now(),typing=e.inputType==='insertText'&&!!e.data&&e.data.length===1;
+    if(!H.st.length){H.st=[q];H.i=0;H.typing=typing;H.t=now;return}
+    H.st=H.st.slice(0,H.i+1);
+    if(typing&&H.typing&&now-H.t<1000&&H.i>0)H.st[H.i]=q;
+    else{H.st.push(q);if(H.st.length>300)H.st.shift();H.i=H.st.length-1}
+    H.typing=typing;H.t=now;
+  });
+}
+edUndo(ta);
 function syncEd(){hl.scrollTop=gut.scrollTop=ta.scrollTop;hl.scrollLeft=ta.scrollLeft}
 function paintEd(){
   hl.innerHTML=csHighlight(ta.value);
@@ -1654,6 +1706,22 @@ function show(i){
   renderHier();renderInsp();setConsole([],false);idleVerdict();snRedraw();
 }
 
+/* 오브젝트 슬롯 (public GameObject · Transform · Light · Camera · Hero): 계층 구조에서 끌어다 놓아 연결 */
+const SLOT_T=['GameObject','Transform','Light','Light2D','Camera','Hero'];
+const slotType=T=>SLOT_T.includes(T);
+function slotOk(T,o){if(!o)return false;if(T==='GameObject')return true;if(T==='Transform')return o.kind!=='camera';if(T==='Light'||T==='Light2D')return o.kind==='light';if(T==='Camera')return o.kind==='camera';if(T==='Hero')return o.kind==='hero';return false}
+function refProxy(m,o,T){if(T==='GameObject')return goProxy(m,o);if(T==='Transform')return o.kind==='camera'?null:trProxy(m,o);try{return csGetComp(m,o,T)}catch(e){return null}}
+function setSlot(name,T,id){
+  const p=P(),o=SN_OBJS.find(q=>q.id===id);
+  if(!slotOk(T,o)){setVerdict('bad',esc((o?o.name:'그 오브젝트')+'에는 '+T+(T==='GameObject'?'':' 컴포넌트')+'가 없어서 이 칸에 넣을 수 없어요.'));return}
+  const v=st.vals[p.id]||(st.vals[p.id]={});v[name]={ref:id};save();TASK.ev.add('slot:'+name);renderInsp();idleVerdict();
+}
+/* 채점 때도 인스펙터 슬롯에 연결한 오브젝트를 그대로 씁니다 (씬에 저장되는 값이라서) */
+function refsOf(p,code){
+  const v=st.vals[p.id]||{},o={};let res;try{res=parseCS(code)}catch(e){return o}
+  res.members.filter(m=>m.kind==='field'&&slotType(m.type)).forEach(m=>{const x=v[m.name];if(x&&typeof x==='object'&&x.ref)o[m.name]={ref:x.ref}});
+  return o;
+}
 /* 인스펙터에서 바꾼 값은 그대로 실행에 쓰이고, 채점은 정해진 값으로 따로 시험합니다 */
 function overridesFrom(p,res){
   const v=st.vals[p.id]||{},o={};
@@ -2061,6 +2129,7 @@ function renderHome(){
 }
 $('#cards').addEventListener('click',e=>{const c=e.target.closest('[data-go]');if(c)location.hash=c.dataset.go});
 $('#toHome').onclick=()=>{location.hash=''};
+$('#lvHome').onclick=e=>{e.preventDefault();location.hash=''};
 (function(){
   const K='thaniya.learn.topclosed',tg=$('#topTg'),bx=$('#topx');
   const set=c=>{bx.classList.toggle('closed',c);tg.setAttribute('aria-expanded',String(!c));try{localStorage.setItem(K,c?'1':'0')}catch(e){}};

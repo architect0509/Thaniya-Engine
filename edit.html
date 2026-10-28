@@ -688,6 +688,14 @@ input,textarea,[contenteditable],.conlist,.spvt,.ugcode{-webkit-user-select:text
 .gvrot .ic{transition:transform .2s}
 .gvzoom{width:auto;height:26px;border-radius:999px;padding:0 8px;font-family:var(--f-mono);font-size:11px}
 .gview{flex:1;min-height:0;display:flex;flex-direction:column;background:#0d0d10}
+.vsplit{flex:1;min-height:0;min-width:0;display:flex;flex-direction:column}
+.vsplit.both{flex-direction:row}
+.vsplit.both>.cvwrap{flex:0 0 var(--sr,50%);min-width:0}
+.vsplit.both>.gview{flex:1 1 0;min-width:0}
+.vsdiv{display:none;flex:none;position:relative;width:8px;margin:0 -4px;z-index:6;cursor:col-resize;touch-action:none;outline:none}
+.vsdiv::after{content:"";position:absolute;top:0;bottom:0;left:3px;width:2px;background:var(--line2);transition:background .15s,width .15s,left .15s}
+.vsdiv:hover::after,.vsdiv.on::after,.vsdiv:focus-visible::after{left:2px;width:4px;background:rgba(233,189,12,.75);border-radius:3px}
+.vsplit.both>.vsdiv{display:block}
 .gview[hidden]{display:none}
 .gvstage{position:relative;flex:1;min-height:0;overflow:auto;display:flex;padding:18px;
   background:radial-gradient(circle at 50% 40%,rgba(233,189,12,.06),transparent 60%),repeating-linear-gradient(45deg,rgba(255,255,255,.018) 0 10px,transparent 10px 20px)}
@@ -1017,7 +1025,7 @@ body.popbody .pcol{display:none}
       <div class="split v hide" id="spL" role="separator" aria-label="왼쪽 패널 너비"></div>
       <section class="scenepanel" id="scenepanel">
         <div class="phead static">
-          <span class="vtabs" role="tablist" aria-label="뷰 전환"><button class="vtab on" data-view="scene" role="tab" data-ic="scene" title="씬 뷰 (편집)">씬</button><button class="vtab" data-view="game" role="tab" data-ic="game" title="게임 뷰 (기기 화면 미리보기)">게임</button></span>
+          <span class="vtabs" role="tablist" aria-label="뷰 전환"><button class="vtab on" data-view="scene" role="tab" data-ic="scene" title="씬 뷰 (편집)">씬</button><button class="vtab" data-view="game" role="tab" data-ic="game" title="게임 뷰 (기기 화면 미리보기)">게임</button><button class="vtab" data-view="split" role="tab" data-ic="split" title="씬 뷰와 게임 뷰를 좌우로 나란히 보기">나란히</button></span>
           <span class="vbar" id="sceneBar">
           <span class="spacer"></span>
           <label class="chip"><input type="checkbox" id="optGrid" checked><span>그리드</span></label>
@@ -1038,7 +1046,7 @@ body.popbody .pcol{display:none}
           <label class="chip" title="UI 캔버스 경계와 UI 요소 영역을 겹쳐 표시합니다"><input type="checkbox" id="gvGuide"><span>UI 가이드</span></label>
           </span>
         </div>
-        <div class="cvwrap" id="stage"><canvas id="cv"></canvas><div class="playlock" id="playLock"><i></i>플레이 중 · 씬 편집 잠김 (오른쪽/가운데 버튼 드래그: 화면 이동 · 휠: 확대)</div><div class="sbar" id="sbar" role="toolbar" aria-label="씬 뷰 도구"><div class="sgrip" id="sgrip" title="드래그하여 이동"><span data-ic="cube"></span><button class="sdd" id="sdd" aria-label="도구 모음 옵션">▾</button></div><div id="tools">
+        <div class="vsplit" id="vsplit"><div class="cvwrap" id="stage"><canvas id="cv"></canvas><div class="playlock" id="playLock"><i></i>플레이 중 · 씬 편집 잠김 (오른쪽/가운데 버튼 드래그: 화면 이동 · 휠: 확대)</div><div class="sbar" id="sbar" role="toolbar" aria-label="씬 뷰 도구"><div class="sgrip" id="sgrip" title="드래그하여 이동"><span data-ic="cube"></span><button class="sdd" id="sdd" aria-label="도구 모음 옵션">▾</button></div><div id="tools">
       <button data-tool="hand" data-ic="hand" title="손 도구 (Q · 스페이스 누른 채 드래그)" aria-label="손 도구"><span class="k">Q</span></button>
       <button data-tool="select" data-ic="select" title="이동 도구 (W)" aria-label="이동 도구"><span class="k">W</span></button>
       <button data-tool="brush" data-ic="brush" title="브러시 (E)" aria-label="브러시"><span class="k">E</span></button>
@@ -1047,10 +1055,10 @@ body.popbody .pcol{display:none}
       <button data-tool="fill" data-ic="fill" title="채우기 (Y)" aria-label="채우기"><span class="k">Y</span></button>
       <button data-tool="pick" data-ic="pick" title="피커 (I)" aria-label="피커"><span class="k">I</span></button>
     </div></div></div>
-        <div class="gview" id="gview" hidden>
+        <div class="vsdiv" id="vsDiv" role="separator" aria-orientation="vertical" aria-label="씬 뷰 · 게임 뷰 너비" tabindex="0" title="끌어서 씬 뷰와 게임 뷰의 너비 조절 · 두 번 클릭하면 반반으로"></div><div class="gview" id="gview" hidden>
           <div class="gvstage" id="gvStage"><div class="gvdev" id="gvDev"><div class="gvscr" id="gvScr"><canvas id="gv"></canvas></div></div></div>
           <div class="gvinfo" id="gvInfo"></div>
-        </div>
+        </div></div>
         <div class="toast" id="toast" role="status"></div>
       </section>
       <div class="split v hide" id="spR" role="separator" aria-label="오른쪽 패널 너비"></div>
@@ -1283,6 +1291,7 @@ const ICON=(()=>{
     uibtn:s('<rect x="2" y="5" width="12" height="6" rx="3"/>'),
     uibar:s('<rect x="2" y="6.2" width="12" height="3.6" rx="1.8"/><path d="M3 8h5"/>'),
     uiimg:s('<rect x="2.5" y="3" width="11" height="10" rx="1"/><path d="M3 11l3-3 2.5 2.5L10 9l3 3"/>'),
+    split:s('<rect x="1.8" y="3" width="12.4" height="10" rx="1.6"/><path d="M8 3v10"/>'),
     game:s('<path d="M4.6 4.5h6.8a3.1 3.1 0 0 1 3 2.4l.7 3.3a1.9 1.9 0 0 1-3.2 1.7L10.4 10H5.6l-1.5 1.9A1.9 1.9 0 0 1 .9 10.2l.7-3.3a3.1 3.1 0 0 1 3-2.4z"/><path d="M4.8 6.4v2.2M3.7 7.5h2.2"/><circle cx="10.8" cy="6.9" r=".5"/><circle cx="11.9" cy="8.1" r=".5"/>'),
     rotate:s('<rect x="5.5" y="1.8" width="7" height="12.4" rx="1.6"/><path d="M1.6 9.6a5.2 5.2 0 0 0 3 4.3M1.2 12.2l.4 1.9 1.9-.6"/>'),
     phone:s('<rect x="4.5" y="1.5" width="7" height="13" rx="1.7"/><path d="M7 3.3h2"/>'),
@@ -2258,7 +2267,7 @@ function drawLighting(g,m,lights,sc,tx,ty){
 }
 function render(){
   raf=0;const PL=play&&play.m?play:null,m=PL?PL.m:cur();if(!m)return;
-  if(GV.view==='game'){gvDraw();return}
+  if(GV.view==='game'||GV.split){gvDraw();if(!GV.split)return}
   const dpr=window.devicePixelRatio||1,w=stage.clientWidth,h=stage.clientHeight;
   if(!w||!h)return;
   if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}
@@ -4343,6 +4352,33 @@ function acAccept(i){
   acHide();ta.focus();
   if(retrig)setTimeout(()=>acUpdate(ta,true),0);
 }
+/* 코드 편집기 실행 취소: 자동 들여쓰기(Tab · Enter · 자동완성)가 브라우저 기본 실행 취소 기록을 끊기 때문에 직접 기록합니다.
+   Ctrl+Z 되돌리기 · Ctrl+Y / Ctrl+Shift+Z 다시 실행 · 이어서 친 글자는 한 번에 되돌려요 */
+function edUndo(ta){
+  if(ta._undo)return;const H=ta._undo={st:[],i:-1,t:0,typing:false,busy:false};
+  const snap=()=>({v:ta.value,s:ta.selectionStart,e:ta.selectionEnd});
+  const sync=()=>{if(!H.st.length||H.st[H.i].v!==ta.value){H.st=[snap()];H.i=0;H.typing=false}};
+  const apply=q=>{H.busy=true;ta.value=q.v;try{ta.setSelectionRange(q.s,q.e)}catch(e){}ta.dispatchEvent(new Event('input',{bubbles:true}));H.busy=false;H.typing=false};
+  ta.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&!e.altKey&&(e.code==='KeyZ'||e.code==='KeyY')){
+      e.preventDefault();e.stopImmediatePropagation();sync();
+      if(e.code==='KeyY'||e.shiftKey){if(H.i<H.st.length-1){H.i++;apply(H.st[H.i])}}
+      else if(H.i>0){H.i--;apply(H.st[H.i])}
+      return;
+    }
+    sync();
+  },true);
+  ta.addEventListener('focus',sync);
+  ta.addEventListener('input',e=>{
+    if(H.busy)return;
+    const q=snap(),now=Date.now(),typing=e.inputType==='insertText'&&!!e.data&&e.data.length===1;
+    if(!H.st.length){H.st=[q];H.i=0;H.typing=typing;H.t=now;return}
+    H.st=H.st.slice(0,H.i+1);
+    if(typing&&H.typing&&now-H.t<1000&&H.i>0)H.st[H.i]=q;
+    else{H.st.push(q);if(H.st.length>300)H.st.shift();H.i=H.st.length-1}
+    H.typing=typing;H.t=now;
+  });
+}
 function acHook(ta){
   ta.addEventListener('keydown',e=>{
     if(e.ctrlKey&&!e.altKey&&!e.metaKey&&e.code==='Space'){e.preventDefault();e.stopImmediatePropagation();acUpdate(ta,true);return}
@@ -4407,7 +4443,7 @@ function renderEditor(){
   };
   box.querySelector('#edSave').onclick=()=>{save();ta.focus({preventScroll:true})};
   {const kb0=box.querySelector('#edKo');if(kb0)kb0.onclick=()=>{const v=ta.value,en=koCode(v),t=en!==v?en:enToKo(v);if(t===v){toast('바꿀 단어가 없습니다');return}ta.focus();ta.setSelectionRange(0,v.length);ta.setRangeText(t,0,v.length,'start');ta.dispatchEvent(new Event('input'));toast(en!==v?'영어(C#) 코드로 바꿨습니다':'한글 코드로 바꿨습니다')}}
-  acHook(ta);
+  acHook(ta);edUndo(ta);
   ta.addEventListener('keydown',e=>{
     const k=e.key,a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
     const ins=(txt,s0,e0,cur)=>{ta.setRangeText(txt,s0,e0,'end');if(cur!=null)ta.setSelectionRange(cur,cur);ta.dispatchEvent(new Event('input'))};
@@ -4864,8 +4900,8 @@ function trProxy(m,o){
 }
 function goProxy(m,o){
   return{__h:'GameObject',__o:o,name:o.name,
-    get(n){if(n==='name')return o.name;if(n==='transform')return isUiEl(o)?(()=>{throw csUnsup('UI transform')})():trProxy(m,o);if(n==='activeSelf')return isUiEl(o)?o.visible!==false:o.active!==false&&m.objs.includes(o);if(n==='activeInHierarchy')return isUiEl(o)?o.visible!==false:objOn(m,o)&&m.objs.includes(o);if(n==='tag')return o.tag||'';throw csUnsup('gameObject.'+n)},
-    set(n,v){if(n==='name'){o.name=csFmt(v);return}throw csUnsup('gameObject.'+n+' 대입')},
+    get(n){if(n==='name')return o.name;if(n==='transform')return isUiEl(o)?(()=>{throw csUnsup('UI transform')})():trProxy(m,o);if(n==='activeSelf')return isUiEl(o)?o.visible!==false:o.active!==false&&m.objs.includes(o);if(n==='activeInHierarchy')return isUiEl(o)?o.visible!==false:objOn(m,o)&&m.objs.includes(o);if(n==='tag')return o.tag||'';if(n==='enabled')throw new Error('GameObject에는 enabled가 없습니다. 컴포넌트를 켜고 끄려면 GetComponent<Light>() 등으로 꺼낸 뒤 .enabled를, 오브젝트 전체를 켜고 끄려면 SetActive(true / false)를 쓰세요.');throw csUnsup('gameObject.'+n)},
+    set(n,v){if(n==='name'){o.name=csFmt(v);return}if(n==='enabled')throw new Error('GameObject에는 enabled가 없습니다. 컴포넌트를 켜고 끄려면 GetComponent<Light>() 등으로 꺼낸 뒤 .enabled를, 오브젝트 전체를 켜고 끄려면 SetActive(true / false)를 쓰세요.');throw csUnsup('gameObject.'+n+' 대입')},
     call(n,a){
       if(n==='SetActive'&&!isUiEl(o)){if(a[0])delete o.active;else o.active=false;return null}
       if(n==='CompareTag')return(o.tag||'')===csFmt(a[0]);
@@ -6116,7 +6152,7 @@ let playMode='embed';try{const v=localStorage.getItem(PLAYK);if(PMODEN[v])playMo
 function setPlayMode(v){playMode=v;try{localStorage.setItem(PLAYK,v)}catch(e){}toast('플레이 화면: '+PMODEN[v])}
 function placePlay(mode){
   const el=$('#play');
-  if(mode==='embed'){const scr=$('#gvScr');if(el.parentElement!==scr)scr.append(el);el.classList.add('embed');if(GV.view!=='game')setView('game')}
+  if(mode==='embed'){const scr=$('#gvScr');if(el.parentElement!==scr)scr.append(el);el.classList.add('embed');if(GV.view!=='game'&&!GV.split)setView('game')}
   else{if(el.parentElement!==document.body)document.body.append(el);el.classList.remove('embed')}
   play&&(play.view=mode);$('#pMode').textContent=PMODEN[mode];
   $('#pFull').textContent=mode==='full'?'⛶ 전체 화면 끄기':'⛶ 전체 화면';
@@ -6156,7 +6192,7 @@ function startPlay(){
   if(!scriptsPlayCheck())return;
   play=freshPlay();
   if(!enter(curId,null,null)){play=null;return}
-  gvBack=GV.view;
+  gvBack=GV.split?'split':GV.view;
   $('#play').hidden=false;
   if(playMode==='full')playFull(true);else placePlay(playMode);
   stage.classList.add('playing');drag=null;
@@ -6391,7 +6427,7 @@ function loop(t){
   if(play.needStart){play.needStart=false;runScriptsStart(play.m);if(!play)return}
   update(dt);if(!play)return;
   play.kdown.clear();play.kup.clear();play.frame=(play.frame||0)+1;
-  drawPlay();if(GV.view==='scene')need();
+  drawPlay();if(GV.view==='scene'||GV.split)need();
   if(t-(play.insT||0)>150){play.insT=t;liveInsp()}
   playRaf=requestAnimationFrame(loop);
 }
@@ -6407,7 +6443,7 @@ const GV_DEV=[
 ];
 let GV={view:'scene',dev:'free',rot:false,zoom:'fit',frame:true,guide:false,cw:1280,ch:720,mine:[]},gvBack='scene',gvFree=null,gvZ=1;
 try{const v=JSON.parse(localStorage.getItem(GVK));if(v&&typeof v==='object'){
-  if(v.view==='game'||v.view==='scene')GV.view=v.view;if(typeof v.dev==='string')GV.dev=v.dev;GV.rot=!!v.rot;
+  if(v.view==='game'||v.view==='scene')GV.view=v.view;GV.split=!!v.split;if(+v.sr>=.15&&+v.sr<=.85)GV.sr=+v.sr;if(typeof v.dev==='string')GV.dev=v.dev;GV.rot=!!v.rot;
   if(v.zoom==='fit'||+v.zoom>0)GV.zoom=v.zoom==='fit'?'fit':String(+v.zoom);GV.frame=v.frame!==false;GV.guide=!!v.guide;
   if(+v.cw>=64&&+v.cw<=8192)GV.cw=+v.cw;if(+v.ch>=64&&+v.ch<=8192)GV.ch=+v.ch;
   if(Array.isArray(v.mine))GV.mine=v.mine.filter(q=>q&&q.id&&+q.w>=64&&+q.h>=64).map(q=>({id:String(q.id),n:String(q.n||'내 해상도').slice(0,30),w:+q.w,h:+q.h}));
@@ -6422,7 +6458,7 @@ function gvDevice(){
 function gvRes(m){
   const d=gvDevice();let w,h;
   if(d.k==='free'){
-    const el=GV.view==='game'?$('#gvStage'):stage,cw=el&&el.clientWidth,ch=el&&el.clientHeight;
+    const el=GV.view==='game'||GV.split?$('#gvStage'):stage,cw=el&&el.clientWidth,ch=el&&el.clientHeight;
     if(cw>0&&ch>0)gvFree={w:cw,h:ch};
     const f=gvFree||{w:stage.clientWidth||960,h:stage.clientHeight||540};return{w:f.w,h:f.h,d};
   }
@@ -6440,11 +6476,14 @@ function gvFillSel(){
   $('#gvSel').innerHTML=h;$('#gvSel').value=gvDevice().id;
 }
 function setView(v){
-  GV.view=v==='game'?'game':'scene';saveGv();
-  $$('.vtab').forEach(b=>{const on=b.dataset.view===GV.view;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
-  stage.style.display=GV.view==='game'?'none':'';$('#gview').hidden=GV.view!=='game';
-  $('#sceneBar').hidden=GV.view==='game';$('#gameBar').hidden=GV.view!=='game';
-  if(GV.view==='game')gvLayout();
+  /* 'split' = 씬 뷰와 게임 뷰를 좌우로 나란히 (GV.view는 마지막으로 고른 단일 뷰를 기억) */
+  if(v==='split')GV.split=true;else{GV.split=false;GV.view=v==='game'?'game':'scene'}saveGv();
+  const both=!!GV.split;
+  $$('.vtab').forEach(b=>{const on=both?b.dataset.view==='split':b.dataset.view===GV.view;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+  stage.style.display=!both&&GV.view==='game'?'none':'';$('#gview').hidden=!both&&GV.view!=='game';
+  $('#sceneBar').hidden=!both&&GV.view==='game';$('#gameBar').hidden=!both&&GV.view!=='game';
+  $('#vsplit').classList.toggle('both',both);$('#vsplit').style.setProperty('--sr',((GV.sr||.5)*100)+'%');
+  if(GV.view==='game'||both)gvLayout();
   need();try{renderInsp()}catch(e){}
 }
 function gvLayout(){
@@ -6454,7 +6493,7 @@ function gvLayout(){
   $('#gvCust').hidden=d.k!=='custom';$('#gvDel').hidden=!d.mine;
   if(d.k==='custom'){if(document.activeElement!==$('#gvW'))$('#gvW').value=GV.cw;if(document.activeElement!==$('#gvH'))$('#gvH').value=GV.ch}
   const rb=$('#gvRot');rb.disabled=d.k==='free';
-  if(GV.view!=='game')return;
+  if(GV.view!=='game'&&!GV.split)return;
   const st=$('#gvStage'),dev=$('#gvDev'),scr=$('#gvScr'),free=d.k==='free',frame=GV.frame&&!free;
   st.classList.toggle('free',free);
   const r=gvRes(m),land=r.w>r.h;rb.classList.toggle('land',land);
@@ -6481,7 +6520,7 @@ function gvPreview(m){
     mons:m.objs.filter(o=>o.type==='monster'&&objOn(m,o)).map(o=>({o,x:(o.x+.5)*TS,y:(o.y+.5)*TS,hp:o.props.hp||3,dx:0,dy:0,t:0,flash:0,dead:false}))};
 }
 function gvDraw(){
-  if(GV.view!=='game'||(play&&play.view==='embed'))return;
+  if((GV.view!=='game'&&!GV.split)||(play&&play.view==='embed'))return;
   const m=cur(),c=$('#gv');if(!m||!c.width)return;
   const r=gvRes(m),d=c.width/r.w,g=c.getContext('2d');
   try{drawPlay(gvPreview(m),g,r.w,r.h,d)}catch(e){console.error(e)}
@@ -6497,6 +6536,20 @@ $('#gvRot').innerHTML||($('#gvRot').innerHTML=ico('rotate'));
 $('#gvZoom').value=GV.zoom;$('#gvFrame').checked=GV.frame;$('#gvGuide').checked=GV.guide;
 const gvChanged=()=>{saveGv();gvLayout();need();try{renderInsp()}catch(e){}};
 $$('.vtab').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+/* 나란히 보기: 가운데 경계선을 끌어 씬 뷰 · 게임 뷰 너비 조절 (15%~85%) · 두 번 클릭 = 반반 · ←→ 키로도 조절 */
+(function(){
+  const d=$('#vsDiv'),box=$('#vsplit');
+  const set=r=>{GV.sr=clamp(r,.15,.85);box.style.setProperty('--sr',(GV.sr*100).toFixed(2)+'%')};
+  const done=()=>{saveGv();gvLayout();need()};
+  d.addEventListener('pointerdown',e=>{
+    if(e.button!==0)return;e.preventDefault();d.setPointerCapture(e.pointerId);d.classList.add('on');document.body.style.cursor='col-resize';
+    const mv=ev=>{const r=box.getBoundingClientRect();set((ev.clientX-r.left)/r.width)};
+    const up=()=>{d.removeEventListener('pointermove',mv);d.removeEventListener('pointerup',up);d.removeEventListener('pointercancel',up);d.classList.remove('on');document.body.style.cursor='';done()};
+    d.addEventListener('pointermove',mv);d.addEventListener('pointerup',up);d.addEventListener('pointercancel',up);
+  });
+  d.addEventListener('dblclick',()=>{set(.5);done()});
+  d.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();e.stopPropagation();set((GV.sr||.5)+(e.key==='ArrowLeft'?-.02:.02));done()}});
+})();
 $('#gvSel').addEventListener('change',e=>{GV.dev=e.target.value;gvChanged()});
 $('#gvRot').addEventListener('click',()=>{GV.rot=!GV.rot;gvChanged();toast(gvRes(cur()).w>gvRes(cur()).h?'가로 화면으로 회전':'세로 화면으로 회전')});
 $('#gvZoom').addEventListener('change',e=>{GV.zoom=e.target.value;gvChanged()});
@@ -6505,7 +6558,7 @@ $('#gvGuide').addEventListener('change',e=>{GV.guide=e.target.checked;gvChanged(
 ['#gvW','#gvH'].forEach(sl=>$(sl).addEventListener('change',e=>{const v=clamp(Math.round(+e.target.value)||0,64,8192);if(sl==='#gvW')GV.cw=v;else GV.ch=v;e.target.value=v;gvChanged()}));
 $('#gvSave').addEventListener('click',()=>askName('내 해상도 이름',GV.cw+'×'+GV.ch,v=>{const q={id:uid(),n:v,w:GV.cw,h:GV.ch};GV.mine.push(q);GV.dev='my:'+q.id;GV.rot=false;gvFillSel();gvChanged();toast('"'+v+'" 해상도를 저장했습니다')}));
 $('#gvDel').addEventListener('click',()=>{const d=gvDevice();if(!d.mine)return;GV.mine=GV.mine.filter(q=>'my:'+q.id!==d.id);GV.dev='custom';GV.cw=d.w;GV.ch=d.h;gvFillSel();gvChanged();toast('"'+d.n+'"을(를) 목록에서 삭제했습니다')});
-new ResizeObserver(()=>{if(GV.view==='game')gvLayout()}).observe($('#gvStage'));
+new ResizeObserver(()=>{if(GV.view==='game'||GV.split){gvLayout();need()}}).observe($('#gvStage'));
 /* 씬 뷰 크기가 바뀌면 자유 비율 캔버스도 따라감 */
 new ResizeObserver(()=>{if(gvDevice().k==='free'&&GV.view==='scene'&&getUi())try{renderInsp()}catch(e){}}).observe(stage);
 
@@ -6695,6 +6748,7 @@ function stBuild(){
     ta._paint=paint;
     ta.addEventListener('scroll',()=>{hl.scrollTop=gut.scrollTop=ta.scrollTop;hl.scrollLeft=ta.scrollLeft});
     ta.addEventListener('input',()=>{if(ta.value===tplDef(k))delete setv.tpl[k];else setv.tpl[k]=ta.value;saveSettings();paint();stMarks()});
+    edUndo(ta);
     ta.addEventListener('keydown',e=>{
       const a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
       if(e.key==='Tab'&&!e.ctrlKey&&!e.altKey){e.preventDefault();
@@ -7122,7 +7176,7 @@ addEventListener('resize',()=>{if(learn.el&&!learnIsFull()){learnClamp(learn.rec
 /* ===================== 시작 ===================== */
 P=load();curId=P.maps.some(m=>m.id===P.start)?P.start:P.maps[0].id;P.start=P.maps.some(m=>m.id===P.start)?P.start:curId;
 L=loadLayout();
-resetHistory();setLayer('l0');setTool('brush');renderLayout();renderAll();setView(GV.view);
+resetHistory();setLayer('l0');setTool('brush');renderLayout();renderAll();setView(GV.split?'split':GV.view);
 requestAnimationFrame(()=>fitView());
 let prjFresh=false;try{prjFresh=!localStorage.getItem(KEY)}catch(e){}
 if(prjFresh&&PRJ_ID!=='default'){const nm=(PRJ_Q.get('name')||'').trim().slice(0,60);if(nm)P.name=nm;renderAll()}
