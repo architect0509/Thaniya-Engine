@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>내 프로젝트 · Thaniya Engine</title>
+<meta name="description" content="이 브라우저에 저장된 Thaniya Engine 게임 프로젝트를 확인하고 실행합니다.">
+<link rel="icon" type="image/png" href="assets/thaniya-logo.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Bebas+Neue&display=swap">
+<style>
+:root{
+  --bg:#0b0b0e;--panel:#15151a;--raised:#1d1d24;--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.16);
+  --fg:#f2f2f5;--mute:#9b9ba6;--accent:#e9bd0c;--accent-fg:#1a1400;--danger:#ff6b6b;
+  --f:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --m:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 var(--f);-webkit-text-size-adjust:100%;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{width:min(1180px,100% - 40px);margin-inline:auto}
+svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* 헤더 (index와 같은 모양) */
+header{position:sticky;top:0;z-index:20;background:rgba(11,11,14,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;justify-content:space-between;min-height:60px;gap:8px}
+.hr{display:flex;align-items:center;gap:4px}
+header a,header button.hb{text-decoration:none;color:var(--mute);padding:8px 18px;border-radius:999px;font-size:15px;font-weight:500;white-space:nowrap;transition:color .15s,background .15s;border:0;background:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+header a:hover,header button.hb:hover{color:var(--fg);background:rgba(255,255,255,.07)}
+header .cta{color:var(--accent-fg)!important;background:var(--accent)!important;font-weight:600!important;margin-left:6px}
+header .cta:hover{background:#f5cc2a!important}
+header a.brand{display:inline-flex;align-items:center;gap:10px;padding:6px 12px 6px 0;color:var(--fg);font-weight:700;font-size:16px;letter-spacing:-.01em}
+header a.brand:hover{background:none;color:var(--accent)}
+.brand img{display:block;width:36px;height:36px;flex:none}
+
+/* 제목 */
+main{flex:1}
+.head{padding:56px 0 28px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.eyebrow{font:500 12px var(--m);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0}
+h1{margin:6px 0 8px;font:700 clamp(32px,4.4vw,48px)/1.15 var(--f);letter-spacing:-.02em}
+.head p.sub{margin:0;color:var(--mute);font-size:15px}
+.head p.sub b{color:var(--fg);font-weight:600;font-variant-numeric:tabular-nums}
+
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search{position:relative}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mute);pointer-events:none}
+.search input{height:42px;width:240px;padding:0 14px 0 38px;border-radius:10px;border:1px solid var(--line2);background:var(--panel);outline:none;transition:border-color .15s}
+.search input:focus{border-color:var(--accent)}
+.search input::placeholder{color:#6d6d78}
+select{height:42px;padding:0 34px 0 14px;border-radius:10px;border:1px solid var(--line2);background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239b9ba6' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center/16px;appearance:none;-webkit-appearance:none;cursor:pointer;outline:none}
+select:focus{border-color:var(--accent)}
+
+/* 카드 그리드 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;padding-bottom:72px}
+.pc{position:relative;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:border-color .2s,transform .2s}
+.pc:hover{border-color:rgba(233,189,12,.45)}
+.pc:focus-within{border-color:rgba(233,189,12,.45)}
+.thumb{position:relative;display:block;aspect-ratio:5/3;background:#101014;border:0;padding:0;width:100%;cursor:pointer;overflow:hidden}
+.thumb img{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated;transition:transform .35s}
+.pc:hover .thumb img{transform:scale(1.035)}
+.thumb .ph{position:absolute;inset:0;display:grid;place-items:center;background:
+  linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/24px 24px,
+  linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/24px 24px,
+  radial-gradient(120% 90% at 30% 20%,#23232c,#101014)}
+.thumb .ph span{font:400 54px/1 "Bebas Neue",var(--f);color:rgba(255,255,255,.16);letter-spacing:.04em}
+.thumb .ov{position:absolute;inset:0;display:grid;place-items:center;background:rgba(8,8,10,.45);opacity:0;transition:opacity .2s}
+.thumb .ov i{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:var(--accent);color:var(--accent-fg);box-shadow:0 8px 30px rgba(0,0,0,.45);transform:scale(.9);transition:transform .2s}
+.thumb .ov i svg{width:24px;height:24px}
+.thumb .ov em{position:absolute;bottom:14px;left:0;right:0;text-align:center;font:600 13px var(--f);font-style:normal;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.thumb:hover .ov,.thumb:focus-visible .ov{opacity:1}
+.thumb:hover .ov i{transform:scale(1)}
+.tag{position:absolute;left:10px;top:10px;font:500 11px var(--m);padding:3px 9px;border-radius:999px;background:rgba(11,11,14,.72);border:1px solid var(--line2);color:#d6d6de;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.pb{padding:14px 16px 16px;display:flex;flex-direction:column;gap:2px;flex:1}
+.pt{display:flex;align-items:flex-start;gap:6px}
+.pt h3{cursor:pointer;flex:1;min-width:0;margin:0;font-size:16px;font-weight:600;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{margin:0;color:var(--mute);font-size:13px;display:flex;gap:6px;flex-wrap:wrap}
+.meta span+span::before{content:"·";margin-right:6px;color:#55555e}
+.acts{display:flex;gap:8px;margin-top:14px}
+.b{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 14px;border-radius:9px;border:1px solid var(--line2);background:transparent;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s,border-color .15s,color .15s;white-space:nowrap}
+.b:hover{background:rgba(255,255,255,.08)}
+.b.pri{flex:1;background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.b.pri:hover{background:#f5cc2a;border-color:#f5cc2a}
+.b.pri svg{fill:currentColor;stroke:none;width:14px;height:14px}
+.b.sec{flex:1}
+.b.danger{background:var(--danger);border-color:var(--danger);color:#1d0606}
+.b.danger:hover{background:#ff8585}
+.more{flex:none;width:30px;height:30px;margin:-3px -6px 0 0;display:grid;place-items:center;border-radius:8px;border:0;background:none;color:var(--mute);cursor:pointer}
+.more:hover,.more[aria-expanded="true"]{background:rgba(255,255,255,.08);color:var(--fg)}
+
+/* 새 프로젝트 카드 */
+.newc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:280px;border:1.5px dashed var(--line2);border-radius:16px;background:transparent;color:var(--mute);cursor:pointer;transition:border-color .2s,color .2s,background .2s;padding:24px}
+.newc:hover{border-color:var(--accent);color:var(--fg);background:rgba(233,189,12,.04)}
+.newc .plus{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;border:1px solid var(--line2);transition:background .2s,color .2s,border-color .2s}
+.newc:hover .plus{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.newc .plus svg{width:22px;height:22px}
+.newc b{font-size:16px;color:var(--fg)}
+.newc small{font-size:13px}
+
+.empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:48px 0;font-size:15px}
+.note{margin:0 0 20px;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,107,107,.4);background:rgba(255,107,107,.08);color:#ffc9c9;font-size:14px}
+
+/* 팝업 메뉴 */
+.menu{position:fixed;z-index:50;min-width:168px;padding:6px;background:var(--raised);border:1px solid var(--line2);border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.menu[hidden]{display:none}
+.menu button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:0;border-radius:8px;background:none;font-size:14px;text-align:left;cursor:pointer}
+.menu button:hover,.menu button:focus-visible{background:rgba(255,255,255,.08);outline:none}
+.menu button.del{color:var(--danger)}
+.menu hr{border:0;border-top:1px solid var(--line);margin:5px 4px}
+
+/* 대화상자 */
+dialog{border:1px solid var(--line2);border-radius:16px;background:var(--raised);color:var(--fg);padding:24px;width:min(420px,calc(100% - 32px));box-shadow:0 30px 80px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(5,5,7,.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+dialog h2{margin:0 0 6px;font-size:18px}
+dialog p{margin:0 0 16px;color:var(--mute);font-size:14px}
+dialog input{width:100%;height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line2);background:var(--panel);outline:none;margin-bottom:18px}
+dialog input:focus{border-color:var(--accent)}
+dialog .row{display:flex;justify-content:flex-end;gap:8px}
+dialog .b{min-width:84px}
+
+.toast{position:fixed;left:50%;bottom:28px;z-index:60;transform:translate(-50%,16px);opacity:0;pointer-events:none;padding:10px 18px;border-radius:999px;background:#f2f2f5;color:#0b0b0e;font-size:14px;font-weight:600;transition:opacity .2s,transform .2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+footer{border-top:1px solid var(--line);padding:22px 0;color:var(--mute);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--mute)}footer a:hover{color:var(--fg)}
+
+/* 상세 창 */
+dialog.det{width:min(820px,calc(100% - 32px));padding:0;overflow:hidden}
+.det .dh{display:flex;align-items:center;gap:10px;padding:16px 18px 14px 24px;border-bottom:1px solid var(--line)}
+.det .dh h2{flex:1;min-width:0;margin:0;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.det .x{width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:9px;background:none;color:var(--mute);cursor:pointer}
+.det .x:hover{background:rgba(255,255,255,.08);color:var(--fg)}
+.det .db{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:22px;padding:22px 24px;max-height:min(68vh,620px);overflow:auto}
+.det .shot{aspect-ratio:5/3;border-radius:12px;overflow:hidden;background:#101014;border:1px solid var(--line);position:relative}
+.det .shot img{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.det dl{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;margin:16px 0 0;font-size:13.5px}
+.det dt{color:var(--mute)}
+.det dd{margin:0;font-variant-numeric:tabular-nums;min-width:0}
+.det .scenes{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.det .scenes li{display:flex;justify-content:space-between;gap:10px}
+.det .scenes li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.det .scenes li span:last-child{color:var(--mute);font:12px var(--m);flex:none}
+.det .scenes li b{font:500 10px var(--m);color:var(--accent);margin-left:6px;letter-spacing:.04em}
+.det label.f{display:block;font-size:13px;color:var(--mute);margin:0 0 6px}
+.det input.t,.det textarea{width:100%;margin:0 0 16px;border-radius:10px;border:1px solid var(--line2);background:var(--panel);outline:none;padding:10px 14px;transition:border-color .15s}
+.det input.t{height:44px}
+.det textarea{min-height:120px;resize:vertical;line-height:1.6}
+.det input.t:focus,.det textarea:focus{border-color:var(--accent)}
+.det .saved{font-size:12px;color:var(--mute);min-height:18px;margin:-8px 0 12px}
+.det .exp{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:rgba(255,255,255,.02)}
+.det .exp h3{margin:0 0 4px;font-size:14px}
+.det .exp p{margin:0 0 10px;font-size:13px}
+.det .exp .er{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.det .chk{display:inline-flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.det .chk input{width:16px;height:16px;margin:0;accent-color:var(--accent)}
+.det .df{display:flex;align-items:center;gap:8px;padding:14px 24px 18px;border-top:1px solid var(--line)}
+.det .df .sp{flex:1}
+.det .df .b{flex:none;min-width:96px}
+.b.ghostd{color:var(--danger);border-color:rgba(255,107,107,.4)}
+.b.ghostd:hover{background:rgba(255,107,107,.1)}
+.b:disabled{opacity:.5;cursor:default}
+@media (max-width:700px){.det .db{grid-template-columns:1fr}.det .df{flex-wrap:wrap}.det .df .sp{flex-basis:100%;height:0}}
+
+@media (max-width:640px){
+  .wrap{width:calc(100% - 32px)}
+  .head{padding:36px 0 22px}
+  .tools,.search,.search input{width:100%}
+  .search{flex:1 1 100%}
+  select{flex:1}
+  header a,header button.hb{padding:8px 10px;font-size:14px}
+  .brand span{display:none}
+  .brand img{width:30px;height:30px}
+  .grid{grid-template-columns:1fr}
+  .newc{min-height:150px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="./index.html" aria-label="Thaniya Engine 처음으로"><img src="assets/thaniya-logo.png" width="36" height="36" alt=""><span>Thaniya</span></a>
+    <div class="hr">
+      <a href="learning.html">Edu</a>
+      <button class="hb cta" type="button" id="hNew"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>새 프로젝트</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="head">
+    <div>
+      <p class="eyebrow">My Page</p>
+      <h1>내 프로젝트</h1>
+      <p class="sub" id="sub">이 브라우저에 저장된 게임 프로젝트</p>
+    </div>
+    <div class="tools">
+      <label class="search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="q" placeholder="프로젝트 검색" aria-label="프로젝트 검색"></label>
+      <select id="sort" aria-label="정렬">
+        <option value="updated">최근 수정순</option>
+        <option value="created">만든 날짜순</option>
+        <option value="name">이름순</option>
+        <option value="size">용량순</option>
+      </select>
+    </div>
+  </div>
+  <p class="note" id="note" hidden>이 브라우저에서는 저장소(localStorage)를 쓸 수 없어 프로젝트를 불러오지 못했습니다. 개인 정보 보호 모드이거나 사이트 데이터가 차단돼 있는지 확인해 주세요.</p>
+  <div class="grid" id="grid" aria-live="polite"></div>
+</main>
+
+<footer><div class="wrap"><span>프로젝트는 이 브라우저에만 저장됩니다. 다른 기기로 옮기려면 엔진의 파일 › 내보내기를 쓰세요.</span><a href="./index.html">Thaniya Engine 홈</a></div></footer>
+
+<div class="menu" id="menu" role="menu" hidden>
+  <button type="button" role="menuitem" data-m="detail"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>자세히 보기</button>
+  <button type="button" role="menuitem" data-m="edit"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>엔진에서 열기</button>
+  <button type="button" role="menuitem" data-m="rename"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7"/></svg>이름 바꾸기</button>
+  <button type="button" role="menuitem" data-m="dup"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>복제</button>
+  <button type="button" role="menuitem" data-m="export"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>내보내기 (JSON)</button>
+  <hr>
+  <button type="button" role="menuitem" class="del" data-m="del"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>삭제</button>
+</div>
+
+<dialog id="dlg">
+  <form method="dialog" id="dlgForm">
+    <h2 id="dlgT"></h2>
+    <p id="dlgP"></p>
+    <input id="dlgIn" maxlength="60" autocomplete="off" spellcheck="false">
+    <div class="row"><button class="b" value="cancel" type="submit" formnovalidate>취소</button><button class="b pri" value="ok" type="submit" id="dlgOk">확인</button></div>
+  </form>
+</dialog>
+<dialog class="det" id="det" aria-labelledby="detT">
+  <div class="dh"><h2 id="detT">프로젝트 정보</h2><button class="x" type="button" data-d="close" aria-label="닫기"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="db">
+    <div>
+      <div class="shot" id="detShot"></div>
+      <dl id="detInfo"></dl>
+    </div>
+    <div>
+      <label class="f" for="detName">이름</label>
+      <input class="t" id="detName" maxlength="60" autocomplete="off" spellcheck="false">
+      <label class="f" for="detDesc">설명</label>
+      <textarea id="detDesc" maxlength="1000" placeholder="어떤 게임인지 적어 두세요"></textarea>
+      <p class="saved" id="detSaved" aria-live="polite"></p>
+      <div class="exp">
+        <h3>내보내기</h3>
+        <p>프로젝트를 JSON 파일로 저장합니다. 엔진의 파일 › 가져오기로 다시 불러올 수 있어요.</p>
+        <div class="er"><label class="chk"><input type="checkbox" id="detImg" checked>에셋 이미지 포함</label><button class="b" type="button" data-d="export"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>JSON 내보내기</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="df">
+    <button class="b ghostd" type="button" data-d="del"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>삭제</button>
+    <span class="sp"></span>
+    <a class="b" id="detEdit" href="#">편집</a>
+    <a class="b pri" id="detRun" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>실행</a>
+  </div>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(()=>{
+'use strict';
+/* 저장 구조 (edit.html과 공유)
+   thaniya.projects.v1        : [{id,name,created,updated,scenes,objs,thumb}]
+   dungeon-map-maker.v2        : 기본 프로젝트(id "default") 데이터
+   thaniya.pj.<id>             : 그 밖의 프로젝트 데이터
+   에셋 이미지는 IndexedDB(dungeon-map-maker)에 모든 프로젝트가 함께 씁니다 */
+const IDX='thaniya.projects.v1',LEGACY='dungeon-map-maker.v2',PFX='thaniya.pj.',UIK='thaniya.mypage.v1';
+const keyOf=id=>id==='default'?LEGACY:PFX+id;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const editUrl=(id,extra)=>'edit.html?pj='+encodeURIComponent(id)+(extra||'');
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+let ls=null;try{ls=window.localStorage;const t='__t';ls.setItem(t,'1');ls.removeItem(t)}catch(e){ls=null}
+const get=k=>{try{return ls?ls.getItem(k):null}catch(e){return null}};
+const set=(k,v)=>{try{ls.setItem(k,v);return true}catch(e){return false}};
+const del=k=>{try{ls.removeItem(k)}catch(e){}};
+
+function readIdx(){let a=null;try{a=JSON.parse(get(IDX))}catch(e){}return Array.isArray(a)?a.filter(x=>x&&typeof x.id==='string'):[]}
+function writeIdx(a){if(set(IDX,JSON.stringify(a)))return true;a.forEach(x=>delete x.thumb);return set(IDX,JSON.stringify(a))}
+function peek(id){try{const p=JSON.parse(get(keyOf(id)));if(p&&Array.isArray(p.maps))return p}catch(e){}return null}
+
+/* 목록과 실제 저장 데이터를 맞춤: 기본 프로젝트·누락된 프로젝트 복구, 데이터 없는 항목 제거 */
+function sync(){
+  if(!ls)return [];
+  let a=readIdx(),changed=false;const seen=new Set();
+  a=a.filter(e=>{if(seen.has(e.id))return changed=true,false;seen.add(e.id);if(get(keyOf(e.id))==null){changed=true;return false}return true});
+  const ids=[];try{if(get(LEGACY)!=null)ids.push('default');for(let i=0;i<ls.length;i++){const k=ls.key(i);if(k&&k.startsWith(PFX))ids.push(k.slice(PFX.length))}}catch(e){}
+  ids.forEach(id=>{if(seen.has(id))return;const p=peek(id);if(!p)return;const now=Date.now();
+    a.push({id,name:p.name||'이름 없는 게임',created:now,updated:now,scenes:p.maps.length,objs:p.maps.reduce((n,m)=>n+(Array.isArray(m.objs)?m.objs.length:0),0)});seen.add(id);changed=true});
+  if(changed)writeIdx(a);
+  return a;
+}
+
+let list=[],ui={sort:'updated'};
+const rawSize=id=>{const r=get(keyOf(id));if(r==null)return 0;try{return new Blob([r]).size}catch(e){return r.length}};
+function fmtSize(b){if(b<1024)return b+' B';if(b<1024*1024)return (b/1024).toFixed(b<10240?1:0)+' KB';return (b/1048576).toFixed(1)+' MB'}
+const fmtDate=t=>t?new Date(t).toLocaleString('ko-KR',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'-';
+try{const v=JSON.parse(get(UIK));if(v&&['updated','created','name','size'].includes(v.sort))ui.sort=v.sort}catch(e){}
+$('#sort').value=ui.sort;
+
+function ago(t){
+  if(!t)return '';const s=Math.max(0,(Date.now()-t)/1000);
+  if(s<60)return '방금 전';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';
+  if(s<86400*7)return Math.floor(s/86400)+'일 전';
+  const d=new Date(t);return d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'.';
+}
+const initials=n=>{const w=String(n||'?').trim();return esc((w.match(/[A-Za-z0-9]/)?w.replace(/[^A-Za-z0-9 ]/g,'').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2):w.slice(0,2)).toUpperCase()||'?')};
+const PLAY='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
+
+function render(){
+  list=sync();list.forEach(e=>e.size=rawSize(e.id));
+  const q=$('#q').value.trim().toLowerCase();
+  const by={updated:(a,b)=>(b.updated||0)-(a.updated||0),created:(a,b)=>(b.created||0)-(a.created||0),name:(a,b)=>String(a.name).localeCompare(String(b.name),'ko'),size:(a,b)=>b.size-a.size}[ui.sort];
+  const show=list.filter(e=>!q||String(e.name||'').toLowerCase().includes(q)).sort(by);
+  $('#sub').innerHTML=list.length?`이 브라우저에 저장된 게임 프로젝트 <b>${list.length}</b>개`:'아직 저장된 프로젝트가 없어요. 새 프로젝트로 시작해 보세요.';
+  $('#note').hidden=!!ls;
+  let h='';
+  if(!q)h+=`<button class="newc" type="button" data-new><span class="plus"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><b>새 프로젝트</b><small>11×11 빈 씬으로 시작</small></button>`;
+  h+=show.map(e=>{
+    const nm=e.name||'이름 없는 게임';
+    return `<article class="pc" data-id="${esc(e.id)}">
+      <button class="thumb" type="button" data-a="detail" aria-label="${esc(nm)} 자세히 보기">${e.thumb?`<img src="${esc(e.thumb)}" alt="" loading="lazy">`:`<span class="ph"><span>${initials(nm)}</span></span>`}<span class="ov"><i><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></i><em>자세히 보기</em></span>${e.id==='default'?'<span class="tag">기본</span>':''}</button>
+      <div class="pb">
+        <div class="pt"><h3 title="${esc(nm)}" data-a="detail">${esc(nm)}</h3><button class="more" type="button" data-a="more" aria-label="${esc(nm)} 더 보기" aria-haspopup="menu" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button></div>
+        <p class="meta"><span>씬 ${e.scenes|0}개</span><span>오브젝트 ${e.objs|0}개</span><span>${fmtSize(e.size)}</span><span title="${e.updated?esc(new Date(e.updated).toLocaleString('ko-KR')):''}">${ago(e.updated)} 수정</span></p>
+        <div class="acts"><a class="b pri" href="${esc(editUrl(e.id,'&play=1'))}" data-a="playlink">${PLAY}실행</a><a class="b sec" href="${esc(editUrl(e.id))}">편집</a></div>
+      </div>
+    </article>`}).join('');
+  if(q&&!show.length)h+=`<p class="empty">“${esc(q)}”와 일치하는 프로젝트가 없어요.</p>`;
+  $('#grid').innerHTML=h;
+}
+
+let tT=0;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('on'),2200)}
+
+/* 이름 입력 / 확인 대화상자 */
+function ask({title,text,value,ok,danger,input=true}){
+  return new Promise(res=>{
+    const d=$('#dlg'),inp=$('#dlgIn'),okb=$('#dlgOk');
+    $('#dlgT').textContent=title;$('#dlgP').textContent=text||'';$('#dlgP').hidden=!text;
+    inp.hidden=!input;inp.required=input;inp.value=value||'';okb.textContent=ok||'확인';okb.className='b '+(danger?'danger':'pri');
+    d.returnValue='';
+    const done=()=>{d.removeEventListener('close',done);res(d.returnValue==='ok'?(input?inp.value.trim()||value||'':true):null)};
+    d.addEventListener('close',done);
+    if(d.showModal)d.showModal();else d.setAttribute('open','');
+    if(input)setTimeout(()=>{inp.focus();inp.select()},0);else setTimeout(()=>okb.focus(),0);
+  });
+}
+
+async function createNew(){
+  if(!ls){toast('이 브라우저에서는 프로젝트를 저장할 수 없어요');return}
+  const name=await ask({title:'새 프로젝트',text:'게임 이름을 정하세요. 나중에 언제든 바꿀 수 있어요.',value:'새 게임',ok:'만들기'});
+  if(name==null)return;
+  const id=newId();
+  location.href=editUrl(id,'&name='+encodeURIComponent(name));
+}
+
+async function rename(id){
+  const e=list.find(x=>x.id===id);if(!e)return;
+  const name=await ask({title:'이름 바꾸기',value:e.name||'',ok:'바꾸기'});
+  if(name==null||name===e.name)return;
+  const p=peek(id);if(p){p.name=name;if(!set(keyOf(id),JSON.stringify(p))){toast('저장 공간이 부족해 이름을 바꾸지 못했어요');return}}
+  const a=readIdx(),x=a.find(y=>y.id===id);if(x){x.name=name;x.updated=Date.now()}writeIdx(a);
+  render();toast('이름을 바꿨어요');
+}
+
+function dup(id){
+  const raw=get(keyOf(id));if(raw==null)return;
+  let p=null;try{p=JSON.parse(raw)}catch(e){return}
+  const src=list.find(x=>x.id===id)||{},nid=newId(),now=Date.now();
+  p.name=(p.name||src.name||'게임')+' (사본)';
+  if(!set(keyOf(nid),JSON.stringify(p))){toast('저장 공간이 부족해 복제하지 못했어요');return}
+  const a=readIdx();const i=a.findIndex(x=>x.id===id);
+  a.splice(i<0?0:i+1,0,{id:nid,name:p.name,created:now,updated:now,scenes:src.scenes|0,objs:src.objs|0,thumb:src.thumb});
+  writeIdx(a);render();toast('“'+p.name+'”을(를) 만들었어요');
+}
+
+async function remove(id){
+  const e=list.find(x=>x.id===id);if(!e)return;
+  const ok=await ask({title:'프로젝트를 삭제할까요?',text:'“'+(e.name||'이름 없는 게임')+'”의 씬·오브젝트·스크립트가 이 브라우저에서 지워지고 되돌릴 수 없어요. 에셋 이미지는 다른 프로젝트와 함께 쓰므로 남아 있어요.',ok:'삭제',danger:true,input:false});
+  if(!ok)return;
+  del(keyOf(id));writeIdx(readIdx().filter(x=>x.id!==id));if(det.open&&detId===id)det.close();render();toast('삭제했어요');
+  return true;
+}
+
+/* 카드 메뉴 */
+const menu=$('#menu');let menuId=null,menuBtn=null;
+function openMenu(btn,id){
+  closeMenu();menuId=id;menuBtn=btn;btn.setAttribute('aria-expanded','true');
+  menu.hidden=false;const r=btn.getBoundingClientRect(),mw=menu.offsetWidth,mh=menu.offsetHeight;
+  let x=r.right-mw,y=r.bottom+6;if(y+mh>innerHeight-8)y=r.top-mh-6;
+  menu.style.left=Math.max(8,Math.min(x,innerWidth-mw-8))+'px';menu.style.top=Math.max(8,y)+'px';
+  menu.querySelector('button').focus();
+}
+function closeMenu(){if(menu.hidden)return;menu.hidden=true;if(menuBtn)menuBtn.setAttribute('aria-expanded','false');menuBtn=null}
+menu.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const id=menuId,m=b.dataset.m;closeMenu();
+  if(m==='detail')openDetail(id);else if(m==='export')exportPj(id,true);else if(m==='edit')location.href=editUrl(id);else if(m==='rename')rename(id);else if(m==='dup')dup(id);else if(m==='del')remove(id)});
+document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!e.target.closest('[data-a="more"]'))closeMenu()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){const b=menuBtn;closeMenu();b&&b.focus()}});
+addEventListener('scroll',closeMenu,{passive:true});addEventListener('resize',closeMenu);
+
+$('#grid').addEventListener('click',e=>{
+  if(e.target.closest('[data-new]')){createNew();return}
+  const c=e.target.closest('.pc');if(!c)return;const id=c.dataset.id,a=e.target.closest('[data-a]');if(!a)return;
+  if(a.dataset.a==='detail')openDetail(id);
+  else if(a.dataset.a==='more'){if(menuBtn===a)closeMenu();else openMenu(a,id)}
+});
+$('#hNew').onclick=createNew;
+
+/* ---- 상세 창: 이름·설명 바꾸기, 내보내기, 삭제 ---- */
+const det=$('#det');let detId=null,detT=0;
+function detInfo(id){
+  const e=list.find(x=>x.id===id);if(!e)return;const p=peek(id)||{maps:[]};
+  const objs=p.maps.reduce((n,m)=>n+(Array.isArray(m.objs)?m.objs.length:0),0);
+  $('#detT').textContent=e.name||'이름 없는 게임';
+  $('#detShot').innerHTML=e.thumb?`<img src="${esc(e.thumb)}" alt="${esc(e.name)} 시작 씬 미리보기">`:`<span class="ph" style="position:absolute;inset:0;display:grid;place-items:center"><span style="font:400 64px/1 'Bebas Neue',var(--f);color:rgba(255,255,255,.16)">${initials(e.name)}</span></span>`;
+  $('#detInfo').innerHTML=`<dt>씬</dt><dd><ul class="scenes">${p.maps.map(m=>`<li><span>${esc(m.name)}${m.id===p.start?'<b>START</b>':''}</span><span>${m.w}×${m.h}</span></li>`).join('')||'-'}</ul></dd>
+    <dt>오브젝트</dt><dd>${objs}개</dd><dt>스크립트</dt><dd>${Array.isArray(p.scripts)?p.scripts.length:0}개</dd>
+    <dt>용량</dt><dd>${fmtSize(rawSize(id))}</dd><dt>만든 날짜</dt><dd>${esc(fmtDate(e.created))}</dd><dt>수정한 날짜</dt><dd>${esc(fmtDate(e.updated))}</dd>`;
+}
+function openDetail(id){
+  const e=list.find(x=>x.id===id);if(!e)return;const p=peek(id)||{};
+  detId=id;$('#detName').value=e.name||'';$('#detDesc').value=typeof p.desc==='string'?p.desc:(e.desc||'');$('#detSaved').textContent='';
+  $('#detRun').href=editUrl(id,'&play=1');$('#detEdit').href=editUrl(id);
+  detInfo(id);
+  if(det.showModal)det.showModal();else det.setAttribute('open','');
+}
+function detSave(){
+  clearTimeout(detT);if(!detId)return;
+  const id=detId,name=$('#detName').value.trim(),desc=$('#detDesc').value.trim(),p=peek(id);if(!p)return;
+  if(!name){$('#detSaved').textContent='이름을 비워 둘 수는 없어요';return}
+  if(p.name===name&&(p.desc||'')===desc)return;
+  p.name=name;if(desc)p.desc=desc;else delete p.desc;
+  if(!set(keyOf(id),JSON.stringify(p))){$('#detSaved').textContent='저장 공간이 부족해 저장하지 못했어요';return}
+  const a=readIdx(),x=a.find(y=>y.id===id);if(x){x.name=name;x.desc=desc;x.updated=Date.now()}writeIdx(a);
+  render();detInfo(id);$('#detSaved').textContent='저장됨 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+}
+['#detName','#detDesc'].forEach(s=>{const el=$(s);el.addEventListener('input',()=>{clearTimeout(detT);$('#detSaved').textContent='저장 중…';detT=setTimeout(detSave,500)});el.addEventListener('blur',detSave)});
+$('#detName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();detSave()}});
+det.addEventListener('close',()=>{detSave();detId=null});
+det.addEventListener('click',async e=>{
+  if(e.target===det){det.close();return}
+  const b=e.target.closest('[data-d]');if(!b)return;const a=b.dataset.d;
+  if(a==='close')det.close();
+  else if(a==='del'){detSave();await remove(detId)}
+  else if(a==='export'){b.disabled=true;await exportPj(detId,$('#detImg').checked);b.disabled=false}
+});
+['#detRun','#detEdit'].forEach(s=>$(s).addEventListener('click',()=>detSave()));
+
+/* ---- 내보내기: 엔진의 파일 › 내보내기와 같은 JSON 형식 ---- */
+const TS=32,PER=4096;
+function idbAll(){return new Promise((res,rej)=>{if(typeof indexedDB==='undefined')return rej(new Error('no idb'));let r;try{r=indexedDB.open('dungeon-map-maker',1)}catch(e){return rej(e)}
+  r.onupgradeneeded=()=>r.result.createObjectStore('assets',{keyPath:'id'});
+  r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('blocked'));
+  r.onsuccess=()=>{const db=r.result;try{const q=db.transaction('assets').objectStore('assets').getAll();q.onsuccess=()=>{res(q.result||[]);db.close()};q.onerror=()=>{rej(q.error);db.close()}}catch(e){db.close();rej(e)}}})}
+const imgSize=src=>new Promise(res=>{const im=new Image();im.onload=()=>res([im.naturalWidth,im.naturalHeight]);im.onerror=()=>res([0,0]);im.src=src});
+async function exportPj(id,withImg){
+  const p=peek(id);if(!p){toast('프로젝트 데이터를 찾지 못했어요');return}
+  let recs=[];try{recs=await idbAll()}catch(e){toast('에셋 저장소를 열 수 없어 에셋 없이 내보내요')}
+  const assets=[];
+  for(const a of recs.sort((x,y)=>(x.n|0)-(y.n|0))){
+    const tw=Math.min(512,Math.max(4,parseInt(a.tw)||32)),th=Math.min(512,Math.max(4,parseInt(a.th)||32));
+    const [w,h]=a.src?await imgSize(a.src):[0,0];
+    const cols=Math.max(1,Math.ceil(w/tw)),rows=Math.max(1,Math.min(Math.ceil(h/th),Math.floor(PER/cols)));
+    const r={id:a.id,n:a.n,name:a.name,kind:a.kind,tileW:tw,tileH:th,cols,rows,theme:a.theme,solid:(a.solid||[]).filter(i=>i>=0&&i<cols*rows),spriteMode:a.mode||'single',
+      sprites:(a.slices||[]).map(q=>({id:q.id,name:q.name,x:q.x,y:q.y,w:q.w,h:q.h,pivotX:q.px,pivotY:q.py}))};
+    if(withImg)r.image=a.src;assets.push(r);
+  }
+  const out={format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:p.name,start:p.start,playerSprite:p.playerSprite,nextN:p.nextN,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,sfmap:p.sfmap,assets,maps:p.maps};
+  if(p.desc)out.description=p.desc;
+  const blob=new Blob([JSON.stringify(out)],{type:'application/json'});
+  const fn=(String(p.name||'thaniya-project').replace(/[\\/:*?"<>|]+/g,'_').trim()||'thaniya-project')+'.json';
+  const u=URL.createObjectURL(blob),l=document.createElement('a');l.href=u;l.download=fn;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);
+  toast(fn+' 저장 ('+fmtSize(blob.size)+')');
+}
+$('#q').addEventListener('input',render);
+$('#sort').onchange=()=>{ui.sort=$('#sort').value;set(UIK,JSON.stringify(ui));render()};
+/* 다른 탭의 엔진에서 저장하거나 뒤로 가기로 돌아오면 목록을 새로 고침 */
+addEventListener('storage',e=>{if(!e.key||e.key===IDX||e.key===LEGACY||e.key.startsWith(PFX))render()});
+addEventListener('pageshow',e=>{if(e.persisted)render()});
+setInterval(()=>{if(!document.hidden&&menu.hidden&&!$('#dlg').open&&!det.open)render()},60000);
+render();
+})();
+</script>
+</body>
+</html>
