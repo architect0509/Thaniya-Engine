@@ -6,6 +6,9 @@
 <title>Thaniya Engine Edu · 콘솔 출력</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="i18n.js"></script>
+<script src="lang/common.js"></script>
+<script src="lang/learning.js"></script>
 <style>
 :root{
   --bg:#14161b;--panel:#1b1e25;--raised:#242831;--code:#0f1115;--line:#343945;
@@ -271,6 +274,19 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .card .cbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f6cd2a,#ffdf6b)}
 .card .cnum{font-size:12px;color:rgba(235,235,245,.55);white-space:nowrap}
 .card .go{height:32px;padding:0 17px;display:inline-flex;align-items:center;border-radius:999px;background:linear-gradient(180deg,rgba(255,221,90,.96),rgba(233,189,12,.92));color:#1a1400;font-weight:600;font-size:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 18px rgba(233,189,12,.32)}
+.tools{max-width:1120px;margin:0 auto;padding:28px 24px 0}
+.tools .sec{display:flex;align-items:center;gap:14px;margin:0 0 14px;font-size:15px;font-weight:600;color:rgba(235,235,245,.62)}
+.tools .sec::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
+.card.tool{width:100%;flex-direction:row;align-items:center;gap:28px;border-color:rgba(94,224,198,.38);
+  background:linear-gradient(155deg,rgba(94,224,198,.20),rgba(94,224,198,.06) 45%,rgba(255,255,255,.07))}
+.card.tool::before{background:radial-gradient(70% 90% at 12% 0%,rgba(94,224,198,.22),transparent 70%)}
+.card.tool:hover{border-color:rgba(94,224,198,.7)}
+.card.tool:focus-visible{outline-color:#5ee0c6}
+.card.tool .tl{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:12px;align-self:stretch}
+.card.tool .chip{background:rgba(94,224,198,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(94,224,198,.4);color:#8ff0da}
+.card.tool pre{flex:0 0 min(340px,42%);border-color:rgba(94,224,198,.22)}
+.card.tool .go{background:linear-gradient(180deg,rgba(130,240,216,.96),rgba(70,200,174,.92));color:#06241e;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 18px rgba(70,200,174,.32)}
+@media (max-width:720px){.card.tool{flex-direction:column;align-items:stretch;gap:12px}.card.tool pre{flex:none}}
 .card.soon{cursor:default;color:rgba(235,235,245,.5);justify-content:center;align-items:center;text-align:center;min-height:200px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.16);box-shadow:none}
 .card.soon::before{display:none}
 .card.soon:hover{transform:none;border-color:rgba(255,255,255,.16);box-shadow:none}
@@ -352,6 +368,7 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .treset{height:26px;padding:0 12px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.04);color:#c9cbd2;font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
 .treset:hover{background:rgba(255,107,120,.12);border-color:rgba(255,107,120,.45);color:#ffc9ce}
 .home .top .treset{margin-left:auto}
+.home .top .tl{--tl-h:26px;font-size:12px}.home .top .tl .tl-btn{font-size:12px}
 .sbar{position:absolute;left:10px;top:10px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:3px;width:40px;padding:4px 0 6px;background:rgba(30,30,36,.82);border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.4);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .sbar .sgrip{display:flex;align-items:center;justify-content:center;gap:1px;width:100%;height:28px;padding-bottom:2px;margin-bottom:2px;border-bottom:1px solid rgba(255,255,255,.1);color:#c9cbd2}
 .sbar .sgrip .ic{width:16px;height:16px}
@@ -363,12 +380,60 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .sbar button:disabled{opacity:.28;cursor:not-allowed}
 .vp .vl{left:auto;right:8px}
 .phint{position:absolute;left:50%;top:10px;transform:translateX(-50%);padding:4px 12px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff;font-size:11.5px;pointer-events:none;white-space:nowrap;z-index:2}
+
+/* ===== 코드 검색 ===== */
+#searchView .top .lesson.tool b{background:rgba(94,224,198,.18);color:#8ff0da;box-shadow:inset 0 0 0 1px rgba(94,224,198,.4)}
+.sv-main{--fg:#f2f2f5;--mute:#9b9ba6;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.12);--pbg:rgba(38,38,44,.58);--head:rgba(255,255,255,.04);--field:rgba(0,0,0,.34);--hover:rgba(255,255,255,.08);--btn:rgba(255,255,255,.09);--btn-h:rgba(255,255,255,.16);--accent:#e9bd0c;--good:#4cd98a;--danger:#ff6b78;
+  --fb:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;--fm:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:12px;padding:16px 20px 24px;align-items:start}
+.sv-left{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:12px}
+.sv-main .edwrap{height:320px}
+.sv-samples{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 10px;border-top:1px solid var(--line);background:rgba(255,255,255,.03);font-size:11.5px;color:var(--mute)}
+#svStat.ok{color:var(--good)}#svStat.bad{color:var(--danger)}
+.sv-st{margin-left:auto;font-size:11.5px;color:var(--mute)}
+.sv-out{min-height:84px;max-height:220px;overflow:auto;padding:10px 12px;font:12.5px/1.6 var(--fm)}
+.ph{color:var(--mute);font:13px/1.6 var(--fb)}
+.ol{display:flex;gap:8px;align-items:flex-start;padding:1px 0;white-space:pre-wrap;word-break:break-word}
+.ol i{flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:#8e929b}
+.ol.warn i{background:#e8a33d}.ol.error i{background:#ea6773}
+.ol.warn{color:#ffd24a}.ol.error{color:#ff9aa4}
+.sv-q{flex:0 1 250px;height:26px;padding:0 12px;border-radius:999px;background:var(--field);border:1px solid var(--line2);color:var(--fg);font:12px var(--fb)}
+.sv-q:focus{outline:none;border-color:var(--accent)}
+.sv-res{padding:12px;display:flex;flex-direction:column;gap:10px;min-height:200px}
+.sv-note{font-size:12px;color:var(--mute);padding:0 2px 2px}
+.rc{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line2);font-family:var(--fb)}
+.rc-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;padding:0;background:none;border:0;color:inherit;text-align:left;cursor:pointer;font-family:inherit}
+.rc-h:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px}
+.rc-chev{margin-left:auto;width:7px;height:7px;border-right:1.6px solid var(--mute);border-bottom:1.6px solid var(--mute);transform:rotate(-45deg);transition:transform .18s;flex:none}
+.rc.open .rc-chev{transform:rotate(45deg)}
+.rc-h:hover .rc-chev{border-color:var(--fg)}
+.rc-body[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.rc-chev{transition:none}}
+.rc-h b{font:600 14px var(--fm);color:var(--accent)}
+.rc-k{font-size:10.5px;padding:1px 8px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--mute)}
+code.rc-sig{display:block;margin:5px 0 0;padding:0;border:0;background:none;font:12px/1.5 var(--fm);color:#7fdbca;white-space:pre-wrap}
+.rc-sub{margin:3px 0 0;font-size:11.5px;color:var(--mute)}
+.rc-d{margin:6px 0 0;font:13px/1.65 var(--fb);color:var(--fg)}
+.rc-l{margin:10px 0 4px;font-size:10.5px;letter-spacing:.04em;color:var(--mute)}
+.rc pre.rx{margin:0;padding:9px 12px;background:#101013;border-radius:10px;font:12.5px/1.6 var(--fm);color:#e6e6ea;overflow-x:auto;white-space:pre;tab-size:4}
+.rc .ro{padding:8px 12px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid var(--line);font:12.5px/1.6 var(--fm)}
+.ro .none{color:var(--mute);font:12px var(--fb)}
+.rc-note{margin-top:5px;font-size:11px;color:var(--mute)}
+@media (max-width:900px){.sv-main{grid-template-columns:1fr}.sv-left{position:static}}
+
+/* 입력할 필요 없는 글자는 선택되지 않게 (입력칸 · 콘솔 출력만 선택 가능) */
+body{-webkit-user-select:none;user-select:none}
+input,textarea,select,[contenteditable],[contenteditable] *,.conlist,.conlist *,.sv-out,.sv-out *,.ro,.ro *{-webkit-user-select:text;user-select:text}
+input[type=checkbox],input[type=radio],input[type=range],input[type=button]{-webkit-user-select:none;user-select:none}
+img,svg{-webkit-user-drag:none}
 </style>
-<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 </head>
 <body>
 <div id="home" class="home">
-<header class="top"><a class="brand" href="mypage.html" data-home title="마이페이지로 (내 프로젝트)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a><div class="lesson">엔진 · C# 기초</div><button class="treset" type="button" id="homeReset" title="모든 레슨의 통과 기록과 작성한 코드를 지웁니다">학습 기록 초기화</button></header>
+<header class="top"><a class="brand" href="mypage.html" data-home title="마이페이지로 (내 프로젝트)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a><div class="lesson">엔진 · C# 기초</div><button class="treset" type="button" id="homeReset" title="모든 레슨의 통과 기록과 작성한 코드를 지웁니다">학습 기록 초기화</button><span id="langHost"></span></header>
+<section class="tools" aria-labelledby="toolsT"><h2 class="sec" id="toolsT">도구</h2><div id="tools"></div></section>
 <section class="hero"><h1>레슨</h1><p>Thaniya Engine의 화면 사용법과 C# 스크립트를 짧은 문제로 하나씩 익혀요. 카드를 눌러 시작하세요.</p></section>
 <div class="cards" id="cards"></div>
 </div>
@@ -458,71 +523,111 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 </main>
 </div>
 
+<div id="searchView" hidden>
+<header class="top">
+  <button class="back" type="button" id="svBack" aria-label="레슨 목록으로">← 레슨 목록</button>
+  <a class="brand" href="#" id="svHome" title="학습 메인으로 (레슨 목록)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a>
+  <div class="lesson tool"><b>도구</b><span>코드 검색 · 코드를 넣으면 설명과 예시를 보여 줘요</span></div>
+</header>
+<main class="sv-main">
+  <div class="sv-left">
+    <section class="pn edpn">
+      <div class="sedbar">
+        <div class="sedtabs"><span class="sedtab" data-ic="script"><span>Search.cs</span></span></div>
+        <span class="spacer"></span>
+        <button class="btn sm" id="svClear" type="button">지우기</button>
+        <button class="btn sm pri" id="svRun" type="button">▶ 실행 <kbd>Ctrl Enter</kbd></button>
+      </div>
+      <div class="edwrap"><pre class="gut" id="svGut" aria-hidden="true"></pre><div class="edcode"><pre class="hl" id="svHl" aria-hidden="true"></pre><textarea id="svCode" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="설명을 볼 C# 코드 입력"></textarea></div></div>
+      <div class="sv-samples" id="svSamples"><span>예시 코드:</span><button class="btn sm" type="button" data-sample="log">콘솔 출력</button><button class="btn sm" type="button" data-sample="flow">if · for</button><button class="btn sm" type="button" data-sample="comp">컴포넌트</button><span class="spacer"></span><span id="svStat"></span></div>
+    </section>
+    <section class="pn">
+      <div class="phead"><span class="ptab" data-ic="term">실행 결과</span><span class="sv-st" id="svOutT"></span></div>
+      <div class="sv-out" id="svOut" role="status" aria-live="polite"></div>
+    </section>
+  </div>
+  <section class="pn sv-right">
+    <div class="phead"><span class="ptab">설명 · 예시</span><span class="spacer"></span><input type="search" class="sv-q" id="svQ" placeholder="이름·설명으로 찾기 (예: Log, 체력)" aria-label="코드 이름이나 설명으로 검색" autocomplete="off" spellcheck="false"></div>
+    <div class="sv-res" id="svRes" aria-live="polite"></div>
+  </section>
+</main>
+</div>
+
 <script src="script-engine.js"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
+const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
 let OUT=[];
 function clog(type,msg){if(OUT.length<300)OUT.push([type,String(msg)])}
 let play=null;
 const KIND={info:'일반 로그',warn:'경고',error:'오류'};
 
-function runOnce(code,over,sc){
-  OUT=[];
+/* 실행 오류를 읽기 쉬운 문장으로 */
+function csErrMsg(e){
+  let msg=e&&e.message?e.message:_t('알 수 없는 오류');
+  if(e instanceof CsUnsup)msg=/^[A-Za-z_]\w*$/.test(msg)?_t("'{name}'을(를) 찾을 수 없어요. 변수 이름을 잘못 썼거나 선언하지 않았는지 확인하세요.",{name:msg}):_t('이 학습 사이트에서는 아직 지원하지 않는 기능이에요: {msg}',{msg});
+  if(e&&e.line!=null)msg=_t('({line}번째 줄) {msg}',{line:e.line,msg});
+  return msg;
+}
+/* opt.ui = UI 요소 목록(Text 슬롯용) · opt.clicks = Start 다음에 OnClick()을 부를 횟수 (버튼 누르기) */
+function runOnce(code,over,sc,opt){
+  opt=opt||{};OUT=[];
   const res=parseCS(code);
   if(res.errs.length){
     res.errs.forEach(e=>OUT.push(['error','Quiz.cs('+e.line+'): '+e.msg]));
     return{out:OUT.slice(),fatal:true};
   }
   if(!res.methods.Start&&!res.methods.Awake){
-    OUT.push(['error','Start() 메서드가 없어요. void Start() { } 안에 코드를 쓰세요.']);
+    OUT.push(['error',_t('Start() 메서드가 없어요. void Start() { } 안에 코드를 쓰세요.')]);
     return{out:OUT.slice(),fatal:true};
   }
   const rt={f:{},ty:{}};
   res.fields.forEach(f=>{rt.f[f.name]=csDefault(f.type,f.def);rt.ty[f.name]=f.type});
   Object.assign(rt.f,over||{});
-  const mm={objs:sc||[],ui:[],uiGroups:[]};
-  Object.keys(rt.f).forEach(k=>{const v=rt.f[k];if(v&&typeof v==='object'&&!v.__h&&v.ref!==undefined){const o=mm.objs.find(q=>q.id===v.ref);rt.f[k]=o?refProxy(mm,o,rt.ty[k]):null}});
+  const mm={objs:sc||[],ui:opt.ui||[],uiGroups:[]};
+  Object.keys(rt.f).forEach(k=>{const v=rt.f[k];if(v&&typeof v==='object'&&!v.__h&&v.ref!==undefined){const o=slotFind(v.ref,mm);rt.f[k]=o?refProxy(mm,o,rt.ty[k]):null}});
   const cx={m:mm,o:(sc&&sc.find(q=>q.id==='quiz'))||{name:'Quiz',props:{}},rt,s:{id:1,name:res.cls||'Quiz'},pr:{r:res,ast:{}},scopes:[],me:null,loops:0,depth:0,dt:.016};
   let fatal=false;
   csCur=cx;
   try{
     for(const n of['Awake','Start'])if(res.methods[n])csCallUser(cx,n,[]);
+    if(opt.clicks){
+      if(!res.methods.OnClick){OUT.push(['error',_t('OnClick() 메서드가 없어요. public void OnClick() { } 안에 버튼을 눌렀을 때 할 일을 쓰세요.')]);fatal=true}
+      else for(let i=0;i<opt.clicks;i++)csCallUser(cx,'OnClick',[]);
+    }
   }catch(e){
     fatal=true;
-    let msg=e&&e.message?e.message:'알 수 없는 오류';
-    if(e instanceof CsUnsup)msg=/^[A-Za-z_]\w*$/.test(msg)?'\''+msg+'\'을(를) 찾을 수 없어요. 변수 이름을 잘못 썼거나 선언하지 않았는지 확인하세요.':'이 학습 사이트에서는 아직 지원하지 않는 기능이에요: '+msg;
-    if(e&&e.line!=null)msg='('+e.line+'번째 줄) '+msg;
-    OUT.push(['error',msg]);
+    OUT.push(['error',csErrMsg(e)]);
   }finally{csCur=null}
-  return{out:OUT.slice(),fatal};
+  return{out:OUT.slice(),fatal,cx};
 }
 
 function diffOut(exp,got){
-  if(exp.length!==got.length)return'출력이 '+got.length+'줄이에요. '+exp.length+'줄이어야 해요.';
+  if(exp.length!==got.length)return _t('출력이 {got}줄이에요. {exp}줄이어야 해요.',{got:got.length,exp:exp.length});
   for(let i=0;i<exp.length;i++){
-    if(exp[i][1]!==got[i][1])return(i+1)+'번째 줄이 달라요. 기대: “'+exp[i][1]+'” / 내 출력: “'+got[i][1]+'”';
-    if(exp[i][0]!==got[i][0])return(i+1)+'번째 줄의 종류가 달라요. 기대: '+KIND[exp[i][0]]+' / 내 출력: '+KIND[got[i][0]];
+    if(exp[i][1]!==got[i][1])return _t('{n}번째 줄이 달라요. 기대: “{exp}” / 내 출력: “{got}”',{n:i+1,exp:exp[i][1],got:got[i][1]});
+    if(exp[i][0]!==got[i][0])return _t('{n}번째 줄의 종류가 달라요. 기대: {exp} / 내 출력: {got}',{n:i+1,exp:_t(KIND[exp[i][0]]),got:_t(KIND[got[i][0]])});
   }
   return'';
 }
 const fieldDesc=f=>Object.keys(f).map(k=>k+' = '+f[k]).join(', ');
 
-function snTestScene(over){
-  const a=SN_INIT.map(o=>({...o}));
+function snTestScene(over,p){
+  const a=p&&p.setup?p.setup():SN_INIT.map(o=>({...o}));
   if(over)Object.keys(over).forEach(id=>{const o=a.find(q=>q.id===id);if(o)Object.assign(o,over[id])});
   return a;
 }
 function gradeProblem(p,code){
   const refs=p.scene?refsOf(p,code):{};
-  const runs=p.tests.map(t=>{const sc=p.scene?snTestScene(t.sc):null;return{t,sc,r:runOnce(code,Object.assign({},refs,t.f),sc)}});
+  const runs=p.tests.map(t=>{const sc=p.scene?snTestScene(t.sc,p):null,ui=p.uiSetup?JSON.parse(JSON.stringify(p.uiSetup())):[];return{t,sc,ui,r:runOnce(code,Object.assign({},refs,t.f),sc,{ui,clicks:t.click||0})}});
   const first=runs[0].r;
   for(let i=0;i<runs.length;i++){
-    const{t,sc,r}=runs[i];
-    const pre=i?(t.why||'값을 바꿔 시험했더니('+fieldDesc(t.f)+') ')+'결과가 달라요. ':'';
-    if(r.fatal)return{first,pass:false,msg:'코드를 끝까지 실행하지 못했어요. 콘솔의 오류를 읽고 고쳐 보세요.'};
+    const{t,sc,ui,r}=runs[i];
+    const pre=i?(t.why||_t('값을 바꿔 시험했더니({f}) ',{f:fieldDesc(t.f)}))+_t('결과가 달라요. '):'';
+    if(r.fatal)return{first,pass:false,msg:_t('코드를 끝까지 실행하지 못했어요. 콘솔의 오류를 읽고 고쳐 보세요.')+(p.fatalHint&&r.out.some(l=>/NullReference/.test(l[1]))?' '+p.fatalHint:'')};
     const d=diffOut(t.out,r.out);
     if(d)return{first,pass:false,msg:pre+d};
-    const v=p.verify&&p.verify(sc,t.f||{},t);
+    const v=p.verify&&p.verify(sc,t.f||{},t,ui);
     if(v)return{first,pass:false,msg:pre+v};
   }
   if(p.must&&!p.must[0].test(csBlank(code,true)))return{first,pass:false,msg:p.must[1]};
@@ -565,7 +670,7 @@ const L1P=[
  hint:'Debug.Log($"{a} + {b} = {a + b}");\n또는\nDebug.Log(a + " + " + b + " = " + (a + b));'}
 ];
 function starterCode(p){
-  return'using UnityEngine;\n\npublic class Quiz : MonoBehaviour\n{\n'+p.fields+'    void Start()\n    {\n'+p.body+'    }\n}\n';
+  return'using UnityEngine;\n\npublic class Quiz : MonoBehaviour\n{\n'+p.fields+'    void Start()\n    {\n'+p.body+'    }\n'+(p.after||'')+'}\n';
 }
 
 /* ===== 레슨 3: 컴포넌트 활용 ===== */
@@ -713,10 +818,88 @@ const L2P=[
  hint:'버튼의 글자는 인스펙터 텍스트 컴포넌트의 「글자」에서, 메시지는 버튼 컴포넌트의 「메시지」에서 바꿔요.\n플레이 중에는 게임 뷰의 버튼을 마우스로 누르세요.'}
 ];
 
+/* ===== 레슨 4: 변수 · 캐릭터 · 아이템 · UI =====
+   코드 문제지만 문제마다 씬(setup)과 UI(uiSetup)를 따로 차려요.
+   아이템 = kind:'item' (Item 컴포넌트 · qty 수량) · tests[].click = Start 다음에 OnClick()을 누른 횟수
+   verify(sc, f, t, ui) 의 ui = 채점용 UI 복사본 (Text 슬롯으로 바꾼 글자 확인) */
+const L4={no:4,title:'변수 · 캐릭터 · 아이템 · UI',clear:'통과했어요. 레슨 4 완료! 변수로 캐릭터와 아이템의 값을 바꾸고, 그 값을 UI 텍스트와 버튼으로 화면에 연결하는 법을 익혔어요.',
+ lead:'변수에 값을 담아 주인공의 체력을 깎고 채우고, 바닥에 놓인 아이템의 수량을 바꾸고, 그 결과를 UI 텍스트와 버튼으로 화면에 연결해 봐요.'};
+const l4Scene=(over,add)=>{const a=SN_INIT.map(o=>({...o})).concat((add||[]).map(o=>({...o})));if(over)Object.keys(over).forEach(id=>{const o=a.find(q=>q.id===id);if(o)Object.assign(o,over[id])});return a};
+const L4_HP={id:'hpText',name:'체력 표시',type:'text',anchor:'tl',x:16,y:16,w:240,h:34,text:'HP {hp}',size:20,color:'#ff8a95',msg:''};
+const L4_POTION={id:'potion',name:'포션',kind:'item',icon:'potion',x:4,y:6,qty:3};
+const L4_COIN={id:'coin',name:'코인',kind:'item',icon:'coin',x:4,y:4,qty:5};
+const l4h0=(t,d)=>(t.sc&&t.sc.hero&&t.sc.hero.hp!=null)?t.sc.hero.hp:d;
+const l4q0=(t,id,d)=>(t.sc&&t.sc[id]&&t.sc[id].qty!=null)?t.sc[id].qty:d;
+const l4hpMsg=(want,got)=>_t('출력은 맞지만 주인공의 hp가 기대한 값({want})과 달라요. (지금 {got}) 출력만 하지 말고 hp에 값을 대입하세요.',{want,got});
+const L4P=[
+{id:'v-damage',scene:true,view:'pGame',title:'변수로 체력 깎기',
+ setup:()=>l4Scene(),uiSetup:()=>[L4_HP],
+ desc:'<b>변수</b>는 값을 담아 두는, 이름표 붙은 상자예요. <code>public int damage = 30;</code>처럼 스크립트 맨 위(Start 밖)에 만들면 인스펙터에 <b>Damage</b> 칸이 생겨서, 코드를 고치지 않고도 값을 바꿀 수 있어요. 주인공의 체력은 <code>Hero</code> 컴포넌트의 변수 <code>hp</code>에 들어 있어요. <code>hero.hp -= damage;</code>는 <code>hero.hp = hero.hp - damage;</code>를 줄여 쓴 것이에요.<br><br>게임 뷰 왼쪽 위의 UI 텍스트는 글자가 <code>HP {hp}</code>예요. 그래서 코드로 주인공의 hp를 바꾸면 화면 숫자도 함께 바뀌어요.',
+ goal:'주인공의 <code>hp</code>를 <code>damage</code>만큼 줄이고 <b>HP: 70</b> 을 출력하세요. 인스펙터에서 Damage를 바꿔 다시 실행하고, 게임 뷰의 체력 표시도 확인해 보세요.',
+ fields:'    public int damage = 30;\n\n',body:'        // 주인공의 Hero 컴포넌트를 꺼내 hp를 damage만큼 줄이세요\n',
+ tests:[{f:{damage:30},out:[['info','HP: 70']]},{f:{damage:45},out:[['info','HP: 55']]},{f:{damage:30},sc:{hero:{hp:80}},why:'주인공 hp를 80으로 두고 시험했더니 ',out:[['info','HP: 50']]}],
+ verify:(sc,f,t)=>{const h=snO(sc,'hero'),want=l4h0(t,100)-f.damage;return h.hp===want?'':l4hpMsg(want,h.hp)},
+ hint:'Hero hero = GameObject.Find("주인공").GetComponent<Hero>();\nhero.hp -= damage;\nDebug.Log("HP: " + hero.hp);\n\n// public Hero hero; 를 만들고 인스펙터 칸에 주인공을 끌어다 놓아도 돼요.'},
+{id:'v-heal',scene:true,view:'pGame',title:'한도까지만 회복하기',
+ setup:()=>l4Scene({hero:{hp:60}}),uiSetup:()=>[L4_HP],
+ desc:'변수끼리 계산하고 비교할 수도 있어요. 이 게임의 약초는 체력을 <code>limit</code>까지만 채워 준다고 해요. 회복한 값이 한도보다 크면 한도에 맞춰야 하는데, <code>if (hp &gt; limit)</code>로 비교하거나 두 값 중 작은 값을 돌려주는 <code>Mathf.Min(a, b)</code>를 쓰면 돼요. 이 씬의 주인공은 체력이 <b>60</b>인 채로 시작해요.',
+ goal:'주인공의 <code>hp</code>를 <code>heal</code>만큼 회복하되 <code>limit</code>를 넘지 않게 하고, <b>HP: 80</b> 을 출력하세요. heal이 10이면 HP: 70이어야 해요.',
+ fields:'    public int heal = 25;\n    public int limit = 80;\n\n',body:'        // heal만큼 회복하되 limit를 넘지 않게\n',
+ tests:[{f:{heal:25,limit:80},out:[['info','HP: 80']]},{f:{heal:10,limit:80},out:[['info','HP: 70']]},{f:{heal:30,limit:100},out:[['info','HP: 90']]},{f:{heal:50,limit:95},out:[['info','HP: 95']]}],
+ verify:(sc,f,t)=>{const h=snO(sc,'hero'),want=Math.min(l4h0(t,60)+f.heal,f.limit);return h.hp===want?'':l4hpMsg(want,h.hp)},
+ hint:'Hero hero = GameObject.Find("주인공").GetComponent<Hero>();\nhero.hp = Mathf.Min(hero.hp + heal, limit);\nDebug.Log("HP: " + hero.hp);\n\n// if로 쓰면\nhero.hp += heal;\nif (hero.hp > limit)\n{\n    hero.hp = limit;\n}'},
+{id:'v-item',scene:true,view:'pScene',title:'아이템 수량 바꾸기',sel:'potion',
+ setup:()=>l4Scene({hero:{hp:40}},[L4_POTION]),uiSetup:()=>[L4_HP],
+ desc:'바닥에 놓인 <b>포션</b>은 <b>아이템</b> 오브젝트예요. 계층 구조에서 포션을 골라 보면 인스펙터의 <code>Item</code> 컴포넌트에 <b>수량</b>(<code>qty</code>)이 있어요. 주인공의 Hero처럼 <code>GameObject.Find("포션").GetComponent&lt;Item&gt;()</code>로 꺼내면 <code>qty</code>를 읽고 바꿀 수 있어요. <code>qty -= 1</code>(또는 <code>qty--</code>)은 1을 빼요.<br><br>포션 하나를 쓰면 <b>아이템의 수량</b>과 <b>캐릭터의 체력</b>, 두 오브젝트의 값이 함께 바뀌어요. 씬 뷰에서 포션 이름 옆의 ×숫자가 수량이에요.',
+ goal:'포션의 <code>qty</code>를 1 줄이고, 주인공의 hp를 <code>healAmount</code>만큼 올린 뒤 <b>포션 2개 · HP 70</b> 을 출력하세요.',
+ fields:'    public int healAmount = 30;\n\n',body:'        // 포션을 하나 쓰고, 주인공을 회복하세요\n',
+ tests:[{f:{healAmount:30},out:[['info','포션 2개 · HP 70']]},{f:{healAmount:20},sc:{potion:{qty:5},hero:{hp:10}},why:'포션 5개 · 주인공 hp 10 · healAmount = 20 으로 시험했더니 ',out:[['info','포션 4개 · HP 30']]}],
+ verify:(sc,f,t)=>{const q=snO(sc,'potion').qty,qw=l4q0(t,'potion',3)-1,h=snO(sc,'hero').hp,hw=Math.min(100,l4h0(t,40)+f.healAmount);
+   if(q!==qw)return _t('출력은 맞지만 포션의 qty가 기대한 값({want})과 달라요. (지금 {got}) potion.qty에서 1을 빼세요.',{want:qw,got:q});
+   return h===hw?'':l4hpMsg(hw,h)},
+ hint:'Item potion = GameObject.Find("포션").GetComponent<Item>();\nHero hero = GameObject.Find("주인공").GetComponent<Hero>();\npotion.qty -= 1;\nhero.hp += healAmount;\nDebug.Log($"포션 {potion.qty}개 · HP {hero.hp}");\n\n// public Item potion; 을 만들고 인스펙터 칸에 포션을 끌어다 놓아도 돼요.'},
+{id:'v-if',scene:true,view:'pScene',title:'아이템이 있을 때만 쓰기',sel:'potion',
+ setup:()=>l4Scene({hero:{hp:40}},[{...L4_POTION,qty:1}]),uiSetup:()=>[L4_HP],
+ desc:'포션이 0개인데 쓸 수는 없겠죠? <code>if (potion.qty &gt; 0)</code>처럼 <b>조건</b>을 걸면 조건이 참일 때만 중괄호 안을 실행해요. 조건이 거짓일 때 할 일은 <code>else</code> 뒤에 써요. 하면 안 되는 일을 막았을 때는 <code>Debug.LogWarning</code>으로 경고를 남겨 두면, 나중에 왜 안 됐는지 찾기 쉬워요.',
+ goal:'포션이 남아 있으면 하나 써서 hp를 <code>healAmount</code>만큼 올리고 <b>포션 0개 · HP 70</b> 을, 없으면 아무것도 바꾸지 말고 경고로 <b>포션이 없어요</b> 를 출력하세요. 인스펙터에서 포션 수량을 0으로 바꿔 다시 실행해 보세요.',
+ fields:'    public int healAmount = 30;\n\n',body:'        // 포션이 있을 때만 쓰세요\n',
+ tests:[{f:{healAmount:30},out:[['info','포션 0개 · HP 70']]},{f:{healAmount:30},sc:{potion:{qty:0}},why:'포션이 0개일 때 시험했더니 ',out:[['warn','포션이 없어요']]},{f:{healAmount:30},sc:{potion:{qty:3},hero:{hp:50}},why:'포션 3개 · 주인공 hp 50 으로 시험했더니 ',out:[['info','포션 2개 · HP 80']]}],
+ verify:(sc,f,t)=>{const q0=l4q0(t,'potion',1),h0=l4h0(t,40),q=snO(sc,'potion').qty,h=snO(sc,'hero').hp;
+   if(q0<=0)return h===h0?'':_t('포션이 없는데 주인공의 hp가 바뀌었어요. (지금 {got}) 포션이 없으면 hp를 바꾸지 마세요.',{got:h});
+   if(q!==q0-1)return _t('포션의 qty가 기대한 값({want})과 달라요. (지금 {got})',{want:q0-1,got:q});
+   const hw=Math.min(100,h0+f.healAmount);return h===hw?'':l4hpMsg(hw,h)},
+ hint:'Item potion = GameObject.Find("포션").GetComponent<Item>();\nHero hero = GameObject.Find("주인공").GetComponent<Hero>();\nif (potion.qty > 0)\n{\n    potion.qty -= 1;\n    hero.hp += healAmount;\n    Debug.Log($"포션 {potion.qty}개 · HP {hero.hp}");\n}\nelse\n{\n    Debug.LogWarning("포션이 없어요");\n}'},
+{id:'v-pickup',scene:true,view:'pScene',title:'가까운 아이템 줍기',sel:'coin',
+ setup:()=>l4Scene(null,[L4_COIN]),uiSetup:()=>[L4_HP],
+ desc:'아이템을 주우려면 주인공이 가까이 있는지부터 알아야 해요. <code>Vector2.Distance(a, b)</code>는 두 위치 사이의 거리(칸)를 돌려줘요. 주운 코인 수는 스크립트의 변수 <code>coins</code>에 더해 모으고, 주운 아이템은 <code>SetActive(false)</code>로 씬에서 숨겨요. 아이템 오브젝트의 위치는 <code>coin.transform.position</code>, Item 컴포넌트는 <code>coin.GetComponent&lt;Item&gt;()</code>로 꺼내요.',
+ goal:'주인공과 <b>코인</b>의 거리가 <code>reach</code> 이하이면 코인의 <code>qty</code>를 <code>coins</code>에 더하고 코인을 비활성화한 뒤 <b>코인: 5</b> 를, 멀면 <b>너무 멀어요</b> 를 출력하세요. 씬 뷰에서 코인을 멀리 옮겨 다시 실행해 보세요.',
+ fields:'    public int coins = 0;\n    public float reach = 1.5f;\n\n',body:'        // 주인공과 코인의 거리를 재서, 가까우면 주우세요\n',
+ tests:[{f:{coins:0,reach:1.5},out:[['info','코인: 5']]},{f:{coins:0,reach:1.5},sc:{coin:{x:10,y:6}},why:'코인을 (10, 6)에 두고 시험했더니 ',out:[['info','너무 멀어요']]},{f:{coins:2,reach:1.5},sc:{coin:{x:3,y:5,qty:8}},why:'코인 8개를 (3, 5)에 두고 coins = 2 로 시험했더니 ',out:[['info','코인: 10']]}],
+ verify:(sc,f,t)=>{const c=snO(sc,'coin'),h=snO(sc,'hero'),near=Math.hypot(c.x-h.x,c.y-h.y)<=f.reach,off=c.active===false;
+   if(near&&!off)return'출력은 맞지만 코인이 아직 씬에 있어요. 주운 코인은 SetActive(false)로 비활성화하세요.';
+   return !near&&off?'멀리 있는 코인까지 비활성화했어요. 가까울 때만 주우세요.':''},
+ hint:'GameObject hero = GameObject.Find("주인공");\nGameObject coin = GameObject.Find("코인");\nfloat d = Vector2.Distance(hero.transform.position, coin.transform.position);\nif (d <= reach)\n{\n    coins += coin.GetComponent<Item>().qty;\n    coin.SetActive(false);\n    Debug.Log("코인: " + coins);\n}\nelse\n{\n    Debug.Log("너무 멀어요");\n}'},
+{id:'v-ui',scene:true,play:true,view:'pGame',title:'UI 버튼으로 포션 쓰기',sel:'quiz',clickUi:'useBtn',
+ expLabel:'기대 출력 (버튼을 한 번 눌렀을 때)',
+ fatalHint:'label이 비어 있다면, 퀴즈 인스펙터의 Label 칸에 계층 구조 UI (캔버스)의 「포션 텍스트」를 끌어다 놓으세요.',
+ setup:()=>l4Scene({hero:{hp:40}},[L4_POTION]),
+ uiSetup:()=>[L4_HP,{id:'potionText',name:'포션 텍스트',type:'text',anchor:'tl',x:16,y:52,w:240,h:28,text:'포션 ?개',size:16,color:'#f3a6cc',msg:''},{id:'useBtn',name:'포션 사용 버튼',type:'button',anchor:'br',x:-16,y:-16,w:140,h:40,text:'포션 사용',size:15,color:'#ffffff',msg:''}],
+ desc:'이번에는 UI가 스크립트를 부르고, 스크립트가 UI를 바꿔요. 이 스크립트는 <b>포션 사용</b> 버튼에 붙어 있다고 생각하세요. 엔진에서 UI 요소에 붙인 스크립트의 <code>public void OnClick()</code>은 그 요소를 누를 때마다 호출돼요.<br><br>화면 글자를 코드로 바꾸려면 <code>public Text label;</code> 변수를 만들고, 인스펙터의 <b>Label</b> 칸에 계층 구조 <b>UI (캔버스)</b>의 <b>포션 텍스트</b>를 끌어다 놓은 뒤 <code>label.text = "…";</code>로 대입해요. <code>Start()</code>에서 처음 글자를 정하고 <code>OnClick()</code>에서 포션을 쓸 때마다 다시 써 주면, 화면이 늘 변수와 같은 값을 보여 줘요. 두 메서드에서 함께 쓸 포션·주인공은 <code>Start()</code> 밖에 변수로 만들어 두세요.',
+ goal:'<code>Start()</code>에서 포션 텍스트를 <b>포션 3개</b>로 바꾸고, <code>OnClick()</code>마다 포션이 있으면 하나 써서 hp를 <b>30</b> 올린 뒤 <b>HP: 70</b> 을 출력하고 글자를 <b>포션 2개</b>로 고치세요. 포션이 없으면 경고로 <b>포션이 없어요</b> 를 출력해요. 실행하면 버튼을 누른 것으로 채점하고, <b>▶ 플레이</b>를 누르면 게임 뷰에서 버튼을 직접 눌러 볼 수 있어요.',
+ fields:'    public Text label;\n    Item potion;\n    Hero hero;\n\n',body:'        // 포션과 주인공을 찾고, 포션 텍스트에 지금 포션 수를 보여 주세요\n',
+ after:'\n    public void OnClick()\n    {\n        // 버튼을 누를 때마다 포션을 하나 쓰세요\n    }\n',
+ tests:[{f:{},click:1,out:[['info','HP: 70']]},{f:{},click:0,why:'버튼을 누르기 전 화면을 확인했더니 ',out:[]},{f:{},click:4,why:'버튼을 네 번 눌러 시험했더니 ',out:[['info','HP: 70'],['info','HP: 100'],['info','HP: 100'],['warn','포션이 없어요']]}],
+ verify:(sc,f,t,ui)=>{const want='포션 '+Math.max(0,3-t.click)+'개',u=ui.find(q=>q.id==='potionText'),got=u?String(u.text):'';
+   if(got!==want)return _t('“포션 텍스트”의 글자가 「{want}」가 아니에요. (지금 「{got}」) label.text에 지금 포션 수를 대입했는지 확인하세요.',{want,got});
+   const q=snO(sc,'potion').qty,qw=Math.max(0,3-t.click);return q===qw?'':_t('포션의 qty가 기대한 값({want})과 달라요. (지금 {got})',{want:qw,got:q})},
+ hint:'public Text label;\nItem potion;\nHero hero;\n\nvoid Start()\n{\n    potion = GameObject.Find("포션").GetComponent<Item>();\n    hero = GameObject.Find("주인공").GetComponent<Hero>();\n    label.text = "포션 " + potion.qty + "개";\n}\n\npublic void OnClick()\n{\n    if (potion.qty > 0)\n    {\n        potion.qty -= 1;\n        hero.hp += 30;\n        Debug.Log("HP: " + hero.hp);\n    }\n    else\n    {\n        Debug.LogWarning("포션이 없어요");\n    }\n    label.text = "포션 " + potion.qty + "개";\n}\n\n// 인스펙터 Label 칸에 「포션 텍스트」를 끌어다 놓는 것을 잊지 마세요.'}
+];
+
 const LESSONS=[
   {...L2,problems:L2P,hash:'lesson-1',preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
   {...L1,problems:L1P,hash:'lesson-2',preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
-  {...L3,problems:L3P,hash:'lesson-3',preview:'void Start()\n{\n    Light l = GetComponent<Light>();\n    l.intensity = 0.3f;\n}'}
+  {...L3,problems:L3P,hash:'lesson-3',preview:'void Start()\n{\n    Light l = GetComponent<Light>();\n    l.intensity = 0.3f;\n}'},
+  {...L4,problems:L4P,hash:'lesson-4',preview:'public int damage = 30;\npublic Text label;\n\nvoid Start()\n{\n    hero.hp -= damage;\n    label.text = "HP " + hero.hp;\n}'}
 ];
 let LESSON=LESSONS[0],PROBLEMS=LESSON.problems;
 
@@ -746,7 +929,7 @@ function uiRect(u,gw,gh){const k=gw/UI_RW,RH=gh/k,[ax,ay]=ancXY(u.anchor);const 
 function uiText(u){const h=SN_OBJS.find(o=>o.kind==='hero');return String(u.text==null?'':u.text).replace(/\{hp\}/g,h?h.hp:0)}
 const SN_KINDS={
   camera:{c:'#8fb8ff',en:'Camera'},hero:{c:'#f6cd2a',en:'Hero'},monster:{c:'#5cc08a',en:'Monster'},
-  light:{c:'#ff9f43',en:'Light'},script:{c:'#b69cff',en:'GameObject'}
+  light:{c:'#ff9f43',en:'Light'},script:{c:'#b69cff',en:'GameObject'},item:{c:'#e0559b',en:'Item'}
 };
 const SN_OBJS=[
   {id:'cam',name:'메인 카메라',kind:'camera',size:3,follow:true},
@@ -758,19 +941,20 @@ const SN_OBJS=[
 const SN={sel:'quiz',geo:{},onSel:null,onMove:null};
 /* 채점은 늘 처음 상태의 씬 복사본에서, 실행은 지금 씬에서 합니다 (Unity 플레이 모드처럼 실행이 끝나면 되돌려요) */
 const SN_INIT=SN_OBJS.map(o=>({...o}));
-let SN_EDIT=null;
+let SN_EDIT=null,SN_EDIT_UI=null;
 const snClone=a=>a.map(o=>({...o}));
 function snRestore(){
+  if(SN_EDIT_UI){SN_EDIT_UI.forEach(s=>{const u=SN_UI.find(q=>q.id===s.id);if(u)Object.assign(u,s)});SN_EDIT_UI=null}
   if(!SN_EDIT)return;
   SN_EDIT.forEach(s=>{const o=SN_OBJS.find(q=>q.id===s.id);if(o){Object.keys(o).forEach(k=>delete o[k]);Object.assign(o,s)}});
   SN_EDIT=null;
 }
 /* 문제마다 씬을 새로 차립니다: 코드 문제는 처음 씬, 실습 문제는 문제에 적힌 씬 */
 function snSetup(p){
-  const base=p&&p.task?(p.setup?p.setup():SN_INIT.filter(o=>o.id!=='quiz').map(o=>({...o}))):SN_INIT.map(o=>({...o}));
-  SN_OBJS.length=0;base.forEach(o=>SN_OBJS.push(o));SN_EDIT=null;
+  const base=p&&p.setup?p.setup():p&&p.task?SN_INIT.filter(o=>o.id!=='quiz').map(o=>({...o})):SN_INIT.map(o=>({...o}));
+  SN_OBJS.length=0;base.forEach(o=>SN_OBJS.push(o));SN_EDIT=null;SN_EDIT_UI=null;
   const tm=tmDefault();if(p&&p.task&&p.tiles)p.tiles(tm);tmLoad(tm);
-  SN_UI.length=0;if(p&&p.task&&p.uiSetup)p.uiSetup().forEach(u=>SN_UI.push(JSON.parse(JSON.stringify(u))));
+  SN_UI.length=0;if(p&&p.uiSetup)p.uiSetup().forEach(u=>SN_UI.push(JSON.parse(JSON.stringify(u))));
   SN.tool='select';SN.layer=(p&&p.layer)||'t';SN.tile='floor';SN.hover=null;
   if(p&&p.sel&&/^[LU]:/.test(p.sel)){SN.sel=p.sel;if(p.sel[0]==='L')SN.layer=p.sel.slice(2);return}
   SN.sel=(p&&p.sel&&SN_OBJS.some(o=>o.id===p.sel))?p.sel:(SN_OBJS.some(o=>o.id==='quiz')?'quiz':'hero');
@@ -847,6 +1031,17 @@ function snSprite(c,o,cx,cy,ts,scene){
   }else if(o.kind==='exit'){
     c.strokeStyle='#4cc3d9';c.lineWidth=Math.max(2,ts/11);c.fillStyle='rgba(76,195,217,.25)';c.beginPath();c.ellipse(0,0,r*1.0,r*1.2,0,0,7);c.fill();c.stroke();
     c.fillStyle='#c8f6ff';c.beginPath();c.ellipse(0,0,r*.38,r*.55,0,0,7);c.fill();
+  }else if(o.kind==='item'){
+    if(o.icon==='coin'){
+      c.fillStyle='#f6cd2a';c.strokeStyle='#a07c00';c.beginPath();c.arc(0,0,r*.72,0,7);c.fill();c.stroke();
+      c.beginPath();c.arc(0,0,r*.44,0,7);c.stroke();
+      c.fillStyle='rgba(255,255,255,.5)';c.beginPath();c.arc(-r*.24,-r*.24,r*.16,0,7);c.fill();
+    }else{
+      c.fillStyle='#f3d6e5';c.strokeStyle='#7a2050';c.fillRect(-r*.2,-r*.9,r*.4,r*.5);c.strokeRect(-r*.2,-r*.9,r*.4,r*.5);
+      c.fillStyle='#e0559b';c.beginPath();c.arc(0,r*.2,r*.66,0,7);c.fill();c.stroke();
+      c.fillStyle='#8a5a2b';c.fillRect(-r*.28,-r*1.08,r*.56,r*.22);
+      c.fillStyle='rgba(255,255,255,.5)';c.beginPath();c.arc(-r*.24,r*.02,r*.15,0,7);c.fill();
+    }
   }else if(o.kind==='empty'&&scene){
     c.strokeStyle='rgba(255,255,255,.6)';c.setLineDash([3,3]);c.strokeRect(-r*.8,-r*.8,r*1.6,r*1.6);c.setLineDash([]);
     c.beginPath();c.moveTo(-r*.3,0);c.lineTo(r*.3,0);c.moveTo(0,-r*.3);c.lineTo(0,r*.3);c.stroke();
@@ -893,8 +1088,9 @@ function snDrawScene(){
     const cx=ox+(o.x+.5)*ts,cy=oy+(o.y+.5)*ts;
     c.globalAlpha=o.active===false?.3:(o.kind==='light'&&o.enabled===false?.5:1);snSprite(c,o,cx,cy,ts,true);c.globalAlpha=1;
     c.font=SN_FONT;c.textAlign='center';c.textBaseline='alphabetic';
-    c.fillStyle='rgba(0,0,0,.55)';const tw=c.measureText(o.name).width;c.fillRect(cx-tw/2-4,cy+ts*.36,tw+8,16);
-    c.fillStyle='#e9eaee';c.fillText(o.name,cx,cy+ts*.36+12);
+    const lab=o.kind==='item'?o.name+' ×'+o.qty:o.name;
+    c.fillStyle='rgba(0,0,0,.55)';const tw=c.measureText(lab).width;c.fillRect(cx-tw/2-4,cy+ts*.36,tw+8,16);
+    c.fillStyle='#e9eaee';c.fillText(lab,cx,cy+ts*.36+12);
   });
   /* 콜라이더: 초록 테두리 · 트리거는 점선 · 꺼져 있으면 흐리게 */
   SN_OBJS.forEach(o=>{if(!o.col||o.kind==='camera')return;const px=ox+o.x*ts,py=oy+o.y*ts,on=o.col.on!==false&&o.active!==false;
@@ -920,8 +1116,10 @@ function snDrawGame(){
   c.fillStyle='#0d0d10';c.fillRect(0,0,w,h);
   c.save();c.beginPath();c.rect(ox,oy,ts*v.w,ts*v.h);c.clip();
   {const ix=Math.floor(v.x),iy=Math.floor(v.y);snTiles(c,ox-(v.x-ix)*ts,oy-(v.y-iy)*ts,ts,ix,iy,Math.min(SN_COLS,Math.ceil(v.x+v.w)),Math.min(SN_ROWS,Math.ceil(v.y+v.h)),false)}
-  SN_OBJS.filter(o=>['hero','monster','light','rock','crate','exit'].includes(o.kind)&&o.active!==false).forEach(o=>{
-    snSprite(c,o,ox+(o.x-v.x+.5)*ts,oy+(o.y-v.y+.5)*ts,ts,false);
+  SN_OBJS.filter(o=>['hero','monster','light','rock','crate','exit','item'].includes(o.kind)&&o.active!==false).forEach(o=>{
+    const gx=ox+(o.x-v.x+.5)*ts,gy=oy+(o.y-v.y+.5)*ts;
+    snSprite(c,o,gx,gy,ts,false);
+    if(o.kind==='item'){c.font='600 '+Math.max(9,ts*.22)+'px ui-sans-serif,system-ui,sans-serif';c.textAlign='left';c.textBaseline='alphabetic';c.lineWidth=3;c.strokeStyle='rgba(0,0,0,.8)';c.strokeText('×'+o.qty,gx+ts*.18,gy+ts*.42);c.fillStyle='#fff';c.fillText('×'+o.qty,gx+ts*.18,gy+ts*.42)}
   });
   /* 어둠: 주인공과 횃불 주변만 밝게 */
   const ov=SN_OV||(SN_OV=document.createElement('canvas'));
@@ -929,7 +1127,7 @@ function snDrawGame(){
   const o2=ov.getContext('2d');o2.setTransform(d,0,0,d,0,0);o2.globalCompositeOperation='source-over';o2.clearRect(0,0,w,h);
   o2.fillStyle='rgba(5,8,18,.68)';o2.fillRect(0,0,w,h);o2.globalCompositeOperation='destination-out';
   const hole=(x,y,rad,a)=>{const px=ox+(x-v.x+.5)*ts,py=oy+(y-v.y+.5)*ts,R=rad*ts,g=o2.createRadialGradient(px,py,0,px,py,R);g.addColorStop(0,'rgba(0,0,0,'+a+')');g.addColorStop(1,'rgba(0,0,0,0)');o2.fillStyle=g;o2.fillRect(px-R,py-R,R*2,R*2)};
-  SN_OBJS.forEach(o=>{if(o.active===false)return;if(o.kind==='hero')hole(o.x,o.y,2.6,.9);if(o.kind==='exit')hole(o.x,o.y,1.3,.75);if(o.kind==='light'&&o.enabled!==false)hole(o.x,o.y,o.radius*.55,Math.min(1,.35+o.intensity*.75))});
+  SN_OBJS.forEach(o=>{if(o.active===false)return;if(o.kind==='hero')hole(o.x,o.y,2.6,.9);if(o.kind==='exit')hole(o.x,o.y,1.3,.75);if(o.kind==='item')hole(o.x,o.y,.9,.6);if(o.kind==='light'&&o.enabled!==false)hole(o.x,o.y,o.radius*.55,Math.min(1,.35+o.intensity*.75))});
   c.setTransform(1,0,0,1,0,0);c.drawImage(ov,0,0);c.setTransform(d,0,0,d,0,0);
   const t=SN_OBJS.find(o=>o.kind==='light');
   if(t&&t.enabled!==false&&t.active!==false){const px=ox+(t.x-v.x+.5)*ts,py=oy+(t.y-v.y+.5)*ts,R=t.radius*.55*ts,g=c.createRadialGradient(px,py,0,px,py,R);g.addColorStop(0,'rgba(255,170,70,'+(.28*t.intensity)+')');g.addColorStop(1,'rgba(255,170,70,0)');c.globalCompositeOperation='lighter';c.fillStyle=g;c.fillRect(px-R,py-R,R*2,R*2);c.globalCompositeOperation='source-over'}
@@ -1011,8 +1209,9 @@ function snPaint(x,y){
   cv.addEventListener('pointerdown',e=>{
     const[px,py]=pos(e),u=hit(px,py);
     if(PLAY){
-      if(u&&u.type==='button'){PLAY.down=u.id;TASK.ev.add('click:'+u.id);plog('info','버튼 클릭 · '+u.name);
+      if(u&&u.type==='button'){PLAY.down=u.id;TASK.ev.add('click:'+u.id);plog('info',_t('버튼 클릭 · {name}',{name:u.name}));
         if(String(u.msg||'').trim()){PLAY.msg={t:u.msg,until:performance.now()+2600};plog('info','💬 '+u.msg);setTimeout(snRedraw,2650)}
+        if(P()&&P().clickUi===u.id)playClick();
         snRedraw();setTimeout(()=>{if(PLAY){PLAY.down=null;snRedraw()}},160)}
       return;
     }
@@ -1045,6 +1244,7 @@ function csGetComp(m,o,T){
     case'Camera':return o.kind==='camera'?camProxy(m,o):null;
     case'Light':case'Light2D':return o.kind==='light'?lightProxy(m,o):null;
     case'Hero':return o.kind==='hero'?heroProxy(m,o):null;
+    case'Item':return o.kind==='item'?itemProxy(m,o):null;
   }
   throw csUnsup('GetComponent<'+T+'>()');
 }
@@ -1123,6 +1323,34 @@ function heroProxy(m,o){
     call(n){throw csUnsup('Hero.'+n+'()')}};
 }
 
+/* 아이템 (Item 컴포넌트): 엔진과 같은 qty(수량) */
+function itemProxy(m,o){
+  return{__h:'Item',__o:o,name:o.name,
+    get(n){
+      if(n==='qty')return o.qty;
+      if(n==='gameObject')return goProxy(m,o);
+      if(n==='transform')return trProxy(m,o);
+      throw csUnsup('Item.'+n)},
+    set(n,v){
+      if(n==='qty'){o.qty=clamp(Math.round(csN(v)),0,99);return}
+      throw csUnsup('Item.'+n+' 대입')},
+    call(n){throw csUnsup('Item.'+n+'()')}};
+}
+/* UI 텍스트 (Text): public Text label; 칸에 UI 요소를 끌어다 놓아 연결 · label.text = "…" (엔진과 같음) */
+function textProxy(u){
+  return{__h:'Text',__o:u,name:u.name,
+    get(n){
+      if(n==='text')return String(u.text==null?'':u.text);
+      if(n==='fontSize')return +u.size||16;
+      if(n==='name')return u.name;
+      throw csUnsup('Text.'+n)},
+    set(n,v){
+      if(n==='text'){u.text=csFmt(v);return}
+      if(n==='fontSize'){u.size=clamp(Math.round(csN(v)),8,48);return}
+      throw csUnsup('Text.'+n+' 대입')},
+    call(n){throw csUnsup('Text.'+n+'()')}};
+}
+
 /* ===================== 스크립트 해석기 연결 (공용 script-engine.js 에 학습 씬 기능을 알려 줌) ===================== */
 CSHOST.use({clog,get play(){return play},objOn,isUiEl,startCamera,goProxy,trProxy,camProxy,csGetComp,csDestroy});
 
@@ -1136,6 +1364,7 @@ const ICON=(()=>{
     script:s('<path d="M4 2.5h5.5l3 3v8h-8.5z"/><path d="M6.2 8l-1.2 1.2 1.2 1.2M9.8 8l1.2 1.2-1.2 1.2"/>'),
     scene:s('<path d="M2.5 5.5h11v7h-11zM2.5 5.5l1.2-2.8 9.8 0M5.5 2.7l-1 2.8M8.5 2.7l-1 2.8M11.5 2.7l-1 2.8"/>'),
     game:s('<path d="M4.6 4.5h6.8a3.1 3.1 0 0 1 3 2.4l.7 3.3a1.9 1.9 0 0 1-3.2 1.7L10.4 10H5.6l-1.5 1.9A1.9 1.9 0 0 1 .9 10.2l.7-3.3a3.1 3.1 0 0 1 3-2.4z"/><path d="M4.8 6.4v2.2M3.7 7.5h2.2"/><circle cx="10.8" cy="6.9" r=".5"/><circle cx="11.9" cy="8.1" r=".5"/>'),
+    item:s('<path d="M6.3 2.3h3.4M6.8 2.3v3.4L3.9 10.8a1.6 1.6 0 0 0 1.4 2.4h5.4a1.6 1.6 0 0 0 1.4-2.4L9.2 5.7V2.3M5 9.6h6"/>'),
     cube:s('<path d="M8 1.8l5.5 2.9v6.6L8 14.2l-5.5-2.9V4.7zM2.5 4.7L8 7.6l5.5-2.9M8 7.6v6.6"/>'),
     cam:s('<rect x="1.8" y="4.4" width="8.6" height="7.4" rx="1.4"/><path d="M10.4 7.2l3.8-2v5.6l-3.8-2"/>'),
     user:s('<circle cx="8" cy="5" r="2.6"/><path d="M3 13.5c.4-2.8 2.4-4.4 5-4.4s4.6 1.6 5 4.4z"/>'),
@@ -1164,7 +1393,7 @@ const ICON=(()=>{
 const ico=n=>ICON[n]||'';
 const CS_RE=(()=>{
   const kw='public|private|protected|internal|static|void|class|using|new|return|if|else|for|foreach|while|switch|case|break|continue|true|false|null|this|readonly|const|override|virtual|namespace|in|out|ref|var|struct|enum|interface|abstract|sealed|get|set';
-  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Transform|GameObject|MonoBehaviour|Debug|Time|Input|Mathf|Quaternion|Random|KeyCode|Camera|Light|Hero|Header|SerializeField|Range|Tooltip|Space|HideInInspector';
+  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Transform|GameObject|MonoBehaviour|Debug|Time|Input|Mathf|Quaternion|Random|KeyCode|Camera|Light|Hero|Item|Text|Header|SerializeField|Range|Tooltip|Space|HideInInspector';
   return new RegExp(String.raw`(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*")|\b(${kw})\b|\b(${ty})\b|\b(\d+\.?\d*[fFdD]?)\b|\b([A-Za-z_]\w*)(?=\s*\()`,'g');
 })();
 function csHighlight(code){
@@ -1214,15 +1443,15 @@ $$('.cf').forEach(b=>b.onclick=()=>{conF[b.dataset.k]=!conF[b.dataset.k];renderC
 
 /* ---- 위쪽 · 문제 ---- */
 function renderTop(){
-  $('#lNo').textContent='레슨 '+LESSON.no;$('#lTitle').textContent=LESSON.title;$('#lead').textContent=LESSON.lead;
+  $('#lNo').textContent=_t('레슨 {n}',{n:LESSON.no});$('#lTitle').textContent=LESSON.title;$('#lead').textContent=LESSON.lead;
   const n=PROBLEMS.filter(p=>st.done[p.id]).length;
-  $('#progT').textContent=n+' / '+PROBLEMS.length+' 통과';$('#progB').style.width=(n/PROBLEMS.length*100)+'%';
-  $('#steps').innerHTML=PROBLEMS.map((p,i)=>`<button type="button" class="step${i===st.cur?' cur':''}${st.done[p.id]?' done':''}" data-i="${i}" aria-label="문제 ${i+1} ${esc(p.title)}${st.done[p.id]?' (통과)':''}"><span class="n"><span>${i+1}</span></span><span class="t">${esc(p.title)}</span></button>`).join('');
+  $('#progT').textContent=_t('{n} / {total} 통과',{n,total:PROBLEMS.length});$('#progB').style.width=(n/PROBLEMS.length*100)+'%';
+  $('#steps').innerHTML=PROBLEMS.map((p,i)=>`<button type="button" class="step${i===st.cur?' cur':''}${st.done[p.id]?' done':''}" data-i="${i}" aria-label="${esc(_t('문제 {n}',{n:i+1}))} ${esc(p.title)}${st.done[p.id]?esc(_t(' (통과)')):''}"><span class="n"><span>${i+1}</span></span><span class="t">${esc(p.title)}</span></button>`).join('');
 }
 function renderBrief(){
   const p=P();
-  $('#brief').innerHTML=`<h1>${p.task?'실습':'문제'} ${st.cur+1}. ${esc(p.title)}</h1><p>${p.desc}</p><div class="goal">${p.goal}</div>
-  ${p.task?'':`<div class="exp"><div class="lbl">기대 출력</div><div class="conlist">${conHTML(p.tests[0].out)}</div></div>`}
+  $('#brief').innerHTML=`<h1>${esc(_t(p.task?'실습 {n}.':'문제 {n}.',{n:st.cur+1}))} ${esc(p.title)}</h1><p>${p.desc}</p><div class="goal">${p.goal}</div>
+  ${p.task?'':`<div class="exp"><div class="lbl">${esc(p.expLabel||'기대 출력')}</div><div class="conlist">${conHTML(p.tests[0].out)}</div></div>`}
   <button class="btn" type="button" id="hintBtn" aria-expanded="false">힌트 보기</button><pre class="hint" id="hint" hidden>${esc(p.hint)}</pre>`;
   $('#hintBtn').onclick=()=>{const h=$('#hint'),o=h.hidden;h.hidden=!o;$('#hintBtn').textContent=o?'힌트 숨기기':'힌트 보기';$('#hintBtn').setAttribute('aria-expanded',String(o))};
 }
@@ -1231,7 +1460,7 @@ function renderBrief(){
 const KUI={
   camera:{ic:'cam',c:'#8b90a3',tag:'카메라'},hero:{ic:'user',c:'#3fae7d',tag:'주인공'},monster:{ic:'cube',c:'#22a99c',tag:'몬스터'},
   light:{ic:'cube',c:'#8b90a3',tag:'빈 게임 오브젝트'},script:{ic:'cube',c:'#8b90a3',tag:'빈 게임 오브젝트'},
-  rock:{ic:'rock',c:'#7d8496',tag:'바위'},crate:{ic:'crate',c:'#b9793c',tag:'상자'},exit:{ic:'portal',c:'#3aaec4',tag:'출구'},empty:{ic:'cube',c:'#8b90a3',tag:'빈 게임 오브젝트'}
+  rock:{ic:'rock',c:'#7d8496',tag:'바위'},item:{ic:'item',c:'#e0559b',tag:'아이템'},crate:{ic:'crate',c:'#b9793c',tag:'상자'},exit:{ic:'portal',c:'#3aaec4',tag:'출구'},empty:{ic:'cube',c:'#8b90a3',tag:'빈 게임 오브젝트'}
 };
 let hOpen=true;
 function renderHier(){
@@ -1241,14 +1470,14 @@ function renderHier(){
   let h=`<div class="tr" style="--d:0" data-t="scene" role="treeitem" aria-expanded="${open}"><button class="fold${open?' open':''}" type="button" data-fold aria-label="접기/펼치기"></button><span class="ti">${ico('scene')}</span><span class="tl"><b>학습 씬</b></span><span class="ts">${SN_COLS}×${SN_ROWS}</span></div>`;
   const pr=P(),tk=!!(pr&&pr.task),D=tk?2:1;
   const fold=(icon,label,sub)=>`<div class="tr" style="--d:1" role="treeitem"><span class="fold sp"></span><span class="ti">${ico(icon)}</span><span class="tl"><b>${label}</b></span><span class="ts">${sub}</span></div>`;
-  const row=(id,icon,color,label,sub,dim)=>{const on=SN.sel===id;return`<div class="tr${on?' on':''}" style="--d:2;${dim?'opacity:.45':''}" data-id="${id}" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${color}">${ico(icon)}</span><span class="tl">${label}</span><span class="ts">${sub}</span></div>`};
+  const row=(id,icon,color,label,sub,dim,drag)=>{const on=SN.sel===id;return`<div class="tr${on?' on':''}" style="--d:2;${dim?'opacity:.45':''}" data-id="${id}"${drag?' draggable="true"':''} tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${color}">${ico(icon)}</span><span class="tl">${label}</span><span class="ts">${sub}</span></div>`};
   if(open&&pr&&pr.tm){const L=[['t','타일맵 1','tilemap','var(--mute)',TM.t.filter(v=>v).length],['c','콜라이더','rect','var(--mute)',TM.c.filter(v=>v===1).length]].filter(r=>!q||r[1].toLowerCase().includes(q));
     if(L.length){h+=fold('folder','타일맵',2);h+=L.map(r=>row('L:'+r[0],r[2],r[3],r[1],r[4])).join('')}}
   if(open&&tk)h+=fold('folder','게임 오브젝트',list.length);
   if(open)h+=list.map(o=>{const K=KUI[o.kind],on=o.id===SN.sel;
-    return`<div class="tr${on?' on':''}" style="--d:${D};${o.active===false?'opacity:.45':''}" data-id="${o.id}" draggable="true" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${K.c}">${ico(K.ic)}</span><span class="tl">${esc(o.name)}${o.kind==='camera'?'<span class="wbadge">시작 카메라</span>':''}</span><span class="ts">${o.kind==='camera'?'':o.x+','+o.y}</span></div>`}).join('');
-  if(open&&tk&&(pr.ui||SN_UI.length)){const U=SN_UI.filter(u=>!q||u.name.toLowerCase().includes(q));h+=fold('folder','UI (캔버스)',U.length);
-    h+=U.map(u=>row('U:'+u.id,u.type==='button'?'uibtn':'uitext','#e9bd0c',esc(u.name),ANC_N[u.anchor]||'')).join('')}
+    return`<div class="tr${on?' on':''}" style="--d:${D};${o.active===false?'opacity:.45':''}" data-id="${o.id}" draggable="true" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${K.c}">${ico(K.ic)}</span><span class="tl"><span data-i18n-skip>${esc(o.name)}</span>${o.kind==='camera'?'<span class="wbadge">시작 카메라</span>':''}</span><span class="ts">${o.kind==='camera'?'':o.x+','+o.y}</span></div>`}).join('');
+  if(open&&((tk&&pr.ui)||SN_UI.length)){const U=SN_UI.filter(u=>!q||u.name.toLowerCase().includes(q));h+=fold('folder','UI (캔버스)',U.length);
+    h+=U.map(u=>row('U:'+u.id,u.type==='button'?'uibtn':'uitext','#e9bd0c','<span data-i18n-skip>'+esc(u.name)+'</span>',ANC_N[u.anchor]||'',false,true)).join('')}
   $('#hier').innerHTML=h;
   tkPing();
 }
@@ -1276,7 +1505,7 @@ $('#hier').addEventListener('keydown',e=>{
   else if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const n=e.key==='ArrowDown'?r.nextElementSibling:r.previousElementSibling;if(n&&n.dataset.id)n.focus()}
 });
 $('#hFilter').addEventListener('input',renderHier);
-$('#hier').addEventListener('dragstart',e=>{const r=e.target.closest('.tr[data-id]');if(!r||r.dataset.id[1]===':'){e.preventDefault();return}
+$('#hier').addEventListener('dragstart',e=>{const r=e.target.closest('.tr[data-id]');if(!r||r.dataset.id[0]==='L'&&r.dataset.id[1]===':'){e.preventDefault();return}
   e.dataTransfer.setData('text/plain','obj:'+r.dataset.id);e.dataTransfer.effectAllowed='link';r.classList.add('dragging')});
 $('#hier').addEventListener('dragend',e=>{const r=e.target.closest('.tr');if(r)r.classList.remove('dragging');$$('.objslot.over').forEach(x=>x.classList.remove('over'))});
 $('#hCollapse').onclick=()=>{hOpen=false;renderHier()};
@@ -1302,8 +1531,8 @@ function scriptFields(){
     if(m.fk==='num')ctl=numIn('#',a,v,/^(float|double|decimal)$/.test(m.type)?.1:1,m.min,m.max,m.name);
     else if(m.fk==='bool')ctl=chkIn(a,!!v,m.name);
     else if(m.fk==='str')ctl=`<input type="text" ${a} value="${esc(v)}" aria-label="${esc(m.name)}">`;
-    else if(slotType(m.type)){const r=v&&typeof v==='object'?v.ref:null,o=r&&SN_OBJS.find(q=>q.id===r);
-      ctl=`<button type="button" class="objslot${o?' set':''}" data-slot="${esc(m.name)}" data-type="${esc(m.type)}" title="계층 구조에서 오브젝트를 끌어다 놓거나, 눌러서 고르세요">${o?ico(KUI[o.kind].ic)+'<span>'+esc(o.name)+'</span>':'<span>None</span>'}<small>${esc(m.type)}</small></button>`}
+    else if(slotType(m.type)){const r=v&&typeof v==='object'?v.ref:null,o=r&&slotFind(r);
+      ctl=`<button type="button" class="objslot${o?' set':''}" data-slot="${esc(m.name)}" data-type="${esc(m.type)}" title="계층 구조에서 오브젝트를 끌어다 놓거나, 눌러서 고르세요">${o?ico(slotIc(o))+'<span>'+esc(o.name)+'</span>':'<span>None</span>'}<small>${esc(m.type)}</small></button>`}
     else ctl=`<input type="text" value="None (${esc(m.type)})" readonly aria-label="${esc(m.name)}">`;
     return fr(esc(prettyName(m.name)),ctl+(has?`<button class="ib" type="button" data-rs="${esc(m.name)}" title="되돌리기" aria-label="${esc(m.name)} 되돌리기">↺</button>`:''),esc(m.type),m.tip||'');
   }).join('')};
@@ -1367,6 +1596,8 @@ function renderInsp(){
     fr('체력',numIn('HP','data-p="hp"',o.hp,1,1,999,'체력'),'hp','몬스터의 체력입니다.')+
     fr('이동 속도',numIn('V','data-p="speed"',o.speed,10,10,400,'이동 속도'),'speed','주인공을 쫓을 때의 이동 속도입니다.')+
     fr('감지 범위(칸)',numIn('R','data-p="range"',o.range,1,1,20,'감지 범위'),'range','주인공이 이 거리(칸) 안에 들어오면 쫓아오기 시작합니다.'));
+  if(o.kind==='item')h+=comp('it','item','아이템','Item',
+    fr('수량',numIn('Q','data-p="qty"',o.qty,1,0,99,'수량'),'qty','이 아이템이 몇 개인지예요. 코드에서는 GetComponent<Item>().qty 로 읽고 바꿔요.'));
   if(o.kind==='light')h+=comp('l','sun','빛','Light',
     fr('사용',chkIn('data-p="enabled"',o.enabled!==false,'사용'),'enabled','체크를 끄면 빛이 꺼져요. 코드에서는 enabled 로 켜고 꺼요.')+
     fr('밝기',numIn('B','data-p="intensity"',o.intensity,.1,.1,1,'밝기'),'intensity','빛의 세기입니다. 0.1~1 사이 값입니다.')+
@@ -1386,7 +1617,7 @@ $('#insp').addEventListener('input',e=>{
   const t=e.target;
   if(SN.sel&&SN.sel[0]==='U'&&SN.sel[1]===':'){const u=SN_UI.find(q=>q.id===SN.sel.slice(2));if(!u)return;
     if('uname' in t.dataset){u.name=t.value;renderHier();return}
-    if(t.dataset.u){const k=t.dataset.u;if(t.type==='number'){if(t.value!==''&&!isNaN(+t.value))u[k]=+t.value}else u[k]=t.value;snRedraw();tkPing();return}
+    if(t.dataset.u){const k=t.dataset.u;if(t.type==='number'){if(t.value!==''&&!isNaN(+t.value))u[k]=+t.value}else u[k]=t.value;SN_EDIT_UI=null;snRedraw();tkPing();return}
     return}
   const o=SN_OBJS.find(x=>x.id===SN.sel);if(!o)return;
   if(t.dataset.pos||t.dataset.p)SN_EDIT=null;
@@ -1422,7 +1653,8 @@ $('#insp').addEventListener('dragleave',e=>{const sl=e.target.closest('.objslot'
 $('#insp').addEventListener('drop',e=>{const sl=e.target.closest('.objslot');if(!sl)return;e.preventDefault();sl.classList.remove('over');
   const d=e.dataTransfer.getData('text/plain')||'';if(d.startsWith('obj:'))setSlot(sl.dataset.slot,sl.dataset.type,d.slice(4))});
 $('#insp').addEventListener('click',e=>{const sl=e.target.closest('.objslot');if(!sl)return;const T=sl.dataset.type,name=sl.dataset.slot;
-  popMenu(sl,SN_OBJS.map(o=>({t:o.name,ic:KUI[o.kind].ic,note:slotOk(T,o)?'':(T+' 없음'),dis:!slotOk(T,o),fn:()=>setSlot(name,T,o.id)})).concat([{t:'None (비우기)',fn:()=>{const v=st.vals[P().id];if(v){delete v[name];save()}renderInsp()}}]))});
+  const cand=T==='Text'?SN_UI.map(u=>[u,'U:'+u.id]):SN_OBJS.map(o=>[o,o.id]);
+  popMenu(sl,cand.map(([o,id])=>({t:o.name,raw:1,ic:slotIc(o),note:slotOk(T,o)?'':_t('{type} 없음',{type:T}),dis:!slotOk(T,o),fn:()=>setSlot(name,T,id)})).concat([{t:'None (비우기)',fn:()=>{const v=st.vals[P().id];if(v){delete v[name];save()}renderInsp()}}]))});
 /* 숫자 라벨(X · Y · HP …)을 좌우로 끌어 값 조절 (index와 같은 동작) */
 $('#insp').addEventListener('pointerdown',e=>{
   const lab=e.target.closest('.num>i');if(!lab||e.button!==0)return;
@@ -1447,7 +1679,7 @@ let PM=null;
 function closePM(){if(PM){PM.remove();PM=null}}
 function popMenu(anchor,items){
   closePM();const m=document.createElement('div');m.className='pmenu';m.setAttribute('role','menu');
-  m.innerHTML=items.map((it,i)=>`<button type="button" role="menuitem" data-i="${i}"${it.dis?' disabled':''}>${it.ic?ico(it.ic):''}<span>${esc(it.t)}</span>${it.note?`<small>${esc(it.note)}</small>`:''}</button>`).join('');
+  m.innerHTML=items.map((it,i)=>`<button type="button" role="menuitem" data-i="${i}"${it.dis?' disabled':''}>${it.ic?ico(it.ic):''}<span${it.raw?' data-i18n-skip':''}>${esc(it.t)}</span>${it.note?`<small>${esc(it.note)}</small>`:''}</button>`).join('');
   document.body.appendChild(m);PM=m;
   const r=anchor.getBoundingClientRect(),w=m.offsetWidth,hh=m.offsetHeight;let x=r.left,y=r.bottom+4;
   if(x+w>innerWidth-8)x=innerWidth-w-8;if(y+hh>innerHeight-8)y=r.top-hh-4;
@@ -1555,15 +1787,25 @@ let PLAY=null;
 function plog(k,m){const l=CON.lines.slice(-200);l.push([k,m]);setConsole(l,false)}
 function playStart(){
   const p=P(),hero=SN_OBJS.find(o=>o.id==='hero');if(!p||!p.play||PLAY||!hero)return;
-  closePM();
+  closePM();if(!p.task)snRestore();
   PLAY={snap:JSON.parse(JSON.stringify(SN_OBJS)),tm:{t:TM.t.slice(),c:TM.c.slice()},ui:JSON.parse(JSON.stringify(SN_UI)),sel:SN.sel,blocked:new Set(),bt:new Set(),inT:new Set(),msg:null,down:null};
   PLAY.keys=new Set();PLAY.walk=0;PLAY.cell=null;PLAY.last=performance.now();PLAY.raf=requestAnimationFrame(playLoop);
   const cur=$('.vtabs .vtab.on');PLAY.view=cur?cur.dataset.v:'pScene';
   const vb=$('.vtab[data-v="pGame"]');if(vb&&!vb.classList.contains('on'))vb.click();
   const b=$('#playBtn');b.classList.add('on');b.textContent='■ 정지';$('#pHint').hidden=false;
   setConsole([],false);plog('info','▶ 플레이 시작 · 방향키 또는 WASD로 주인공을 움직여요');TASK.ev.add('play');
+  if(!p.task){const code=ta.value,r=runOnce(code,overridesFrom(p,parseCS(code)),SN_OBJS,{ui:SN_UI});PLAY.cx=r.fatal?null:r.cx;r.out.forEach(l=>plog(l[0],l[1]));renderHier();renderInsp()}
   if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
   snRedraw();
+}
+/* 플레이 중 버튼 클릭 → 스크립트의 OnClick() (코드 문제) */
+function playClick(){
+  const cx=PLAY&&PLAY.cx;if(!cx)return;
+  OUT=[];csCur=cx;
+  try{if(cx.pr.r.methods.OnClick)csCallUser(cx,'OnClick',[]);else OUT.push(['warn',_t('OnClick() 메서드가 없어요. public void OnClick() { } 안에 버튼을 눌렀을 때 할 일을 쓰세요.')])}
+  catch(e){OUT.push(['error',csErrMsg(e)]);PLAY.cx=null}
+  finally{csCur=null}
+  OUT.forEach(l=>plog(l[0],l[1]));renderHier();renderInsp();snRedraw();
 }
 function playStop(quiet){
   if(!PLAY)return;
@@ -1707,13 +1949,17 @@ function show(i){
 }
 
 /* 오브젝트 슬롯 (public GameObject · Transform · Light · Camera · Hero): 계층 구조에서 끌어다 놓아 연결 */
-const SLOT_T=['GameObject','Transform','Light','Light2D','Camera','Hero'];
+const SLOT_T=['GameObject','Transform','Light','Light2D','Camera','Hero','Item','Text'];
 const slotType=T=>SLOT_T.includes(T);
-function slotOk(T,o){if(!o)return false;if(T==='GameObject')return true;if(T==='Transform')return o.kind!=='camera';if(T==='Light'||T==='Light2D')return o.kind==='light';if(T==='Camera')return o.kind==='camera';if(T==='Hero')return o.kind==='hero';return false}
-function refProxy(m,o,T){if(T==='GameObject')return goProxy(m,o);if(T==='Transform')return o.kind==='camera'?null:trProxy(m,o);try{return csGetComp(m,o,T)}catch(e){return null}}
+/* 슬롯 연결 대상: 오브젝트 id 또는 UI 요소('U:' + id) */
+const isUiObj=o=>!!o&&o.anchor!==undefined&&!o.kind;
+function slotFind(r,m){r=String(r);const objs=m?m.objs:SN_OBJS,ui=m?m.ui:SN_UI;return r.startsWith('U:')?ui.find(u=>'U:'+u.id===r):objs.find(q=>q.id===r)}
+const slotIc=o=>isUiObj(o)?(o.type==='button'?'uibtn':'uitext'):KUI[o.kind].ic;
+function slotOk(T,o){if(!o)return false;if(T==='Text')return isUiObj(o);if(isUiObj(o))return false;if(T==='GameObject')return true;if(T==='Item')return o.kind==='item';if(T==='Transform')return o.kind!=='camera';if(T==='Light'||T==='Light2D')return o.kind==='light';if(T==='Camera')return o.kind==='camera';if(T==='Hero')return o.kind==='hero';return false}
+function refProxy(m,o,T){if(T==='Text')return isUiObj(o)?textProxy(o):null;if(isUiObj(o))return null;if(T==='GameObject')return goProxy(m,o);if(T==='Transform')return o.kind==='camera'?null:trProxy(m,o);try{return csGetComp(m,o,T)}catch(e){return null}}
 function setSlot(name,T,id){
-  const p=P(),o=SN_OBJS.find(q=>q.id===id);
-  if(!slotOk(T,o)){setVerdict('bad',esc((o?o.name:'그 오브젝트')+'에는 '+T+(T==='GameObject'?'':' 컴포넌트')+'가 없어서 이 칸에 넣을 수 없어요.'));return}
+  const p=P(),o=slotFind(id);
+  if(!slotOk(T,o)){setVerdict('bad',esc(_t(T==='GameObject'?'{obj}에는 {type}가 없어서 이 칸에 넣을 수 없어요.':'{obj}에는 {type} 컴포넌트가 없어서 이 칸에 넣을 수 없어요.',{obj:o?o.name:_t('그 오브젝트'),type:T})));return}
   const v=st.vals[p.id]||(st.vals[p.id]={});v[name]={ref:id};save();TASK.ev.add('slot:'+name);renderInsp();idleVerdict();
 }
 /* 채점 때도 인스펙터 슬롯에 연결한 오브젝트를 그대로 씁니다 (씬에 저장되는 값이라서) */
@@ -1733,7 +1979,7 @@ function run(){
   const p=P(),code=ta.value,res=parseCS(code);
   const g=gradeProblem(p,code);
   let vis;
-  if(p.scene){snRestore();SN_EDIT=snClone(SN_OBJS);vis=runOnce(code,overridesFrom(p,res),SN_OBJS)}
+  if(p.scene){snRestore();SN_EDIT=snClone(SN_OBJS);SN_EDIT_UI=JSON.parse(JSON.stringify(SN_UI));vis=runOnce(code,overridesFrom(p,res),SN_OBJS,{ui:SN_UI})}
   else vis=runOnce(code,overridesFrom(p,res));
   setConsole(vis.out,true);flash(!vis.fatal);
   if(p.scene){
@@ -1747,7 +1993,7 @@ function passed(p){
   {
     st.done[p.id]=true;save();renderTop();
     const last=st.cur===PROBLEMS.length-1,all=PROBLEMS.every(q=>st.done[q.id]),nextL=LESSONS[LESSONS.indexOf(LESSON)+1];
-    const btn=!last?'<button class="btn pri nx" type="button" id="nx">다음 문제</button>':(all&&nextL?`<button class="btn pri nx" type="button" id="nxL">레슨 ${nextL.no} 시작</button>`:'');
+    const btn=!last?'<button class="btn pri nx" type="button" id="nx">다음 문제</button>':(all&&nextL?`<button class="btn pri nx" type="button" id="nxL">${esc(_t('레슨 {n} 시작',{n:nextL.no}))}</button>`:'');
     setVerdict('ok',(all&&last?LESSON.clear:'통과했어요.')+btn);
     const nx=$('#nx');if(nx)nx.onclick=()=>show(st.cur+1);
     const nl=$('#nxL');if(nl)nl.onclick=()=>{location.hash=nextL.hash};
@@ -1756,7 +2002,7 @@ function passed(p){
 
 $('#run').onclick=run;
 $('#reset').onclick=()=>{
-  const p=P();if(ta.value!==starterCode(p)&&!confirm('작성한 코드가 사라져요. 처음 코드로 되돌릴까요?'))return;
+  const p=P();if(ta.value!==starterCode(p)&&!confirm(_t('작성한 코드가 사라져요. 처음 코드로 되돌릴까요?')))return;
   delete st.code[p.id];save();ta.value=starterCode(p);paintEd();edPos();renderInsp();setConsole([],false);idleVerdict();
 };
 $('#steps').onclick=e=>{const b=e.target.closest('.step');if(b)show(+b.dataset.i)};
@@ -1847,6 +2093,11 @@ const AC_API={
   'Hero':[
     acP('hp','int','주인공의 체력입니다.','hero.hp = hero.hp / 2;'),acP('maxHp','int','주인공의 최대 체력입니다.'),acP('position','Vector2','주인공의 위치입니다.'),
     acP('gameObject','GameObject','이 컴포넌트가 붙은 게임 오브젝트입니다.'),acP('transform','Transform','위치 정보(Transform)입니다.')],
+  'Item':[
+    acP('qty','int','아이템의 수량입니다.','potion.qty -= 1;'),
+    acP('gameObject','GameObject','이 컴포넌트가 붙은 게임 오브젝트입니다.'),acP('transform','Transform','위치 정보(Transform)입니다.')],
+  'Text':[
+    acP('text','string','화면에 보이는 글자입니다.','label.text = "포션 " + potion.qty + "개";'),acP('fontSize','int','글자 크기입니다.')],
   'string':[
     acP('Length','int','글자 수입니다.','int n = "안녕".Length;'),acF('ToString','string','','글자 그대로 돌려줍니다.'),
     acF('ToUpper','string','','대문자로 바꿉니다.'),acF('ToLower','string','','소문자로 바꿉니다.'),acF('Trim','string','','앞뒤 공백을 지웁니다.'),
@@ -1859,13 +2110,13 @@ const AC_API={
 };
 AC_API.int=AC_API.long=AC_API.float=AC_API.double=AC_API.bool=acNum();
 const AC_STATICS=['Debug','Mathf','Time','Input','KeyCode','Random'];
-const AC_TYPES=['int','float','double','long','bool','string','var','Vector2','Vector3','Color','GameObject','Transform','Light','Camera','Hero'];
-const AC_COMPS=['Transform','Light','Camera','Hero'];
+const AC_TYPES=['int','float','double','long','bool','string','var','Vector2','Vector3','Color','GameObject','Transform','Light','Camera','Hero','Item','Text'];
+const AC_COMPS=['Transform','Light','Camera','Hero','Item'];
 const AC_TYDOC={Debug:'콘솔에 글을 출력하는 도구 모음입니다.',Mathf:'수학 함수 모음입니다. (Sqrt, Clamp, Lerp …)',Time:'시간 정보를 담고 있습니다.',Input:'키보드·마우스 입력을 읽습니다.',KeyCode:'키보드·마우스의 입력 코드 모음입니다.',Random:'무작위 값을 만듭니다.',
-  Vector2:'(x, y) 두 값으로 된 좌표입니다.',Vector3:'(x, y, z) 세 값으로 된 좌표입니다.',Color:'색상입니다.',GameObject:'씬 안의 오브젝트입니다.',Transform:'위치 정보 컴포넌트입니다.',Light:'빛 컴포넌트입니다.',Camera:'카메라 컴포넌트입니다.',Hero:'주인공 컴포넌트입니다. (hp, maxHp …)',
+  Vector2:'(x, y) 두 값으로 된 좌표입니다.',Vector3:'(x, y, z) 세 값으로 된 좌표입니다.',Color:'색상입니다.',GameObject:'씬 안의 오브젝트입니다.',Transform:'위치 정보 컴포넌트입니다.',Light:'빛 컴포넌트입니다.',Camera:'카메라 컴포넌트입니다.',Hero:'주인공 컴포넌트입니다. (hp, maxHp …)',Item:'아이템 컴포넌트입니다. (qty 수량)',Text:'UI 텍스트입니다. 인스펙터 칸에 UI 요소를 끌어다 놓아 연결해요. (text)',
   int:'정수 형식입니다.',float:'소수 형식입니다. 값 뒤에 f를 붙여요. (0.3f)',double:'소수 형식입니다.',long:'큰 정수 형식입니다.',bool:'true / false 형식입니다.',string:'글자 형식입니다.',var:'오른쪽 값을 보고 형식을 알아서 정합니다.'};
 const AC_EX={int:'int hp = 100;',float:'float speed = 1.5f;',bool:'bool ok = true;',string:'string name = "슬라임";',var:'var tr = GetComponent<Transform>();',Vector2:'Vector2 p = new Vector2(3, 4);',Color:'Color c = Color.red;'};
-const AC_EV=[['Awake','void Awake()\n{\n    |\n}'],['Start','void Start()\n{\n    |\n}']];
+const AC_EV=[['Awake','void Awake()\n{\n    |\n}'],['Start','void Start()\n{\n    |\n}'],['OnClick','public void OnClick()\n{\n    |\n}']];
 const AC_SN=[['if','if (|)\n{\n    \n}'],['else','else\n{\n    |\n}'],['for','for (int i = 0; i < |; i++)\n{\n    \n}'],['while','while (|)\n{\n    \n}']];
 const AC_ATTR=[['Header','Header("|")'],['SerializeField','SerializeField'],['Range','Range(0, |1)'],['Tooltip','Tooltip("|")'],['Space','Space'],['HideInInspector','HideInInspector']];
 const AC_KW=['public','private','void','new','return','if','else','for','while','do','break','continue','true','false','null','this','class','using'];
@@ -2018,12 +2269,13 @@ function acEl(){
 }
 function acHide(){ac.on=false;if(ac.el)ac.el.style.display='none'}
 function acCharW(cs){const c=acCharW.c||(acCharW.c=document.createElement('canvas').getContext('2d'));c.font=cs.fontSize+' '+cs.fontFamily;return c.measureText('0').width}
+let acTa=ta;
 function acPlace(){
   const b=ac.el;if(!b)return;
-  const cs=getComputedStyle(ta),lh=parseFloat(cs.lineHeight)||21,cw=acCharW(cs),r=ta.getBoundingClientRect();
-  const lines=ta.value.slice(0,ac.start).split('\n'),ln=lines.length-1;let vc=0;
+  const cs=getComputedStyle(acTa),lh=parseFloat(cs.lineHeight)||21,cw=acCharW(cs),r=acTa.getBoundingClientRect();
+  const lines=acTa.value.slice(0,ac.start).split('\n'),ln=lines.length-1;let vc=0;
   for(const ch of lines[ln])vc=ch==='\t'?((vc/4)|0)*4+4:vc+1;
-  let x=r.left+parseFloat(cs.paddingLeft)+vc*cw-ta.scrollLeft,y=r.top+parseFloat(cs.paddingTop)+(ln+1)*lh-ta.scrollTop;
+  let x=r.left+parseFloat(cs.paddingLeft)+vc*cw-acTa.scrollLeft,y=r.top+parseFloat(cs.paddingTop)+(ln+1)*lh-acTa.scrollTop;
   b.style.display='block';const w=b.offsetWidth,h=b.offsetHeight;
   if(y+h>innerHeight-8)y=Math.max(8,y-lh-h);
   x=clamp(x,8,Math.max(8,innerWidth-w-8));
@@ -2039,8 +2291,8 @@ function acRender(){
   const on=b.querySelector('.aci.on');if(on)on.scrollIntoView({block:'nearest'});
 }
 function acUpdate(force){
-  if(ta.selectionStart!==ta.selectionEnd){acHide();return}
-  let r=null;try{r=acCompute(ta.value,ta.selectionStart,force)}catch(err){r=null}
+  if(acTa.selectionStart!==acTa.selectionEnd){acHide();return}
+  let r=null;try{r=acCompute(acTa.value,acTa.selectionStart,force)}catch(err){r=null}
   if(!r){acHide();return}
   const same=ac.on&&ac.start===r.start;
   ac.on=true;ac.items=r.items;ac.start=r.start;ac.guide=!!r.guide;if(!same||ac.guide)ac.sel=0;ac.sel=Math.min(ac.sel,r.items.length-1);
@@ -2048,7 +2300,7 @@ function acUpdate(force){
 }
 function acAccept(i){
   const it=ac.items[i];if(!it)return;
-  const v=ta.value,a=ac.start,b=ta.selectionStart;
+  const v=acTa.value,a=ac.start,b=acTa.selectionStart;
   const ls=v.lastIndexOf('\n',a-1)+1,ind=/^[ \t]*/.exec(v.slice(ls,a))[0];
   let txt=it.n,cur=a+txt.length,retrig=false;
   if(it.sn){const s=it.sn.replace(/\n/g,'\n'+ind),ci=s.indexOf('|');txt=s.replace('|','');cur=ci>=0?a+ci:a+txt.length}
@@ -2056,13 +2308,14 @@ function acAccept(i){
     if(it.gen){txt=it.n+'<>()';cur=a+it.n.length+1;retrig=true}
     else{txt=it.n+'()';cur=a+it.n.length+(it.a?1:2)}
   }
-  ta.setRangeText(txt,a,b,'end');ta.setSelectionRange(cur,cur);
-  ac.mute=true;ta.dispatchEvent(new Event('input'));ac.mute=false;
-  acHide();ta.focus();
+  acTa.setRangeText(txt,a,b,'end');acTa.setSelectionRange(cur,cur);
+  ac.mute=true;acTa.dispatchEvent(new Event('input'));ac.mute=false;
+  acHide();acTa.focus();
   if(retrig)setTimeout(()=>acUpdate(true),0);
 }
-/* 편집기보다 먼저 키를 받아야 하므로, 편집기 자체 키 처리(Enter 자동 들여쓰기·Tab)보다 앞에 등록합니다 */
-ta.addEventListener('keydown',e=>{
+/* 자동완성은 입력칸마다 붙여 씁니다 (레슨 편집기 · 코드 검색). 각 편집기 자체 키 처리보다 먼저 등록해야 합니다 */
+function acBind(el){
+  el.addEventListener('keydown',e=>{acTa=el;
   if(e.ctrlKey&&!e.altKey&&!e.metaKey&&e.code==='Space'){e.preventDefault();e.stopImmediatePropagation();acUpdate(true);return}
   if(!ac.on)return;
   if(ac.guide){
@@ -2079,14 +2332,18 @@ ta.addEventListener('keydown',e=>{
   else if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();acHide()}
   else if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key))acHide();
 });
-ta.addEventListener('input',e=>{
+el.addEventListener('input',e=>{acTa=el;
   if(ac.mute)return;
   if(e.inputType==='insertText'||(ac.on&&e.inputType==='deleteContentBackward'))acUpdate(false);
   else if(ac.on)acHide();
 });
-ta.addEventListener('blur',()=>setTimeout(acHide,120));
-ta.addEventListener('click',acHide);
-ta.addEventListener('scroll',()=>{if(ac.on)acPlace()});
+el.addEventListener('blur',()=>setTimeout(acHide,120));
+el.addEventListener('click',acHide);
+el.addEventListener('scroll',()=>{if(ac.on&&acTa===el)acPlace()});
+
+}
+acBind(ta);
+acBind($('#svCode'));
 window.addEventListener('resize',acHide);
 
 let inspT=0;
@@ -2121,13 +2378,21 @@ function renderHome(){
   $('#cards').innerHTML=LESSONS.map(L=>{
     const n=L.problems.filter(p=>st.done[p.id]).length,t=L.problems.length,done=n===t;
     const label=done?'다시 보기':n?'이어하기':'시작하기',state=done?'완료':n?'진행 중':'시작 전';
-    return`<button type="button" class="card" data-go="${L.hash}" aria-label="레슨 ${L.no} ${esc(L.title)} · ${state}">
-      <div class="ctop"><span class="chip">레슨 ${L.no}</span><span class="state${done?' done':''}">${done?'✓ ':''}${state}</span></div>
+    return`<button type="button" class="card" data-go="${L.hash}" aria-label="${esc(_t('레슨 {n}',{n:L.no}))} ${esc(L.title)} · ${esc(_t(state))}">
+      <div class="ctop"><span class="chip">${esc(_t('레슨 {n}',{n:L.no}))}</span><span class="state${done?' done':''}">${done?'✓ ':''}${state}</span></div>
       <h2>${esc(L.title)}</h2><p>${esc(L.lead)}</p><pre>${csHighlight(L.preview)}</pre>
-      <div class="cfoot"><div class="cbar"><i style="width:${n/t*100}%"></i></div><span class="cnum">${n} / ${t} 문제</span><span class="go">${label}</span></div></button>`;
+      <div class="cfoot"><div class="cbar"><i style="width:${n/t*100}%"></i></div><span class="cnum">${esc(_t('{n} / {t} 문제',{n,t}))}</span><span class="go">${label}</span></div></button>`;
   }).join('')+`<div class="card soon" aria-hidden="true"><p>다음 레슨을 준비하고 있어요</p></div>`;
+  $('#tools').innerHTML=`<button type="button" class="card tool" data-go="search" aria-label="도구 · 코드 검색 · 코드를 넣으면 설명과 예시를 보여 줘요">
+      <div class="tl">
+        <div class="ctop"><span class="chip">레슨 아님 · 찾아보기</span></div>
+        <h2>코드 검색</h2><p>스크립트에 코드를 넣으면 쓰인 코드마다 설명과 예시, 예시 출력을 보여 줘요. 이름이나 설명으로 찾아볼 수도 있어요. 진행도나 채점은 없어요.</p>
+        <div class="cfoot"><span class="go">열기</span></div>
+      </div>
+      <pre>${csHighlight('Debug.Log("HP: " + hp);\n→ 콘솔에 글을 출력합니다')}</pre></button>`;
 }
 $('#cards').addEventListener('click',e=>{const c=e.target.closest('[data-go]');if(c)location.hash=c.dataset.go});
+$('#tools').addEventListener('click',e=>{const c=e.target.closest('[data-go]');if(c)location.hash=c.dataset.go});
 $('#toHome').onclick=()=>{location.hash=''};
 $('#lvHome').onclick=e=>{e.preventDefault();location.hash=''};
 (function(){
@@ -2137,36 +2402,351 @@ $('#lvHome').onclick=e=>{e.preventDefault();location.hash=''};
   bx.classList.toggle('closed',c);tg.setAttribute('aria-expanded',String(!c));
   tg.onclick=()=>set(!bx.classList.contains('closed'));
 })();
+/* ===================== 코드 검색: 스크립트를 넣으면 쓰인 코드마다 설명 · 예시 · 예시 출력을 보여 줍니다 ===================== */
+const SV_KEY='thaniya.learn.search.v1';
+const SV_SAMPLES={
+  log:'void Start()\n{\n    int hp = 100;\n    Debug.Log("HP: " + hp);\n    Debug.LogWarning("체력이 낮아요");\n}',
+  flow:'void Start()\n{\n    for (int i = 0; i < 3; i++)\n    {\n        if (i == 1)\n        {\n            Debug.Log("i는 1이에요");\n        }\n        else\n        {\n            Debug.Log("i = " + i);\n        }\n    }\n}',
+  comp:'public Hero hero;\n\nvoid Start()\n{\n    Transform tr = GetComponent<Transform>();\n    Debug.Log(tr.position.x);\n    hero.hp = hero.hp - 30;\n    Debug.Log(hero.hp);\n}'
+};
+const SV_KW={
+  'public':['다른 곳에서도 쓸 수 있게 여는 접근 한정자입니다. 스크립트의 public 변수는 인스펙터에 칸이 생겨 값을 바꿀 수 있어요.','public int hp = 100;\n\nvoid Start()\n{\n    Debug.Log(hp);\n}'],
+  'private':['이 스크립트 안에서만 쓰겠다는 뜻입니다. 인스펙터에는 보이지 않아요.','private int count = 3;\n\nvoid Start()\n{\n    Debug.Log(count);\n}'],
+  'void':['돌려주는 값이 없는 함수라는 뜻입니다. Start() 같은 함수 앞에 씁니다.','void Start()\n{\n    Debug.Log("시작!");\n}'],
+  'new':['새 값(객체)을 만듭니다.','Vector2 p = new Vector2(3, 4);\nDebug.Log(p.x);'],
+  'return':['함수를 거기서 끝냅니다. 뒤에 있는 코드는 실행되지 않아요.','int hp = 0;\nif (hp <= 0)\n{\n    Debug.Log("쓰러졌어요");\n    return;\n}\nDebug.Log("여기는 실행되지 않아요");'],
+  'if':['조건이 참(true)일 때만 중괄호 안의 코드를 실행합니다.','int hp = 30;\nif (hp < 50)\n{\n    Debug.Log("체력이 낮아요");\n}'],
+  'else':['if의 조건이 거짓일 때 실행할 코드를 씁니다.','int hp = 80;\nif (hp < 50)\n{\n    Debug.Log("체력이 낮아요");\n}\nelse\n{\n    Debug.Log("체력이 충분해요");\n}'],
+  'for':['정해진 횟수만큼 반복합니다. for (시작; 조건; 증가) 모양이에요.','for (int i = 0; i < 3; i++)\n{\n    Debug.Log("i = " + i);\n}'],
+  'while':['조건이 참인 동안 계속 반복합니다. 조건이 언젠가 거짓이 되게 만들어야 해요.','int n = 3;\nwhile (n > 0)\n{\n    Debug.Log(n);\n    n = n - 1;\n}'],
+  'do':['먼저 한 번 실행한 뒤 조건을 검사해서 반복합니다. do { } while (조건); 모양이에요.','int n = 0;\ndo\n{\n    Debug.Log("한 번은 꼭 실행돼요");\n}\nwhile (n > 0);'],
+  'break':['반복문을 그 자리에서 끝냅니다.','for (int i = 0; i < 5; i++)\n{\n    if (i == 2)\n        break;\n    Debug.Log(i);\n}'],
+  'continue':['이번 차례만 건너뛰고 다음 반복으로 넘어갑니다.','for (int i = 0; i < 3; i++)\n{\n    if (i == 1)\n        continue;\n    Debug.Log(i);\n}'],
+  'true':['참을 뜻하는 bool 값입니다.','bool ok = true;\nDebug.Log(ok);'],
+  'false':['거짓을 뜻하는 bool 값입니다.','bool dead = false;\nDebug.Log(dead);'],
+  'null':['“아무것도 없음”을 뜻합니다. 컴포넌트를 찾지 못하면 null이 돌아와요.','Light light = GetComponent<Light>();\nif (light == null)\n    Debug.Log("Light가 없어요");'],
+  'this':['이 스크립트 자신을 가리킵니다.','Debug.Log(this.name);'],
+  'class':['스크립트의 틀입니다. 유니티 스크립트는 MonoBehaviour를 이어받는 class 하나로 만들어요.','public class Quiz : MonoBehaviour\n{\n    void Start()\n    {\n        Debug.Log("Hello!");\n    }\n}'],
+  'using':['다른 묶음(네임스페이스)의 기능을 가져다 씁니다. 보통 맨 위에 using UnityEngine; 을 써요.','using UnityEngine;']
+};
+const SV_TY={
+  MonoBehaviour:['게임 오브젝트에 붙이는 스크립트의 기본 클래스입니다. class 이름 뒤에 : MonoBehaviour 를 붙여요.','public class Quiz : MonoBehaviour\n{\n}'],
+  UnityEngine:['유니티의 기본 기능 묶음(네임스페이스)입니다. using UnityEngine; 으로 가져와요.','using UnityEngine;']
+};
+const SV_AT={
+  Header:['인스펙터에서 변수 위에 제목 글자를 달아 줍니다.','[Header("이동")]\npublic float speed = 3f;'],
+  SerializeField:['private 변수도 인스펙터에 보이게 합니다.','[SerializeField] private int hp = 10;'],
+  Range:['숫자 변수를 슬라이더로 조절하게 합니다.','[Range(0, 10)]\npublic float power = 5f;'],
+  Tooltip:['변수 이름에 마우스를 올리면 설명이 뜹니다.','[Tooltip("1초에 움직이는 칸 수")]\npublic float speed;'],
+  Space:['인스펙터에서 변수 사이에 빈 줄을 넣습니다.','public int a;\n[Space]\npublic int b;'],
+  HideInInspector:['public 변수를 인스펙터에서 숨깁니다.','[HideInInspector]\npublic int hidden;']
+};
+const SV_EV={
+  Start:['첫 번째 프레임 전에 한 번 호출됩니다. 시작할 때 할 일을 여기에 씁니다.','void Start()\n{\n    Debug.Log("시작!");\n}'],
+  Awake:['Start보다 먼저, 오브젝트가 만들어질 때 한 번 호출됩니다.','void Awake()\n{\n    Debug.Log("깨어났어요");\n}']
+};
+/* public 변수는 형식이 같은 학습 씬 오브젝트에 자동으로 연결해서 실행합니다 */
+const SV_REF={Hero:'hero',Light:'torch',Light2D:'torch',Camera:'cam',GameObject:'slime',Transform:'slime'};
+/* 예시에서 쓰는 변수 이름 → 형식 (예시를 단독으로 실행할 수 있게 public 변수로 미리 만들어 둡니다) */
+const SV_PRE={hero:'Hero',torch:'GameObject',slime:'GameObject',light:'Light',tr:'Transform',cam:'Camera'};
+const SV_VAR={Transform:'tr',Light:'light',Hero:'hero',Camera:'cam',GameObject:'torch'};
+const SV_CALL={'Mathf.Min':'Mathf.Min(3f, 8f)','Mathf.Max':'Mathf.Max(3f, 8f)','Mathf.Clamp01':'Mathf.Clamp01(1.7f)','Mathf.Lerp':'Mathf.Lerp(0f, 10f, 0.5f)','Mathf.InverseLerp':'Mathf.InverseLerp(0f, 10f, 5f)','Mathf.MoveTowards':'Mathf.MoveTowards(0f, 10f, 3f)','Mathf.Floor':'Mathf.Floor(3.7f)','Mathf.Ceil':'Mathf.Ceil(3.2f)','Mathf.Round':'Mathf.Round(3.6f)','Mathf.FloorToInt':'Mathf.FloorToInt(3.7f)','Mathf.CeilToInt':'Mathf.CeilToInt(3.2f)','Mathf.RoundToInt':'Mathf.RoundToInt(3.6f)','Mathf.Sin':'Mathf.Sin(0f)','Mathf.Cos':'Mathf.Cos(0f)','Mathf.Tan':'Mathf.Tan(0f)','Mathf.Atan2':'Mathf.Atan2(1f, 1f)','Mathf.Sign':'Mathf.Sign(-4f)','Mathf.Repeat':'Mathf.Repeat(7f, 5f)','Mathf.Approximately':'Mathf.Approximately(1f, 1.0f)','Mathf.Abs':'Mathf.Abs(-3f)','Mathf.Pow':'Mathf.Pow(2f, 3f)','Mathf.Sqrt':'Mathf.Sqrt(16f)','Mathf.Clamp':'Mathf.Clamp(150f, 0f, 100f)'};
+const SV_KIND={fn:'함수',pr:'속성',ty:'형식',kw:'키워드',sn:'코드 조각',ev:'유니티 메시지',at:'특성'};
+const SV={ready:false,t:0,idx:null,cards:[],open:new Set()};
+const svKey=c=>c.kind+':'+c.title;
+
+function svArg(t,n,i,owner){
+  if(t==='float')return({t:'0.5f',maxDelta:'3f',max:'5f',min:'1f',value:'3.5f',f:'3.5f',a:'2f',b:'8f',p:'3f',length:'5f'})[n]||'3.5f';
+  if(t==='int')return i===0?'0':'7';
+  if(t==='string')return({axisName:'"Horizontal"',name:'"횃불"',value:'"Engine"',a:'"Thaniya"',b:'"타니아"'})[n]||'"Hello"';
+  if(t==='bool')return'true';
+  if(t==='KeyCode')return'KeyCode.Space';
+  if(t==='object')return'"안녕"';
+  if(t==='Vector2'||t==='Vector3'||t===owner)return'new '+t+(t==='Vector3'?(i?'(3, 4, 0)':'(0, 0, 0)'):(i?'(3, 4)':'(0, 0)'));
+  return'';
+}
+/* 예시가 따로 없는 항목은 이름과 형식을 보고 짧은 예시를 만들어 줍니다 */
+function svAutoEx(it,owner,st){
+  const A=(it.sig||'').split(',').map(s=>s.trim()).filter(Boolean).map((p,i)=>{const q=p.split(/\s+/);return svArg(q[0],q[1],i,owner)}).join(', ');
+  const cur=SV_CALL[owner+'.'+it.n];
+  if(cur)return'Debug.Log('+cur+');';
+  if(st){
+    if(it.k==='pr')return'Debug.Log('+owner+'.'+it.n+');';
+    if(it.k==='fn'){
+      if(it.t==='void')return owner+'.'+it.n+'('+A+');';
+      if(it.t==='bool'&&owner==='Input')return'if ('+owner+'.'+it.n+'('+A+'))\n    Debug.Log("눌렀어요");';
+      return'Debug.Log('+owner+'.'+it.n+'('+A+'));';
+    }
+    return'';
+  }
+  let pre='',v=SV_VAR[owner];
+  if(owner==='Vector2'||owner==='Vector3'){v='v';pre=owner+' v = new '+owner+(owner==='Vector3'?'(3, 4, 0)':'(3, 4)')+';\n'}
+  else if(owner==='string'){v='s';pre='string s = "Thaniya Engine";\n'}
+  else if(['int','float','double','long','bool'].includes(owner)){v='n';pre=owner+' n = '+({int:'100',long:'100',float:'1.5f',double:'1.5',bool:'true'})[owner]+';\n'}
+  if(!v)return'';
+  if(it.k==='pr')return pre+'Debug.Log('+v+'.'+it.n+');';
+  if(it.k==='fn'){const call=v+'.'+it.n+'('+A+')';return pre+(it.t==='void'?call+';':'Debug.Log('+call+');')}
+  return'';
+}
+/* 예시 → 실행할 수 있는 스크립트로 감싸기 (값을 볼 수 있게 마지막 줄을 Debug.Log로 확인) */
+const SV_DECL=/^\s*(?:var|int|float|double|long|bool|string|Vector2|Vector3|Color|GameObject|Transform|Light|Camera|Hero|Item|Text)\s+(\w+)\s*=/;
+const SV_ASSIGN=/^\s*([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)\s*=[^=]/;
+function svDemo(ex){
+  if(!ex||/^\s*using\b/.test(ex))return null;
+  if(/\bvoid\s+(Start|Awake)\s*\(/.test(ex))return{code:ex,note:''};
+  let body=ex.replace(/\s+$/,''),note='';
+  const last=body.split('\n').pop();
+  if(!/Debug\.Log|print\s*\(/.test(body)){
+    let m=SV_DECL.exec(last);
+    if(m){body+='\nDebug.Log('+m[1]+');';note=_t('{v} 값을 보려고 Debug.Log({v}); 를 덧붙여 실행했어요.',{v:m[1]})}
+    else if((m=SV_ASSIGN.exec(last))){body+='\nDebug.Log('+m[1]+');';note=_t('바뀐 값을 보려고 Debug.Log({v}); 를 덧붙여 실행했어요.',{v:m[1]})}
+  }
+  const pre=[];
+  Object.keys(SV_PRE).forEach(n=>{
+    if(new RegExp('(?<![\\w.])'+n+'(?!\\w)').test(body)&&!new RegExp('\\b(?:var|[A-Z]\\w*)\\s+'+n+'\\b').test(body))pre.push('public '+SV_PRE[n]+' '+n+';');
+  });
+  return{code:(pre.length?pre.join('\n')+'\n\n':'')+'void Start()\n{\n'+body.split('\n').map(l=>'    '+l).join('\n')+'\n}',note};
+}
+/* 코드 검색은 class 없이 함수·문장만 써도 되게, 검사·실행 전에 자동으로 class 로 감쌉니다 (줄 번호는 그대로 유지) */
+function svWrap(code){
+  if(!code.trim())return code;
+  const cl=csBlank(code,false);
+  if(/(?<![\p{L}\p{N}_])class\s+[\p{L}_]/u.test(cl))return code;
+  const head=/^(?:[ \t]*using\s+[\w.]+\s*;[ \t]*(?:\r?\n|$))*/.exec(code)[0],rest=code.slice(head.length);
+  const rc=cl.slice(head.length);
+  const isMember=/(^|\n)[ \t]*(?:\[[^\]\n]*\][ \t]*)*(?:(?:public|private|protected|internal|static)[ \t]+)*(?:void|int|float|double|bool|string|Vector[23]|Color|Transform|GameObject)[ \t]+[\p{L}_][\p{L}\p{N}_]*[ \t]*\(/u.test(rc)
+    ||/(^|\n)[ \t]*(?:\[[^\]\n]*\][ \t]*)*(?:public|private|protected)[ \t]+/.test(rc);
+  const open='public class Quiz : MonoBehaviour {'+(isMember?'':'void Start() {');
+  return head+open+rest+'\n'+(isMember?'}':'}}');
+}
+function svRun(code){
+  code=svWrap(code);
+  if(!code.trim())return{out:[['warn',_t('실행할 코드를 먼저 입력해 주세요.')]],fatal:false};
+  let res;
+  try{res=parseCS(code)}catch(e){return{out:[['error',_t('코드를 읽지 못했어요: {msg}',{msg:e&&e.message||e})]],fatal:true}}
+  const over={};
+  (res.fields||[]).forEach(f=>{const id=SV_REF[f.type];if(id)over[f.name]={ref:id}});
+  try{return runOnce(code,over,snTestScene())}catch(e){return{out:[['error',String(e&&e.message||e)]],fatal:true}}
+}
+
+/* ---- 카드 만들기 ---- */
+function svFromItem(it,owner,st){
+  const d=acDoc(it);let sig='';
+  if(it.k==='fn')sig=it.gen?'T '+it.n+'<T>()':(it.t||'void')+' '+it.n+'('+(it.sig||'')+')';
+  else if(it.k==='pr'&&it.t)sig=it.t+' '+it.n;
+  const self=!owner||owner==='MonoBehaviour';
+  return{title:self?it.n:owner+'.'+it.n,kind:it.k,sig,d:d.d||'',ex:it.ex||d.ex||(self?'':svAutoEx(it,owner,!!st)),sub:(!self&&AC_TYDOC[owner])?owner+' — '+AC_TYDOC[owner]:''};
+}
+const svKw=n=>({title:n,kind:'kw',sig:'',d:SV_KW[n][0],ex:SV_KW[n][1],sub:''});
+const svAt=n=>({title:'['+n+']',kind:'at',sig:'',d:SV_AT[n][0],ex:SV_AT[n][1],sub:''});
+const svEv=n=>({title:n,kind:'ev',sig:'void '+n+'()',d:SV_EV[n][0],ex:SV_EV[n][1],sub:''});
+const svTy=n=>({title:n,kind:'ty',sig:'',d:SV_TY[n]?SV_TY[n][0]:(AC_TYDOC[n]||n+' 형식입니다.'),ex:SV_TY[n]?SV_TY[n][1]:(AC_EX[n]||(AC_COMPS.includes(n)?'var c = GetComponent<'+n+'>();':'')),sub:''});
+function svFind(name){
+  const keys=Object.keys(AC_API);
+  for(const k of keys){const it=AC_API[k].find(q=>q.n===name);if(it)return{it,owner:k.replace(':s',''),st:k.endsWith(':s')}}
+  return null;
+}
+
+/* ---- 입력한 코드 분석: 쓰인 코드를 순서대로 찾아 카드로 ---- */
+function svAnalyze(code){
+  const clean=csBlank(code,false),dc=acDecls(clean),cards=[],seen=new Set();
+  const push=(key,c)=>{if(!c||seen.has(key))return;seen.add(key);cards.push(c)};
+  const re=/[\p{L}_][\p{L}\p{N}_]*/gu;let m;
+  while((m=re.exec(clean))){
+    const n=m[0],i=m.index;
+    if(i>0&&/[0-9]/.test(clean[i-1]))continue;
+    let j=i-1;while(j>=0&&/\s/.test(clean[j]))j--;
+    let k=i+n.length;while(k<clean.length&&/\s/.test(clean[k]))k++;
+    const prev=clean[j]||'',next=clean[k]||'';
+    if(prev==='.'){
+      const chain=acChain(clean.slice(0,j));
+      const cur=chain?acResolve(chain,dc):null;
+      let it=null,owner='',st=false;
+      if(cur){it=acMembers(cur.t,!!cur.st).concat(cur.self?AC_BASE:[]).find(q=>q.n===n)||null;owner=cur.t;st=!!cur.st}
+      if(!it){const h=svFind(n);if(h){it=h.it;owner=h.owner;st=h.st}}
+      if(it)push(owner+'.'+n+(st?':s':''),svFromItem(it,owner,st));
+      continue;
+    }
+    if(prev==='['&&SV_AT[n]){push('at:'+n,svAt(n));continue}
+    if((n==='Start'||n==='Awake')&&dc.methods[n]){push('ev:'+n,svEv(n));continue}
+    if(dc.vars[n]||dc.methods[n])continue;
+    if(SV_KW[n]){push('kw:'+n,svKw(n));continue}
+    const base=AC_API.MonoBehaviour.find(q=>q.n===n);
+    if(base){push('base:'+n,svFromItem(base,'',false));continue}
+    if(SV_TY[n]){push('ty:'+n,svTy(n));continue}
+    if(acIsType(n)&&!(next==='.'&&(AC_STATICS.includes(n)||acIsStatic(n))))push('ty:'+n,svTy(n));
+  }
+  return cards;
+}
+
+/* ---- 이름·설명으로 찾기 ---- */
+function svIndex(){
+  if(SV.idx)return SV.idx;const a=[];
+  Object.keys(AC_API).forEach(k=>{const st=k.endsWith(':s'),o=k.replace(':s','');if(o==='MonoBehaviour')return;AC_API[k].forEach(it=>a.push({it,o,st,name:o+'.'+it.n}))});
+  AC_API.MonoBehaviour.forEach(it=>a.push({it,o:'',st:false,name:it.n}));
+  Object.keys(SV_KW).forEach(n=>a.push({kw:n,name:n}));
+  Object.keys(SV_EV).forEach(n=>a.push({ev:n,name:n}));
+  Object.keys(SV_AT).forEach(n=>a.push({at:n,name:'['+n+']'}));
+  [...new Set([...AC_TYPES,...AC_STATICS,...Object.keys(SV_TY)])].forEach(n=>a.push({ty:n,name:n}));
+  return SV.idx=a;
+}
+const svEntryCard=e=>e.it?svFromItem(e.it,e.o,e.st):e.kw?svKw(e.kw):e.ev?svEv(e.ev):e.at?svAt(e.at):svTy(e.ty);
+function svSearch(q){
+  const ql=q.toLowerCase().replace(/^\[|\]$/g,''),res=[];
+  svIndex().forEach(e=>{
+    const nm=e.name.toLowerCase(),mem=(e.it?e.it.n:(e.kw||e.ev||e.at||e.ty)).toLowerCase();
+    const desc=(e.it?acDoc(e.it).d:e.kw?SV_KW[e.kw][0]:e.ev?SV_EV[e.ev][0]:e.at?SV_AT[e.at][0]:(SV_TY[e.ty]?SV_TY[e.ty][0]:AC_TYDOC[e.ty]||'')).toLowerCase();
+    let sc=9;
+    if(mem===ql||nm===ql)sc=0;else if(mem.startsWith(ql))sc=1;else if(nm.includes(ql))sc=2;else if(desc.includes(ql))sc=3;
+    if(sc<9)res.push({sc,e});
+  });
+  res.sort((a,b)=>a.sc-b.sc||a.e.name.length-b.e.name.length);
+  return res.slice(0,30).map(r=>svEntryCard(r.e));
+}
+
+/* ---- 화면 ---- */
+const svOutHtml=lines=>lines.map(l=>`<div class="ol ${l[0]}" title="${KIND[l[0]]||''}"><i></i><span>${esc(l[1])}</span></div>`).join('');
+function svCardHtml(c,i){
+  let body='';
+  if(c.ex){
+    body+=`<div class="rc-l">예시</div><pre class="rx">${csHighlight(c.ex)}</pre>`;
+    if(c.run){
+      if(c.run.fatal)body+=`<div class="rc-note">이 예시는 단독으로 실행되지 않아서 출력은 생략했어요.</div>`;
+      else{
+        body+=`<div class="rc-l">예시 출력</div><div class="ro">${c.run.out.length?svOutHtml(c.run.out):'<span class="none">콘솔에 출력되는 내용이 없어요.</span>'}</div>`;
+        if(c.demo.note)body+=`<div class="rc-note">${esc(c.demo.note)}</div>`;
+      }
+    }
+    if(c.demo)body+=`<div class="rc-l"><button class="btn sm" type="button" data-put="${i}">스크립트에 넣어 실행해 보기</button></div>`;
+  }
+  const k=svKey(c),open=SV.open.has(k);
+  return`<article class="rc${open?' open':''}" data-k="${esc(k)}"><button type="button" class="rc-h" aria-expanded="${open}"><b>${esc(c.title)}</b><span class="rc-k">${SV_KIND[c.kind]||''}</span><i class="rc-chev" aria-hidden="true"></i></button>${c.sig?`<code class="rc-sig">${esc(c.sig)}</code>`:''}<div class="rc-body"${open?'':' hidden'}>${c.sub?`<p class="rc-sub">${esc(c.sub)}</p>`:''}<p class="rc-d">${esc(c.d)}</p>${body}</div></article>`;
+}
+function svRender(){
+  const q=$('#svQ').value.trim(),code=$('#svCode').value,res=$('#svRes');
+  let cards=[],head='';
+  try{cards=q?svSearch(q):svAnalyze(code)}catch(e){cards=[];head=_t('코드를 분석하지 못했어요.')}
+  const total=cards.length;cards=cards.slice(0,40);
+  cards.forEach(c=>{c.demo=c.ex?svDemo(c.ex):null;c.run=c.demo?svRun(c.demo.code):null});
+  SV.cards=cards;
+  const more=total>cards.length?_t(' (앞의 {n}개만 보여 줘요)',{n:cards.length}):'';
+  if(q)head=total?_t('“{q}” 검색 결과 {n}개',{q,n:total})+more:_t('“{q}”와 맞는 항목이 없어요. 다른 이름이나 설명으로 찾아 보세요.',{q});
+  else if(!code.trim())head='';
+  else if(total)head=_t('입력한 코드에서 {n}개를 찾았어요',{n:total})+more;
+  else if(!head)head=_t('설명할 수 있는 코드를 찾지 못했어요. 위의 검색칸에서 이름이나 설명으로 찾아 보세요.');
+  if(head&&cards.length)head+=_t(' · 카드를 눌러 설명과 예시를 펼쳐 보세요');
+  const empty=!q&&!code.trim()?'<div class="ph">왼쪽 스크립트에 코드를 쓰거나 붙여 넣으면, 쓰인 코드마다 설명과 예시, 예시 출력을 보여 줘요.</div>':'';
+  res.innerHTML=(head?`<div class="sv-note">${esc(head)}</div>`:'')+empty+cards.map(svCardHtml).join('');
+}
+function svPaint(){
+  const ta=$('#svCode'),hl=$('#svHl'),gut=$('#svGut');
+  hl.innerHTML=csHighlight(ta.value);
+  const n=ta.value.split('\n').length;let g='';for(let i=1;i<=n;i++)g+=i+'\n';gut.textContent=g+' ';
+  const s=$('#svStat');
+  try{
+    if(!ta.value.trim()){s.className='';s.textContent=''}
+    else{const r=parseCS(svWrap(ta.value));s.className=r.errs.length?'bad':'ok';s.textContent=r.errs.length?`✕ (${r.errs[0].line}) ${r.errs[0].msg}`:'✓ 문제 없음'}
+  }catch(e){s.className='';s.textContent=''}
+  hl.scrollTop=gut.scrollTop=ta.scrollTop;hl.scrollLeft=ta.scrollLeft;
+}
+function svShowOut(r){
+  const box=$('#svOut');
+  $('#svOutT').textContent=r?(r.fatal?'오류가 있어요':'실행 완료'):'';
+  box.innerHTML=!r?'<div class="ph">▶ 실행을 눌러 내 코드의 출력을 확인하세요. (Ctrl+Enter)</div>':r.out.length?svOutHtml(r.out):'<div class="ph">실행했지만 콘솔에 출력된 내용이 없어요.</div>';
+}
+function svSave(){try{localStorage.setItem(SV_KEY,$('#svCode').value)}catch(e){}}
+function svChanged(){svSave();svPaint();clearTimeout(SV.t);SV.t=setTimeout(svRender,220)}
+function svOpen(){
+  if(!SV.ready){
+    SV.ready=true;
+    let v=null;try{v=localStorage.getItem(SV_KEY)}catch(e){}
+    $('#svCode').value=typeof v==='string'&&v.trim()?v:SV_SAMPLES.log;
+    svShowOut(null);
+  }
+  svPaint();svRender();
+}
+(function(){
+  const ta=$('#svCode');
+  ta.addEventListener('input',svChanged);
+  ta.addEventListener('scroll',()=>{$('#svHl').scrollTop=$('#svGut').scrollTop=ta.scrollTop;$('#svHl').scrollLeft=ta.scrollLeft});
+  ta.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();svShowOut(svRun(ta.value));return}
+    const a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
+    if(e.key==='Tab'&&!e.ctrlKey&&!e.altKey){
+      e.preventDefault();
+      if(e.shiftKey){const ls=v.lastIndexOf('\n',a-1)+1,m=/^( {1,4}|\t)/.exec(v.slice(ls));if(m)ta.setRangeText('',ls,ls+m[0].length,'end')}
+      else ta.setRangeText('    ',a,b,'end');
+      ta.dispatchEvent(new Event('input'));
+    }else if(e.key==='Enter'&&!e.isComposing){
+      e.preventDefault();
+      const ls=v.lastIndexOf('\n',a-1)+1,ind=/^[ \t]*/.exec(v.slice(ls,a))[0],more=v.slice(ls,a).trimEnd().endsWith('{')?'    ':'';
+      ta.setRangeText('\n'+ind+more,a,b,'end');ta.dispatchEvent(new Event('input'));
+    }else if(e.key==='}'&&a===b&&/^[ \t]+$/.test(v.slice(v.lastIndexOf('\n',a-1)+1,a))){
+      e.preventDefault();const ls=v.lastIndexOf('\n',a-1)+1,ind=v.slice(ls,a).replace(/( {1,4}|\t)$/,'');ta.setRangeText(ind+'}',ls,a,'end');ta.dispatchEvent(new Event('input'));
+    }
+  });
+  $('#svRun').onclick=()=>svShowOut(svRun(ta.value));
+  $('#svClear').onclick=()=>{ta.value='';$('#svQ').value='';svChanged();svShowOut(null);ta.focus()};
+  $('#svQ').addEventListener('input',()=>{clearTimeout(SV.t);SV.t=setTimeout(svRender,180)});
+  $('#svSamples').addEventListener('click',e=>{const b=e.target.closest('[data-sample]');if(!b)return;ta.value=SV_SAMPLES[b.dataset.sample];$('#svQ').value='';svChanged();svShowOut(null)});
+  $('#svRes').addEventListener('click',e=>{
+    const h=e.target.closest('.rc-h');
+    if(h){
+      const art=h.closest('.rc'),k=art.dataset.k,on=!art.classList.contains('open');
+      art.classList.toggle('open',on);h.setAttribute('aria-expanded',String(on));art.querySelector('.rc-body').hidden=!on;
+      if(on)SV.open.add(k);else SV.open.delete(k);
+      return;
+    }
+    const b=e.target.closest('[data-put]');if(!b)return;
+    const c=SV.cards[+b.dataset.put];if(!c||!c.demo)return;
+    $('#svQ').value='';ta.value=c.demo.code;svSave();svPaint();svRender();svShowOut(svRun(ta.value));
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  $('#svBack').onclick=()=>{location.hash=''};
+  $('#svHome').onclick=e=>{e.preventDefault();location.hash=''};
+})();
+
 function route(){
-  const L=LESSONS.find(x=>'#'+x.hash===location.hash);
-  $('#home').hidden=!!L;$('#lessonView').hidden=!L;
+  const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search';
+  $('#home').hidden=!!L||S;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;
   if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
-  else{playStop(true);closePM();snRestore();document.title='Thaniya Engine Edu';renderHome()}
+  else{playStop(true);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':'Thaniya Engine Edu';if(S)svOpen();else renderHome()}
   window.scrollTo(0,0);
 }
 addEventListener('hashchange',route);
 route();
+/* 언어: 홈 상단의 언어 버튼 · 엔진 설정이나 다른 페이지에서 바꿔도 따라감 */
+if(window.TI18N){
+  TI18N.picker($('#langHost'),{compact:true});
+  TI18N.onChange(()=>{
+    try{
+      if(!$('#home').hidden)renderHome();
+      if(!$('#lessonView').hidden){renderTop();renderBrief();renderTools();renderHier();renderInsp();renderCon();edPos();paintEd();tkLast='';tkPing()}
+      if(!$('#searchView').hidden){svPaint();svRender()}
+    }catch(e){console.error(e)}
+  });
+}
 
 /* ---- 초기화 (위쪽 버튼) ---- */
 function resetProblem(){
   const p=P();if(!p)return;
   if(p.task){$('#tkReset').click();return}
-  if(!confirm('이 문제에서 작성한 코드와 인스펙터 값을 처음으로 되돌릴까요?'))return;
+  if(!confirm(_t('이 문제에서 작성한 코드와 인스펙터 값을 처음으로 되돌릴까요?')))return;
   delete st.code[p.id];delete st.vals[p.id];save();show(st.cur);
 }
 function resetLesson(){
-  if(!confirm('레슨 '+LESSON.no+' 「'+LESSON.title+'」의 통과 기록과 작성한 코드를 모두 지우고 처음부터 시작할까요?'))return;
+  if(!confirm(_t('레슨 {n} 「{title}」의 통과 기록과 작성한 코드를 모두 지우고 처음부터 시작할까요?',{n:LESSON.no,title:LESSON.title})))return;
   PROBLEMS.forEach(q=>{delete st.done[q.id];delete st.code[q.id];delete st.vals[q.id]});
   st.curs[LESSON.no]=0;save();show(0);
 }
 function resetAll(){
-  if(!confirm('모든 레슨의 통과 기록과 작성한 코드를 지울까요? 되돌릴 수 없어요.'))return;
+  if(!confirm(_t('모든 레슨의 통과 기록과 작성한 코드를 지울까요? 되돌릴 수 없어요.')))return;
   st.done={};st.code={};st.vals={};st.curs={};st.cur=0;save();
   if(location.hash)show(0);else renderHome();
 }
 $('#topReset').onclick=e=>popMenu(e.currentTarget,[
   {t:'이 문제 처음 상태로',ic:'select',fn:resetProblem},
-  {t:'이 레슨 기록 초기화',ic:'collapse',note:'레슨 '+LESSON.no,fn:resetLesson},
+  {t:'이 레슨 기록 초기화',ic:'collapse',note:_t('레슨 {n}',{n:LESSON.no}),fn:resetLesson},
   {t:'전체 학습 기록 초기화',ic:'trash',fn:resetAll}]);
 $('#homeReset').onclick=resetAll;
 

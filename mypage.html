@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>내 프로젝트 · Thaniya Engine</title>
 <meta name="description" content="이 브라우저에 저장된 Thaniya Engine 게임 프로젝트를 확인하고 실행합니다.">
-<link rel="icon" type="image/png" href="assets/thaniya-logo.png">
+<script src="i18n.js"></script>
+<script src="lang/mypage.js"></script>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Bebas+Neue&display=swap">
@@ -31,6 +33,7 @@ header{position:sticky;top:0;z-index:20;background:rgba(11,11,14,.82);-webkit-ba
 .hr{display:flex;align-items:center;gap:4px}
 header a,header button.hb{text-decoration:none;color:var(--mute);padding:8px 18px;border-radius:999px;font-size:15px;font-weight:500;white-space:nowrap;transition:color .15s,background .15s;border:0;background:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 header a:hover,header button.hb:hover{color:var(--fg);background:rgba(255,255,255,.07)}
+header .tl{margin-left:6px}
 header .cta{color:var(--accent-fg)!important;background:var(--accent)!important;font-weight:600!important;margin-left:6px}
 header .cta:hover{background:#f5cc2a!important}
 header a.brand{display:inline-flex;align-items:center;gap:10px;padding:6px 12px 6px 0;color:var(--fg);font-weight:700;font-size:16px;letter-spacing:-.01em}
@@ -174,10 +177,16 @@ dialog.det{width:min(820px,calc(100% - 32px));padding:0;overflow:hidden}
   header a,header button.hb{padding:8px 10px;font-size:14px}
   .brand span{display:none}
   .brand img{width:30px;height:30px}
+  #hNew svg{display:none}
   .grid{grid-template-columns:1fr}
   .newc{min-height:150px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* 입력할 필요 없는 글자는 선택되지 않게 (입력칸 · 콘솔 출력만 선택 가능) */
+body{-webkit-user-select:none;user-select:none}
+input,textarea,select,[contenteditable],[contenteditable] *{-webkit-user-select:text;user-select:text}
+input[type=checkbox],input[type=radio],input[type=range],input[type=button]{-webkit-user-select:none;user-select:none}
 </style>
 </head>
 <body>
@@ -188,6 +197,7 @@ dialog.det{width:min(820px,calc(100% - 32px));padding:0;overflow:hidden}
     <div class="hr">
       <a href="learning.html">학습</a>
       <button class="hb cta" type="button" id="hNew"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>새 프로젝트</button>
+      <span id="langHost"></span>
     </div>
   </div>
 </header>
@@ -234,7 +244,7 @@ dialog.det{width:min(820px,calc(100% - 32px));padding:0;overflow:hidden}
   </form>
 </dialog>
 <dialog class="det" id="det" aria-labelledby="detT">
-  <div class="dh"><h2 id="detT">프로젝트 정보</h2><button class="x" type="button" data-d="close" aria-label="닫기"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="dh"><h2 id="detT" data-i18n-skip>프로젝트 정보</h2><button class="x" type="button" data-d="close" aria-label="닫기"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="db">
     <div>
       <div class="shot" id="detShot"></div>
@@ -274,6 +284,8 @@ const IDX='thaniya.projects.v1',LEGACY='dungeon-map-maker.v2',PFX='thaniya.pj.',
 const keyOf=id=>id==='default'?LEGACY:PFX+id;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const T=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
+const LOC=()=>window.TI18N?TI18N.locale():'ko-KR';
 const editUrl=(id,extra)=>'edit.html?pj='+encodeURIComponent(id)+(extra||'');
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
@@ -293,7 +305,7 @@ function sync(){
   a=a.filter(e=>{if(seen.has(e.id))return changed=true,false;seen.add(e.id);if(get(keyOf(e.id))==null){changed=true;return false}return true});
   const ids=[];try{if(get(LEGACY)!=null)ids.push('default');for(let i=0;i<ls.length;i++){const k=ls.key(i);if(k&&k.startsWith(PFX))ids.push(k.slice(PFX.length))}}catch(e){}
   ids.forEach(id=>{if(seen.has(id))return;const p=peek(id);if(!p)return;const now=Date.now();
-    a.push({id,name:p.name||'이름 없는 게임',created:now,updated:now,scenes:p.maps.length,objs:p.maps.reduce((n,m)=>n+(Array.isArray(m.objs)?m.objs.length:0),0)});seen.add(id);changed=true});
+    a.push({id,name:p.name||T('이름 없는 게임'),created:now,updated:now,scenes:p.maps.length,objs:p.maps.reduce((n,m)=>n+(Array.isArray(m.objs)?m.objs.length:0),0)});seen.add(id);changed=true});
   if(changed)writeIdx(a);
   return a;
 }
@@ -301,15 +313,15 @@ function sync(){
 let list=[],ui={sort:'updated'};
 const rawSize=id=>{const r=get(keyOf(id));if(r==null)return 0;try{return new Blob([r]).size}catch(e){return r.length}};
 function fmtSize(b){if(b<1024)return b+' B';if(b<1024*1024)return (b/1024).toFixed(b<10240?1:0)+' KB';return (b/1048576).toFixed(1)+' MB'}
-const fmtDate=t=>t?new Date(t).toLocaleString('ko-KR',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'-';
+const fmtDate=t=>t?new Date(t).toLocaleString(LOC(),{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'-';
 try{const v=JSON.parse(get(UIK));if(v&&['updated','created','name','size'].includes(v.sort))ui.sort=v.sort}catch(e){}
 $('#sort').value=ui.sort;
 
 function ago(t){
   if(!t)return '';const s=Math.max(0,(Date.now()-t)/1000);
-  if(s<60)return '방금 전';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';
-  if(s<86400*7)return Math.floor(s/86400)+'일 전';
-  const d=new Date(t);return d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'.';
+  if(s<60)return T('방금 전');if(s<3600)return T('{n}분 전',{n:Math.floor(s/60)});if(s<86400)return T('{n}시간 전',{n:Math.floor(s/3600)});
+  if(s<86400*7)return T('{n}일 전',{n:Math.floor(s/86400)});
+  return new Date(t).toLocaleDateString(LOC(),{year:'numeric',month:'numeric',day:'numeric'});
 }
 const initials=n=>{const w=String(n||'?').trim();return esc((w.match(/[A-Za-z0-9]/)?w.replace(/[^A-Za-z0-9 ]/g,'').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2):w.slice(0,2)).toUpperCase()||'?')};
 const PLAY='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
@@ -319,21 +331,21 @@ function render(){
   const q=$('#q').value.trim().toLowerCase();
   const by={updated:(a,b)=>(b.updated||0)-(a.updated||0),created:(a,b)=>(b.created||0)-(a.created||0),name:(a,b)=>String(a.name).localeCompare(String(b.name),'ko'),size:(a,b)=>b.size-a.size}[ui.sort];
   const show=list.filter(e=>!q||String(e.name||'').toLowerCase().includes(q)).sort(by);
-  $('#sub').innerHTML=list.length?`이 브라우저에 저장된 게임 프로젝트 <b>${list.length}</b>개`:'아직 저장된 프로젝트가 없어요. 새 프로젝트로 시작해 보세요.';
+  $('#sub').innerHTML=list.length?T('이 브라우저에 저장된 게임 프로젝트 {n}개',{n:`<b>${list.length}</b>`}):esc(T('아직 저장된 프로젝트가 없어요. 새 프로젝트로 시작해 보세요.'));
   $('#note').hidden=!!ls;
   let h='';
   if(!q)h+=`<button class="newc" type="button" data-new><span class="plus"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><b>새 프로젝트</b><small>11×11 빈 씬으로 시작</small></button>`;
   h+=show.map(e=>{
-    const nm=e.name||'이름 없는 게임';
+    const nm=e.name||T('이름 없는 게임');
     return `<article class="pc" data-id="${esc(e.id)}">
-      <button class="thumb" type="button" data-a="detail" aria-label="${esc(nm)} 자세히 보기">${e.thumb?`<img src="${esc(e.thumb)}" alt="" loading="lazy">`:`<span class="ph"><span>${initials(nm)}</span></span>`}<span class="ov"><i><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></i><em>자세히 보기</em></span>${e.id==='default'?'<span class="tag">기본</span>':''}</button>
+      <button class="thumb" type="button" data-a="detail" aria-label="${esc(T('{name} 자세히 보기',{name:nm}))}">${e.thumb?`<img src="${esc(e.thumb)}" alt="" loading="lazy">`:`<span class="ph"><span>${initials(nm)}</span></span>`}<span class="ov"><i><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></i><em>자세히 보기</em></span>${e.id==='default'?'<span class="tag">기본</span>':''}</button>
       <div class="pb">
-        <div class="pt"><h3 title="${esc(nm)}" data-a="detail">${esc(nm)}</h3><button class="more" type="button" data-a="more" aria-label="${esc(nm)} 더 보기" aria-haspopup="menu" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button></div>
-        <p class="meta"><span>씬 ${e.scenes|0}개</span><span>오브젝트 ${e.objs|0}개</span><span>${fmtSize(e.size)}</span><span title="${e.updated?esc(new Date(e.updated).toLocaleString('ko-KR')):''}">${ago(e.updated)} 수정</span></p>
+        <div class="pt"><h3 title="${esc(nm)}" data-a="detail" data-i18n-skip>${esc(nm)}</h3><button class="more" type="button" data-a="more" aria-label="${esc(T('{name} 더 보기',{name:nm}))}" aria-haspopup="menu" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button></div>
+        <p class="meta"><span>${esc(T('씬 {n}개',{n:e.scenes|0}))}</span><span>${esc(T('오브젝트 {n}개',{n:e.objs|0}))}</span><span>${fmtSize(e.size)}</span><span title="${e.updated?esc(new Date(e.updated).toLocaleString(LOC())):''}">${esc(T('{t} 수정',{t:ago(e.updated)}))}</span></p>
         <div class="acts"><a class="b pri" href="${esc(editUrl(e.id,'&play=1'))}" data-a="playlink">${PLAY}실행</a><a class="b sec" href="${esc(editUrl(e.id))}">편집</a></div>
       </div>
     </article>`}).join('');
-  if(q&&!show.length)h+=`<p class="empty">“${esc(q)}”와 일치하는 프로젝트가 없어요.</p>`;
+  if(q&&!show.length)h+=`<p class="empty">${esc(T('“{q}”와 일치하는 프로젝트가 없어요.',{q}))}</p>`;
   $('#grid').innerHTML=h;
 }
 
@@ -344,7 +356,7 @@ function ask({title,text,value,ok,danger,input=true}){
   return new Promise(res=>{
     const d=$('#dlg'),inp=$('#dlgIn'),okb=$('#dlgOk');
     $('#dlgT').textContent=title;$('#dlgP').textContent=text||'';$('#dlgP').hidden=!text;
-    inp.hidden=!input;inp.required=input;inp.value=value||'';okb.textContent=ok||'확인';okb.className='b '+(danger?'danger':'pri');
+    inp.hidden=!input;inp.required=input;inp.value=value||'';okb.textContent=ok||T('확인');okb.className='b '+(danger?'danger':'pri');
     d.returnValue='';
     const done=()=>{d.removeEventListener('close',done);res(d.returnValue==='ok'?(input?inp.value.trim()||value||'':true):null)};
     d.addEventListener('close',done);
@@ -354,8 +366,8 @@ function ask({title,text,value,ok,danger,input=true}){
 }
 
 async function createNew(){
-  if(!ls){toast('이 브라우저에서는 프로젝트를 저장할 수 없어요');return}
-  const name=await ask({title:'새 프로젝트',text:'게임 이름을 정하세요. 나중에 언제든 바꿀 수 있어요.',value:'새 게임',ok:'만들기'});
+  if(!ls){toast(T('이 브라우저에서는 프로젝트를 저장할 수 없어요'));return}
+  const name=await ask({title:T('새 프로젝트'),text:T('게임 이름을 정하세요. 나중에 언제든 바꿀 수 있어요.'),value:T('새 게임'),ok:T('만들기')});
   if(name==null)return;
   const id=newId();
   location.href=editUrl(id,'&name='+encodeURIComponent(name));
@@ -363,29 +375,29 @@ async function createNew(){
 
 async function rename(id){
   const e=list.find(x=>x.id===id);if(!e)return;
-  const name=await ask({title:'이름 바꾸기',value:e.name||'',ok:'바꾸기'});
+  const name=await ask({title:T('이름 바꾸기'),value:e.name||'',ok:T('바꾸기')});
   if(name==null||name===e.name)return;
-  const p=peek(id);if(p){p.name=name;if(!set(keyOf(id),JSON.stringify(p))){toast('저장 공간이 부족해 이름을 바꾸지 못했어요');return}}
+  const p=peek(id);if(p){p.name=name;if(!set(keyOf(id),JSON.stringify(p))){toast(T('저장 공간이 부족해 이름을 바꾸지 못했어요'));return}}
   const a=readIdx(),x=a.find(y=>y.id===id);if(x){x.name=name;x.updated=Date.now()}writeIdx(a);
-  render();toast('이름을 바꿨어요');
+  render();toast(T('이름을 바꿨어요'));
 }
 
 function dup(id){
   const raw=get(keyOf(id));if(raw==null)return;
   let p=null;try{p=JSON.parse(raw)}catch(e){return}
   const src=list.find(x=>x.id===id)||{},nid=newId(),now=Date.now();
-  p.name=(p.name||src.name||'게임')+' (사본)';
-  if(!set(keyOf(nid),JSON.stringify(p))){toast('저장 공간이 부족해 복제하지 못했어요');return}
+  p.name=T('{name} (사본)',{name:p.name||src.name||T('게임')});
+  if(!set(keyOf(nid),JSON.stringify(p))){toast(T('저장 공간이 부족해 복제하지 못했어요'));return}
   const a=readIdx();const i=a.findIndex(x=>x.id===id);
   a.splice(i<0?0:i+1,0,{id:nid,name:p.name,created:now,updated:now,scenes:src.scenes|0,objs:src.objs|0,thumb:src.thumb});
-  writeIdx(a);render();toast('“'+p.name+'”을(를) 만들었어요');
+  writeIdx(a);render();toast(T('“{name}”을(를) 만들었어요',{name:p.name}));
 }
 
 async function remove(id){
   const e=list.find(x=>x.id===id);if(!e)return;
-  const ok=await ask({title:'프로젝트를 삭제할까요?',text:'“'+(e.name||'이름 없는 게임')+'”의 씬·오브젝트·스크립트가 이 브라우저에서 지워지고 되돌릴 수 없어요. 에셋 이미지는 다른 프로젝트와 함께 쓰므로 남아 있어요.',ok:'삭제',danger:true,input:false});
+  const ok=await ask({title:T('프로젝트를 삭제할까요?'),text:T('“{name}”의 씬·오브젝트·스크립트가 이 브라우저에서 지워지고 되돌릴 수 없어요. 에셋 이미지는 다른 프로젝트와 함께 쓰므로 남아 있어요.',{name:e.name||T('이름 없는 게임')}),ok:T('삭제'),danger:true,input:false});
   if(!ok)return;
-  del(keyOf(id));writeIdx(readIdx().filter(x=>x.id!==id));if(det.open&&detId===id)det.close();render();toast('삭제했어요');
+  del(keyOf(id));writeIdx(readIdx().filter(x=>x.id!==id));if(det.open&&detId===id)det.close();render();toast(T('삭제했어요'));
   return true;
 }
 
@@ -418,11 +430,11 @@ const det=$('#det');let detId=null,detT=0;
 function detInfo(id){
   const e=list.find(x=>x.id===id);if(!e)return;const p=peek(id)||{maps:[]};
   const objs=p.maps.reduce((n,m)=>n+(Array.isArray(m.objs)?m.objs.length:0),0);
-  $('#detT').textContent=e.name||'이름 없는 게임';
-  $('#detShot').innerHTML=e.thumb?`<img src="${esc(e.thumb)}" alt="${esc(e.name)} 시작 씬 미리보기">`:`<span class="ph" style="position:absolute;inset:0;display:grid;place-items:center"><span style="font:400 64px/1 'Bebas Neue',var(--f);color:rgba(255,255,255,.16)">${initials(e.name)}</span></span>`;
-  $('#detInfo').innerHTML=`<dt>씬</dt><dd><ul class="scenes">${p.maps.map(m=>`<li><span>${esc(m.name)}${m.id===p.start?'<b>START</b>':''}</span><span>${m.w}×${m.h}</span></li>`).join('')||'-'}</ul></dd>
-    <dt>오브젝트</dt><dd>${objs}개</dd><dt>스크립트</dt><dd>${Array.isArray(p.scripts)?p.scripts.length:0}개</dd>
-    <dt>용량</dt><dd>${fmtSize(rawSize(id))}</dd><dt>만든 날짜</dt><dd>${esc(fmtDate(e.created))}</dd><dt>수정한 날짜</dt><dd>${esc(fmtDate(e.updated))}</dd>`;
+  $('#detT').textContent=e.name||T('이름 없는 게임');
+  $('#detShot').innerHTML=e.thumb?`<img src="${esc(e.thumb)}" alt="${esc(T('{name} 시작 씬 미리보기',{name:e.name}))}">`:`<span class="ph" style="position:absolute;inset:0;display:grid;place-items:center"><span style="font:400 64px/1 'Bebas Neue',var(--f);color:rgba(255,255,255,.16)">${initials(e.name)}</span></span>`;
+  $('#detInfo').innerHTML=`<dt>${esc(T('씬'))}</dt><dd><ul class="scenes">${p.maps.map(m=>`<li><span><span data-i18n-skip>${esc(m.name)}</span>${m.id===p.start?'<b>START</b>':''}</span><span>${m.w}×${m.h}</span></li>`).join('')||'-'}</ul></dd>
+    <dt>${esc(T('오브젝트'))}</dt><dd>${esc(T('{n}개',{n:objs}))}</dd><dt>${esc(T('스크립트'))}</dt><dd>${esc(T('{n}개',{n:Array.isArray(p.scripts)?p.scripts.length:0}))}</dd>
+    <dt>${esc(T('용량'))}</dt><dd>${fmtSize(rawSize(id))}</dd><dt>${esc(T('만든 날짜'))}</dt><dd>${esc(fmtDate(e.created))}</dd><dt>${esc(T('수정한 날짜'))}</dt><dd>${esc(fmtDate(e.updated))}</dd>`;
 }
 function openDetail(id){
   const e=list.find(x=>x.id===id);if(!e)return;const p=peek(id)||{};
@@ -434,14 +446,14 @@ function openDetail(id){
 function detSave(){
   clearTimeout(detT);if(!detId)return;
   const id=detId,name=$('#detName').value.trim(),desc=$('#detDesc').value.trim(),p=peek(id);if(!p)return;
-  if(!name){$('#detSaved').textContent='이름을 비워 둘 수는 없어요';return}
+  if(!name){$('#detSaved').textContent=T('이름을 비워 둘 수는 없어요');return}
   if(p.name===name&&(p.desc||'')===desc)return;
   p.name=name;if(desc)p.desc=desc;else delete p.desc;
-  if(!set(keyOf(id),JSON.stringify(p))){$('#detSaved').textContent='저장 공간이 부족해 저장하지 못했어요';return}
+  if(!set(keyOf(id),JSON.stringify(p))){$('#detSaved').textContent=T('저장 공간이 부족해 저장하지 못했어요');return}
   const a=readIdx(),x=a.find(y=>y.id===id);if(x){x.name=name;x.desc=desc;x.updated=Date.now()}writeIdx(a);
-  render();detInfo(id);$('#detSaved').textContent='저장됨 · '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  render();detInfo(id);$('#detSaved').textContent=T('저장됨 · {t}',{t:new Date().toLocaleTimeString(LOC(),{hour:'2-digit',minute:'2-digit'})});
 }
-['#detName','#detDesc'].forEach(s=>{const el=$(s);el.addEventListener('input',()=>{clearTimeout(detT);$('#detSaved').textContent='저장 중…';detT=setTimeout(detSave,500)});el.addEventListener('blur',detSave)});
+['#detName','#detDesc'].forEach(s=>{const el=$(s);el.addEventListener('input',()=>{clearTimeout(detT);$('#detSaved').textContent=T('저장 중…');detT=setTimeout(detSave,500)});el.addEventListener('blur',detSave)});
 $('#detName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();detSave()}});
 det.addEventListener('close',()=>{detSave();detId=null});
 det.addEventListener('click',async e=>{
@@ -461,8 +473,8 @@ function idbAll(){return new Promise((res,rej)=>{if(typeof indexedDB==='undefine
   r.onsuccess=()=>{const db=r.result;try{const q=db.transaction('assets').objectStore('assets').getAll();q.onsuccess=()=>{res(q.result||[]);db.close()};q.onerror=()=>{rej(q.error);db.close()}}catch(e){db.close();rej(e)}}})}
 const imgSize=src=>new Promise(res=>{const im=new Image();im.onload=()=>res([im.naturalWidth,im.naturalHeight]);im.onerror=()=>res([0,0]);im.src=src});
 async function exportPj(id,withImg){
-  const p=peek(id);if(!p){toast('프로젝트 데이터를 찾지 못했어요');return}
-  let recs=[];try{recs=await idbAll()}catch(e){toast('에셋 저장소를 열 수 없어 에셋 없이 내보내요')}
+  const p=peek(id);if(!p){toast(T('프로젝트 데이터를 찾지 못했어요'));return}
+  let recs=[];try{recs=await idbAll()}catch(e){toast(T('에셋 저장소를 열 수 없어 에셋 없이 내보내요'))}
   const assets=[];
   for(const a of recs.sort((x,y)=>(x.n|0)-(y.n|0))){
     const tw=Math.min(512,Math.max(4,parseInt(a.tw)||32)),th=Math.min(512,Math.max(4,parseInt(a.th)||32));
@@ -477,7 +489,7 @@ async function exportPj(id,withImg){
   const blob=new Blob([JSON.stringify(out)],{type:'application/json'});
   const fn=(String(p.name||'thaniya-project').replace(/[\\/:*?"<>|]+/g,'_').trim()||'thaniya-project')+'.json';
   const u=URL.createObjectURL(blob),l=document.createElement('a');l.href=u;l.download=fn;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);
-  toast(fn+' 저장 ('+fmtSize(blob.size)+')');
+  toast(T('{file} 저장 ({size})',{file:fn,size:fmtSize(blob.size)}));
 }
 $('#q').addEventListener('input',render);
 $('#sort').onchange=()=>{ui.sort=$('#sort').value;set(UIK,JSON.stringify(ui));render()};
@@ -486,6 +498,8 @@ addEventListener('storage',e=>{if(!e.key||e.key===IDX||e.key===LEGACY||e.key.sta
 addEventListener('pageshow',e=>{if(e.persisted)render()});
 setInterval(()=>{if(!document.hidden&&menu.hidden&&!$('#dlg').open&&!det.open)render()},60000);
 render();
+/* 언어 선택 (index와 같은 버튼 · 모든 페이지가 같은 설정을 씀) */
+if(window.TI18N){TI18N.picker($('#langHost'));TI18N.onChange(()=>{render();if(det.open&&detId)detInfo(detId)})}
 })();
 </script>
 </body>
