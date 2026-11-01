@@ -1,0 +1,84 @@
+/* 라이트 테마 · index.html 의 어두운 스타일에서 자동으로 만든 덮어쓰기입니다 (tools/gen_light.py).
+   손으로 고친 부분은 맨 아래 「수동 보정」에 있습니다. theme.js가 <html data-theme="light">를 붙이면 적용됩니다. */
+html[data-theme="light"]{--bg:#f7f7f8;--panel:#efeff2;--raised:#e9e9ee;--line:rgba(0,0,0,0.09);--line2:rgba(0,0,0,0.16);--fg:#121217;--mute:#595964;--accent:#e9bd0c;--accent-fg:#1a1400;color-scheme:light}
+html[data-theme="light"] body{background:var(--bg);color:var(--fg)}
+html[data-theme="light"] a{color:inherit}
+html[data-theme="light"] :focus-visible{outline:2px solid var(--accent)}
+html[data-theme="light"] header{background:rgba(247,247,248,0.82);border-bottom:1px solid var(--line)}
+html[data-theme="light"] header a{color:var(--mute)}
+html[data-theme="light"] header a:hover{color:var(--fg);background:rgba(0,0,0,0.07)}
+html[data-theme="light"] header a.cta{color:var(--accent-fg);background:var(--accent)}
+html[data-theme="light"] header a.cta:hover{background:#f5cc2a}
+html[data-theme="light"] header .brand{color:var(--fg)}
+html[data-theme="light"] .lang-btn{border:1px solid var(--line2);background:rgba(0,0,0,0.04);color:var(--fg)}
+html[data-theme="light"] .lang-btn:hover,
+html[data-theme="light"] .lang-btn[aria-expanded="true"]{background:rgba(0,0,0,0.1);border-color:rgba(0,0,0,0.28)}
+html[data-theme="light"] .lang-btn svg{fill:none;stroke:currentColor}
+html[data-theme="light"] .lang-btn .chev{color:var(--mute)}
+html[data-theme="light"] .lang-menu{background:var(--raised);border:1px solid var(--line2);box-shadow:0 18px 40px rgba(0,0,0,0.16)}
+html[data-theme="light"] .lang-menu li{color:var(--fg)}
+html[data-theme="light"] .lang-menu li:hover,
+html[data-theme="light"] .lang-menu li:focus-visible{background:rgba(0,0,0,0.09);outline:none}
+html[data-theme="light"] .lang-menu li[aria-selected="true"]{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .hero{background:var(--bg)}
+html[data-theme="light"] .hero-media::after{background:linear-gradient(180deg,rgba(241,241,244,0.55) 0,rgba(241,241,244,0) 22%,rgba(241,241,244,0) 52%,var(--bg) 100%),
+  linear-gradient(90deg,rgba(247,247,248,0.92) 0,rgba(247,247,248,0.62) 36%,rgba(241,241,244,0.08) 72%)}
+html[data-theme="light"] .ver{color:var(--mute);border:1px solid var(--line2);background:rgba(241,241,244,0.5)}
+html[data-theme="light"] .hero h1 em{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .hero .sub{color:#2e2e36;text-shadow:0 1px 14px rgba(255,255,255,0.63)}
+html[data-theme="light"] .btn{border:1px solid rgba(0,0,0,0.5);color:var(--fg);background:rgba(241,241,244,0.35)}
+html[data-theme="light"] .btn:hover{background:rgba(0,0,0,0.14)}
+html[data-theme="light"] .btn.main{background:#fff;color:#0b0b0e;border-color:#fff}
+html[data-theme="light"] .btn.main:hover{background:var(--accent);border-color:var(--accent)}
+html[data-theme="light"] .btn svg{fill:none;stroke:currentColor}
+html[data-theme="light"] section{border-top:1px solid var(--line)}
+html[data-theme="light"] .eyebrow{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .lead{color:var(--mute)}
+html[data-theme="light"] .about div{background:var(--panel);border:1px solid var(--line)}
+html[data-theme="light"] .about span{color:var(--mute)}
+html[data-theme="light"] .card{background:var(--panel);border:1px solid var(--line)}
+html[data-theme="light"] .card:hover{border-color:rgba(233,189,12,.45)}
+html[data-theme="light"] .card .n{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .card p{color:var(--mute)}
+html[data-theme="light"] pre{background:#f2f4f6;border:1px solid var(--line);color:#202228}
+html[data-theme="light"] pre .k{color:#20007a}
+html[data-theme="light"] pre .t{color:#277c69}
+html[data-theme="light"] pre .s{color:#6e5e0c}
+html[data-theme="light"] pre .c{color:#6c7280}
+html[data-theme="light"] .log article{background:var(--panel);border:1px solid var(--line)}
+html[data-theme="light"] .log .v{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .log .v small{color:var(--mute)}
+html[data-theme="light"] .log p{color:var(--mute)}
+html[data-theme="light"] footer{border-top:1px solid var(--line);background:#f8f8fa}
+html[data-theme="light"] footer .info{color:#2e2e36}
+html[data-theme="light"] footer .biz{color:var(--fg);border-bottom:1px solid var(--accent)}
+html[data-theme="light"] footer .biz:hover{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] footer .copy{border-top:1px solid var(--line);color:var(--mute)}
+html[data-theme="light"] footer .copy a{color:var(--mute)}
+html[data-theme="light"] footer .copy a:hover{color:var(--fg)}
+@media (max-width:820px){
+html[data-theme="light"] .hero-media::after{background:linear-gradient(180deg,rgba(241,241,244,0.4) 0,rgba(241,241,244,0) 25%,rgba(241,241,244,0) 60%,var(--bg) 100%)}
+}
+@media (max-width:560px){
+html[data-theme="light"] .hc{border-top:1px solid var(--line)}
+}
+html[data-theme="light"] .lrn-shot{border:1px solid var(--line2);background:var(--panel);box-shadow:0 24px 60px rgba(0,0,0,0.144)}
+html[data-theme="light"] .lrn-shot::after{background:linear-gradient(180deg,rgba(241,241,244,0),rgba(247,247,248,0.85))}
+html[data-theme="light"] .tp-popup{color:var(--fg);background:radial-gradient(120% 90% at 0% 0%,rgba(233,189,12,.22),transparent 60%),rgba(229,229,233,0.92);border:1px solid rgba(233,189,12,.35);box-shadow:0 14px 36px rgba(0,0,0,0.16),0 0 0 1px rgba(0,0,0,0.128),inset 0 1px 0 rgba(255,255,255,0.08)}
+html[data-theme="light"] .tp-close{border:0;color:var(--mute);background:rgba(0,0,0,0.07)}
+html[data-theme="light"] .tp-close:hover{background:rgba(0,0,0,0.16);color:#141414}
+html[data-theme="light"] .tp-logo-wrap{background:radial-gradient(circle at 50% 40%,#efeff1,#ffffff);box-shadow:0 6px 16px rgba(0,0,0,0.16),0 0 0 1px rgba(233,189,12,0.175),inset 0 1px 0 rgba(255,255,255,0.06)}
+html[data-theme="light"] .tp-eyebrow{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .tp-title{color:#141414}
+html[data-theme="light"] .tp-desc{color:var(--mute)}
+html[data-theme="light"] .tp-go{color:var(--accent-fg);background:linear-gradient(180deg,#f5cc2e,#e9bd0c);box-shadow:0 4px 12px rgba(233,189,12,0.21),inset 0 1px 0 rgba(255,255,255,0.4)}
+html[data-theme="light"] .tp-go:hover{box-shadow:0 6px 16px rgba(233,189,12,0.315),inset 0 1px 0 rgba(255,255,255,0.4)}
+html[data-theme="light"] .tp-skip{background:none;border:0;color:var(--mute)}
+html[data-theme="light"] .tp-skip:hover{color:var(--fg)}
+
+/* ===== 수동 보정 ===== */
+/* 홈 (index.html) */
+html[data-theme="light"]{--bg:#f3f3f6;--panel:#ffffff;--raised:#ececf1;--fg:#121217;--mute:#5b5b66;--accent-tx:#8a6a00}
+html[data-theme="light"] .btn.main{background:#131318;color:#fff;border-color:#131318}
+html[data-theme="light"] .btn.main:hover{background:var(--accent);border-color:var(--accent);color:#0b0b0e}
+html[data-theme="light"] .btn{border-color:rgba(0,0,0,.45);background:rgba(255,255,255,.6)}

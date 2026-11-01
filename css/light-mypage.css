@@ -1,0 +1,96 @@
+/* 라이트 테마 · mypage.html 의 어두운 스타일에서 자동으로 만든 덮어쓰기입니다 (tools/gen_light.py).
+   손으로 고친 부분은 맨 아래 「수동 보정」에 있습니다. theme.js가 <html data-theme="light">를 붙이면 적용됩니다. */
+html[data-theme="light"]{--bg:#f7f7f8;--panel:#efeff2;--raised:#e9e9ee;--line:rgba(0,0,0,0.09);--line2:rgba(0,0,0,0.16);--fg:#121217;--mute:#595964;--accent:#e9bd0c;--accent-fg:#1a1400;--danger:#ff6b6b;color-scheme:light}
+html[data-theme="light"] body{background:var(--bg);color:var(--fg)}
+html[data-theme="light"] a{color:inherit}
+html[data-theme="light"] button,
+html[data-theme="light"] input,
+html[data-theme="light"] select{color:inherit}
+html[data-theme="light"] :focus-visible{outline:2px solid var(--accent)}
+html[data-theme="light"] svg.i{fill:none;stroke:currentColor}
+html[data-theme="light"] header{background:rgba(247,247,248,0.82);border-bottom:1px solid var(--line)}
+html[data-theme="light"] header a,
+html[data-theme="light"] header button.hb{color:var(--mute);border:0;background:none}
+html[data-theme="light"] header a:hover,
+html[data-theme="light"] header button.hb:hover{color:var(--fg);background:rgba(0,0,0,0.07)}
+html[data-theme="light"] header .cta{color:var(--accent-fg)!important;background:var(--accent)!important}
+html[data-theme="light"] header .cta:hover{background:#f5cc2a!important}
+html[data-theme="light"] header a.brand{color:var(--fg)}
+html[data-theme="light"] header a.brand:hover{background:none;color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .eyebrow{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .head p.sub{color:var(--mute)}
+html[data-theme="light"] .head p.sub b{color:var(--fg)}
+html[data-theme="light"] .search svg{color:var(--mute)}
+html[data-theme="light"] .search input{border:1px solid var(--line2);background:var(--panel);outline:none}
+html[data-theme="light"] .search input:focus{border-color:var(--accent)}
+html[data-theme="light"] .search input::placeholder{color:#6d6d78}
+html[data-theme="light"] select{border:1px solid var(--line2);background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239b9ba6' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center/16px;outline:none}
+html[data-theme="light"] select:focus{border-color:var(--accent)}
+html[data-theme="light"] .pc{background:var(--panel);border:1px solid var(--line)}
+html[data-theme="light"] .pc:hover{border-color:rgba(233,189,12,.45)}
+html[data-theme="light"] .pc:focus-within{border-color:rgba(233,189,12,.45)}
+html[data-theme="light"] .thumb{background:#f3f3f5;border:0}
+html[data-theme="light"] .thumb .ph{background:linear-gradient(rgba(0,0,0,0.035) 1px,transparent 1px) 0 0/24px 24px,
+  linear-gradient(90deg,rgba(0,0,0,0.035) 1px,transparent 1px) 0 0/24px 24px,
+  radial-gradient(120% 90% at 30% 20%,#e5e5ea,#f3f3f5)}
+html[data-theme="light"] .thumb .ph span{color:rgba(20,20,20,0.16)}
+html[data-theme="light"] .thumb .ov{background:rgba(245,245,247,0.45)}
+html[data-theme="light"] .thumb .ov i{background:var(--accent);color:var(--accent-fg);box-shadow:0 8px 30px rgba(0,0,0,0.144)}
+html[data-theme="light"] .thumb .ov em{color:#141414;text-shadow:0 1px 8px rgba(255,255,255,0.63)}
+html[data-theme="light"] .tag{background:rgba(247,247,248,0.72);border:1px solid var(--line2);color:#212129}
+html[data-theme="light"] .meta{color:var(--mute)}
+html[data-theme="light"] .meta span+span::before{color:#55555e}
+html[data-theme="light"] .b{border:1px solid var(--line2);background:transparent}
+html[data-theme="light"] .b:hover{background:rgba(0,0,0,0.08)}
+html[data-theme="light"] .b.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+html[data-theme="light"] .b.pri:hover{background:#f5cc2a;border-color:#f5cc2a}
+html[data-theme="light"] .b.pri svg{fill:currentColor;stroke:none}
+html[data-theme="light"] .b.danger{background:var(--danger);border-color:var(--danger);color:#1d0606}
+html[data-theme="light"] .b.danger:hover{background:#ff8585}
+html[data-theme="light"] .more{border:0;background:none;color:var(--mute)}
+html[data-theme="light"] .more:hover,
+html[data-theme="light"] .more[aria-expanded="true"]{background:rgba(0,0,0,0.08);color:var(--fg)}
+html[data-theme="light"] .newc{border:1.5px dashed var(--line2);background:transparent;color:var(--mute)}
+html[data-theme="light"] .newc:hover{border-color:var(--accent);color:var(--fg);background:rgba(233,189,12,.04)}
+html[data-theme="light"] .newc .plus{border:1px solid var(--line2)}
+html[data-theme="light"] .newc:hover .plus{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+html[data-theme="light"] .newc b{color:var(--fg)}
+html[data-theme="light"] .empty{color:var(--mute)}
+html[data-theme="light"] .note{border:1px solid rgba(255,107,107,.4);background:rgba(255,107,107,.08);color:#7a0000}
+html[data-theme="light"] .menu{background:var(--raised);border:1px solid var(--line2);box-shadow:0 18px 50px rgba(0,0,0,0.176)}
+html[data-theme="light"] .menu button{border:0;background:none}
+html[data-theme="light"] .menu button:hover,
+html[data-theme="light"] .menu button:focus-visible{background:rgba(0,0,0,0.08);outline:none}
+html[data-theme="light"] .menu button.del{color:var(--danger-tx,var(--danger))}
+html[data-theme="light"] .menu hr{border:0;border-top:1px solid var(--line)}
+html[data-theme="light"] dialog{border:1px solid var(--line2);background:var(--raised);color:var(--fg);box-shadow:0 30px 80px rgba(0,0,0,0.192)}
+html[data-theme="light"] dialog::backdrop{background:rgba(251,251,252,0.6)}
+html[data-theme="light"] dialog p{color:var(--mute)}
+html[data-theme="light"] dialog input{border:1px solid var(--line2);background:var(--panel);outline:none}
+html[data-theme="light"] dialog input:focus{border-color:var(--accent)}
+html[data-theme="light"] .toast{background:#f2f2f5;color:#0b0b0e}
+html[data-theme="light"] footer{border-top:1px solid var(--line);color:var(--mute)}
+html[data-theme="light"] footer a{color:var(--mute)}
+html[data-theme="light"] footer a:hover{color:var(--fg)}
+html[data-theme="light"] .det .dh{border-bottom:1px solid var(--line)}
+html[data-theme="light"] .det .x{border:0;background:none;color:var(--mute)}
+html[data-theme="light"] .det .x:hover{background:rgba(0,0,0,0.08);color:var(--fg)}
+html[data-theme="light"] .det .shot{background:#f3f3f5;border:1px solid var(--line)}
+html[data-theme="light"] .det dt{color:var(--mute)}
+html[data-theme="light"] .det .scenes li span:last-child{color:var(--mute)}
+html[data-theme="light"] .det .scenes li b{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .det label.f{color:var(--mute)}
+html[data-theme="light"] .det input.t,
+html[data-theme="light"] .det textarea{border:1px solid var(--line2);background:var(--panel);outline:none}
+html[data-theme="light"] .det input.t:focus,
+html[data-theme="light"] .det textarea:focus{border-color:var(--accent)}
+html[data-theme="light"] .det .saved{color:var(--mute)}
+html[data-theme="light"] .det .exp{border:1px solid var(--line);background:rgba(0,0,0,0.02)}
+html[data-theme="light"] .det .chk input{accent-color:var(--accent)}
+html[data-theme="light"] .det .df{border-top:1px solid var(--line)}
+html[data-theme="light"] .b.ghostd{color:var(--danger-tx,var(--danger));border-color:rgba(255,107,107,.4)}
+html[data-theme="light"] .b.ghostd:hover{background:rgba(255,107,107,.1)}
+
+/* ===== 수동 보정 ===== */
+/* 마이페이지 (mypage.html) */
+html[data-theme="light"]{--bg:#f3f3f6;--panel:#ffffff;--raised:#ececf1;--fg:#121217;--mute:#5b5b66;--accent-tx:#8a6a00;--danger-tx:#c22c3c}

@@ -25,6 +25,22 @@ const CSHOST={
   camProxy(){throw csUnsup('Camera')},
   csGetComp(m,o,T){throw csUnsup('GetComponent<'+T+'>()')},
   csDestroy(){throw csUnsup('Destroy()')},
+  uiGo:false,          /* true: UI 요소도 gameObject(SetActive·activeSelf)로 다룸 */
+  /* ---- 게임 세계 연결 (정적 클래스 Hero.main · Dialog · Message · Inventory · SceneManager · UIGroup) ----
+     화면마다 자기 세계에 맞게 넘깁니다. 넘기지 않은 기능은 「아직 실행할 수 없습니다」로 알려 줍니다 */
+  heroMain:null,       /* (m) → 주인공(Hero) 프록시 또는 null */
+  say:null,            /* (이름, 문장) 대화창 열기 */
+  dialogOpen:null,     /* () → 대화창이 열려 있는지 */
+  dialogClose:null,    /* () 대화창 닫기 */
+  message:null,        /* (문장, 초) 화면 알림 */
+  inventory:null,      /* () → 소지품 객체 {이름: 개수} (플레이 중이 아니면 null) */
+  loadScene:null,      /* (이름 또는 순번) */
+  restartGame:null,    /* () 처음부터 다시 */
+  sceneInfo:null,      /* (m) → {name, index} */
+  uiGroupFind:null,    /* (m, 이름) → UI 그룹 프록시 또는 null */
+  uiFind:null,         /* (m, 이름) → GameObject.Find 로 찾을 UI 요소·그룹 프록시 또는 null */
+  uiGroupH:null,       /* (m, 그룹 id) → UI 그룹 프록시 (public UIGroup 필드) */
+  sound:null,          /* ('get', 이름) 또는 ('call', 이름, 인자) — 정적 클래스 Sound (배경 음악 · 효과음) */
   /* 호스트 함수 등록 (getter 도 그대로 복사) */
   use(h){Object.defineProperties(this,Object.getOwnPropertyDescriptors(h));return this}
 };
@@ -62,7 +78,7 @@ const KO_KW={공개:'public',비공개:'private',보호:'protected',내부:'inte
   동작:'void',반환없음:'void',반환:'return',만약:'if',아니면:'else',동안:'while',반복:'for',각각:'foreach',하기:'do',중단:'break',계속:'continue',
   참:'true',거짓:'false',없음:'null',널:'null',새:'new',새로:'new',자신:'this',변수:'var'};
 const KO_TY={정수:'int',실수:'float',배실수:'double',논리:'bool',문자열:'string',벡터2:'Vector2',벡터3:'Vector3',색:'Color',쿼터니언:'Quaternion',
-  게임오브젝트:'GameObject',변환:'Transform',트랜스폼:'Transform',행동스크립트:'MonoBehaviour',주인공:'Hero',입력:'Input',시간:'Time',수학:'Mathf',
+  게임오브젝트:'GameObject',변환:'Transform',트랜스폼:'Transform',행동스크립트:'MonoBehaviour',주인공:'Hero',애니메이터:'Animator',오디오소스:'AudioSource',사운드:'Sound',입력:'Input',시간:'Time',수학:'Mathf',
   디버그:'Debug',무작위:'Random',랜덤:'Random',키코드:'KeyCode',카메라:'Camera',빛:'Light',몬스터:'Monster',엔피시:'Npc',아이템:'Item',포탈:'Portal',
   이벤트트리거:'EventTrigger',스프라이트렌더러:'SpriteRenderer',UI그룹:'UIGroup',텍스트:'Text',버튼:'Button',이미지:'Image',
   씬관리자:'SceneManager',애플리케이션:'Application',유니티엔진:'UnityEngine'};
@@ -78,7 +94,8 @@ const KO_MEM={위치:'position',지역위치:'localPosition',배율:'localScale'
   이동가능:'CanMove',공격:'Attack',색:'color',밝기:'intensity',퍼짐각:'angle',방향:'dir',그림자:'shadows',화면크기:'orthographicSize',
   맵밖가리기:'clampToMap',속도:'speed',감지범위:'range',수량:'qty',글자:'text',대사:'text',글자크기:'fontSize',투명도:'alpha',보임:'visible',
   값:'value',크기:'sizeDelta',길이:'magnitude',정규화:'normalized',정규화하기:'Normalize',글자수:'Length',대문자로:'ToUpper',
-  소문자로:'ToLower',포함:'Contains',문자열로:'ToString',다듬기:'Trim'};
+  소문자로:'ToLower',포함:'Contains',문자열로:'ToString',다듬기:'Trim',
+  실수설정:'SetFloat',정수설정:'SetInteger',논리설정:'SetBool',트리거설정:'SetTrigger',트리거해제:'ResetTrigger'};
 const KO_VEC={영:'zero',하나:'one',위:'up',아래:'down',왼쪽:'left',오른쪽:'right',거리:'Distance',보간:'Lerp',향해이동:'MoveTowards',내적:'Dot',길이제한:'ClampMagnitude'};
 const KO_OWN={
   Debug:{출력:'Log',경고:'LogWarning',오류:'LogError'},
@@ -511,9 +528,9 @@ function csField(n,cx){
 function csRefVal(v,T,cx){
   const id=v.id||'';if(!id)return null;
   const m=cx.m;
-  if(id.startsWith('uig:'))throw csUnsup('UIGroup 필드');
+  if(id.startsWith('uig:')){const g=CSHOST.uiGroupH&&CSHOST.uiGroupH(m,id.slice(4));if(g)return g;throw csUnsup('UIGroup 필드')}
   const o=m.objs.find(z=>z.id===id)||(m.ui||[]).find(z=>z.id===id);if(!o)return null;
-  if(!T||T==='GameObject')return CSHOST.isUiEl(o)?(()=>{throw csUnsup('UI 요소 필드')})():CSHOST.goProxy(m,o);
+  if(!T||T==='GameObject')return CSHOST.isUiEl(o)&&!CSHOST.uiGo?(()=>{throw csUnsup('UI 요소 필드')})():CSHOST.goProxy(m,o);
   if(CS_UIT.has(T)||CSHOST.isUiEl(o))throw csUnsup(T+' 필드');
   return CSHOST.csGetComp(m,o,T);
 }
@@ -522,7 +539,7 @@ function csIdNoLocal(n,cx){
   if(Object.prototype.hasOwnProperty.call(CS_STAT,n))return CS_STAT[n];
   const o=cx.o;
   if(n==='transform'){if(CSHOST.isUiEl(o))throw csUnsup(n);return CSHOST.trProxy(cx.m,o)}
-  if(n==='gameObject'){if(CSHOST.isUiEl(o))throw csUnsup(n);return CSHOST.goProxy(cx.m,o)}
+  if(n==='gameObject'){if(CSHOST.isUiEl(o)&&!CSHOST.uiGo)throw csUnsup(n);return CSHOST.goProxy(cx.m,o)}
   if(n==='name')return o.name;
   throw csUnsup(n);
 }
@@ -674,8 +691,33 @@ const CS_STAT={
   Color:csH('Color',n=>{if(CS_COLORS[n])return CS_COLORS[n];throw csUnsup('Color.'+n)}),
   GameObject:csH('GameObject',null,(n,a)=>{
     const m=csCur&&csCur.m;if(!m)return null;
-    if(n==='Find'){const nm=csFmt(a[0]),o=m.objs.find(q=>q.name===nm&&CSHOST.objOn(m,q))||m.objs.find(q=>q.name===nm);if(o)return CSHOST.goProxy(m,o);if((m.ui||[]).some(q=>q.name===nm)||(m.uiGroups||[]).some(q=>q.name===nm))throw csUnsup('GameObject.Find(UI)');return null}
+    if(n==='Find'){const nm=csFmt(a[0]),o=m.objs.find(q=>q.name===nm&&CSHOST.objOn(m,q))||m.objs.find(q=>q.name===nm);if(o)return CSHOST.goProxy(m,o);
+      if(typeof CSHOST.uiFind==='function'){const u=CSHOST.uiFind(m,nm);if(u)return u}
+      if((m.ui||[]).some(q=>q.name===nm)||(m.uiGroups||[]).some(q=>q.name===nm))throw csUnsup('GameObject.Find(UI)');return null}
     throw csUnsup('GameObject.'+n+'()')}),
-  Camera:csH('Camera',n=>{if(n==='main'){const m=csCur&&csCur.m,c=m&&CSHOST.startCamera(m);return c?CSHOST.camProxy(m,c):null}throw csUnsup('Camera.'+n)})
+  Camera:csH('Camera',n=>{if(n==='main'){const m=csCur&&csCur.m,c=m&&CSHOST.startCamera(m);return c?CSHOST.camProxy(m,c):null}throw csUnsup('Camera.'+n)}),
+  /* ---- 게임 세계 기능 (CSHOST 의 연결 함수로 동작) ---- */
+  Hero:csH('Hero',n=>{if(n==='main'){const m=csCur&&csCur.m;return m?csHook('heroMain','Hero.main')(m):null}throw csUnsup('Hero.'+n)}),
+  Dialog:csH('Dialog',n=>{if(n==='isOpen')return!!csHook('dialogOpen','Dialog.isOpen')();throw csUnsup('Dialog.'+n)},(n,a)=>{
+    if(n==='Show'){csHook('say','Dialog.Show()')(a.length>1?csFmt(a[0]):'',csFmt(a.length>1?a[1]:a[0]));return null}
+    if(n==='Close'){csHook('dialogClose','Dialog.Close()')();return null}
+    throw csUnsup('Dialog.'+n+'()')}),
+  Message:csH('Message',null,(n,a)=>{if(n==='Show'){csHook('message','Message.Show()')(csFmt(a[0]),a.length>1?Math.max(.1,csN(a[1])):1.6);return null}throw csUnsup('Message.'+n+'()')}),
+  Inventory:csH('Inventory',n=>{if(n==='count'||n==='Count'){const inv=csHook('inventory','Inventory')();return inv?Object.keys(inv).length:0}throw csUnsup('Inventory.'+n)},(n,a)=>{
+    const inv=csHook('inventory','Inventory.'+n+'()')();if(!inv)return null;const k=a.length?csFmt(a[0]):'',c=a.length>1?Math.round(csN(a[1])):1;
+    if(n==='Add'){inv[k]=(inv[k]||0)+c;if(inv[k]<=0)delete inv[k];return inv[k]||0}
+    if(n==='Remove'){if((inv[k]||0)<c)return false;inv[k]-=c;if(inv[k]<=0)delete inv[k];return true}
+    if(n==='Count')return inv[k]||0;if(n==='Has')return(inv[k]||0)>0;
+    if(n==='Clear'){Object.keys(inv).forEach(x=>delete inv[x]);return null}
+    throw csUnsup('Inventory.'+n+'()')}),
+  SceneManager:csH('SceneManager',null,(n,a)=>{
+    if(n==='LoadScene'){const v=a[0];csHook('loadScene','SceneManager.LoadScene()')(typeof v==='number'?v:csFmt(v));return null}
+    if(n==='RestartGame'){csHook('restartGame','SceneManager.RestartGame()')();return null}
+    if(n==='GetActiveScene'){const m=csCur&&csCur.m,q=csHook('sceneInfo','SceneManager.GetActiveScene()')(m)||{};return csH('Scene',x=>{if(x==='name')return q.name||'';if(x==='buildIndex')return q.index==null?-1:q.index;throw csUnsup('Scene.'+x)})}
+    throw csUnsup('SceneManager.'+n+'()')}),
+  Sound:csH('Sound',n=>csHook('sound','Sound.'+n)('get',n),(n,a)=>csHook('sound','Sound.'+n+'()')('call',n,a)),
+  UIGroup:csH('UIGroup',null,(n,a)=>{if(n==='Find'){const m=csCur&&csCur.m;return m?csHook('uiGroupFind','UIGroup.Find()')(m,csFmt(a[0])):null}throw csUnsup('UIGroup.'+n+'()')})
 };
+/* 연결 함수 꺼내기: 화면이 넘기지 않았으면 「아직 실행할 수 없습니다」 */
+function csHook(k,label){const f=CSHOST[k];if(typeof f!=='function')throw csUnsup(label);return f}
 function csThis(cx){return{__h:cx.s.name,__o:cx.o,name:cx.o.name,get:n=>csIdNoLocal(n,cx),set:(n,v)=>csSetField(n,v,cx),call:(n,a)=>{if(cx.pr.r.methods[n])return csCallUser(cx,n,a);throw csUnsup(n+'()')}}}

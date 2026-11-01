@@ -7,6 +7,8 @@
 <meta name="description" content="이 브라우저에 저장된 Thaniya Engine 게임 프로젝트를 확인하고 실행합니다.">
 <script src="i18n.js"></script>
 <script src="lang/mypage.js"></script>
+<script src="theme.js"></script>
+<link rel="stylesheet" href="css/light-mypage.css">
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -197,6 +199,7 @@ input[type=checkbox],input[type=radio],input[type=range],input[type=button]{-web
     <div class="hr">
       <a href="learning.html">학습</a>
       <button class="hb cta" type="button" id="hNew"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>새 프로젝트</button>
+      <span id="themeHost"></span>
       <span id="langHost"></span>
     </div>
   </div>
@@ -285,6 +288,7 @@ const keyOf=id=>id==='default'?LEGACY:PFX+id;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const T=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
+if(window.TI18N)TI18N.add({'빈 씬으로 시작':['Start with an empty scene','空のシーンで始める','从空场景开始']});
 const LOC=()=>window.TI18N?TI18N.locale():'ko-KR';
 const editUrl=(id,extra)=>'edit.html?pj='+encodeURIComponent(id)+(extra||'');
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -334,7 +338,7 @@ function render(){
   $('#sub').innerHTML=list.length?T('이 브라우저에 저장된 게임 프로젝트 {n}개',{n:`<b>${list.length}</b>`}):esc(T('아직 저장된 프로젝트가 없어요. 새 프로젝트로 시작해 보세요.'));
   $('#note').hidden=!!ls;
   let h='';
-  if(!q)h+=`<button class="newc" type="button" data-new><span class="plus"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><b>새 프로젝트</b><small>11×11 빈 씬으로 시작</small></button>`;
+  if(!q)h+=`<button class="newc" type="button" data-new><span class="plus"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><b>새 프로젝트</b><small>빈 씬으로 시작</small></button>`;
   h+=show.map(e=>{
     const nm=e.name||T('이름 없는 게임');
     return `<article class="pc" data-id="${esc(e.id)}">
@@ -432,7 +436,7 @@ function detInfo(id){
   const objs=p.maps.reduce((n,m)=>n+(Array.isArray(m.objs)?m.objs.length:0),0);
   $('#detT').textContent=e.name||T('이름 없는 게임');
   $('#detShot').innerHTML=e.thumb?`<img src="${esc(e.thumb)}" alt="${esc(T('{name} 시작 씬 미리보기',{name:e.name}))}">`:`<span class="ph" style="position:absolute;inset:0;display:grid;place-items:center"><span style="font:400 64px/1 'Bebas Neue',var(--f);color:rgba(255,255,255,.16)">${initials(e.name)}</span></span>`;
-  $('#detInfo').innerHTML=`<dt>${esc(T('씬'))}</dt><dd><ul class="scenes">${p.maps.map(m=>`<li><span><span data-i18n-skip>${esc(m.name)}</span>${m.id===p.start?'<b>START</b>':''}</span><span>${m.w}×${m.h}</span></li>`).join('')||'-'}</ul></dd>
+  $('#detInfo').innerHTML=`<dt>${esc(T('씬'))}</dt><dd><ul class="scenes">${p.maps.map(m=>`<li><span><span data-i18n-skip>${esc(m.name)}</span>${m.id===p.start?'<b>START</b>':''}</span></li>`).join('')||'-'}</ul></dd>
     <dt>${esc(T('오브젝트'))}</dt><dd>${esc(T('{n}개',{n:objs}))}</dd><dt>${esc(T('스크립트'))}</dt><dd>${esc(T('{n}개',{n:Array.isArray(p.scripts)?p.scripts.length:0}))}</dd>
     <dt>${esc(T('용량'))}</dt><dd>${fmtSize(rawSize(id))}</dd><dt>${esc(T('만든 날짜'))}</dt><dd>${esc(fmtDate(e.created))}</dd><dt>${esc(T('수정한 날짜'))}</dt><dd>${esc(fmtDate(e.updated))}</dd>`;
 }
@@ -455,6 +459,8 @@ function detSave(){
 }
 ['#detName','#detDesc'].forEach(s=>{const el=$(s);el.addEventListener('input',()=>{clearTimeout(detT);$('#detSaved').textContent=T('저장 중…');detT=setTimeout(detSave,500)});el.addEventListener('blur',detSave)});
 $('#detName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();detSave()}});
+/* 이름 입력칸에서 Enter = 확인 (form의 첫 버튼이 「취소」라 그냥 두면 취소로 제출됨) · 한글 조합 중 Enter는 무시 */
+$('#dlgIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229){e.preventDefault();const d=$('#dlg');if($('#dlgIn').value.trim()||!$('#dlgIn').required)d.close('ok')}});
 det.addEventListener('close',()=>{detSave();detId=null});
 det.addEventListener('click',async e=>{
   if(e.target===det){det.close();return}
@@ -476,6 +482,7 @@ async function exportPj(id,withImg){
   const p=peek(id);if(!p){toast(T('프로젝트 데이터를 찾지 못했어요'));return}
   let recs=[];try{recs=await idbAll()}catch(e){toast(T('에셋 저장소를 열 수 없어 에셋 없이 내보내요'))}
   const assets=[];
+  const auds=recs.filter(a=>a&&a.kind==='audio');recs=recs.filter(a=>a&&a.kind!=='audio');
   for(const a of recs.sort((x,y)=>(x.n|0)-(y.n|0))){
     const tw=Math.min(512,Math.max(4,parseInt(a.tw)||32)),th=Math.min(512,Math.max(4,parseInt(a.th)||32));
     const [w,h]=a.src?await imgSize(a.src):[0,0];
@@ -484,7 +491,8 @@ async function exportPj(id,withImg){
       sprites:(a.slices||[]).map(q=>({id:q.id,name:q.name,x:q.x,y:q.y,w:q.w,h:q.h,pivotX:q.px,pivotY:q.py}))};
     if(withImg)r.image=a.src;assets.push(r);
   }
-  const out={format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:p.name,start:p.start,playerSprite:p.playerSprite,nextN:p.nextN,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,sfmap:p.sfmap,assets,maps:p.maps};
+  const out={format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:p.name,start:p.start,playerSprite:p.playerSprite,nextN:p.nextN,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,roleIds:p.roleIds,roleInit:true,sfmap:p.sfmap,anim:p.anim,animInit:!!p.animInit,animV2:!!p.animV2,mgrs:p.mgrs||[],mgrInit:!!p.mgrInit,mgrV2:!!p.mgrV2,assets,maps:p.maps,
+    audio:auds.map(a=>Object.assign({id:a.id,name:a.name,size:a.size,dur:a.dur,mime:a.mime},withImg?{data:a.src}:{}))};
   if(p.desc)out.description=p.desc;
   const blob=new Blob([JSON.stringify(out)],{type:'application/json'});
   const fn=(String(p.name||'thaniya-project').replace(/[\\/:*?"<>|]+/g,'_').trim()||'thaniya-project')+'.json';
@@ -499,6 +507,7 @@ addEventListener('pageshow',e=>{if(e.persisted)render()});
 setInterval(()=>{if(!document.hidden&&menu.hidden&&!$('#dlg').open&&!det.open)render()},60000);
 render();
 /* 언어 선택 (index와 같은 버튼 · 모든 페이지가 같은 설정을 씀) */
+if(window.TTheme)TTheme.button($('#themeHost'));
 if(window.TI18N){TI18N.picker($('#langHost'));TI18N.onChange(()=>{render();if(det.open&&detId)detInfo(detId)})}
 })();
 </script>

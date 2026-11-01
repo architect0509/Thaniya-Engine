@@ -174,3 +174,10 @@ TI18N.addPatterns([
 [/^공개 변수 (\d+)개$/,['$1 public variables','公開変数 $1 個','$1 个公共变量']],
 [/^(\d+)번째 줄$/,['Line $1','$1 行目','第 $1 行']]
 ]);
+/* 공용 스크립트 편집기(script-editor.js) · 학습 씬 연결 */
+TI18N.add({
+"한/영 보정":["Korean-keyboard fix", "韓/英補正", "韩/英修正"],
+"한글 자판 상태로 입력한 영어를 바꿔 찾았습니다 (설정 › 스크립트 편집기에서 끌 수 있음)":["Converted text typed with the Korean keyboard layout back to English (can be turned off in Settings › Script editor)", "韓国語キーボードのまま入力した英語を変換して探しました（設定 › スクリプトエディターでオフにできます）", "已将韩文键盘状态下输入的英文转换后查找（可在 设置 › 脚本编辑器 中关闭）"],
+"학습 씬":["Practice scene", "学習シーン", "练习场景"],
+"학습 씬은 하나뿐이라 다른 씬을 불러올 수 없어요":["The practice has only one scene, so other scenes can't be loaded", "学習シーンは一つだけなので、ほかのシーンは読み込めません", "练习只有一个场景，无法加载其他场景"]
+});
