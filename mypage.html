@@ -491,7 +491,7 @@ async function exportPj(id,withImg){
       sprites:(a.slices||[]).map(q=>({id:q.id,name:q.name,x:q.x,y:q.y,w:q.w,h:q.h,pivotX:q.px,pivotY:q.py}))};
     if(withImg)r.image=a.src;assets.push(r);
   }
-  const out={format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:p.name,start:p.start,playerSprite:p.playerSprite,nextN:p.nextN,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,roleIds:p.roleIds,roleInit:true,sfmap:p.sfmap,anim:p.anim,animInit:!!p.animInit,animV2:!!p.animV2,mgrs:p.mgrs||[],mgrInit:!!p.mgrInit,mgrV2:!!p.mgrV2,assets,maps:p.maps,
+  const out={format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:p.name,start:p.start,playerSprite:p.playerSprite,nextN:p.nextN,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,roleIds:p.roleIds,roleInit:true,sfmap:p.sfmap,anim:p.anim,animInit:!!p.animInit,animV2:!!p.animV2,mgrs:p.mgrs||[],mgrInit:!!p.mgrInit,mgrV2:!!p.mgrV2,stiles:p.stiles||[],stN:p.stN||0,assets,maps:p.maps,
     audio:auds.map(a=>Object.assign({id:a.id,name:a.name,size:a.size,dur:a.dur,mime:a.mime},withImg?{data:a.src}:{}))};
   if(p.desc)out.description=p.desc;
   const blob=new Blob([JSON.stringify(out)],{type:'application/json'});

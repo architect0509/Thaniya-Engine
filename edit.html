@@ -497,6 +497,86 @@ input[type=checkbox]{accent-color:var(--sel)}
 .antop .tpbtn img,.awrow .tpbtn img{width:22px;height:22px;border-radius:4px}
 .antop .tpbtn .tpn small,.awrow .tpbtn .tpn small{display:none}
 .awrow .tpbtn{flex:1;min-width:0;padding:2px 6px 2px 2px;height:38px;border-radius:8px}.awrow .tpbtn img{width:32px;height:32px}.awrow .tpbtn .tpn b{font-size:11px}
+/* 특수 타일 (룰 타일 · 애니메이션 타일) */
+.sptag{display:inline-flex;align-items:center;gap:4px;padding:1px 7px 1px 5px;border-radius:999px;font-size:10.5px;font-weight:600;line-height:18px;background:rgba(61,139,217,.16);color:#6fb0f0;white-space:nowrap}
+.sptag.anim{background:rgba(180,106,208,.16);color:#cf93e6}
+.sptag .ic{width:12px;height:12px}
+.sppal{display:flex;gap:10px;align-items:flex-start;margin-top:8px;flex-wrap:wrap}
+.sppal .sppi{flex:1;min-width:150px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.sppal .sppi .hint{margin:0}
+.spbtns{display:flex;gap:6px;flex-wrap:wrap}
+.spprev{display:block;width:100%;max-width:288px;height:auto;aspect-ratio:288/224;border-radius:8px;border:1px solid var(--line2);image-rendering:pixelated;background:repeating-conic-gradient(rgba(128,128,140,.14) 0 25%,transparent 0 50%) 0 0/12px 12px}
+.sppal .spprev{width:200px;flex:none}
+.spprev.edit{cursor:crosshair}
+.tpbtn canvas[data-spcur]{background:repeating-conic-gradient(rgba(128,128,140,.16) 0 25%,transparent 0 50%) 0 0/8px 8px,var(--canvas)}
+.tpsec .tpsub{font-weight:400;margin-left:6px;opacity:.8}
+.tpi.sp canvas{background:repeating-conic-gradient(rgba(128,128,140,.16) 0 25%,transparent 0 50%) 0 0/12px 12px,var(--canvas)}
+.tpi small .sptag{margin-right:4px}
+.tpi.tpnew{justify-content:center;min-height:132px;border:1px dashed var(--line2);color:var(--mute)}
+.tpi.tpnew:hover{border-color:var(--accent);color:var(--fg)}
+.tpi.tpnew .ic{width:22px;height:22px}
+.tpi.tpnew b{font-size:12px;font-weight:600;color:var(--fg)}
+.tpspgrid{margin-bottom:6px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.sptile{display:flex;gap:12px;align-items:flex-start}
+.sptile .spsel{flex:none;max-width:128px;max-height:128px;border-radius:6px;image-rendering:pixelated;background:repeating-conic-gradient(rgba(128,128,140,.16) 0 25%,transparent 0 50%) 0 0/8px 8px,var(--canvas)}
+.sptile .kv{flex:1;min-width:0;margin:0}
+.spmk{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.spmk .btn{height:auto;min-height:48px;padding:8px 10px;display:flex;align-items:center;gap:8px;text-align:left;justify-content:flex-start}
+.spmk .btn span{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.spmk .btn small{font-size:10.5px;color:var(--mute);font-weight:400;white-space:normal}
+.spmk .btn .ic{width:18px;height:18px;flex:none}
+.spnote{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;margin:0 10px 8px;padding:8px 10px;border-radius:8px;background:rgba(233,189,12,.1);border:1px solid rgba(233,189,12,.35);font-size:12px}
+.spnote>.ic{width:14px;height:14px;flex:none;color:var(--accent)}
+.spnote>span:nth-child(2){flex:1;min-width:140px}
+.spbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:6px;margin:0 10px 8px;padding:6px 8px;border-radius:8px;background:var(--panel);border:1px solid var(--line2)}
+.spbar.dirty{border-color:var(--accent);box-shadow:0 0 0 1px rgba(233,189,12,.25) inset}
+.spbar .spst{flex:1;min-width:0;font-size:11.5px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spbar.dirty .spst{color:var(--accent)}
+.spbar .btn .ic{width:13px;height:13px;margin-right:3px}
+.spbar .btn.danger .ic{margin:0}
+.spslot{position:relative;width:38px;height:38px;flex:none;padding:2px;display:grid;place-items:center;border:1px solid var(--line2);border-radius:7px;cursor:pointer;background:repeating-conic-gradient(rgba(128,128,140,.16) 0 25%,transparent 0 50%) 0 0/8px 8px,var(--canvas)}
+.spslot:hover{border-color:var(--accent)}
+.spslot canvas{width:32px;height:32px;image-rendering:pixelated;display:block}
+.spslot .spempty,.spslot.spadd{color:var(--mute);font-size:16px;line-height:1}
+.spslot.spadd{background:var(--field);border-style:dashed}
+.sprules{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.sprl{border:1px solid var(--line2);border-radius:10px;background:rgba(255,255,255,.02);overflow:hidden}
+.sprh{display:flex;align-items:center;gap:2px;padding:4px 6px 4px 10px;border-bottom:1px solid var(--line);font-size:12px}
+.sprh .spacer{flex:1}
+.ib{width:24px;height:22px;display:grid;place-items:center;padding:0;border:0;border-radius:6px;background:none;color:var(--mute);cursor:pointer;font:inherit;font-size:12px}
+.ib:hover:not(:disabled){background:var(--hover);color:var(--fg)}
+.ib:disabled{opacity:.3;cursor:default}
+.ib .ic{width:13px;height:13px}
+.sprb{display:flex;gap:10px;padding:8px 10px;align-items:flex-start;flex-wrap:wrap}
+.spnb{display:grid;grid-template-columns:repeat(3,30px);grid-template-rows:repeat(3,30px);gap:2px;flex:none}
+.spn{border:1px solid var(--line2);border-radius:5px;background:var(--field);color:var(--fg);cursor:pointer;font:600 14px/1 var(--f,inherit);padding:0}
+.spn:hover{border-color:var(--accent)}
+.spn.s1{background:rgba(76,175,110,.22);border-color:rgba(76,175,110,.7);color:#58c27e}
+.spn.s2{background:rgba(234,103,115,.18);border-color:rgba(234,103,115,.7);color:#ef7480}
+.spc{display:grid;place-items:center;border-radius:5px;background:repeating-conic-gradient(rgba(128,128,140,.16) 0 25%,transparent 0 50%) 0 0/6px 6px,var(--canvas)}
+.spc canvas{width:26px;height:26px;image-rendering:pixelated}
+.sprc{flex:1;min-width:150px;display:flex;flex-direction:column;gap:6px}
+.spf{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--mute)}
+.spf>span{width:30px;flex:none}
+.spf select{flex:1;min-width:0;height:24px;color:var(--fg)}
+.spf input{width:64px;height:24px;color:var(--fg)}
+.spf small{color:var(--mute)}
+.sptl{display:flex;flex-wrap:wrap;gap:5px}
+.spsw{position:relative}
+.spx{position:absolute;top:-6px;right:-6px;width:16px;height:16px;padding:0;display:none;place-items:center;border-radius:50%;border:0;background:var(--danger,#d9534f);color:#fff;font-size:9px;line-height:1;cursor:pointer}
+.spsw:hover .spx,.spsw:focus-within .spx{display:grid}
+.spaddr{width:100%;margin-top:8px;height:28px;justify-content:center;gap:4px}
+.spaddr .ic{width:14px;height:14px}
+.spg{color:#58c27e}.spr{color:#ef7480}
+.spfr{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.spfi{display:flex;flex-direction:column;align-items:center;gap:2px}
+.spfn{font:500 10px var(--m,monospace);color:var(--mute)}
+.spfb{display:flex}
+.spfb .ib{width:16px;height:18px;font-size:10px}
+.spk .spkbar{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.spk .spkbar select{flex:1;min-width:0;max-width:280px}
+.spk .spkwrap{max-height:min(60vh,520px);overflow:auto;border:1px solid var(--line2);border-radius:8px;padding:6px;background:var(--canvas)}
+.spk canvas{display:block;image-rendering:pixelated;cursor:crosshair;touch-action:none}
 /* 선택 창 크기 고정 (항목 수와 무관) */
 .modal.tpfix{width:min(860px,100%);height:min(620px,88vh);max-height:none}
 .modal.tpfix .body{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
@@ -1809,6 +1889,64 @@ function reindexAsset(a){
 function reindex(){byN=new Map();byId=new Map();assets.forEach(a=>{byN.set(a.n,a);byId.set(a.id,a)})}
 const decode=v=>({n:Math.floor((v-1)/PER),i:(v-1)%PER});
 const encode=(n,i)=>n*PER+i+1;
+/* ===================== 특수 타일 (룰 타일 · 애니메이션 타일) =====================
+   유니티의 Rule Tile · Animated Tile처럼, 칠한 칸이 그릴 때마다 이웃 칸이나 시간에 맞춰 실제 타일을 고릅니다.
+   P.stiles = [{id, sn, kind:'rule'|'anim', name, solid,
+                anim: frames:[타일 값…], fps, rand(칸마다 시작 프레임을 다르게)
+                rule: def(기본 타일 값), rules:[{nb:[8칸: 0 상관없음 · 1 같은 타일 · 2 다른 타일], out:'single'|'random'|'anim', tiles:[…], fps, tf:'fixed'|'rot'|'mx'|'my'|'mxy'}]}]
+   타일맵에 칠하는 값 = encode(SP_BASE + sn, 0). 이웃 8칸 순서: 왼쪽 위 · 위 · 오른쪽 위 · 왼쪽 · 오른쪽 · 왼쪽 아래 · 아래 · 오른쪽 아래 */
+const SP_BASE=500000,SP_MAX=20000;
+const SP_NB=[[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]];
+const SP_TF={fixed:[[0,0,0]],rot:[[0,0,0],[1,0,0],[2,0,0],[3,0,0]],mx:[[0,0,0],[0,1,0]],my:[[0,0,0],[0,0,1]],mxy:[[0,0,0],[0,1,0],[0,0,1],[0,1,1]]};
+let spIdx=new Map(),spIdxSrc=null,spIdxLen=-1,spAnimSeen=false;
+/* spAct: 팔레트에서 고른 특수 타일 id · spDrafts: 인스펙터에서 고치는 중인 사본(id 또는 'new' → 저장 전까지 씬에는 반영 안 됨) · spEditKey: 인스펙터가 보여 주는 사본 · spLive: 움직이는 미리보기 캔버스 */
+let spAct=null,spEditKey=null,spLive=[];const spDrafts=new Map();
+const spList=()=>P&&Array.isArray(P.stiles)?P.stiles:[];
+function spReindex(){const L=spList();spIdx=new Map(L.map(s=>[s.sn,s]));spIdxSrc=L;spIdxLen=L.length}
+function spByN(n){if(n<SP_BASE)return null;const L=spList();if(spIdxSrc!==L||spIdxLen!==L.length)spReindex();return spIdx.get(n-SP_BASE)||null}
+const spOf=id=>spList().find(s=>s.id===id)||null;
+const spV=s=>s&&s.sn!=null?encode(SP_BASE+s.sn,0):-1;
+const spIsV=v=>v>0&&decode(v).n>=SP_BASE;
+const spHash=(x,y)=>{let h=Math.imul(x|0,374761393)+Math.imul(y|0,668265263)|0;h=Math.imul(h^(h>>>13),1274126177);return(h^(h>>>16))>>>0};
+const spNow=()=>performance.now()/1000;
+const spOkV=v=>v>0&&!spIsV(v)&&!!byN.get(decode(v).n);
+function spFrame(list,fps,t,off){const n=list.length;if(!n)return 0;if(n>1)spAnimSeen=true;const k=Math.floor(t*Math.max(.01,+fps||1)+(off||0));return list[((k%n)+n)%n]}
+/* 칸 (x,y)에 그릴 실제 타일: {v, r(90° 회전 횟수), fx, fy} · get(dx,dy) = 같은 타일맵의 이웃 칸 값 · me = 이 특수 타일이 칠해진 값 */
+function spResolve(s,get,x,y,t,me){
+  if(!s)return null;if(me==null)me=spV(s);
+  if(s.kind==='anim'){const fr=(s.frames||[]).filter(v=>v>0);if(!fr.length)return null;return{v:spFrame(fr,s.fps,t,s.rand?(spHash(x,y)%97)/7:0),r:0,fx:0,fy:0}}
+  const rules=s.rules||[];
+  for(let ri=0;ri<rules.length;ri++){
+    const R=rules[ri],nb=R.nb||[],vs=SP_TF[R.tf]||SP_TF.fixed;
+    for(const[r,fx,fy]of vs){
+      let ok=true;
+      for(let k=0;k<8&&ok;k++){const q=nb[k];if(!q)continue;let dx=SP_NB[k][0],dy=SP_NB[k][1];if(fx)dx=-dx;if(fy)dy=-dy;for(let j=0;j<r;j++){const tx=dx;dx=-dy;dy=tx}
+        const same=get(dx,dy)===me;if(q===1?!same:same)ok=false}
+      if(!ok)continue;
+      const tl=(R.tiles||[]).filter(v=>v>0);if(!tl.length)break;
+      const v=R.out==='random'?tl[spHash(x,y)%tl.length]:R.out==='anim'?spFrame(tl,R.fps,t,0):tl[0];
+      return{v,r,fx,fy};
+    }
+  }
+  return s.def>0?{v:s.def,r:0,fx:0,fy:0}:null;
+}
+/* 회전 · 뒤집기를 적용해 타일 하나 그리기 */
+function drawTileX(g,v,X,Y,W,H,tr){
+  if(!tr||(!tr.r&&!tr.fx&&!tr.fy)){drawTileV(g,v,X,Y,W,H);return}
+  g.save();g.translate(X+W/2,Y+H/2);if(tr.r)g.rotate(tr.r*Math.PI/2);g.scale(tr.fx?-1:1,tr.fy?-1:1);drawTileV(g,v,-W/2,-H/2,W,H);g.restore();
+}
+/* 프로젝트를 읽을 때 정리 */
+function spNormP(p){
+  const ok=v=>Number.isFinite(+v)&&+v>0?Math.floor(+v):0,arr=a=>Array.isArray(a)?a.map(ok).filter(Boolean).slice(0,64):[];
+  p.stiles=(Array.isArray(p.stiles)?p.stiles:[]).filter(s=>s&&typeof s.id==='string'&&Number.isInteger(s.sn)&&s.sn>=0&&s.sn<SP_MAX&&(s.kind==='rule'||s.kind==='anim')).map(s=>{
+    const o={id:s.id,sn:s.sn,kind:s.kind,name:String(s.name||'특수 타일').slice(0,30),solid:!!s.solid};
+    if(s.kind==='anim'){o.frames=arr(s.frames);o.fps=clamp(+s.fps||6,.1,60);o.rand=!!s.rand}
+    else{o.def=ok(s.def);o.rules=(Array.isArray(s.rules)?s.rules:[]).slice(0,64).map(R=>({nb:Array.from({length:8},(_,k)=>{const q=R&&Array.isArray(R.nb)?+R.nb[k]:0;return q===1||q===2?q:0}),out:['single','random','anim'].includes(R&&R.out)?R.out:'single',tiles:arr(R&&R.tiles),fps:clamp(+(R&&R.fps)||6,.1,60),tf:SP_TF[R&&R.tf]?R.tf:'fixed'}))}
+    return o;
+  });
+  const seen=new Set();p.stiles=p.stiles.filter(s=>!seen.has(s.sn)&&seen.add(s.sn));
+  p.stN=Math.max(+p.stN||0,...p.stiles.map(s=>s.sn+1),0);
+}
 function loadImg(src){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('img'));im.src=src})}
 const readFile=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(f)});
 async function addAssetFromSrc(src,name,extra){
@@ -2575,7 +2713,7 @@ function isSolid(m,x,y){
   const i=tIx(m,x,y);if(i<0)return false;
   const c=m.col[i];
   if(c===1)return true;if(c===2)return false;
-  for(let L=0;L<m.l.length;L++){const v=m.l[L][i];if(v>0){if(m.lm&&m.lm[L]&&m.lm[L].wall)return true;const d=decode(v),a=byN.get(d.n);if(a&&a.solidSet.has(d.i))return true}}
+  for(let L=0;L<m.l.length;L++){const v=m.l[L][i];if(v>0){if(m.lm&&m.lm[L]&&m.lm[L].wall)return true;const d=decode(v);if(d.n>=SP_BASE){const sp=spByN(d.n);if(sp&&sp.solid)return true;continue}const a=byN.get(d.n);if(a&&a.solidSet.has(d.i))return true}}
   return false;
 }
 function startSpawn(m){const s=m.objs.filter(o=>o.type==='spawn');return s.find(o=>o.props.start)||s[0]||null}
@@ -2636,7 +2774,7 @@ function sampleProject(){
   return{name:_t('새 게임'),start:m.id,maps:[m],nextN:0,playerSprite:'',afolders:[],afmap:{},sfmap:{}};
 }
 function validProject(p){return p&&Array.isArray(p.maps)&&p.maps.length&&p.maps.every(m=>m&&m.id&&m.w>=0&&m.h>=0&&Array.isArray(m.l)&&m.l.length>=1&&m.l.every(a=>Array.isArray(a)&&a.length===m.w*m.h)&&Array.isArray(m.col)&&m.col.length===m.w*m.h&&Array.isArray(m.objs))}
-function normProject(p){p.nextN=p.nextN||0;if(!Array.isArray(p.scripts))p.scripts=[];p.scripts=p.scripts.filter(s=>s&&typeof s.name==='string'&&typeof s.code==='string').map(s=>({id:s.id||uid(),name:s.name,code:s.code}));
+function normProject(p){p.nextN=p.nextN||0;spNormP(p);if(!Array.isArray(p.scripts))p.scripts=[];p.scripts=p.scripts.filter(s=>s&&typeof s.name==='string'&&typeof s.code==='string').map(s=>({id:s.id||uid(),name:s.name,code:s.code}));
   (p.maps||[]).forEach(m=>{if(!Array.isArray(m.objs))return;m.objs.forEach(o=>{if(o.scripts!==undefined){o.scripts=Array.isArray(o.scripts)?o.scripts.filter(x=>x&&x.sid).map(x=>({id:x.id||uid(),sid:x.sid,vals:x.vals&&typeof x.vals==='object'?x.vals:{}})):[];if(!o.scripts.length)delete o.scripts}});m.objs.forEach(o=>{if(o.type==='spawn'&&(!o.props||typeof o.props!=='object'))o.props={}});fixStart(m)});if(!Array.isArray(p.afolders))p.afolders=[];if(!p.afmap||typeof p.afmap!=='object')p.afmap={};if(!p.sfmap||typeof p.sfmap!=='object')p.sfmap={};p.playerSprite=p.playerSprite||'';p.maps.forEach(m=>{if(!Array.isArray(m.ui))m.ui=[];m.ui=m.ui.filter(u=>u&&typeof u==='object'&&UI_NAMES[u.type]).map(normUi);if(!Array.isArray(m.uiGroups))m.uiGroups=[];m.uiGroups=m.uiGroups.filter(g=>g&&g.id).map(g=>({id:String(g.id),name:String(g.name||'UI 그룹').slice(0,30)}));m.ui.forEach(u=>{if(!m.uiGroups.some(g=>g.id===u.group))u.group=null});if(!m.uiCv||typeof m.uiCv!=='object')m.uiCv={};m.uiCv={w:clamp(+m.uiCv.w||640,64,4096),h:clamp(+m.uiCv.h||360,64,4096),mode:UI_SCALE[m.uiCv.mode]?m.uiCv.mode:'match',match:clamp(m.uiCv.match==null?1:+m.uiCv.match||0,0,1)};m.theme=typeof m.theme==='string'&&m.theme?m.theme:'기본';if(!Array.isArray(m.groups))m.groups=[];if(!m.objs.some(o=>o.type==='spawn')){let fx=1,fy=1;search:for(let y=1;y<30;y++)for(let x=1;x<30;x++)if(!m.objs.some(o=>o.x===x&&o.y===y)){fx=x;fy=y;break search}m.objs.push({id:uid(),type:'spawn',name:'주인공',x:fx,y:fy,props:{},group:null})}if(!Array.isArray(m.lm))m.lm=[];while(m.lm.length<m.l.length)m.lm.push({name:'타일맵 '+(m.lm.length+1),wall:false});m.lm.length=m.l.length;m.lm.forEach((q,i)=>{if(!q||typeof q!=='object')m.lm[i]=q={};q.name=String(q.name||'타일맵 '+(i+1)).slice(0,30);q.wall=!!q.wall});if(!m.dark||typeof m.dark!=='object')m.dark={};m.dark={on:!!m.dark.on,color:/^#[0-9a-f]{6}$/i.test(m.dark.color)?m.dark.color:'#05060d',level:clamp(+m.dark.level>=0?+m.dark.level:.88,0,1)};m.objs.forEach(o=>{if(o.props&&o.props.memo==='')delete o.props.memo;if(o.group&&!m.groups.some(g=>g.id===o.group))o.group=null;if(!o.group)o.group=null});normObjTree(m);m.bg=ownBg(m)?m.bg:'';m.ox=Number.isFinite(+m.ox)?Math.round(+m.ox):0;m.oy=Number.isFinite(+m.oy)?Math.round(+m.oy):0;tTrim(m)});if(!p.heroInit){p.maps.forEach(m=>m.objs.forEach(o=>{if(o.type==='spawn')giveHeroScript(o,p)}));p.heroInit=true}
   if(!p.roleIds||typeof p.roleIds!=='object')p.roleIds={};
   if(!p.roleInit){p.maps.forEach(m=>{m.objs.forEach(o=>giveRoleScripts(o,p))});p.roleInit=true}
@@ -2765,7 +2903,7 @@ function need(){if(!raf)raf=requestAnimationFrame(render)}
 const ordOf=(m,o)=>o.order==null?Math.max(100,m.l.length*10+10):o.order;
 const sortedObjs=m=>m.objs.map((o,i)=>[o,i]).sort((a,b)=>ordOf(m,a[0])-ordOf(m,b[0])||a[0].y-b[0].y||a[1]-b[1]).map(q=>q[0]);
 function drawLayers(g,m,x0,y0,x1,y1,alphas,objCb,objList){
-  g.imageSmoothingEnabled=false;
+  g.imageSmoothingEnabled=false;const now=spNow();
   const inner=objCb?(objList||sortedObjs(m)).filter(o=>ordOf(m,o)<=m.l.length*10):[];let oi=0;
   for(let L=0;L<m.l.length;L++){
     while(oi<inner.length&&ordOf(m,inner[oi])<(L+1)*10){objCb(inner[oi]);oi++}
@@ -2773,7 +2911,11 @@ function drawLayers(g,m,x0,y0,x1,y1,alphas,objCb,objList){
     const A=m.l[L],ox=m.ox||0,oy=m.oy||0,bx0=Math.max(x0,ox),by0=Math.max(y0,oy),bx1=Math.min(x1,ox+m.w-1),by1=Math.min(y1,oy+m.h-1);
     for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++){
       const v=A[(y-oy)*m.w+(x-ox)];if(!v)continue;
-      const d=decode(v),a=byN.get(d.n);
+      const d=decode(v);
+      if(d.n>=SP_BASE){const rr=spResolve(spByN(d.n),(dx,dy)=>tGet(m,A,x+dx,y+dy),x,y,now);
+        if(!rr||!spOkV(rr.v)){g.fillStyle='rgba(255,0,255,.3)';g.fillRect(x*TS,y*TS,TS,TS);continue}
+        drawTileX(g,rr.v,x*TS,y*TS,TS,TS,rr);continue}
+      const a=byN.get(d.n);
       if(!a||!a.img){g.fillStyle='rgba(255,0,255,.3)';g.fillRect(x*TS,y*TS,TS,TS);continue}
       g.drawImage(a.img,(d.i%a.cols)*a.tw,Math.floor(d.i/a.cols)*a.th,a.tw,a.th,x*TS,y*TS,TS,TS);
     }
@@ -3160,6 +3302,8 @@ function zoomAt(f,mx,my){
   cam.x=mx-(mx-cam.x)*(nz/cam.z);cam.y=my-(my-cam.y)*(nz/cam.z);cam.z=nz;need();
 }
 setInterval(()=>{const m=cur();if(m&&m.objs.some(o=>o.type==='portal'||o.type==='monster')&&!document.hidden&&$('#play').hidden)need()},120);
+/* 애니메이션 타일 · 애니메이션 규칙이 화면에 보이면 씬 뷰를 계속 다시 그림 + 팔레트 · 인스펙터 미리보기 */
+setInterval(()=>{if(document.hidden)return;if(spAnimSeen){spAnimSeen=false;need()}spLiveTick()},70);
 
 /* ===================== 입력 ===================== */
 function cellAt(e){const r=cv.getBoundingClientRect();return{x:Math.floor((e.clientX-r.left-cam.x)/cam.z/TS),y:Math.floor((e.clientY-r.top-cam.y)/cam.z/TS)}}
@@ -3167,7 +3311,7 @@ const inB=()=>true;
 function bres(x0,y0,x1,y1,fn){const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx+dy;for(;;){fn(x0,y0);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx}if(e2<=dx){e+=dx;y0+=sy}}}
 function arr(m){return layerSel==='col'?m.col:(m.l[lIdx(layerSel)]||m.l[0])}
 function stampVal(dx,dy){
-  if(!stamp)return 0;const a=byN.get(stamp.n);if(!a)return 0;
+  if(!stamp)return 0;if(stamp.sp){const sp=spOf(stamp.sp);return sp?spV(sp):0}const a=byN.get(stamp.n);if(!a)return 0;
   return encode(stamp.n,(stamp.r0+dy)*a.cols+stamp.c0+dx);
 }
 function paintVal(){
@@ -3198,7 +3342,7 @@ function flood(m,x,y,v){
 }
 function needTile(){
   if(layerSel==='obj'||layerSel==='col'||tool==='erase'||tool==='pick'||tool==='hand'||tool==='select')return false;
-  if(stamp&&byN.get(stamp.n))return false;
+  if(stamp&&(stamp.sp?spOf(stamp.sp):byN.get(stamp.n)))return false;
   toast('프로젝트 패널에서 PNG를 가져온 뒤 타일 팔레트에서 타일을 선택하세요');return true;
 }
 cv.addEventListener('contextmenu',e=>e.preventDefault());
@@ -3232,7 +3376,7 @@ cv.addEventListener('pointerdown',e=>{
   if(tool==='pick'){
     const v=tGet(m,arr(m),c.x,c.y);
     if(layerSel==='col'){colMode=v===1?'block':v===2?'allow':'clear'}
-    else if(v>0){const d=decode(v),a=byN.get(d.n);if(a){activeN=a.n;stamp={n:a.n,c0:d.i%a.cols,r0:Math.floor(d.i/a.cols),cw:1,rh:1}}}
+    else if(v>0){const d=decode(v),sp=spByN(d.n),a=byN.get(d.n);if(sp){spActivate(sp.id,true)}else if(a){spAct=null;activeN=a.n;stamp={n:a.n,c0:d.i%a.cols,r0:Math.floor(d.i/a.cols),cw:1,rh:1}}}
     setTool('brush');renderPal();return;
   }
   if(needTile())return;
@@ -3664,7 +3808,7 @@ function pickActiveForMap(){
   const m=cur(),ts=tilesets();if(!ts.length){activeN=null;stamp=null;return}
   const a=byN.get(activeN);
   if(!a||a.kind!=='tile'||(m&&a.theme!==m.theme&&ts.some(t=>t.theme===m.theme))){
-    const t=ts.find(t=>m&&t.theme===m.theme)||ts[0];activeN=t.n;stamp={n:t.n,c0:0,r0:0,cw:1,rh:1};
+    const t=ts.find(t=>m&&t.theme===m.theme)||ts[0];activeN=t.n;if(!spAct)stamp={n:t.n,c0:0,r0:0,cw:1,rh:1};
   }
 }
 function drawSheet(c,a,D,s){
@@ -3729,6 +3873,7 @@ function renderPal(){
     return;
   }
   if(cbm){cbRender(box);return}
+  if(spAct){const sp=spOf(spAct);if(sp){if(!stamp||stamp.sp!==sp.id)stamp={n:SP_BASE+sp.sn,c0:0,r0:0,cw:1,rh:1,sp:sp.id};renderSpPal(box,sp);return}spAct=null;if(stamp&&stamp.sp)stamp=null}
   const ts=tilesets();
   if(!ts.length){
     box.innerHTML='<div class="emptybox"><b>타일셋이 없습니다</b><span class="hint">PNG를 가져오면 설정한 셀 크기대로 잘라 이곳에 표시합니다.</span><button class="btn pri" data-pick-png>＋ PNG 가져오기</button></div>';
@@ -3738,7 +3883,7 @@ function renderPal(){
   const a=byN.get(activeN);
   if(!stamp||stamp.n!==a.n)stamp={n:a.n,c0:0,r0:0,cw:1,rh:1};
   const themes=[...new Set(ts.map(t=>t.theme))].sort((x,y)=>(x===m.theme?-1:y===m.theme?1:x.localeCompare(y)));
-  box.innerHTML=`<div class="row" style="display:flex;gap:6px"><button type="button" class="tpbtn" data-tpick aria-label="타일 선택" title="타일 선택"><canvas width="64" height="64" data-tpcur></canvas><span class="tpn"><b data-i18n-skip>${esc(a.name)}</b><small>타일 선택 · ${ts.length}개</small></span><svg class="tpc" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  box.innerHTML=`<div class="row" style="display:flex;gap:6px"><button type="button" class="tpbtn" data-tpick aria-label="타일 선택" title="타일 선택"><canvas width="64" height="64" data-tpcur></canvas><span class="tpn"><b data-i18n-skip>${esc(a.name)}</b><small>타일 선택 · ${ts.length}개${spList().length?' · '+_t('특수 {n}',{n:spList().length}):''}</small></span><svg class="tpc" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
   <button type="button" class="btn cbopen" data-cb="open" title="여러 타일을 무한한 격자에 늘어놓고 겹쳐 하나의 타일셋으로 저장합니다">${ico('grid')}타일 합치기</button>
   <select id="pZoom" aria-label="배율" style="width:78px;flex:none">${[[0,'맞춤'],[16,'16px'],[24,'24px'],[32,'32px'],[48,'48px'],[64,'64px'],[96,'96px']].map(z=>`<option value="${z[0]}"${z[0]===palD?' selected':''}>${z[1]}</option>`).join('')}</select></div>
   <div class="sheetwrap"><canvas id="pCv"></canvas></div><div class="tinfo" id="pInfo"></div>`;
@@ -3755,19 +3900,267 @@ function openTilePicker(){
   const list=$('#tpList');
   const draw=()=>{
     const q=($('#tpQ').value||'').trim().toLowerCase();let h='';
+    {const sps=spList().filter(s=>!q||s.name.toLowerCase().includes(q)||spKindName(s.kind).includes(q));
+      h+=`<div class="tpsec">${esc(_t('특수 타일'))}<span class="tpsub">${esc(_t('룰 타일 · 애니메이션 타일'))} · ${sps.length}</span></div><div class="tpgrid tpspgrid">`+sps.map(s=>`<button type="button" class="tpi sp${s.id===spAct?' on':''}" data-tps="${s.id}" title="${esc(s.name)}"><canvas width="176" height="176" data-tpsp="${s.id}"></canvas><span class="tn" data-i18n-skip>${esc(s.name)}</span><small><span class="sptag ${s.kind}">${esc(_t(s.kind==='rule'?'룰':'애니'))}</span>${s.kind==='rule'?esc(_t('규칙 {n}개',{n:s.rules.length})):esc(_t('프레임 {n}개',{n:s.frames.length}))}</small></button>`).join('')+
+        (q?'':`<button type="button" class="tpi tpnew" data-tpnew="rule">${ico('grid')}<b>${esc(_t('새 룰 타일'))}</b><small>${esc(_t('인스펙터에서 만들기'))}</small></button><button type="button" class="tpi tpnew" data-tpnew="anim">${ico('anim')}<b>${esc(_t('새 애니메이션 타일'))}</b><small>${esc(_t('인스펙터에서 만들기'))}</small></button>`)+'</div>';}
     themes.forEach(th=>{
       const it=ts.filter(t=>t.theme===th&&(!q||t.name.toLowerCase().includes(q)));if(!it.length)return;
-      h+=`<div class="tpsec" data-i18n-skip>${esc(th)}${th===m.theme?' · '+esc(_t('현재 씬 태그')):''}</div><div class="tpgrid">`+it.map(t=>`<button type="button" class="tpi${t.n===activeN?' on':''}" data-tpn="${t.n}" title="${esc(t.name)}"><canvas width="176" height="176" data-tpth="${t.n}"></canvas><span class="tn" data-i18n-skip>${esc(t.name)}</span><small>${t.cols}×${t.rows} · ${t.tw}×${t.th}px</small></button>`).join('')+'</div>';
+      h+=`<div class="tpsec" data-i18n-skip>${esc(th)}${th===m.theme?' · '+esc(_t('현재 씬 태그')):''}</div><div class="tpgrid">`+it.map(t=>`<button type="button" class="tpi${t.n===activeN&&!spAct?' on':''}" data-tpn="${t.n}" title="${esc(t.name)}"><canvas width="176" height="176" data-tpth="${t.n}"></canvas><span class="tn" data-i18n-skip>${esc(t.name)}</span><small>${t.cols}×${t.rows} · ${t.tw}×${t.th}px</small></button>`).join('')+'</div>';
     });
     list.innerHTML=h||'<div class="tpnone">찾는 타일이 없습니다</div>';
+    list.querySelectorAll('canvas[data-tpsp]').forEach(cv=>{const sp=spOf(cv.dataset.tpsp);if(sp)spDraw(cv,sp,'one',0)});
     list.querySelectorAll('canvas[data-tpth]').forEach(cv=>{const t=byN.get(+cv.dataset.tpth);if(t&&t.img)drawThumb(cv,t.img,{x:0,y:0,w:t.w,h:t.h},176)});
   };
   draw();
   $('#tpQ').addEventListener('input',draw);
   list.addEventListener('click',e=>{
+    const sb=e.target.closest('[data-tps]');if(sb){closeModal();spActivate(sb.dataset.tps,true);return}
+    const nb=e.target.closest('[data-tpnew]');if(nb){closeModal();spNewDraft(nb.dataset.tpnew);return}
     const b=e.target.closest('[data-tpn]');if(!b)return;
-    activeN=+b.dataset.tpn;stamp=null;closeModal();renderPal();renderAssets();need();
+    spAct=null;spEditKey=null;activeN=+b.dataset.tpn;stamp=null;closeModal();renderPal();renderAssets();need();if(hierPick==='tile')renderInsp();
   });
+}
+/* ===================== 특수 타일: 팔레트 · 타일 선택 창 · 인스펙터 =====================
+   · 타일 팔레트에서 타일을 고르면 인스펙터가 「타일」로 바뀜 (hierPick='tile') → 「룰 타일 · 애니메이션 타일 만들기」
+   · 특수 타일을 고르면 인스펙터에서 편집 → 「저장」해야 씬에 반영 (저장 전 사본은 spDrafts)
+   · 타일 선택 창 맨 위 「특수 타일」 구역에 저장한 룰 · 애니메이션 타일이 따로 보임 */
+if(window.TI18N)TI18N.add({"특수 타일": ["Special Tiles", "特殊タイル", "特殊图块"], "룰 타일": ["Rule Tile", "ルールタイル", "规则图块"], "애니메이션 타일": ["Animated Tile", "アニメーションタイル", "动画图块"], "룰 타일 · 애니메이션 타일": ["Rule · Animated Tiles", "ルール・アニメーションタイル", "规则 · 动画图块"], "룰": ["Rule", "ルール", "规则"], "애니": ["Anim", "アニメ", "动画"], "새 룰 타일": ["New Rule Tile", "新しいルールタイル", "新建规则图块"], "새 애니메이션 타일": ["New Animated Tile", "新しいアニメーションタイル", "新建动画图块"], "인스펙터에서 만들기": ["Create in Inspector", "インスペクターで作成", "在检查器中创建"], "인스펙터에서 편집": ["Edit in Inspector", "インスペクターで編集", "在检查器中编辑"], "일반 타일로": ["Back to normal tiles", "通常タイルに戻る", "返回普通图块"], "규칙 {n}개": ["{n} rules", "ルール {n} 個", "{n} 条规则"], "프레임 {n}개": ["{n} frames", "フレーム {n} 枚", "{n} 帧"], "프레임 {n}개 · {fps} fps": ["{n} frames · {fps} fps", "フレーム {n} 枚 · {fps} fps", "{n} 帧 · {fps} fps"], "특수 {n}": ["special {n}", "特殊 {n}", "特殊 {n}"], "규칙 {n}": ["Rule {n}", "ルール {n}", "规则 {n}"], "씬에 칠하면 이웃한 같은 타일에 맞춰 모양이 저절로 바뀝니다.": ["When painted, its look changes to match neighboring tiles of the same kind.", "塗ると、隣の同じタイルに合わせて見た目が自動で変わります。", "绘制后会根据相邻的同类图块自动改变外观。"], "씬에 칠한 칸이 프레임을 넘기며 움직입니다.": ["Painted cells cycle through frames.", "塗ったマスがフレームを切り替えて動きます。", "绘制的格子会逐帧播放动画。"], "번호": ["Index", "番号", "编号"], "충돌": ["Collision", "衝突", "碰撞"], "꺼짐": ["Off", "オフ", "关"], "타일 팔레트에서 고른 타일입니다. 팔레트에서 끌어 여러 칸을 고를 수 있어요.": ["The tile chosen in the Tile Palette. Drag in the palette to select several cells.", "タイルパレットで選んだタイルです。パレットでドラッグすると複数マスを選べます。", "在图块调色板中选中的图块。在调色板中拖动可选择多个格子。"], "특수 타일 만들기": ["Create Special Tile", "特殊タイルを作成", "创建特殊图块"], "고른 타일로 유니티의 룰 타일 · 애니메이션 타일을 만듭니다. 저장하면 타일 선택 창의 「특수 타일」에 들어가요.": ["Make a Unity-style Rule Tile or Animated Tile from the selected tiles. Saved ones appear under “Special Tiles” in the tile picker.", "選んだタイルからUnityのようなルールタイル・アニメーションタイルを作ります。保存するとタイル選択ウィンドウの「特殊タイル」に入ります。", "用所选图块制作 Unity 风格的规则图块或动画图块。保存后会出现在图块选择窗口的“特殊图块”中。"], "3×3 가장자리 규칙 자동": ["Auto 3×3 edge rules", "3×3 の端ルールを自動作成", "自动生成 3×3 边缘规则"], "고른 칸 중 무작위": ["Random among selection", "選んだマスからランダム", "在所选格子中随机"], "이웃에 맞춰 모양이 바뀜": ["Changes with neighbors", "隣に合わせて変化", "随相邻格子变化"], "고른 {n}칸이 프레임": ["{n} selected cells become frames", "選んだ {n} マスがフレームに", "所选 {n} 格作为帧"], "프레임을 넘기며 움직임": ["Cycles through frames", "フレームを切り替えて動く", "逐帧播放"], "팔레트에서 3×3칸(모서리 · 가장자리 · 가운데)을 고르고 룰 타일을 만들면 규칙이 자동으로 채워져요.": ["Select a 3×3 block (corners · edges · center) in the palette before creating a Rule Tile and the rules are filled in for you.", "パレットで 3×3 マス（角・端・中央）を選んでからルールタイルを作ると、ルールが自動で入ります。", "先在调色板中选择 3×3 格（角 · 边 · 中心）再创建规则图块，规则会自动填好。"], "타일 팔레트에서 타일을 고르세요.": ["Pick a tile in the Tile Palette.", "タイルパレットでタイルを選んでください。", "请在图块调色板中选择图块。"], "이어서 편집": ["Continue editing", "編集を続ける", "继续编辑"], "새 특수 타일 · 아직 저장 안 됨": ["New special tile · not saved yet", "新しい特殊タイル · 未保存", "新特殊图块 · 尚未保存"], "저장하지 않은 변경이 있어요": ["Unsaved changes", "未保存の変更があります", "有未保存的更改"], "저장됨 · 씬에 반영됨": ["Saved · applied to scenes", "保存済み · シーンに反映", "已保存 · 已应用到场景"], "칸을 눌러 칠하거나 지우며 규칙을 시험해 보세요. 저장하기 전에도 여기에서 바로 보여요.": ["Click cells to paint or erase and test the rules. Changes show here even before saving.", "マスを押して塗ったり消したりしてルールを試せます。保存前でもここにすぐ表示されます。", "点击格子绘制或擦除来测试规则。保存前也会在此立即显示。"], "칸마다 같은 애니메이션이 재생됩니다. 「무작위 시작」을 켜면 칸마다 어긋나요.": ["Every cell plays the same animation. Turn on “Random start” to offset each cell.", "各マスで同じアニメーションが再生されます。「ランダム開始」をオンにするとマスごとにずれます。", "每个格子播放相同的动画。开启“随机开始”可让各格错开。"], "기본 타일": ["Default Tile", "デフォルトタイル", "默认图块"], "어떤 규칙에도 맞지 않을 때 그리는 타일입니다.": ["Drawn when no rule matches.", "どのルールにも合わないときに描くタイルです。", "没有规则匹配时绘制的图块。"], "켜면 이 타일을 칠한 칸은 지나갈 수 없습니다.": ["When on, cells painted with this tile block movement.", "オンにすると、このタイルを塗ったマスは通れません。", "开启后，绘制了此图块的格子无法通过。"], "규칙이 없으면 항상 기본 타일을 그립니다.": ["With no rules, the default tile is always drawn.", "ルールがなければ常にデフォルトタイルを描きます。", "没有规则时始终绘制默认图块。"], "규칙 추가": ["Add Rule", "ルールを追加", "添加规则"], "출력": ["Output", "出力", "输出"], "변형": ["Transform", "変形", "变换"], "하나": ["Single", "単一", "单个"], "무작위": ["Random", "ランダム", "随机"], "고정": ["Fixed", "固定", "固定"], "좌우 반전": ["Mirror X", "左右反転", "水平镜像"], "상하 반전": ["Mirror Y", "上下反転", "垂直镜像"], "좌우 · 상하 반전": ["Mirror XY", "左右・上下反転", "水平 · 垂直镜像"], "상관없음": ["Don't care", "指定なし", "任意"], "같은 타일": ["This tile", "同じタイル", "相同图块"], "다른 타일": ["Not this tile", "違うタイル", "不同图块"], "이웃 칸 조건": ["Neighbor conditions", "隣のマスの条件", "相邻格子条件"], "빼기": ["Remove", "外す", "移除"], "타일 추가": ["Add tiles", "タイルを追加", "添加图块"], "프레임 추가": ["Add frames", "フレームを追加", "添加帧"], "프레임 고르기": ["Choose frames", "フレームを選ぶ", "选择帧"], "기본 타일 고르기": ["Choose default tile", "デフォルトタイルを選ぶ", "选择默认图块"], "타일 고르기": ["Choose tile", "タイルを選ぶ", "选择图块"], "유니티의 Rule Tile처럼, 이웃한 칸에 같은 타일이 있는지에 따라 그릴 타일을 고릅니다.": ["Like Unity’s Rule Tile, chooses what to draw based on whether neighbors are the same tile.", "UnityのRule Tileのように、隣に同じタイルがあるかで描くタイルを選びます。", "与 Unity 的 Rule Tile 一样，根据相邻格子是否为同一图块来决定绘制内容。"], "유니티의 Animated Tile처럼, 칠한 칸이 정해진 속도로 프레임을 넘깁니다.": ["Like Unity’s Animated Tile, painted cells cycle frames at a set speed.", "UnityのAnimated Tileのように、塗ったマスが決まった速さでフレームを切り替えます。", "与 Unity 的 Animated Tile 一样，绘制的格子按设定速度切换帧。"], "무작위 시작": ["Random start", "ランダム開始", "随机开始"], "초당 넘기는 프레임 수입니다.": ["Frames per second.", "1 秒あたりのフレーム数です。", "每秒帧数。"], "켜면 칸마다 시작 프레임이 달라 자연스럽게 보입니다.": ["When on, each cell starts on a different frame for a natural look.", "オンにするとマスごとに開始フレームが変わり、自然に見えます。", "开启后每个格子的起始帧不同，看起来更自然。"], "＋로 타일셋에서 여러 칸을 끌어 한 번에 프레임으로 넣을 수 있어요. 칸을 누르면 그 프레임을 바꿉니다.": ["Use ＋ to drag several cells from a tileset and add them as frames at once. Click a frame to replace it.", "＋ でタイルセットから複数マスをドラッグしてまとめてフレームにできます。フレームを押すと差し替えます。", "用 ＋ 从图块集中拖选多个格子一次添加为帧。点击某帧可替换。"], "끌어서 여러 칸을 한 번에 고를 수 있어요 (왼쪽 위부터 차례로 들어가요). 더블클릭하면 바로 고릅니다.": ["Drag to pick several cells at once (added from the top-left). Double-click to choose immediately.", "ドラッグで複数マスをまとめて選べます（左上から順に入ります）。ダブルクリックですぐ決定。", "拖动可一次选择多个格子（从左上开始依次添加）。双击可直接选定。"], "칸을 눌러 고르세요. 더블클릭하면 바로 고릅니다.": ["Click a cell to choose. Double-click to choose immediately.", "マスを押して選んでください。ダブルクリックですぐ決定。", "点击格子选择。双击可直接选定。"], "고르기": ["Choose", "選ぶ", "选择"], "{n}칸 고름": ["{n} cells", "{n} マス選択", "已选 {n} 格"], "칸을 골라 주세요": ["Choose a cell", "マスを選んでください", "请选择格子"], "특수 타일 삭제": ["Delete special tile", "特殊タイルを削除", "删除特殊图块"], "씬에 칠한 {n}칸도 함께 지워집니다.": ["{n} painted cells will also be erased.", "シーンに塗った {n} マスも一緒に消えます。", "场景中已绘制的 {n} 格也会被清除。"], "「{name}」 특수 타일을 저장했어요 · 타일 선택 창의 「특수 타일」에 있어요": ["Saved special tile “{name}” · find it under “Special Tiles” in the tile picker", "特殊タイル「{name}」を保存しました · タイル選択ウィンドウの「特殊タイル」にあります", "已保存特殊图块“{name}” · 可在图块选择窗口的“特殊图块”中找到"], "「{name}」 특수 타일을 지웠어요": ["Deleted special tile “{name}”", "特殊タイル「{name}」を削除しました", "已删除特殊图块“{name}”"], "프레임을 하나 이상 넣어 주세요": ["Add at least one frame", "フレームを 1 つ以上入れてください", "请至少添加一帧"], "기본 타일을 골라 주세요": ["Choose a default tile", "デフォルトタイルを選んでください", "请选择默认图块"], "{name} 룰 타일": ["{name} Rule Tile", "{name} ルールタイル", "{name} 规则图块"], "{name} 애니메이션": ["{name} Animation", "{name} アニメーション", "{name} 动画"], "타일 고르기 ": ["Choose tile", "タイルを選ぶ", "选择图块"], "없는 타일": ["Missing tile", "存在しないタイル", "缺失的图块"], "이 특수 타일을 지웁니다": ["Delete this special tile", "この特殊タイルを削除します", "删除此特殊图块"], "「{name}」을(를) 지울까요?":["Delete “{name}”?","「{name}」を削除しますか？","要删除“{name}”吗？"],"특수 타일 이름": ["Special tile name", "特殊タイル名", "特殊图块名称"]});
+const SP_ARW=['↖','↑','↗','←','→','↙','↓','↘'];
+const SP_PAT_T=[[1,1,1],[1,1,1],[1,1,1]],SP_PAT_A=[[1,1,1,1],[1,1,1,1],[1,1,1,1]],SP_PAT_1=[[1]];
+let spPat=['.........','.####..#.','.####..#.','.####..#.','.......#.','.###.....','.........'].map(r=>[...r].map(c=>c==='#'?1:0));
+const spKindName=k=>k==='rule'?'룰 타일':'애니메이션 타일';
+function spDraw(cv,s,mode,t,pat){
+  if(!cv||!s)return;
+  const g=cv.getContext('2d'),W=cv.width,H=cv.height;g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,W,H);g.imageSmoothingEnabled=false;
+  pat=mode==='one'?(s.kind==='rule'?SP_PAT_T:SP_PAT_1):pat||(s.kind==='rule'?spPat:SP_PAT_A);
+  const rows=pat.length,cols=pat[0].length,c=Math.max(2,Math.floor(Math.min(W/cols,H/rows))),ox=Math.floor((W-cols*c)/2),oy=Math.floor((H-rows*c)/2);
+  cv._lay={c,ox,oy,rows,cols};
+  if(mode!=='one'){g.fillStyle=css('--canvas')||'#1b1b20';g.fillRect(ox,oy,cols*c,rows*c)}
+  if(mode==='edit'){g.strokeStyle='rgba(140,140,160,.28)';g.lineWidth=1;g.beginPath();for(let x=0;x<=cols;x++){g.moveTo(ox+x*c+.5,oy);g.lineTo(ox+x*c+.5,oy+rows*c)}for(let y=0;y<=rows;y++){g.moveTo(ox,oy+y*c+.5);g.lineTo(ox+cols*c,oy+y*c+.5)}g.stroke()}
+  const ME=-7,get=(x,y)=>y>=0&&y<rows&&x>=0&&x<cols&&pat[y][x]?ME:0;
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+    if(!pat[y][x])continue;const rr=spResolve(s,(dx,dy)=>get(x+dx,y+dy),x,y,t,ME);
+    if(rr&&spOkV(rr.v))drawTileX(g,rr.v,ox+x*c,oy+y*c,c,c,rr);
+    else{g.fillStyle='rgba(255,0,255,.22)';g.fillRect(ox+x*c,oy+y*c,c,c)}
+  }
+}
+function spLiveReg(cv,get,mode,pat){
+  if(!cv)return;spLive=spLive.filter(l=>l.cv!==cv&&l.cv.isConnected);spLive.push({cv,get,mode,pat});
+  const keep=spAnimSeen;try{spDraw(cv,get(),mode,spNow(),pat)}catch(e){}spAnimSeen=keep;
+}
+function spLiveTick(){
+  if(!spLive.length)return;const t=spNow(),keep=spAnimSeen;
+  spLive=spLive.filter(l=>l.cv.isConnected);
+  spLive.forEach(l=>{try{spDraw(l.cv,l.get(),l.mode,t,l.pat)}catch(e){}});
+  spAnimSeen=keep;
+}
+const spVName=v=>{if(!(v>0))return _t('타일 고르기');const d=decode(v),a=byN.get(d.n);return a?a.name+' #'+d.i:_t('없는 타일')};
+function spDrawSlots(root){root.querySelectorAll('canvas[data-tv]').forEach(c=>{const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);g.imageSmoothingEnabled=false;const v=+c.dataset.tv;if(spOkV(v))drawTileV(g,v,0,0,c.width,c.height);else{g.fillStyle='rgba(255,0,255,.3)';g.fillRect(0,0,c.width,c.height)}})}
+/* 특수 타일을 팔레트의 칠할 타일로 */
+function spActivate(id,show){
+  const s=spOf(id);if(!s)return;
+  spAct=id;spEditKey=id;stamp={n:SP_BASE+s.sn,c0:0,r0:0,cw:1,rh:1,sp:id};
+  if(tool==='erase'||tool==='hand'||tool==='pick'||tool==='select')setTool('brush');
+  renderPal();if(show)tileInspShow(true);need();
+}
+/* 인스펙터를 「타일」로 (focus: 인스펙터가 다른 탭 뒤에 있으면 앞으로) */
+function tileInspShow(focus){
+  if(layerSel==='obj'||layerSel==='ui'||layerSel==='col')return;
+  hierPick='tile';setHsel(new Set(),null);renderInsp();renderHier();
+  if(focus)try{focusInspector()}catch(e){}
+}
+/* 팔레트: 특수 타일을 골랐을 때 */
+function renderSpPal(box,s){
+  const isR=s.kind==='rule';
+  box.innerHTML=`<div class="row" style="display:flex;gap:6px"><button type="button" class="tpbtn" data-tpick aria-label="타일 선택" title="타일 선택"><canvas width="64" height="64" data-spcur></canvas><span class="tpn"><b data-i18n-skip>${esc(s.name)}</b><small>특수 타일 · ${spKindName(s.kind)}</small></span><svg class="tpc" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <button type="button" class="btn cbopen" data-cb="open" title="여러 타일을 무한한 격자에 늘어놓고 겹쳐 하나의 타일셋으로 저장합니다">${ico('grid')}타일 합치기</button></div>
+  <div class="sppal"><canvas class="spprev" id="spPalCv" width="288" height="224"></canvas><div class="sppi"><span class="sptag ${s.kind}">${ico(isR?'grid':'anim')}${spKindName(s.kind)}</span>
+  <p class="hint">${isR?'씬에 칠하면 이웃한 같은 타일에 맞춰 모양이 저절로 바뀝니다.':'씬에 칠한 칸이 프레임을 넘기며 움직입니다.'}</p>
+  <div class="spbtns"><button type="button" class="btn sm pri" data-spedit>${ico('pencil')}인스펙터에서 편집</button><button type="button" class="btn sm" data-spback>일반 타일로</button></div></div></div>
+  <div class="tinfo">${isR?_t('규칙 {n}개',{n:(s.rules||[]).length}):_t('프레임 {n}개 · {fps} fps',{n:(s.frames||[]).length,fps:s.fps})} · 충돌 ${s.solid?'켜짐':'꺼짐'}</div>`;
+  spDraw($('[data-spcur]',box),s,'one',0);
+  spLiveReg($('#spPalCv',box),()=>spOf(s.id),isR?'sample':'anim');
+}
+/* 타일 고르기 창 (인스펙터의 칸 · 프레임 · 기본 타일) → 고른 타일 값 배열 · 취소면 null */
+function spPickCells(title,multi,initV){
+  return new Promise(res=>{
+    const ts=tilesets();if(!ts.length){toast('타일셋이 없습니다. 프로젝트 패널에서 PNG를 먼저 가져오세요');res(null);return}
+    let a=initV>0&&!spIsV(initV)?byN.get(decode(initV).n):null;if(!a||a.kind!=='tile')a=byN.get(activeN);if(!a||a.kind!=='tile')a=ts[0];
+    let sel=null;if(initV>0&&!spIsV(initV)&&decode(initV).n===a.n){const i=decode(initV).i;sel={n:a.n,c0:i%a.cols,r0:Math.floor(i/a.cols),cw:1,rh:1}}
+    let done=false;const mo=new MutationObserver(()=>{if($('#modal').hidden)fin(null)});
+    const fin=v=>{if(done)return;done=true;mo.disconnect();res(v)};
+    const cells=()=>{if(!sel)return[];const out=[];for(let y=0;y<sel.rh;y++)for(let x=0;x<sel.cw;x++){const i=(sel.r0+y)*a.cols+sel.c0+x;if(sel.cw*sel.rh>1&&tileEmpty(a,i))continue;out.push(encode(a.n,i))}return out};
+    openModal(title,`<div class="spk"><div class="spkbar"><select id="spkTs" aria-label="타일셋">${ts.map(t=>`<option value="${t.n}"${t.n===a.n?' selected':''} data-i18n-skip>${esc(t.name)}</option>`).join('')}</select><span class="hint" id="spkInfo"></span></div><div class="spkwrap"><canvas id="spkCv"></canvas></div><p class="hint" style="margin:6px 0 0">${multi?'끌어서 여러 칸을 한 번에 고를 수 있어요 (왼쪽 위부터 차례로 들어가요). 더블클릭하면 바로 고릅니다.':'칸을 눌러 고르세요. 더블클릭하면 바로 고릅니다.'}</p></div>`,
+      [{t:'취소'},{t:'고르기',cls:'pri',fn:()=>{const c=cells();if(!c.length){toast('칸을 골라 주세요');return false}fin(c)}}]);
+    mo.observe($('#modal'),{attributes:true,attributeFilter:['hidden']});
+    const mm=$('#modal .modal');if(mm)mm.classList.add('wide');
+    const cv=$('#spkCv');let D=32,drag=null;
+    const draw=()=>{const wr=$('#mBody .spkwrap'),w=wr?wr.clientWidth:480;D=clamp(Math.floor((w-16)/a.cols),12,48);drawSheet(cv,a,D,sel);const n=cells().length;$('#spkInfo').textContent=n?_t('{n}칸 고름',{n}):''};
+    const at=e=>{const r=cv.getBoundingClientRect();return[clamp(Math.floor((e.clientX-r.left)/D),0,a.cols-1),clamp(Math.floor((e.clientY-r.top)/D),0,a.rows-1)]};
+    cv.addEventListener('pointerdown',e=>{if(e.button)return;const[x,y]=at(e);drag={x,y};try{cv.setPointerCapture(e.pointerId)}catch(_){}sel={n:a.n,c0:x,r0:y,cw:1,rh:1};draw()});
+    cv.addEventListener('pointermove',e=>{if(!drag||!multi)return;const[x,y]=at(e);sel={n:a.n,c0:Math.min(drag.x,x),r0:Math.min(drag.y,y),cw:Math.min(16,Math.abs(x-drag.x)+1),rh:Math.min(16,Math.abs(y-drag.y)+1)};draw()});
+    cv.addEventListener('pointerup',()=>{drag=null});
+    cv.addEventListener('dblclick',()=>{const c=cells();if(c.length){fin(c);closeModal()}});
+    $('#spkTs').onchange=e=>{a=byN.get(+e.target.value);sel=null;draw()};
+    draw();requestAnimationFrame(draw);
+  });
+}
+/* 새 특수 타일 사본: 팔레트에서 고른 칸으로 채움 (3×3이면 룰 타일 가장자리 규칙 자동) */
+function spNewDraft(kind){
+  const a=stamp&&!stamp.sp&&byN.get(stamp.n),cells=[];
+  if(a)for(let y=0;y<stamp.rh;y++)for(let x=0;x<stamp.cw;x++){const i=(stamp.r0+y)*a.cols+stamp.c0+x;if(stamp.cw*stamp.rh>1&&tileEmpty(a,i))continue;cells.push({v:encode(a.n,i),x,y,i})}
+  const nm=a?a.name:_t('새'),solid=!!(a&&cells.length&&a.solidSet.has(cells[0].i));let d;
+  if(kind==='anim')d={kind:'anim',name:_t('{name} 애니메이션',{name:nm}).slice(0,30),solid,frames:cells.map(c=>c.v).slice(0,64),fps:6,rand:false};
+  else{
+    d={kind:'rule',name:_t('{name} 룰 타일',{name:nm}).slice(0,30),solid,def:cells.length?cells[0].v:0,rules:[]};
+    if(a&&stamp.cw===3&&stamp.rh===3&&cells.length===9){
+      const at=(x,y)=>cells.find(c=>c.x===x&&c.y===y).v;
+      const mk=(x,y)=>({nb:[0,y===0?2:1,0,x===0?2:1,x===2?2:1,0,y===2?2:1,0],out:'single',tiles:[at(x,y)],fps:6,tf:'fixed'});
+      d.rules=[mk(0,0),mk(2,0),mk(0,2),mk(2,2),mk(1,0),mk(0,1),mk(2,1),mk(1,2),mk(1,1)];d.def=at(1,1);
+      d.solid=a.solidSet.has((stamp.r0+1)*a.cols+stamp.c0+1);
+    }else if(cells.length>1)d.rules=[{nb:[0,0,0,0,0,0,0,0],out:'random',tiles:cells.map(c=>c.v).slice(0,64),fps:6,tf:'fixed'}];
+  }
+  spDrafts.set('new',d);spEditKey='new';tileInspShow(true);
+}
+function spInspTarget(){
+  if(spEditKey==='new'&&spDrafts.has('new'))return{key:'new',d:spDrafts.get('new'),saved:null};
+  const s=spAct&&spOf(spAct);if(!s)return null;
+  if(!spDrafts.has(s.id))spDrafts.set(s.id,JSON.parse(JSON.stringify(s)));
+  return{key:s.id,d:spDrafts.get(s.id),saved:s};
+}
+const spDirty=T=>!T.saved||JSON.stringify(T.d)!==JSON.stringify(T.saved);
+const spSlot=(v,act,attrs)=>`<button type="button" class="spslot" data-sa="${act}" ${attrs||''} title="${esc(spVName(v))}">${v>0?`<canvas width="32" height="32" data-tv="${v}"></canvas>`:'<span class="spempty">＋</span>'}</button>`;
+/* 인스펙터 */
+function spInsp(box){
+  const T=spInspTarget();
+  if(T){box.innerHTML='<div id="spIns">'+spInspSp(T)+'</div>'}
+  else box.innerHTML='<div id="spIns">'+spInspTile()+'</div>';
+  const W=$('#spIns',box);spDrawSlots(W);
+  if(T){spLiveReg($('#spPrev',W),()=>spDrafts.get(T.key)||T.d,T.d.kind==='rule'?'edit':'anim',T.d.kind==='rule'?spPat:SP_PAT_A)}
+  else{const cv=$('#spSelCv',W),a=stamp&&!stamp.sp&&byN.get(stamp.n);if(cv&&a){const k=Math.max(1,Math.floor(128/Math.max(stamp.cw,stamp.rh)/8))*8,g=cv.getContext('2d');cv.width=stamp.cw*k;cv.height=stamp.rh*k;g.imageSmoothingEnabled=false;
+    for(let y=0;y<stamp.rh;y++)for(let x=0;x<stamp.cw;x++)drawTileV(g,encode(a.n,(stamp.r0+y)*a.cols+stamp.c0+x),x*k,y*k,k,k)}}
+  spBind(W,T);
+}
+function spInspTile(){
+  const a=stamp&&!stamp.sp&&byN.get(stamp.n),pend=spDrafts.get('new');
+  const note=pend?`<div class="spnote">${ico('info')}<span>저장하지 않은 새 특수 타일 「<b data-i18n-skip>${esc(pend.name)}</b>」이 있어요.</span><span class="spbtns"><button type="button" class="btn sm pri" data-sa="resume">이어서 편집</button><button type="button" class="btn sm" data-sa="discard">버리기</button></span></div>`:'';
+  if(!a)return`<div class="ihead"><span class="ibadge" style="background:var(--accent)">${ico('tilemap')}</span><b style="font-size:13px;flex:1">타일</b><span class="tag">타일</span></div>${note}<p class="empty-note">타일 팔레트에서 타일을 고르세요.</p>`;
+  const idx=stamp.r0*a.cols+stamp.c0,n=stamp.cw*stamp.rh,multi=n>1,three=stamp.cw===3&&stamp.rh===3;
+  return`<div class="ihead"><span class="ibadge" style="background:var(--accent)">${ico('tilemap')}</span><b style="font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" data-i18n-skip>${esc(a.name)} ${multi?stamp.cw+'×'+stamp.rh:'#'+idx}</b><span class="tag">타일</span></div>`+note+
+    comp('tile','tilemap','타일'+compEn('Tile'),`<div class="sptile"><canvas id="spSelCv" class="spsel"></canvas><dl class="kv"><dt>타일셋</dt><dd data-i18n-skip>${esc(a.name)}</dd><dt>위치</dt><dd>${stamp.c0}, ${stamp.r0}</dd><dt>크기</dt><dd>${stamp.cw}×${stamp.rh}</dd><dt>번호</dt><dd>#${idx}</dd><dt>충돌</dt><dd>${a.solidSet.has(idx)?'켜짐':'꺼짐'}</dd></dl></div>`,'타일 팔레트에서 고른 타일입니다. 팔레트에서 끌어 여러 칸을 고를 수 있어요.')+
+    comp('spmk','grid','특수 타일 만들기'+compEn('Rule · Animated Tile'),`<p class="hint" style="margin:0 0 8px">고른 타일로 유니티의 룰 타일 · 애니메이션 타일을 만듭니다. 저장하면 타일 선택 창의 「특수 타일」에 들어가요.</p>
+      <div class="spmk"><button type="button" class="btn" data-sa="mk-rule">${ico('grid')}<span><b>룰 타일</b><small>${three?'3×3 가장자리 규칙 자동':multi?'고른 칸 중 무작위':'이웃에 맞춰 모양이 바뀜'}</small></span></button>
+      <button type="button" class="btn" data-sa="mk-anim">${ico('anim')}<span><b>애니메이션 타일</b><small>${multi?_t('고른 {n}칸이 프레임',{n}):'프레임을 넘기며 움직임'}</small></span></button></div>
+      <p class="hint" style="margin:8px 0 0">팔레트에서 3×3칸(모서리 · 가장자리 · 가운데)을 고르고 룰 타일을 만들면 규칙이 자동으로 채워져요.</p>`);
+}
+function spInspSp(T){
+  const d=T.d,isR=d.kind==='rule',dirty=spDirty(T),isNew=T.key==='new';
+  const sel=(f,ri,opts,val)=>`<select data-sf="${f}" data-ri="${ri}">${opts.map(o=>`<option value="${o[0]}"${o[0]===val?' selected':''}>${o[1]}</option>`).join('')}</select>`;
+  let h=`<div class="ihead"><span class="ibadge" style="background:${isR?'#3d8bd9':'#b46ad0'}">${ico(isR?'grid':'anim')}</span><input type="text" class="iname" id="spName" maxlength="30" value="${esc(d.name)}" aria-label="특수 타일 이름" data-i18n-skip><span class="tag">${spKindName(d.kind)}</span></div>
+  <div class="spbar${dirty?' dirty':''}"><span class="spst">${isNew?'새 특수 타일 · 아직 저장 안 됨':dirty?'저장하지 않은 변경이 있어요':'저장됨'}</span>
+  <button type="button" class="btn sm pri" data-sa="save"${dirty?'':' disabled'}>${ico('save')}저장</button>
+  ${isNew?'<button type="button" class="btn sm" data-sa="discard">버리기</button>':`<button type="button" class="btn sm" data-sa="revert"${dirty?'':' disabled'}>되돌리기</button><button type="button" class="btn sm danger" data-sa="del" title="이 특수 타일을 지웁니다" aria-label="삭제">${ico('trash')}</button>`}</div>`;
+  h+=comp('spv','scene','미리보기'+compEn('Preview'),`<canvas id="spPrev" class="spprev${isR?' edit':''}" width="288" height="224"></canvas><p class="hint" style="margin:6px 0 0">${isR?'칸을 눌러 칠하거나 지우며 규칙을 시험해 보세요. 저장하기 전에도 여기에서 바로 보여요.':'칸마다 같은 애니메이션이 재생됩니다. 「무작위 시작」을 켜면 칸마다 어긋나요.'}</p>`);
+  const solidRow=fr('충돌',`<input type="checkbox" data-sf="solid"${d.solid?' checked':''}>`,false,'collider','켜면 이 타일을 칠한 칸은 지나갈 수 없습니다.');
+  if(isR){
+    const rules=d.rules.map((R,i)=>{
+      const grid=`<div class="spnb" role="group" aria-label="이웃 칸 조건">`+[0,1,2,3,-1,4,5,6,7].map(k=>k<0?`<span class="spc">${R.tiles[0]>0?`<canvas width="32" height="32" data-tv="${R.tiles[0]}"></canvas>`:''}</span>`:`<button type="button" class="spn s${R.nb[k]}" data-sa="nb" data-ri="${i}" data-k="${k}" title="${['상관없음','같은 타일','다른 타일'][R.nb[k]]}">${R.nb[k]===1?SP_ARW[k]:R.nb[k]===2?'✕':''}</button>`).join('')+'</div>';
+      const tl=R.out==='single'?spSlot(R.tiles[0]||0,'rtile',`data-ri="${i}" data-ti="0"`):R.tiles.map((v,ti)=>`<span class="spsw">${spSlot(v,'rtile',`data-ri="${i}" data-ti="${ti}"`)}<button type="button" class="spx" data-sa="rtdel" data-ri="${i}" data-ti="${ti}" aria-label="빼기">✕</button></span>`).join('')+`<button type="button" class="spslot spadd" data-sa="rtadd" data-ri="${i}" title="타일 추가">＋</button>`;
+      return`<div class="sprl"><div class="sprh"><b>${_t('규칙 {n}',{n:i+1})}</b><span class="spacer"></span><button type="button" class="ib" data-sa="rup" data-ri="${i}"${i?'':' disabled'} title="위로">↑</button><button type="button" class="ib" data-sa="rdn" data-ri="${i}"${i<d.rules.length-1?'':' disabled'} title="아래로">↓</button><button type="button" class="ib" data-sa="rdup" data-ri="${i}" title="복제">${ico('copy')}</button><button type="button" class="ib" data-sa="rdel" data-ri="${i}" title="삭제">${ico('x')}</button></div>
+        <div class="sprb">${grid}<div class="sprc"><label class="spf"><span>출력</span>${sel('out',i,[['single','하나'],['random','무작위'],['anim','애니메이션']],R.out)}</label>
+        <label class="spf"><span>변형</span>${sel('tf',i,[['fixed','고정'],['rot','회전'],['mx','좌우 반전'],['my','상하 반전'],['mxy','좌우 · 상하 반전']],R.tf)}</label>
+        ${R.out==='anim'?`<label class="spf"><span>속도</span><input type="number" data-sf="fps" data-ri="${i}" min="0.1" max="60" step="0.5" value="${R.fps}"><small>fps</small></label>`:''}
+        <div class="sptl">${tl}</div></div></div></div>`;
+    }).join('');
+    h+=comp('spr','grid','룰 타일'+compEn('Rule Tile'),fr('기본 타일',spSlot(d.def,'def'),false,'defaultSprite','어떤 규칙에도 맞지 않을 때 그리는 타일입니다.')+solidRow+
+      `<div class="sprules">${rules||'<p class="hint" style="margin:6px 0 0">규칙이 없으면 항상 기본 타일을 그립니다.</p>'}</div><button type="button" class="btn spaddr" data-sa="radd">${ico('plus')}규칙 추가</button>
+      <p class="hint" style="margin:8px 0 0">이웃 칸을 누를 때마다 상관없음 → <b class="spg">↑ 같은 타일</b> → <b class="spr">✕ 다른 타일</b>로 바뀝니다 (우클릭은 거꾸로). 위쪽 규칙부터 먼저 맞춰 보고, 「회전 · 반전」은 돌리거나 뒤집은 모양도 같은 규칙으로 봅니다.</p>`,'유니티의 Rule Tile처럼, 이웃한 칸에 같은 타일이 있는지에 따라 그릴 타일을 고릅니다.');
+  }else{
+    h+=comp('spa','anim','애니메이션 타일'+compEn('Animated Tile'),fr('속도',`<input type="number" data-sf="fps" min="0.1" max="60" step="0.5" value="${d.fps}" style="width:72px"><small style="color:var(--mute);margin-left:6px">fps</small>`,false,'speed','초당 넘기는 프레임 수입니다.')+
+      fr('무작위 시작',`<input type="checkbox" data-sf="rand"${d.rand?' checked':''}>`,false,'randomStart','켜면 칸마다 시작 프레임이 달라 자연스럽게 보입니다.')+solidRow+
+      `<div class="spfr">${d.frames.map((v,ti)=>`<div class="spfi"><span class="spfn">${ti+1}</span>${spSlot(v,'frame',`data-ti="${ti}"`)}<span class="spfb"><button type="button" class="ib" data-sa="fl" data-ti="${ti}"${ti?'':' disabled'} title="앞으로">←</button><button type="button" class="ib" data-sa="fr" data-ti="${ti}"${ti<d.frames.length-1?'':' disabled'} title="뒤로">→</button><button type="button" class="ib" data-sa="fdel" data-ti="${ti}" title="빼기">✕</button></span></div>`).join('')}<button type="button" class="spslot spadd" data-sa="fadd" title="프레임 추가">＋</button></div>
+      <p class="hint" style="margin:8px 0 0">＋로 타일셋에서 여러 칸을 끌어 한 번에 프레임으로 넣을 수 있어요. 칸을 누르면 그 프레임을 바꿉니다.</p>`,'유니티의 Animated Tile처럼, 칠한 칸이 정해진 속도로 프레임을 넘깁니다.');
+  }
+  return h;
+}
+function spBind(W,T){
+  W.addEventListener('click',async e=>{
+    const b=e.target.closest('[data-sa]');if(!b||b.disabled)return;
+    const act=b.dataset.sa,ri=+b.dataset.ri,ti=+b.dataset.ti;
+    if(act==='mk-rule'){spNewDraft('rule');return}
+    if(act==='mk-anim'){spNewDraft('anim');return}
+    if(act==='resume'){spEditKey='new';renderInsp();return}
+    if(act==='discard'){spDrafts.delete('new');spEditKey=spAct||null;renderInsp();return}
+    if(!T)return;const d=T.d,R=d.rules&&d.rules[ri];
+    switch(act){
+      case'save':spSave(T.key);return;
+      case'revert':spDrafts.delete(T.key);break;
+      case'del':spDelete(T.key);return;
+      case'nb':{const k=+b.dataset.k;R.nb[k]=(R.nb[k]+1)%3;break}
+      case'def':{const c=await spPickCells(_t('기본 타일 고르기'),false,d.def);if(!c)return;d.def=c[0];break}
+      case'rtile':{const c=await spPickCells(_t('타일 고르기'),R.out!=='single',R.tiles[ti]||d.def);if(!c)return;R.tiles.splice(ti,1,...(R.out==='single'?[c[0]]:c));break}
+      case'rtadd':{const c=await spPickCells(_t('타일 추가'),true,R.tiles[R.tiles.length-1]||d.def);if(!c)return;R.tiles.push(...c);break}
+      case'rtdel':R.tiles.splice(ti,1);break;
+      case'rup':if(ri>0){const x=d.rules[ri];d.rules[ri]=d.rules[ri-1];d.rules[ri-1]=x}break;
+      case'rdn':if(ri<d.rules.length-1){const x=d.rules[ri];d.rules[ri]=d.rules[ri+1];d.rules[ri+1]=x}break;
+      case'rdup':if(d.rules.length<64)d.rules.splice(ri+1,0,JSON.parse(JSON.stringify(R)));break;
+      case'rdel':d.rules.splice(ri,1);break;
+      case'radd':if(d.rules.length<64)d.rules.push({nb:[0,0,0,0,0,0,0,0],out:'single',tiles:d.def>0?[d.def]:[],fps:6,tf:'fixed'});break;
+      case'frame':{const c=await spPickCells(_t('프레임 고르기'),true,d.frames[ti]);if(!c)return;d.frames.splice(ti,1,...c);break}
+      case'fadd':{const c=await spPickCells(_t('프레임 추가'),true,d.frames[d.frames.length-1]||0);if(!c)return;d.frames.push(...c);break}
+      case'fl':if(ti>0){const x=d.frames[ti];d.frames[ti]=d.frames[ti-1];d.frames[ti-1]=x}break;
+      case'fr':if(ti<d.frames.length-1){const x=d.frames[ti];d.frames[ti]=d.frames[ti+1];d.frames[ti+1]=x}break;
+      case'fdel':d.frames.splice(ti,1);break;
+      default:return;
+    }
+    if(d.frames)d.frames=d.frames.slice(0,64);if(R&&R.tiles)R.tiles=R.tiles.slice(0,64);
+    renderInsp();
+  });
+  W.addEventListener('contextmenu',e=>{const b=e.target.closest('[data-sa="nb"]');if(!b||!T)return;e.preventDefault();const R=T.d.rules[+b.dataset.ri],k=+b.dataset.k;R.nb[k]=(R.nb[k]+2)%3;renderInsp()});
+  if(!T)return;
+  const d=T.d;
+  W.addEventListener('change',e=>{
+    const t=e.target,f=t.dataset.sf;
+    if(t.id==='spName'){d.name=t.value.trim().slice(0,30)||(T.saved?T.saved.name:_t('특수 타일'));renderInsp();return}
+    if(!f)return;const R=d.rules&&d.rules[+t.dataset.ri];
+    if(f==='solid')d.solid=t.checked;else if(f==='rand')d.rand=t.checked;
+    else if(f==='fps'){const v=clamp(+t.value||6,.1,60);if(R)R.fps=v;else d.fps=v}
+    else if(f==='out'&&R){R.out=t.value;if(R.out==='single')R.tiles=R.tiles.slice(0,1)}
+    else if(f==='tf'&&R)R.tf=t.value;
+    renderInsp();
+  });
+  W.addEventListener('input',e=>{if(e.target.id!=='spName')return;d.name=e.target.value.slice(0,30);const bar=$('.spbar',W),dr=spDirty(T);if(bar){bar.classList.toggle('dirty',dr);const sv=$('[data-sa="save"]',bar);if(sv)sv.disabled=!dr;const rv=$('[data-sa="revert"]',bar);if(rv)rv.disabled=!dr}});
+  $('#spName',W).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}});
+  const pv=$('#spPrev',W);
+  if(pv&&d.kind==='rule')pv.addEventListener('pointerdown',e=>{const L=pv._lay;if(!L)return;const r=pv.getBoundingClientRect(),sx=pv.width/r.width,sy=pv.height/r.height;
+    const x=Math.floor(((e.clientX-r.left)*sx-L.ox)/L.c),y=Math.floor(((e.clientY-r.top)*sy-L.oy)/L.c);if(x<0||y<0||x>=L.cols||y>=L.rows)return;spPat[y][x]=spPat[y][x]?0:1;spLiveTick()});
+}
+function spSave(key){
+  const d=spDrafts.get(key);if(!d)return;
+  d.name=(d.name||'').trim()||_t('특수 타일');
+  if(d.kind==='anim'&&!d.frames.length){toast('프레임을 하나 이상 넣어 주세요');return}
+  if(d.kind==='rule'&&!(d.def>0)&&!d.rules.some(R=>R.tiles.length)){toast('기본 타일을 골라 주세요');return}
+  if(!Array.isArray(P.stiles))P.stiles=[];
+  let id;
+  if(key==='new'){
+    if((P.stN||0)>=SP_MAX){toast('특수 타일을 더 만들 수 없습니다');return}
+    id='st_'+uid();P.stiles.push(Object.assign(JSON.parse(JSON.stringify(d)),{id,sn:P.stN||0}));P.stN=(P.stN||0)+1;
+  }else{
+    const i=P.stiles.findIndex(x=>x.id===key);if(i<0){spDrafts.delete(key);renderInsp();return}
+    id=key;P.stiles[i]=Object.assign(JSON.parse(JSON.stringify(d)),{id,sn:P.stiles[i].sn});
+  }
+  spNormP(P);spReindex();spDrafts.delete(key);
+  const s=spOf(id);spActivate(id,false);tileInspShow(false);markDirty();need();
+  toast(_t('「{name}」 특수 타일을 저장했어요 · 타일 선택 창의 「특수 타일」에 있어요',{name:s?s.name:d.name}));
+}
+function spDelete(id){
+  const s=spOf(id);if(!s)return;const v=spV(s);let n=0;P.maps.forEach(m=>m.l.forEach(A=>{for(const x of A)if(x===v)n++}));
+  openModal(_t('특수 타일 삭제'),`<p style="margin-top:0">${esc(_t('「{name}」을(를) 지울까요?',{name:s.name}))}</p>${n?`<p class="hint">${esc(_t('씬에 칠한 {n}칸도 함께 지워집니다.',{n}))}</p>`:''}`,[{t:'취소'},{t:'삭제',cls:'danger',fn:()=>{
+    P.maps.forEach(m=>m.l.forEach(A=>{for(let i=0;i<A.length;i++)if(A[i]===v)A[i]=0}));
+    P.stiles=P.stiles.filter(x=>x.id!==id);spDrafts.delete(id);spReindex();
+    if(spAct===id){spAct=null;spEditKey=null;stamp=null;pickActiveForMap()}
+    baseline=snap();markDirty();renderPal();renderInsp();renderHier();need();toast(_t('「{name}」 특수 타일을 지웠어요',{name:s.name}));
+  }}]);
 }
 function updPalInfo(a){
   const s=stamp;
@@ -3782,6 +4175,8 @@ $('#palBox').addEventListener('click',e=>{
   if(sv){const s=scriptOf(palScript);if(sv.dataset.spv==='edit'&&s)openScriptEditor(s);else if(sv.dataset.spv==='back'){palScript=null;renderPal()}return}
   if(e.target.closest('[data-pick-png]')){$('#aFile').click();return}
   if(e.target.closest('[data-tpick]')){openTilePicker();return}
+  if(e.target.closest('[data-spedit]')){if(spAct){spEditKey=spAct;tileInspShow(true)}return}
+  if(e.target.closest('[data-spback]')){spAct=null;spEditKey=null;stamp=null;renderPal();if(hierPick==='tile')renderInsp();need();return}
   const cb=e.target.closest('[data-create]');if(cb){createObjectAtView(cb.dataset.create);return}
   const uc=e.target.closest('[data-uicreate]');if(uc){createUiAtCenter(uc.dataset.uicreate);return}
   const mk=e.target.closest('[data-mk]');if(mk){const t=MK_ALL().find(x=>x.id===mk.dataset.mk);if(t)t.fn();return}
@@ -3795,7 +4190,7 @@ $('#palBox').addEventListener('pointerdown',e=>{
   const a=byN.get(activeN);if(!a)return;
   const c=e.target,r=c.getBoundingClientRect(),cx=clamp(Math.floor((e.clientX-r.left)/palE),0,a.cols-1),cy=clamp(Math.floor((e.clientY-r.top)/palE),0,a.rows-1);
   c.setPointerCapture(e.pointerId);sheetDrag={c,a,sx:cx,sy:cy,r};
-  stamp={n:a.n,c0:cx,r0:cy,cw:1,rh:1};if(tool==='erase'||tool==='hand'||tool==='pick'||tool==='select')setTool('brush');
+  spAct=null;spEditKey=null;stamp={n:a.n,c0:cx,r0:cy,cw:1,rh:1};if(tool==='erase'||tool==='hand'||tool==='pick'||tool==='select')setTool('brush');
   drawSheet(c,a,palE,stamp);updPalInfo(a);need();
 });
 $('#palBox').addEventListener('pointermove',e=>{
@@ -3805,7 +4200,7 @@ $('#palBox').addEventListener('pointermove',e=>{
   if(stamp.cw*stamp.rh>256){stamp.cw=Math.min(stamp.cw,16);stamp.rh=Math.min(stamp.rh,16)}
   drawSheet(c,a,palE,stamp);updPalInfo(a);need();
 });
-['pointerup','pointercancel'].forEach(t=>$('#palBox').addEventListener(t,()=>{sheetDrag=null}));
+['pointerup','pointercancel'].forEach(t=>$('#palBox').addEventListener(t,()=>{if(sheetDrag){sheetDrag=null;tileInspShow(false)}}));
 /* ===================== 타일 합치기 =====================
    유니티 타일 팔레트처럼: 타일 팔레트 창이 「무한한 격자」로 바뀌고, 왼쪽 타일셋에서 고른 타일(여러 칸 가능)을 늘어놓거나 겹쳐 칠한 뒤
    「프로젝트에 저장」하면 배치한 영역 전체가 하나의 새 타일셋(PNG 에셋)이 됩니다. 저장한 타일셋은 타일 팔레트에서 바로 여러 칸으로 칠할 수 있습니다.
@@ -4945,6 +5340,7 @@ function renderInsp0(){
       `<p class="empty-note">게임 오브젝트는 <b>게임 오브젝트</b> 창의 블록이나 계층 구조 우클릭 메뉴로 만듭니다. 목록의 게임 오브젝트를 클릭하면 속성을 편집할 수 있습니다.</p>`;
     return;
   }
+  if(hierPick==='tile'&&!objsSel.length&&!grpSel.length&&layerSel!=='col'&&layerSel!=='obj'&&m.lm[lIdx(layerSel)]){spInsp(box);return}
   if(hierPick==='layer'&&!objsSel.length&&!grpSel.length&&(layerSel==='col'||m.lm[lIdx(layerSel)])){
     const isCol=layerSel==='col',i=isCol?-1:lIdx(layerSel),q=isCol?null:m.lm[i];
     const cnt=isCol?m.col.filter(v=>v).length:m.l[i].filter(v=>v).length;
@@ -6722,7 +7118,7 @@ function openSceneSettings(){
   renderInsp();renderHier();need();
 }
 function exportData(withImg){
-  return{format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:P.name,start:P.start,playerSprite:P.playerSprite,nextN:P.nextN,scripts:P.scripts,heroScript:P.heroScript,heroInit:true,roleIds:P.roleIds,roleInit:true,sfmap:P.sfmap,anim:anData(),animInit:true,animV2:true,mgrs:P.mgrs,mgrInit:true,mgrV2:!!P.mgrV2,audio:audios.map(a=>Object.assign({id:a.id,name:a.name,size:a.size,dur:a.dur,mime:a.mime},withImg?{data:a.src}:{})),fonts:fonts.map(a=>Object.assign({id:a.id,name:a.name,size:a.size},withImg?{data:a.src}:{})),
+  return{format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:P.name,start:P.start,playerSprite:P.playerSprite,nextN:P.nextN,scripts:P.scripts,heroScript:P.heroScript,heroInit:true,roleIds:P.roleIds,roleInit:true,sfmap:P.sfmap,anim:anData(),animInit:true,animV2:true,mgrs:P.mgrs,mgrInit:true,mgrV2:!!P.mgrV2,stiles:P.stiles||[],stN:P.stN||0,audio:audios.map(a=>Object.assign({id:a.id,name:a.name,size:a.size,dur:a.dur,mime:a.mime},withImg?{data:a.src}:{})),fonts:fonts.map(a=>Object.assign({id:a.id,name:a.name,size:a.size},withImg?{data:a.src}:{})),
     assets:assets.map(a=>{const r={id:a.id,n:a.n,name:a.name,kind:a.kind,tileW:a.tw,tileH:a.th,cols:a.cols,rows:a.rows,theme:a.theme,solid:a.solid,spriteMode:a.mode||'single',sprites:(a.slices||[]).map(q=>({id:q.id,name:q.name,x:q.x,y:q.y,w:q.w,h:q.h,pivotX:q.px,pivotY:q.py}))};if(withImg)r.image=a.src;return r}),maps:P.maps};
 }
 function doExport(){
@@ -6744,7 +7140,7 @@ function doImport(){
       const p=JSON.parse($('#imTxt').value);if(!validProject(p))throw 0;
       normProject(p);
       const keep=p.assets,keepAu=p.audio,keepFn=p.fonts;delete p.assets;delete p.audio;delete p.fonts;
-      P={name:p.name||_t('새 게임'),start:p.maps.some(m=>m.id===p.start)?p.start:p.maps[0].id,maps:p.maps,nextN:p.nextN,playerSprite:p.playerSprite,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,roleIds:p.roleIds,roleInit:true,anim:p.anim,animInit:true,animV2:true,mgrs:p.mgrs,mgrInit:true,mgrV2:!!p.mgrV2,afolders:[],afmap:{},sfmap:p.sfmap||{}};
+      P={name:p.name||_t('새 게임'),start:p.maps.some(m=>m.id===p.start)?p.start:p.maps[0].id,maps:p.maps,nextN:p.nextN,playerSprite:p.playerSprite,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,roleIds:p.roleIds,roleInit:true,anim:p.anim,animInit:true,animV2:true,mgrs:p.mgrs,mgrInit:true,mgrV2:!!p.mgrV2,stiles:p.stiles,stN:p.stN,afolders:[],afmap:{},sfmap:p.sfmap||{}};
       (async()=>{
         if(Array.isArray(keep)&&keep.some(a=>a.image)){
           assets=[];reindex();
@@ -8383,6 +8779,10 @@ function applySettings(){
 }
 applySettings();
 
+/* 애니메이션 · 애니메이터 창을 마지막으로 눌렀는지 (Ctrl+Z가 그 창으로 감).
+   anim-editor.js 안에도 같은 이름 변수가 있지만 이 화면 코드에서는 보이지 않아, 예전에는 Ctrl+Z가 오류로 멈춰 타일 칠하기 등을 되돌리지 못했음 */
+let anFocus=false;
+document.addEventListener('pointerdown',e=>{const t=e.target;anFocus=!!(t&&t.closest&&t.closest('.panel[data-id="animator"],.panel[data-id="anim"]'))},true);
 /* ---- 단축키: 명령 목록 · 사용자 지정 (키보드 위치 기준이라 한글 입력 상태에서도 동작) ---- */
 const KB_CMDS=[
   {id:'file.save',cat:'파일',label:'저장',def:['Ctrl+S'],global:1,run:()=>save(false)},

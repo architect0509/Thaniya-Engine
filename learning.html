@@ -752,6 +752,77 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
 .an-pn .agprop{flex-basis:var(--agpw,270px)}
 .an-pn .agrz::after{background:var(--line2)}
 .an-pn .agrz:hover::after,.an-pn .agrz.drag::after{background:var(--accent)}
+/* ---- 레슨 7: 특수 타일 실습장 (씬 뷰 자리) · 인스펙터 편집 ---- */
+.ws.st7 #views,.ws.st7 #sTools,.ws.st7 .view-pn .vtabs,.ws.st7 .view-pn .vtitle{display:none!important}
+.sttitle{display:none;font-size:12px;font-weight:600}.ws.st7 .sttitle{display:inline-flex;align-items:center;gap:6px}
+.stview{flex:1;min-height:0;display:flex;flex-direction:column}
+.stview[hidden]{display:none}
+.stpal{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel)}
+.stp-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;color:var(--mut)}
+.stp-h b{color:var(--tx);font-weight:600}
+.stseg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.stseg button{border:0;background:none;color:var(--mut);font:inherit;font-size:11.5px;padding:3px 10px;cursor:pointer}
+.stseg button[aria-pressed="true"]{background:var(--y);color:var(--y-fg);font-weight:600}
+.stsheet{display:block;image-rendering:pixelated;cursor:crosshair;border-radius:6px;touch-action:none;max-width:100%}
+.stp-b{flex:1;min-width:180px}
+.stsp{display:flex;flex-wrap:wrap;gap:6px}
+.stsp .note{margin:0;font-size:11.5px}
+.stsi{display:flex;align-items:center;gap:7px;padding:4px 10px 4px 4px;border:1px solid var(--line);border-radius:9px;background:var(--raised);color:var(--tx);cursor:pointer;font:inherit;text-align:left}
+.stsi:hover{border-color:var(--y)}.stsi.on{border-color:var(--y);background:rgba(246,205,42,.12)}
+.stsi canvas{width:40px;height:40px;border-radius:5px;image-rendering:pixelated;background:#101218}
+.stsi span{display:flex;flex-direction:column;gap:2px;font-size:12px}
+.sttag{display:inline-block;padding:0 6px;border-radius:999px;font-size:10px;font-weight:600;line-height:16px;background:rgba(61,139,217,.18);color:#7db8f2}
+.sttag.anim{background:rgba(180,106,208,.18);color:#d39be8}
+.stp-c{display:flex;flex-direction:column;gap:4px}
+.sttool{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--line);border-radius:7px;background:var(--raised);color:var(--mut);font:inherit;font-size:12px;cursor:pointer}
+.sttool .ic{width:14px;height:14px}
+.sttool.on{border-color:var(--y);color:var(--tx);background:rgba(246,205,42,.12)}
+.stgrid{flex:1;min-height:180px;position:relative}
+.stgrid canvas{position:absolute;inset:0;touch-action:none;cursor:crosshair}
+.stins{padding:4px 0 10px}
+.stins .ihead.st{display:flex;align-items:center;gap:8px;padding:10px 10px 8px}
+.stins #stName{flex:1;min-width:0;height:26px;font-weight:600}
+.stbadge{width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:7px;background:#3d8bd9;color:#fff;font-size:13px}.stbadge.anim{background:#b46ad0}
+.stbar{display:flex;align-items:center;gap:6px;margin:0 10px 8px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:11.5px;color:var(--mut)}
+.stbar span{flex:1;min-width:0}
+.stbar.dirty{border-color:var(--y);color:var(--y)}
+.stsec{margin:0 10px 10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}
+.stsec.tile{border-style:dashed}
+.sthd{font-size:12px;font-weight:600;margin:0 0 8px}.sthd small{color:var(--mut);font-weight:400}
+.sthd:not(:first-child){margin-top:12px}
+.strow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut);margin-bottom:6px}
+.strow>span:first-child{width:62px;flex:none}
+.strow small{color:var(--mut);font-size:11px}
+.strow input[type=number]{width:64px;height:24px}
+.strow select{height:24px;flex:1;min-width:0}
+.stslot{width:38px;height:38px;flex:none;display:grid;place-items:center;padding:2px;border:1px solid var(--line);border-radius:7px;background:repeating-conic-gradient(rgba(128,128,140,.16) 0 25%,transparent 0 50%) 0 0/8px 8px,#101218;color:var(--mut);cursor:pointer;font-size:15px}
+.stslot:hover{border-color:var(--y)}
+.stslot canvas{width:32px;height:32px;image-rendering:pixelated}
+.strl{border:1px solid var(--line);border-radius:9px;margin-bottom:8px;overflow:hidden}
+.strh{display:flex;align-items:center;gap:2px;padding:3px 6px 3px 10px;border-bottom:1px solid var(--line);font-size:12px}
+.strh .spacer{flex:1}
+.strl .ib{width:22px;height:20px;border:0;border-radius:5px;background:none;color:var(--mut);cursor:pointer;font-size:11px}
+.strl .ib:hover:not(:disabled){background:var(--raised);color:var(--tx)}.strl .ib:disabled{opacity:.3}
+.strb{display:flex;gap:10px;padding:8px 10px;flex-wrap:wrap}
+.stnb{display:grid;grid-template-columns:repeat(3,28px);grid-template-rows:repeat(3,28px);gap:2px;flex:none}
+.stn{border:1px solid var(--line);border-radius:5px;background:var(--raised);color:var(--tx);cursor:pointer;font:600 13px/1 var(--f);padding:0}
+.stn:hover{border-color:var(--y)}
+.stn.s1{background:rgba(92,192,138,.2);border-color:rgba(92,192,138,.75);color:#5cc08a}
+.stn.s2{background:rgba(234,103,115,.18);border-color:rgba(234,103,115,.75);color:#ea6773}
+.stc{display:grid;place-items:center;border-radius:5px;background:#101218}.stc canvas{width:24px;height:24px;image-rendering:pixelated}
+.strc{flex:1;min-width:130px}
+.stadd{width:100%;height:28px;margin-top:2px}
+.stins .note{font-size:11px;margin:8px 0 0;color:var(--mut)}.stins .note .g{color:#5cc08a}.stins .note .r{color:#ea6773}
+.stfr{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.stfi{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:10px;color:var(--mut)}
+.stfi .ib{border:0;background:none;color:var(--mut);cursor:pointer;font-size:10px}
+.stpv{display:block;width:160px;height:60px;image-rendering:pixelated;border-radius:6px;background:#101218;margin-top:4px}
+.stselpv{max-width:96px;max-height:96px;image-rendering:pixelated;border-radius:6px;background:#101218}
+.stinfo{font-size:12px;color:var(--tx)}
+.stmk{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stmk .btn{height:auto;min-height:46px;padding:7px 9px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
+.stbar .btn:disabled{opacity:.4;cursor:default}
+.stmk .btn small{font-size:10.5px;color:var(--mut);font-weight:400}
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -785,7 +856,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
     <div class="phead">
       <span class="vtabs" role="tablist" aria-label="뷰 전환"><button class="vtab on" type="button" role="tab" aria-selected="true" data-v="pScene" data-ic="scene">씬</button><button class="vtab" type="button" role="tab" aria-selected="false" data-v="pGame" data-ic="game">게임</button></span>
       <span class="vtitle"><span class="vtab on" data-ic="scene">씬</span><span class="vtab on" data-ic="game">게임</span></span>
-      <span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
+      <span class="sttitle">특수 타일 실습장</span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
     </div>
     <div class="ptool stools" id="sTools" hidden>
       <span class="sg" role="group" aria-label="칠할 곳"><b>칠할 곳</b><button type="button" data-layer="t">타일맵 1</button><button type="button" data-layer="c">콜라이더</button></span>
@@ -803,6 +874,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
       </div><canvas id="cScene" aria-label="씬 뷰: 오브젝트를 눌러 선택하고 끌어서 옮길 수 있어요"></canvas><span class="vl">씬 뷰</span></div>
       <div class="vp" id="pGame"><span class="phint" id="pHint" hidden>방향키 또는 WASD로 주인공 이동 · Esc 정지</span><canvas id="cGame" aria-label="게임 뷰: 카메라에 보이는 화면"></canvas><span class="vl">게임 뷰</span></div>
     </div>
+    <div class="stview" id="stView" hidden><div class="stpal" id="stPal"></div><div class="stgrid"><canvas id="stCv" aria-label="특수 타일을 칠해 보는 격자"></canvas></div></div>
   </section>
 
   <div class="code-pn">
@@ -1498,13 +1570,238 @@ function projRender(){
   grid.querySelectorAll('canvas[data-pth]').forEach(cv=>projThumb(cv,cv.dataset.pth,64));
 }
 
+/* ===================== 레슨 7 · 특수 타일 (룰 타일 · 애니메이션 타일) =====================
+   엔진(edit.html)의 특수 타일과 같은 규칙으로 동작하는 작은 실습장: 위쪽 = 팔레트(지형 · 물 시트 + 특수 타일 목록) · 아래 = 칠하는 격자,
+   오른쪽 인스펙터 = 엔진처럼 「타일」 카드와 룰 · 애니메이션 타일 편집(저장해야 격자에 반영).
+   판정(stResolve)은 엔진의 spResolve와 같은 순서: 위 규칙부터 · 이웃 8칸(0 상관없음 · 1 같은 타일 · 2 다른 타일) · 맞는 규칙이 없으면 기본 타일 */
+if(window.TI18N)TI18N.add({"특수 타일 실습장": ["Special Tile Playground", "特殊タイル練習場", "特殊图块练习场"], "지형": ["Terrain", "地形", "地形"], "특수 타일": ["Special Tiles", "特殊タイル", "特殊图块"], "룰 타일": ["Rule Tile", "ルールタイル", "规则图块"], "애니메이션 타일": ["Animated Tile", "アニメーションタイル", "动画图块"], "기본 타일": ["Default", "デフォルト", "默认"], "변형": ["Transform", "変形", "变换"], "고정": ["Fixed", "固定", "固定"], "좌우 반전": ["Mirror X", "左右反転", "水平镜像"], "상하 반전": ["Mirror Y", "上下反転", "垂直镜像"], "무작위 시작": ["Random start", "ランダム開始", "随机开始"], "상관없음": ["Don't care", "指定なし", "任意"], "같은 타일": ["This tile", "同じタイル", "相同图块"], "다른 타일": ["Not this tile", "違うタイル", "不同图块"], "{name} 룰 타일": ["{name} Rule Tile", "{name} ルールタイル", "{name} 规则图块"], "{name} 애니메이션": ["{name} Animation", "{name} アニメーション", "{name} 动画"], "규칙 {n}": ["Rule {n}", "ルール {n}", "规则 {n}"], "규칙 {n}개": ["{n} rules", "ルール {n} 個", "{n} 条规则"], "특수 타일 만들기": ["Create Special Tile", "特殊タイルを作成", "创建特殊图块"], "이웃에 맞춰 모양이 바뀜": ["Changes with neighbors", "隣に合わせて変化", "随相邻格子变化"], "프레임을 넘기며 움직임": ["Cycles through frames", "フレームを切り替えて動く", "逐帧播放"], "고른 {n}칸이 프레임": ["{n} selected cells become frames", "選んだ {n} マスがフレームに", "所选 {n} 格作为帧"], "3×3 가장자리 규칙 자동": ["Auto 3×3 edge rules", "3×3 の端ルールを自動作成", "自动生成 3×3 边缘规则"], "특수 타일 (룰 · 애니메이션)": ["Special Tiles (Rule · Animated)", "特殊タイル（ルール・アニメーション）", "特殊图块（规则 · 动画）"], "유니티의 룰 타일 · 애니메이션 타일처럼, 칠하기만 하면 이웃에 맞춰 모양이 바뀌거나 저절로 움직이는 「특수 타일」을 만들어 봐요. 코드는 쓰지 않아요.": ["Like Unity’s Rule Tile and Animated Tile, make “special tiles” that change shape to fit their neighbors or animate on their own when painted. No code needed.", "UnityのRule Tile・Animated Tileのように、塗るだけで隣に合わせて形が変わったり、ひとりでに動いたりする「特殊タイル」を作ってみます。コードは書きません。", "像 Unity 的 Rule Tile 和 Animated Tile 一样，制作只需绘制就会随相邻格子改变外观或自动播放的“特殊图块”。无需写代码。"], "룰": ["Rule", "ルール", "规则"], "애니": ["Anim", "アニメ", "动画"], "새 특수 타일 · 아직 저장 안 됨": ["New special tile · not saved yet", "新しい特殊タイル · 未保存", "新特殊图块 · 尚未保存"], "저장하지 않은 변경이 있어요": ["Unsaved changes", "未保存の変更があります", "有未保存的更改"], "저장됨 · 격자에 반영됨": ["Saved · applied to the grid", "保存済み · グリッドに反映", "已保存 · 已应用到网格"], "어떤 규칙에도 맞지 않을 때": ["when no rule matches", "どのルールにも合わないとき", "没有规则匹配时"], "＋ 규칙 추가": ["+ Add Rule", "＋ ルールを追加", "＋ 添加规则"], "칸마다 시작 프레임을 다르게": ["different start frame per cell", "マスごとに開始フレームを変える", "每格起始帧不同"], "팔레트에서 타일을 먼저 고르세요": ["Pick a tile in the palette first", "先にパレットでタイルを選んでください", "请先在调色板中选择图块"], "「{name}」 특수 타일을 저장했어요": ["Saved special tile “{name}”", "特殊タイル「{name}」を保存しました", "已保存特殊图块“{name}”"], "아직 없어요. 팔레트에서 타일을 고르고 인스펙터에서 만들어 보세요.": ["None yet. Pick tiles in the palette and create one in the Inspector.", "まだありません。パレットでタイルを選び、インスペクターで作ってみましょう。", "还没有。先在调色板中选择图块，再在检查器中创建。"], "팔레트에서 타일을 고르거나 특수 타일을 고르세요.": ["Pick a tile in the palette or a special tile.", "パレットのタイルか特殊タイルを選んでください。", "请在调色板中选择图块或特殊图块。"], "특수 타일 실습": ["Special tile practice", "特殊タイル練習", "特殊图块练习"], "외딴 칸": ["Lone cells", "孤立したマス", "孤立格子"], "잔디밭": ["Lawn", "芝生", "草地"], "연못": ["Pond", "池", "池塘"], "눌러서 팔레트에서 고른 타일로 바꾸기": ["Click to use the tile picked in the palette", "押すとパレットで選んだタイルに替えます", "点击替换为调色板中选中的图块"], "팔레트에서 타일을 고른 뒤 눌러 넣기": ["Pick a tile in the palette, then click to put it here", "パレットでタイルを選んでから押して入れます", "先在调色板选图块，再点击放入"], "잔디 룰 타일": ["Grass Rule Tile", "芝生ルールタイル", "草地规则图块"]});
+const ST_W=12,ST_H=7,ST_NB=[[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]],ST_ARW=['↖','↑','↗','←','→','↙','↓','↘'];
+const ST_TF={fixed:[[0,0,0]],rot:[[0,0,0],[1,0,0],[2,0,0],[3,0,0]],mx:[[0,0,0],[0,1,0]],my:[[0,0,0],[0,0,1]],mxy:[[0,0,0],[0,1,0],[0,0,1],[0,1,1]]};
+const ST={sheet:'terrain',sel:null,list:[],edit:null,act:null,tool:'brush',grid:[],hover:null,marks:[],drag:null,psel:null};
+let STON=false;
+/* ---- 그림: 코드로 그린 32×32 픽셀 시트 두 장 (지형 4×3 · 물 4×1) ---- */
+const ST_SHEETS=(()=>{
+  const mk=(cols,rows,fn)=>{const c=document.createElement('canvas');c.width=cols*32;c.height=rows*32;const g=c.getContext('2d');fn(g);return{cols,rows,img:c}};
+  const R=(g,x,y,w,h,col)=>{g.fillStyle=col;g.fillRect(x,y,w,h)};
+  const grass=(g,ox,oy,seed)=>{R(g,ox,oy,32,32,'#4c9a4f');for(let k=0;k<14;k++){const px=(k*7+seed*13)%28+2,py=(k*11+seed*5)%28+2;R(g,ox+px,oy+py,2,2,k%3?'#5fb35f':'#3f8443')}};
+  const rim=(g,ox,oy,t,b,l,r)=>{
+    if(t){R(g,ox,oy,32,4,'#2f6b34');R(g,ox,oy+4,32,1,'#74c873')}
+    if(l){R(g,ox,oy,4,32,'#2f6b34');R(g,ox+4,oy+(t?5:0),1,32-(t?5:0),'#74c873')}
+    if(r)R(g,ox+28,oy,4,32,'#2f6b34');
+    if(b){R(g,ox,oy+24,32,8,'#8a5a32');R(g,ox,oy+24,32,2,'#5d3b20');for(let k=0;k<5;k++)R(g,ox+3+k*6,oy+28+(k%2),2,2,'#6e4626')}
+    if(t&&l)g.clearRect(ox,oy,2,2);if(t&&r)g.clearRect(ox+30,oy,2,2);if(b&&l)g.clearRect(ox,oy+30,2,2);if(b&&r)g.clearRect(ox+30,oy+30,2,2);
+  };
+  const terrain=mk(4,3,g=>{
+    for(let y=0;y<3;y++)for(let x=0;x<3;x++){grass(g,x*32,y*32,x+y*3);rim(g,x*32,y*32,y===0,y===2,x===0,x===2)}
+    grass(g,96,0,9);rim(g,96,0,1,1,1,1);
+    grass(g,96,32,10);[[8,9,'#f3e36b'],[20,14,'#f08cb4'],[12,22,'#ffffff'],[24,24,'#f3e36b']].forEach(([x,y,c])=>{R(g,96+x,32+y,3,3,c);R(g,96+x+1,32+y+1,1,1,'#c0703a')});
+  });
+  const water=mk(4,1,g=>{for(let f=0;f<4;f++){const ox=f*32;R(g,ox,0,32,32,'#2b78b0');R(g,ox,16,32,16,'#2a6fa4');
+    for(let k=0;k<4;k++){const y=4+k*8,x=((k*9+f*4)%24)+2;R(g,ox+x,y,8,2,'#8fd0f5');R(g,ox+((x+14)%26),y+4,5,1,'#5fb0e3')}}});
+  return{terrain:Object.assign(terrain,{name:'지형'}),water:Object.assign(water,{name:'물'})};
+})();
+const stIsSp=v=>typeof v==='string'&&v.startsWith('sp:');
+const stOf=id=>ST.list.find(s=>s.id===id)||null;
+const stHash=(x,y)=>{let h=Math.imul(x|0,374761393)+Math.imul(y|0,668265263)|0;h=Math.imul(h^(h>>>13),1274126177);return(h^(h>>>16))>>>0};
+const stFrame=(list,fps,t,off)=>{const n=list.length;if(!n)return null;const k=Math.floor(t*Math.max(.01,+fps||1)+(off||0));return list[((k%n)+n)%n]};
+function stResolve(s,get,x,y,t,me){
+  if(!s)return null;if(me==null)me='sp:'+s.id;
+  if(s.kind==='anim'){const fr=s.frames.filter(Boolean);return fr.length?{v:stFrame(fr,s.fps,t,s.rand?(stHash(x,y)%97)/7:0),r:0,fx:0,fy:0}:null}
+  for(const R of s.rules){
+    for(const[r,fx,fy]of ST_TF[R.tf]||ST_TF.fixed){
+      let ok=true;
+      for(let k=0;k<8&&ok;k++){const q=R.nb[k];if(!q)continue;let dx=ST_NB[k][0],dy=ST_NB[k][1];if(fx)dx=-dx;if(fy)dy=-dy;for(let j=0;j<r;j++){const tx=dx;dx=-dy;dy=tx}const same=get(dx,dy)===me;if(q===1?!same:same)ok=false}
+      if(!ok)continue;const tl=R.tiles.filter(Boolean);if(!tl.length)break;
+      return{v:R.out==='random'?tl[stHash(x,y)%tl.length]:R.out==='anim'?stFrame(tl,R.fps,t,0):tl[0],r,fx,fy};
+    }
+  }
+  return s.def?{v:s.def,r:0,fx:0,fy:0}:null;
+}
+function stTile(g,v,X,Y,S,tr){
+  const[sid,i]=String(v).split(':'),sh=ST_SHEETS[sid];if(!sh)return;const n=+i,sx=(n%sh.cols)*32,sy=Math.floor(n/sh.cols)*32;
+  g.save();g.translate(X+S/2,Y+S/2);if(tr&&tr.r)g.rotate(tr.r*Math.PI/2);if(tr&&(tr.fx||tr.fy))g.scale(tr.fx?-1:1,tr.fy?-1:1);g.drawImage(sh.img,sx,sy,32,32,-S/2,-S/2,S,S);g.restore();
+}
+const stCell=(x,y)=>x<0||y<0||x>=ST_W||y>=ST_H?0:ST.grid[y*ST_W+x]||0;
+function stDrawV(g,v,x,y,X,Y,S,t,get){
+  if(!v)return;
+  if(stIsSp(v)){const s=stOf(v.slice(3)),rr=stResolve(s,(dx,dy)=>get(x+dx,y+dy),x,y,t,v);if(rr&&rr.v)stTile(g,rr.v,X,Y,S,rr);else{g.fillStyle='rgba(255,0,255,.25)';g.fillRect(X,Y,S,S)}return}
+  stTile(g,v,X,Y,S);
+}
+/* 3×3 지형 → 엔진의 「룰 타일 만들기」와 같은 9개 규칙 */
+function stRule3(sheet,c0,r0,cols){const at=(x,y)=>sheet+':'+((r0+y)*cols+c0+x),mk=(x,y)=>({nb:[0,y===0?2:1,0,x===0?2:1,x===2?2:1,0,y===2?2:1,0],out:'single',tiles:[at(x,y)],fps:6,tf:'fixed'});
+  return{def:at(1,1),rules:[mk(0,0),mk(2,0),mk(0,2),mk(2,2),mk(1,0),mk(0,1),mk(2,1),mk(1,2),mk(1,1)]}}
+const ST_RULE_PRE=()=>Object.assign({id:'grass',kind:'rule',name:'잔디 룰 타일',solid:false},stRule3('terrain',0,0,4));
+const stRect=(x0,y0,w,h)=>{const a=[];for(let y=y0;y<y0+h;y++)for(let x=x0;x<x0+w;x++)a.push([x,y]);return a};
+/* ---- 문제마다 차리기 ---- */
+function stSetup(p){
+  STON=!!(p&&p.st);
+  const ws=document.querySelector('main.ws');if(ws)ws.classList.toggle('st7',STON);
+  const sv=$('#stView');if(sv)sv.hidden=!STON;
+  if(!STON)return;
+  ST.grid=new Array(ST_W*ST_H).fill(0);ST.list=[];ST.edit=null;ST.act=null;ST.tool='brush';ST.sel=null;ST.sheet='terrain';ST.hover=null;ST.marks=[];
+  if(p.st.setup)p.st.setup();ST.marks=(p.marks||[]).map(m=>Object.assign({},m));
+  stRenderPal();requestAnimationFrame(stDraw);
+}
+const stSet=(cells,v)=>cells.forEach(([x,y])=>ST.grid[y*ST_W+x]=v);
+const stMarkOk=m=>m.cells.every(([x,y])=>m.ok?m.ok(x,y):true);
+/* ---- 위쪽 팔레트 ---- */
+function stRenderPal(){
+  const box=$('#stPal');if(!box)return;const sh=ST_SHEETS[ST.sheet];
+  box.innerHTML=`<div class="stp-a"><div class="stp-h"><b>타일 팔레트</b><span class="stseg" role="group" aria-label="타일셋">${Object.keys(ST_SHEETS).map(k=>`<button type="button" data-sh="${k}" aria-pressed="${k===ST.sheet}">${esc(_t(ST_SHEETS[k].name))}</button>`).join('')}</span></div>
+    <canvas id="stSheet" class="stsheet" aria-label="타일셋: 끌어서 여러 칸 고르기"></canvas></div>
+    <div class="stp-b"><div class="stp-h"><b>특수 타일</b><small>${ST.list.length}</small></div><div class="stsp">${ST.list.map(s=>`<button type="button" class="stsi${ST.act===s.id?' on':''}" data-st="${s.id}" title="${esc(s.name)}"><canvas width="40" height="40" data-stth="${s.id}"></canvas><span><b data-i18n-skip>${esc(s.name)}</b><small class="sttag ${s.kind}">${s.kind==='rule'?'룰 타일':'애니메이션 타일'}</small></span></button>`).join('')||'<p class="note">아직 없어요. 팔레트에서 타일을 고르고 인스펙터에서 만들어 보세요.</p>'}</div></div>
+    <div class="stp-c"><div class="stp-h"><b>도구</b></div><button type="button" class="sttool${ST.tool==='brush'?' on':''}" data-stt="brush" data-ic="brush" title="브러시 · 고른 타일로 칠하기">브러시</button><button type="button" class="sttool${ST.tool==='erase'?' on':''}" data-stt="erase" data-ic="erase" title="지우개 · 칸 비우기">지우개</button></div>`;
+  box.querySelectorAll('[data-ic]').forEach(el=>el.insertAdjacentHTML('afterbegin',ico(el.dataset.ic)));
+  const cv=box.querySelector('#stSheet'),D=40;cv.width=sh.cols*D;cv.height=sh.rows*D;const g=cv.getContext('2d');g.imageSmoothingEnabled=false;
+  g.fillStyle='#101218';g.fillRect(0,0,cv.width,cv.height);g.drawImage(sh.img,0,0,cv.width,cv.height);
+  g.strokeStyle='rgba(150,150,170,.35)';g.beginPath();for(let x=0;x<=sh.cols;x++){g.moveTo(x*D+.5,0);g.lineTo(x*D+.5,cv.height)}for(let y=0;y<=sh.rows;y++){g.moveTo(0,y*D+.5);g.lineTo(cv.width,y*D+.5)}g.stroke();
+  const s=ST.sel;if(s&&s.sheet===ST.sheet&&!ST.act){g.strokeStyle='#f6cd2a';g.lineWidth=2;g.strokeRect(s.c0*D+1,s.r0*D+1,s.cw*D-2,s.rh*D-2)}
+  box.querySelectorAll('canvas[data-stth]').forEach(c=>{const sp=stOf(c.dataset.stth);if(sp)stThumb(c,sp,0)});
+}
+function stThumb(c,s,t){const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);g.imageSmoothingEnabled=false;
+  if(s.kind==='anim'){stDrawV(g,'sp:'+s.id,0,0,0,0,c.width,t,()=>0);return}
+  const S=c.width/3,me='sp:'+s.id,get=(x,y)=>x>=0&&y>=0&&x<3&&y<3?me:0;for(let y=0;y<3;y++)for(let x=0;x<3;x++){const rr=stResolve(s,(dx,dy)=>get(x+dx,y+dy),x,y,t,me);if(rr&&rr.v)stTile(g,rr.v,x*S,y*S,S,rr)}}
+const stSelCells=()=>{const s=ST.sel;if(!s)return[];const sh=ST_SHEETS[s.sheet],a=[];for(let y=0;y<s.rh;y++)for(let x=0;x<s.cw;x++)a.push({v:s.sheet+':'+((s.r0+y)*sh.cols+s.c0+x),x,y});return a};
+function stEv(e){TASK.ev.add(e);tkPing()}
+function stPick(){
+  const s=ST.sel;if(!s)return;
+  if(s.sheet==='terrain'&&s.cw===3&&s.rh===3&&s.c0===0&&s.r0===0)stEv('sel3');
+  if(s.sheet==='water'&&s.cw===4)stEv('sel:water4');
+  if(s.sheet==='terrain'&&s.c0===3&&s.r0===0&&s.cw===1&&s.rh===1)stEv('sel:island');
+}
+/* ---- 아래 격자 ---- */
+function stDraw(){
+  const cv=$('#stCv');if(!cv||!STON)return;const host=cv.parentElement,r=host.getBoundingClientRect(),d=window.devicePixelRatio||1;
+  if(!r.width||!r.height)return;
+  const S=Math.max(12,Math.floor(Math.min((r.width-16)/ST_W,(r.height-16)/ST_H))),W=S*ST_W,H=S*ST_H,ox=Math.floor((r.width-W)/2),oy=Math.floor((r.height-H)/2);
+  if(cv.width!==Math.round(r.width*d)||cv.height!==Math.round(r.height*d)){cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);cv.style.width=r.width+'px';cv.style.height=r.height+'px'}
+  cv._lay={S,ox,oy};const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,r.width,r.height);g.imageSmoothingEnabled=false;
+  g.fillStyle='#1d2027';g.fillRect(ox,oy,W,H);
+  g.strokeStyle='rgba(140,145,165,.18)';g.lineWidth=1;g.beginPath();for(let x=0;x<=ST_W;x++){g.moveTo(ox+x*S+.5,oy);g.lineTo(ox+x*S+.5,oy+H)}for(let y=0;y<=ST_H;y++){g.moveTo(ox,oy+y*S+.5);g.lineTo(ox+W,oy+y*S+.5)}g.stroke();
+  const t=performance.now()/1000;
+  for(let y=0;y<ST_H;y++)for(let x=0;x<ST_W;x++)stDrawV(g,ST.grid[y*ST_W+x],x,y,ox+x*S,oy+y*S,S,t,stCell);
+  g.save();g.setLineDash([5,4]);g.lineWidth=2;
+  ST.marks.forEach(m=>{const ok=stMarkOk(m);g.strokeStyle=ok?'#5cc08a':'#f6cd2a';m.cells.forEach(([x,y])=>g.strokeRect(ox+x*S+2,oy+y*S+2,S-4,S-4));
+    if(m.label){const[x,y]=m.cells[0];g.setLineDash([]);g.font='600 11px '+getComputedStyle(document.body).fontFamily;g.fillStyle=ok?'#5cc08a':'#f6cd2a';g.fillText((ok?'✓ ':'')+_t(m.label),ox+x*S+2,oy+y*S-4);g.setLineDash([5,4])}});
+  g.restore();
+  if(ST.hover){const[x,y]=ST.hover;g.strokeStyle=ST.tool==='erase'?'#ea6773':'#f6cd2a';g.lineWidth=2;g.strokeRect(ox+x*S+1,oy+y*S+1,S-2,S-2)}
+}
+function stPaintVal(){if(ST.tool==='erase')return 0;if(ST.act)return'sp:'+ST.act;const c=stSelCells();return c.length?c[0].v:null}
+function stPaint(x,y){
+  if(x<0||y<0||x>=ST_W||y>=ST_H)return;const v=stPaintVal();if(v===null){toast('팔레트에서 칠할 타일을 먼저 고르세요');return}
+  const i=y*ST_W+x,old=ST.grid[i];if(old===v)return;
+  if(!v&&stIsSp(old)&&ST.marks.some(m=>m.cells.some(([a,b])=>a===x&&b===y)))TASK.ev.add('erase:inside');
+  ST.grid[i]=v;if(!v)TASK.ev.add('erase');
+  ST.marks.forEach((m,k)=>{if(stMarkOk(m))TASK.ev.add('mark:'+k)});
+  tkPing();
+}
+/* ---- 인스펙터 ---- */
+function stNew(kind){
+  const cells=stSelCells();if(!cells.length){toast('팔레트에서 타일을 먼저 고르세요');return}
+  const s=ST.sel,sh=ST_SHEETS[s.sheet];let d;
+  if(kind==='anim')d={kind:'anim',name:_t('{name} 애니메이션',{name:_t(sh.name)}),solid:false,frames:cells.map(c=>c.v),fps:6,rand:false};
+  else if(s.cw===3&&s.rh===3)d=Object.assign({kind:'rule',name:_t('{name} 룰 타일',{name:_t(sh.name)}),solid:false},stRule3(s.sheet,s.c0,s.r0,sh.cols));
+  else d={kind:'rule',name:_t('{name} 룰 타일',{name:_t(sh.name)}),solid:false,def:cells[0].v,rules:cells.length>1?[{nb:[0,0,0,0,0,0,0,0],out:'random',tiles:cells.map(c=>c.v),fps:6,tf:'fixed'}]:[]};
+  ST.edit={key:'new',d};ST.act=null;stEv('mk:'+kind);renderInsp();stRenderPal();
+}
+const stDirty=E=>E.key==='new'||JSON.stringify(E.d)!==JSON.stringify(stOf(E.key));
+function stSave(){
+  const E=ST.edit;if(!E)return;const d=E.d;
+  if(d.kind==='anim'&&!d.frames.length){toast('프레임을 하나 이상 넣어 주세요');return}
+  if(d.kind==='rule'&&!d.def){toast('기본 타일을 골라 주세요');return}
+  let id=E.key;
+  if(id==='new'){id=d.kind+'_'+uid();ST.list.push(Object.assign(JSON.parse(JSON.stringify(d)),{id}))}
+  else{const i=ST.list.findIndex(s=>s.id===id);if(i<0)return;ST.list[i]=Object.assign(JSON.parse(JSON.stringify(d)),{id})}
+  ST.act=id;ST.edit={key:id,d:JSON.parse(JSON.stringify(stOf(id)))};
+  stEv('save:'+d.kind);toast(_t('「{name}」 특수 타일을 저장했어요',{name:d.name}));renderInsp();stRenderPal();renderHier();
+}
+function stActivate(id){const s=stOf(id);if(!s)return;ST.act=id;ST.edit={key:id,d:JSON.parse(JSON.stringify(s))};if(ST.tool!=='brush')ST.tool='brush';stEv('act:'+s.kind);stRenderPal();renderInsp();renderHier()}
+const stSlot=(v,act,attrs)=>`<button type="button" class="stslot" data-sa="${act}" ${attrs||''} title="${esc(_t(v?'눌러서 팔레트에서 고른 타일로 바꾸기':'팔레트에서 타일을 고른 뒤 눌러 넣기'))}">${v?`<canvas width="32" height="32" data-stv="${v}"></canvas>`:'＋'}</button>`;
+function stInsp(){
+  const box=$('#insp'),E=ST.edit,cells=stSelCells();let h='';
+  if(E){
+    const d=E.d,isR=d.kind==='rule',dirty=stDirty(E);
+    h+=`<div class="ihead st"><span class="stbadge ${d.kind}">${isR?'▦':'▶'}</span><input type="text" id="stName" maxlength="30" value="${esc(d.name)}" aria-label="특수 타일 이름" data-i18n-skip><span class="sttag ${d.kind}">${isR?'룰 타일':'애니메이션 타일'}</span></div>
+    <div class="stbar${dirty?' dirty':''}"><span>${E.key==='new'?'새 특수 타일 · 아직 저장 안 됨':dirty?'저장하지 않은 변경이 있어요':'저장됨 · 격자에 반영됨'}</span><button type="button" class="btn sm pri" data-sa="save"${dirty?'':' disabled'}>저장</button><button type="button" class="btn sm" data-sa="close" title="편집 닫기">닫기</button></div>`;
+    if(isR){
+      h+=`<div class="stsec"><div class="strow"><span>기본 타일</span>${stSlot(d.def,'def')}<small>어떤 규칙에도 맞지 않을 때</small></div>`+
+        d.rules.map((R,i)=>`<div class="strl"><div class="strh"><b>${esc(_t('규칙 {n}',{n:i+1}))}</b><span class="spacer"></span><button type="button" class="ib" data-sa="rup" data-ri="${i}"${i?'':' disabled'} title="위로">↑</button><button type="button" class="ib" data-sa="rdn" data-ri="${i}"${i<d.rules.length-1?'':' disabled'} title="아래로">↓</button><button type="button" class="ib" data-sa="rdel" data-ri="${i}" title="삭제">✕</button></div>
+          <div class="strb"><div class="stnb">${[0,1,2,3,-1,4,5,6,7].map(k=>k<0?`<span class="stc">${R.tiles[0]?`<canvas width="32" height="32" data-stv="${R.tiles[0]}"></canvas>`:''}</span>`:`<button type="button" class="stn s${R.nb[k]}" data-sa="nb" data-ri="${i}" data-k="${k}" title="${esc(_t(['상관없음','같은 타일','다른 타일'][R.nb[k]]))}">${R.nb[k]===1?ST_ARW[k]:R.nb[k]===2?'✕':''}</button>`).join('')}</div>
+          <div class="strc"><div class="strow"><span>타일</span>${stSlot(R.tiles[0]||0,'rtile',`data-ri="${i}"`)}</div><label class="strow"><span>변형</span><select data-sf="tf" data-ri="${i}">${[['fixed','고정'],['rot','회전'],['mx','좌우 반전'],['my','상하 반전']].map(o=>`<option value="${o[0]}"${o[0]===R.tf?' selected':''}>${esc(_t(o[1]))}</option>`).join('')}</select></label></div></div></div>`).join('')+
+        `<button type="button" class="btn stadd" data-sa="radd">＋ 규칙 추가</button><p class="note">이웃 칸을 누를 때마다 상관없음 → <b class="g">↑ 같은 타일</b> → <b class="r">✕ 다른 타일</b>. 타일 칸은 팔레트에서 고른 타일로 바뀌어요. 위 규칙부터 맞춰 봐요.</p></div>`;
+    }else{
+      h+=`<div class="stsec"><label class="strow"><span>속도</span><input type="number" data-sf="fps" min="0.5" max="30" step="0.5" value="${d.fps}"><small>fps</small></label>
+        <label class="strow"><span>무작위 시작</span><input type="checkbox" data-sf="rand"${d.rand?' checked':''}><small>칸마다 시작 프레임을 다르게</small></label>
+        <div class="stfr">${d.frames.map((v,i)=>`<span class="stfi"><small>${i+1}</small>${stSlot(v,'frame',`data-ti="${i}"`)}<button type="button" class="ib" data-sa="fdel" data-ti="${i}" title="빼기">✕</button></span>`).join('')}<button type="button" class="stslot" data-sa="fadd" title="팔레트에서 고른 칸들을 프레임으로 더하기">＋</button></div>
+        <canvas id="stAnimPv" class="stpv" width="160" height="60" aria-label="미리보기"></canvas><p class="note">＋를 누르면 팔레트에서 고른 칸들이 차례로 프레임에 더해져요.</p></div>`;
+    }
+  }
+  if(cells.length&&!ST.act){
+    const s=ST.sel,three=s.cw===3&&s.rh===3;
+    h+=`<div class="stsec tile"><div class="sthd">타일 <small>(Tile)</small></div><div class="strow"><canvas id="stSelPv" class="stselpv"></canvas><span class="stinfo" data-i18n-skip>${esc(_t(ST_SHEETS[s.sheet].name))} · ${s.cw}×${s.rh}</span></div>
+      <div class="sthd">특수 타일 만들기 <small>(Rule · Animated Tile)</small></div><div class="stmk"><button type="button" class="btn" data-sa="mk-rule"><b>룰 타일</b><small>${three?'3×3 가장자리 규칙 자동':'이웃에 맞춰 모양이 바뀜'}</small></button><button type="button" class="btn" data-sa="mk-anim"><b>애니메이션 타일</b><small>${cells.length>1?_t('고른 {n}칸이 프레임',{n:cells.length}):'프레임을 넘기며 움직임'}</small></button></div></div>`;
+  }
+  if(!h)h='<p class="note" style="padding:12px">팔레트에서 타일을 고르거나 특수 타일을 고르세요.</p>';
+  box.innerHTML='<div class="stins">'+h+'</div>';
+  box.querySelectorAll('canvas[data-stv]').forEach(c=>{const g=c.getContext('2d');g.imageSmoothingEnabled=false;stTile(g,c.dataset.stv,0,0,32)});
+  const pv=$('#stSelPv');if(pv&&cells.length){const s=ST.sel,k=Math.max(8,Math.floor(96/Math.max(s.cw,s.rh)));pv.width=s.cw*k;pv.height=s.rh*k;const g=pv.getContext('2d');g.imageSmoothingEnabled=false;cells.forEach(c=>stTile(g,c.v,c.x*k,c.y*k,k))}
+}
+const stFirst=()=>{const c=stSelCells();if(!c.length){toast('팔레트에서 타일을 먼저 고르세요');return null}return c};
+/* ---- 레슨 7 문제 ---- */
+const L7={no:7,title:'특수 타일 (룰 · 애니메이션)',clear:'통과했어요. 레슨 7 완료! 룰 타일로 가장자리가 저절로 맞춰지는 지형을, 애니메이션 타일로 움직이는 물을 만들었어요. 엔진에서도 타일 팔레트에서 타일을 고르면 인스펙터에서 똑같이 만들고 저장할 수 있어요.',
+ lead:'유니티의 룰 타일 · 애니메이션 타일처럼, 칠하기만 하면 이웃에 맞춰 모양이 바뀌거나 저절로 움직이는 「특수 타일」을 만들어 봐요. 코드는 쓰지 않아요.'};
+const ST_FIELD=stRect(2,2,5,3),ST_LONE=[[9,1],[9,5],[1,5]],ST_POND=stRect(5,2,3,2);
+const stIsKind=(v,k)=>stIsSp(v)&&(stOf(v.slice(3))||{}).kind===k;
+const stAnimOk=()=>{const E=ST.edit,a=E&&E.d.kind==='anim'?[E.d]:[];return a.concat(ST.list.filter(s=>s.kind==='anim')).some(d=>+d.fps===8&&d.rand)};
+const stIsland=d=>d&&d.kind==='rule'&&d.rules.some(R=>R.nb[1]===2&&R.nb[3]===2&&R.nb[4]===2&&R.nb[6]===2&&R.tiles[0]==='terrain:3');
+const L7P=[
+{id:'s-make',task:true,st:{},title:'룰 타일 만들기',
+ desc:'<b>룰 타일</b>은 칠한 칸마다 <b>이웃 8칸</b>을 보고 그릴 그림을 고르는 타일이에요. 잔디 지형은 위쪽 테두리 · 아래쪽 흙 · 모서리처럼 자리마다 그림이 달라서, 하나씩 골라 칠하면 번거롭죠. 지형 시트의 <b>3×3칸</b>(모서리 4 · 가장자리 4 · 가운데)을 고른 뒤 룰 타일을 만들면, 엔진처럼 자리마다 맞는 규칙 9개가 저절로 채워져요.',
+ goal:'팔레트에서 지형 3×3칸을 고르고 인스펙터에서 룰 타일을 만들어 저장하세요.',
+ checks:[
+  {t:'위쪽 <b>타일 팔레트</b>의 <b>지형</b> 시트에서 왼쪽 위 <b>3×3칸</b>을 끌어서 고르기',ok:c=>c.ev.has('sel3')},
+  {t:'<b>인스펙터</b>의 <b>룰 타일</b> 버튼으로 새 룰 타일 만들기 (규칙 9개가 채워진 것 보기)',ok:c=>c.ev.has('mk:rule')},
+  {t:'<b>인스펙터</b>에서 <b>저장</b>하기 · 팔레트 오른쪽 <b>특수 타일</b>에 들어가요',ok:()=>ST.list.some(s=>s.kind==='rule'&&s.rules.length>=9)}],
+ hint:'지형 시트 맨 왼쪽 위 칸을 누른 채 오른쪽 아래로 두 칸씩 끌면 3×3이 골라져요. 오른쪽 위 섬 · 꽃 칸은 넣지 마세요.\n저장하기 전에는 아직 쓸 수 없어요 (엔진도 같아요).'},
+{id:'s-paint',task:true,st:{setup:()=>{ST.list=[ST_RULE_PRE()]}},title:'룰 타일 칠하기',
+ marks:[{cells:ST_FIELD,label:'잔디밭',ok:(x,y)=>stIsKind(stCell(x,y),'rule')}],
+ desc:'저장한 룰 타일은 보통 타일처럼 칠하면 돼요. 칠할 때마다 그 칸과 이웃 칸이 <b>다시 판정</b>되어, 가장자리에는 테두리가, 아래에는 흙이, 가운데에는 잔디가 저절로 그려져요. 칸을 지우면 둘레가 다시 가장자리 모양으로 바뀌는 것도 확인해 보세요.',
+ goal:'잔디 룰 타일을 골라 점선 15칸을 칠하고, 그 안의 한 칸을 지워 보세요.',
+ checks:[
+  {t:'팔레트 오른쪽 <b>특수 타일</b>에서 <b>잔디 룰 타일</b> 고르기',ok:c=>c.ev.has('act:rule')},
+  {t:'아래 격자의 점선 15칸을 모두 칠하기 (누른 채 끌면 여러 칸)',ok:c=>c.ev.has('mark:0')},
+  {t:'<b>지우개</b>로 점선 안 한 칸을 지우고 둘레 모양이 바뀌는 것 보기',ok:c=>c.ev.has('mark:0')&&c.ev.has('erase:inside')}],
+ hint:'도구는 팔레트 맨 오른쪽에 있어요. 지운 뒤 브러시로 다시 칠하면 원래대로 돌아와요.'},
+{id:'s-rule',task:true,st:{setup:()=>{ST.list=[ST_RULE_PRE()];stSet(ST_FIELD,'sp:grass');stSet(ST_LONE,'sp:grass')}},title:'규칙 추가하기 (섬)',
+ marks:[{cells:ST_LONE,label:'외딴 칸'}],
+ desc:'외딴 한 칸은 위 · 아래 · 왼쪽 · 오른쪽이 모두 비어 있어서, 9개 규칙 어디에도 맞지 않아요. 그러면 <b>기본 타일</b>(가운데 잔디)로 그려져 테두리가 없어 보여요. 사방이 <b>✕ 다른 타일</b>일 때 <b>섬</b> 그림을 쓰는 규칙을 하나 더해 봐요. 이웃 버튼은 누를 때마다 상관없음 → ↑ 같은 타일 → ✕ 다른 타일로 바뀌어요.',
+ goal:'잔디 룰 타일에 「사방이 다른 타일이면 섬」 규칙을 추가하고 저장하세요.',
+ checks:[
+  {t:'<b>특수 타일</b>에서 잔디 룰 타일을 고르고 <b>인스펙터</b>에서 <b>＋ 규칙 추가</b>',ok:c=>c.ev.has('radd')},
+  {t:'새 규칙의 <b>위 · 왼쪽 · 오른쪽 · 아래</b> 이웃을 <b>✕ 다른 타일</b>로 (대각선은 그대로)',ok:()=>{const E=ST.edit;return [E&&E.d].concat(ST.list).some(d=>d&&d.kind==='rule'&&d.rules.some(R=>R.nb[1]===2&&R.nb[3]===2&&R.nb[4]===2&&R.nb[6]===2))}},
+  {t:'팔레트 지형 시트 오른쪽 위 <b>섬</b> 칸을 고른 뒤, 새 규칙의 <b>타일</b> 칸을 눌러 넣기',ok:()=>{const E=ST.edit;return [E&&E.d].concat(ST.list).some(stIsland)}},
+  {t:'<b>저장</b>하고 외딴 칸 3곳이 섬 모양으로 바뀌는 것 보기',ok:()=>ST.list.some(stIsland)}],
+ hint:'규칙을 추가하면 맨 아래에 생겨요. 외딴 칸에는 다른 9개 규칙이 맞지 않으니 순서는 그대로여도 돼요.\n섬 칸을 고르면 인스펙터에 「특수 타일 만들기」가 보이지만, 위쪽의 편집 중인 룰 타일은 그대로 남아 있어요.'},
+{id:'s-anim',task:true,st:{setup:()=>{ST.list=[ST_RULE_PRE()];stSet(stRect(3,1,7,4),'sp:grass');stSet(ST_POND,0)}},title:'애니메이션 타일 (물)',
+ marks:[{cells:ST_POND,label:'연못',ok:(x,y)=>stIsKind(stCell(x,y),'anim')}],
+ desc:'<b>애니메이션 타일</b>은 칠한 칸이 정해진 속도로 프레임을 넘기는 타일이에요. 물 시트의 4칸을 프레임으로 쓰고, <b>무작위 시작</b>을 켜면 칸마다 시작 프레임이 달라 물결이 자연스러워져요.',
+ goal:'물 4프레임으로 애니메이션 타일을 만들어 8 fps · 무작위 시작으로 저장하고, 점선 연못을 칠하세요.',
+ checks:[
+  {t:'팔레트에서 <b>물</b> 시트로 바꾸고 4칸을 끌어서 고르기',ok:c=>c.ev.has('sel:water4')},
+  {t:'<b>인스펙터</b>의 <b>애니메이션 타일</b>로 만들기',ok:c=>c.ev.has('mk:anim')},
+  {t:'속도를 <b>8</b> fps로, <b>무작위 시작</b> 켜기',ok:stAnimOk},
+  {t:'<b>저장</b>하고 점선 연못 6칸을 칠하기',ok:c=>c.ev.has('mark:0')}],
+ hint:'물 시트는 한 줄에 4칸이에요. 왼쪽 칸을 누른 채 오른쪽 끝까지 끌어요.\n저장하면 바로 그 타일이 골라져서 격자에 칠할 수 있어요.'}
+];
+
 const LESSONS=[
   {...L2,problems:L2P,hash:'lesson-1',preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
   {...L1,problems:L1P,hash:'lesson-2',preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
   {...L3,problems:L3P,hash:'lesson-3',preview:'void Start()\n{\n    Light l = GetComponent<Light>();\n    l.intensity = 0.3f;\n}'},
   {...L4,problems:L4P,hash:'lesson-4',preview:'public int damage = 30;\npublic Text label;\n\nvoid Start()\n{\n    hero.hp -= damage;\n    label.text = "HP " + hero.hp;\n}'},
   {...L5,problems:L5P,hash:'lesson-5',preview:'void Update()\n{\n    Vector2 dir = new Vector2(h, v);\n    hero.Face(dir);\n    hero.Move(dir * speed\n              * Time.deltaTime);\n}'},
-  {...L6,problems:L6P,hash:'lesson-6',preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'}
+  {...L6,problems:L6P,hash:'lesson-6',preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'},
+  {...L7,problems:L7P,hash:'lesson-7',preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'}
 ];
 let LESSON=LESSONS[0],PROBLEMS=LESSON.problems;
 
@@ -1558,7 +1855,7 @@ function snRestore(){
 function snSetup(p){
   const base=p&&p.setup?p.setup():p&&p.task?SN_INIT.filter(o=>o.id!=='quiz').map(o=>({...o})):SN_INIT.map(o=>({...o}));
   SN_OBJS.length=0;base.forEach(o=>SN_OBJS.push(o));SN_EDIT=null;SN_EDIT_UI=null;
-  l6Setup(p);
+  l6Setup(p);stSetup(p);
   const tm=tmDefault();if(p&&p.task&&p.tiles)p.tiles(tm);tmLoad(tm);
   SN_UI.length=0;if(p&&p.uiSetup)p.uiSetup().forEach(u=>SN_UI.push(JSON.parse(JSON.stringify(u))));
   SN.tool='select';SN.layer=(p&&p.layer)||'t';SN.tile='floor';SN.hover=null;
@@ -2106,6 +2403,7 @@ const KUI={
 };
 let hOpen=true;
 function renderHier(){
+  if(STON){stHier();return}
   const q=($('#hFilter').value||'').trim().toLowerCase(),open=hOpen||!!q;
   const list=SN_OBJS.filter(o=>!q||o.name.toLowerCase().includes(q)||KUI[o.kind].tag.includes(q));
   if(q&&list.length&&list.length<=2)list.forEach(o=>TASK.ev.add('hfind:'+o.id));
@@ -2213,6 +2511,7 @@ function renderInspUi(id){
   $('#insp').innerHTML=h;
 }
 function renderInsp(){
+  if(STON){stInsp();return}
   if(SN.sel&&SN.sel[1]===':'){if(SN.sel[0]==='L'){renderInspTm(SN.sel.slice(2));return}if(SN.sel[0]==='U'){renderInspUi(SN.sel.slice(2));return}}
   const o=SN_OBJS.find(x=>x.id===SN.sel);
   if(!o){$('#insp').innerHTML='<p class="note" style="padding:12px">계층 구조나 씬 뷰에서 오브젝트를 고르세요.</p>';return}
@@ -2470,6 +2769,68 @@ function taskCheck(){
   else{const d=document.createElement('div');d.innerHTML=p.checks[i].t;setVerdict('bad',esc('아직 남은 일이 있어요 · '+(i+1)+'번: '+d.textContent))}
 }
 $('#tkCheck').onclick=taskCheck;
+/* ---- 레슨 7 입력 (인스펙터 · 계층 구조 · 팔레트 · 격자) ---- */
+$('#insp').addEventListener('click',e=>{
+  if(!STON)return;const b=e.target.closest('[data-sa]');if(!b||b.disabled)return;
+  const a=b.dataset.sa,E=ST.edit,d=E&&E.d,ri=+b.dataset.ri,R=d&&d.rules&&d.rules[ri],ti=+b.dataset.ti;
+  if(a==='mk-rule'){stNew('rule');return}if(a==='mk-anim'){stNew('anim');return}
+  if(a==='save'){stSave();return}if(a==='close'){ST.edit=null;renderInsp();return}
+  if(!d)return;
+  if(a==='nb'){const k=+b.dataset.k;R.nb[k]=(R.nb[k]+1)%3;stEv('nb')}
+  else if(a==='def'||a==='rtile'||a==='frame'){const c=stFirst();if(!c)return;if(a==='def')d.def=c[0].v;else if(a==='rtile'){R.tiles=[c[0].v];if(c[0].v==='terrain:3')stEv('tile:island')}else d.frames[ti]=c[0].v}
+  else if(a==='fadd'){const c=stFirst();if(!c)return;d.frames.push(...c.map(q=>q.v));d.frames=d.frames.slice(0,16)}
+  else if(a==='fdel')d.frames.splice(ti,1);
+  else if(a==='radd'){d.rules.push({nb:[0,0,0,0,0,0,0,0],out:'single',tiles:[d.def].filter(Boolean),fps:6,tf:'fixed'});stEv('radd')}
+  else if(a==='rup'&&ri>0){d.rules.splice(ri-1,0,d.rules.splice(ri,1)[0])}
+  else if(a==='rdn'&&ri<d.rules.length-1){d.rules.splice(ri+1,0,d.rules.splice(ri,1)[0])}
+  else if(a==='rdel')d.rules.splice(ri,1);
+  else return;
+  renderInsp();tkPing();
+});
+$('#insp').addEventListener('contextmenu',e=>{if(!STON)return;const b=e.target.closest('[data-sa="nb"]');if(!b||!ST.edit)return;e.preventDefault();const R=ST.edit.d.rules[+b.dataset.ri],k=+b.dataset.k;R.nb[k]=(R.nb[k]+2)%3;renderInsp();tkPing()});
+$('#insp').addEventListener('change',e=>{
+  if(!STON||!ST.edit)return;const t=e.target,d=ST.edit.d,f=t.dataset.sf;
+  if(t.id==='stName'){d.name=t.value.trim().slice(0,30)||d.name}
+  else if(f==='fps')d.fps=clamp(+t.value||6,.5,30);else if(f==='rand')d.rand=t.checked;else if(f==='tf')d.rules[+t.dataset.ri].tf=t.value;else return;
+  renderInsp();tkPing();
+});
+/* 계층 구조: 타일맵 하나 + 특수 타일 목록 */
+function stHier(){
+  const n=ST.grid.filter(Boolean).length;
+  $('#hier').innerHTML=`<div class="tr" style="--d:0" role="treeitem"><span class="fold sp"></span><span class="ti">${ico('scene')}</span><span class="tl"><b>특수 타일 실습</b></span><span class="ts">${ST_W}×${ST_H}</span></div>`+
+    `<div class="tr" style="--d:1" role="treeitem"><span class="fold sp"></span><span class="ti">${ico('tilemap')}</span><span class="tl"><b>타일맵 1</b></span><span class="ts">${n}</span></div>`+
+    ST.list.map(s=>`<div class="tr${ST.act===s.id?' on':''}" style="--d:2" role="treeitem" tabindex="0" aria-selected="${ST.act===s.id}" data-st="${s.id}"><span class="fold sp"></span><span class="ti"><span class="sttag ${s.kind}">${s.kind==='rule'?'룰':'애니'}</span></span><span class="tl" data-i18n-skip>${esc(s.name)}</span><span class="ts">${s.kind==='rule'?esc(_t('규칙 {n}개',{n:s.rules.length})):esc(s.fps+' fps')}</span></div>`).join('');
+}
+$('#hier').addEventListener('click',e=>{if(!STON)return;const r=e.target.closest('[data-st]');if(r)stActivate(r.dataset.st)},true);
+/* 팔레트 · 격자 입력 */
+$('#stPal').addEventListener('click',e=>{
+  const sh=e.target.closest('[data-sh]');if(sh){ST.sheet=sh.dataset.sh;stRenderPal();return}
+  const sp=e.target.closest('[data-st]');if(sp){stActivate(sp.dataset.st);return}
+  const tl=e.target.closest('[data-stt]');if(tl){ST.tool=tl.dataset.stt;if(ST.tool==='erase')TASK.ev.add('tool:erase');stRenderPal();stDraw();tkPing()}
+});
+$('#stPal').addEventListener('pointerdown',e=>{
+  const cv=e.target.closest('#stSheet');if(!cv||e.button)return;const sh=ST_SHEETS[ST.sheet],r=cv.getBoundingClientRect();
+  const at=ev=>[clamp(Math.floor((ev.clientX-r.left)/r.width*sh.cols),0,sh.cols-1),clamp(Math.floor((ev.clientY-r.top)/r.height*sh.rows),0,sh.rows-1)];
+  const[x,y]=at(e);ST.psel={x,y};ST.act=null;
+  ST.sel={sheet:ST.sheet,c0:x,r0:y,cw:1,rh:1};ST.tool='brush';stRenderPal();
+  const mv=ev=>{const[a,b]=at(ev);ST.sel={sheet:ST.sheet,c0:Math.min(x,a),r0:Math.min(y,b),cw:Math.abs(a-x)+1,rh:Math.abs(b-y)+1};stRenderPal()};
+  const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);stPick();renderInsp();renderHier()};
+  addEventListener('pointermove',mv);addEventListener('pointerup',up);e.preventDefault();
+});
+{const cv=$('#stCv');
+  const cellOf=e=>{const L=cv._lay;if(!L)return null;const r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left-L.ox)/L.S),y=Math.floor((e.clientY-r.top-L.oy)/L.S);return x<0||y<0||x>=ST_W||y>=ST_H?null:[x,y]};
+  cv.addEventListener('pointerdown',e=>{if(!STON||e.button)return;const c=cellOf(e);if(!c)return;ST.drag=true;try{cv.setPointerCapture(e.pointerId)}catch(_){}stPaint(c[0],c[1]);stDraw()});
+  cv.addEventListener('pointermove',e=>{if(!STON)return;const c=cellOf(e);ST.hover=c;if(ST.drag&&c)stPaint(c[0],c[1]);stDraw()});
+  cv.addEventListener('pointerup',()=>{if(ST.drag){ST.drag=false;renderHier()}});
+  cv.addEventListener('pointerleave',()=>{ST.hover=null;stDraw()});
+  if(window.ResizeObserver)new ResizeObserver(()=>stDraw()).observe(cv.parentElement);
+}
+setInterval(()=>{if(!STON||document.hidden)return;stDraw();const pv=$('#stAnimPv'),E=ST.edit;const t=performance.now()/1000;
+  if(pv&&E&&E.d.kind==='anim'){const g=pv.getContext('2d'),S=pv.height/2,tmp=Object.assign({},E.d,{id:'__pv'});g.clearRect(0,0,pv.width,pv.height);g.imageSmoothingEnabled=false;
+    for(let y=0;y<2;y++)for(let x=0;x<5;x++){const rr=stResolve(tmp,()=>0,x,y,t,'sp:__pv');if(rr&&rr.v)stTile(g,rr.v,x*S,y*S,S)}}
+  document.querySelectorAll('#stPal canvas[data-stth]').forEach(c=>{const sp=stOf(c.dataset.stth);if(sp&&sp.kind==='anim')stThumb(c,sp,t)})},90);
+
+
 $('#tkReset').onclick=()=>{
   const p=P();if(!p||!p.task)return;
   playStop(true);snSetup(p);TASK.ev=new Set();tkLast='';renderTools();
