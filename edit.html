@@ -1424,7 +1424,8 @@ html.is-playing .panel[data-id="insp"] .pbody::before{content:"▶ 플레이 중
 .gaud .audur{position:absolute;left:5px;top:4px;font:10px var(--f-mono);color:rgba(255,255,255,.75)}
 .aurow.on{background:var(--hover)}
 .mgrcard{display:flex;flex-direction:column;gap:6px;margin:6px 8px;padding:10px 12px;border-radius:14px;background:rgba(124,108,240,.12);border:1px solid rgba(124,108,240,.35)}
-.mgrcard b{display:flex;align-items:center;gap:6px;color:#b9b0ff}.mgrcard span{color:var(--mute);font-size:11.5px;line-height:1.5}.mgrcard .btn{align-self:flex-start}
+.mgrcard b{display:flex;align-items:center;gap:6px;color:#b9b0ff}.mgrcard>span{color:var(--mute);font-size:11.5px;line-height:1.5}.mgrcard .btn{align-self:flex-start}
+.mgrcard .mgrbtns{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.mgrcard .mgrbtns .plearn{height:24px}
 .mgrlist{display:flex;flex-direction:column;gap:4px;margin:6px 8px}
 .mgrrow{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;text-align:left;padding:7px 10px;border-radius:12px;border:1px solid var(--line);background:var(--btn)}
 .mgrrow:hover{background:var(--btn-h)}.mgrrow .ic{grid-row:span 2;color:#b9b0ff}.mgrrow small{color:var(--mute);font-size:10.5px}
@@ -4949,7 +4950,7 @@ function renderHier(){
     if(!q||ML.length){
       const mk='mgr',mOpen=q?true:isOpen(mk,true);
       h+=tr({d:1,key:mk,foldable:true,open:mOpen,on:hierPick==='mgrfolder',icon:ico('mgr'),color:'#9a8cff',label:'매니저',sub:ML.length,data:'data-t="mgrfolder"',
-        acts:`<button class="ib" data-act="mgrhelp" title="매니저란?" aria-label="매니저란?">?</button><button class="ib" data-act="mgradd" title="새 매니저 (빈 오브젝트 · 스크립트만)" aria-label="새 매니저">${ico('plus')}</button>`});
+        acts:`<button class="ib" data-act="mgrhelp" title="매니저란?" aria-label="매니저란?">?</button><button class="ib" data-act="mgrlearn" title="「씬과 매니저」 학습하기" aria-label="「씬과 매니저」 학습하기">${ico('learn')}</button><button class="ib" data-act="mgradd" title="새 매니저 (빈 오브젝트 · 스크립트만)" aria-label="새 매니저">${ico('plus')}</button>`});
       if(mOpen)ML.forEach(o=>{h+=tr({d:2,icon:ico('mgr'),color:'#9a8cff',label:enm(o.name),sub:(o.scripts||[]).length?(o.scripts.length+'<small> .cs</small>'):'',on:hierPick==='mgr'&&selMgr===o.id,data:`data-t="mgr" data-rk="${o.id}"`,
         acts:`<button class="ib" data-act="mgrdel" title="삭제" aria-label="삭제">${ico('x')}</button>`})});
     }
@@ -4969,6 +4970,7 @@ $('#hier').addEventListener('click',e=>{
   const t=r.dataset.t,sid=r.dataset.s,rk=r.dataset.rk,act=e.target.closest('[data-act]')?.dataset.act,wasUi=layerSel==='ui';
   if(act==='psettings'){openProjectSettings();return}
   if(act==='mgrhelp'){mgrGuide();return}
+  if(act==='mgrlearn'){learnIntro('lesson-8');return}
   if(act==='mgradd'){mgrCreate();return}
   if(act==='mgrdel'){mgrDelete(rk);return}
   if(t==='mgrfolder'){mgrPick(null);return}
@@ -9503,8 +9505,8 @@ document.getElementById('bLearn').onclick=learnToggle;
    창 머리글의 「학습」 버튼: 그 창과 관련된 레슨으로 학습 창을 바로 열어 줍니다 (레슨이 둘 이상이면 고르기).
    상황별 안내: 주인공 스크립트를 만들었을 때 · 처음 Debug.Log가 콘솔에 찍힐 때 · 애니메이터/애니메이션 탭을 처음 열 때 (각각 한 번만).
    새 레슨을 만들면 LEARN_LESSONS(해시 → 제목)와 LEARN_PANEL(창 → 해시들)에 한 줄만 더하면 됩니다. */
-const LEARN_LESSONS={'lesson-1':'타일맵 · 게임 오브젝트 · UI','lesson-2':'콘솔 출력','lesson-3':'컴포넌트 활용','lesson-4':'변수 · 캐릭터 · 아이템 · UI','lesson-5':'주인공 스크립트 만들기','lesson-6':'애니메이션 다루기','lesson-7':'특수 타일 (룰 · 애니메이션)'};
-const LEARN_PANEL={hier:['lesson-1'],insp:['lesson-3','lesson-4'],console:['lesson-2'],script:['lesson-2','lesson-5'],palette:['lesson-1','lesson-7'],animator:['lesson-6'],anim:['lesson-6']};
+const LEARN_LESSONS={'lesson-1':'타일맵 · 게임 오브젝트 · UI','lesson-2':'콘솔 출력','lesson-3':'컴포넌트 활용','lesson-4':'변수 · 캐릭터 · 아이템 · UI','lesson-5':'주인공 스크립트 만들기','lesson-6':'애니메이션 다루기','lesson-7':'특수 타일 (룰 · 애니메이션)','lesson-8':'씬과 매니저'};
+const LEARN_PANEL={hier:['lesson-1','lesson-8'],insp:['lesson-3','lesson-4'],console:['lesson-2'],script:['lesson-2','lesson-5'],palette:['lesson-1','lesson-7'],animator:['lesson-6'],anim:['lesson-6']};
 const LEARN_NUDGES={
   console:{h:'lesson-2',t:'콘솔 출력 배우기',d:'Debug.Log로 콘솔에 값을 찍어 보는 방법을 연습해 볼까요?'},
   anim:{h:'lesson-6',t:'애니메이션 다루기 배우기',d:'애니메이터의 상태 · 전환과 애니메이션 클립을 직접 만져 보며 익혀요.'},
@@ -9519,8 +9521,10 @@ const LEARN_INFO={
   'lesson-4':{lv:2,s:'변수로 캐릭터와 아이템의 값을 바꾸고, 그 값을 UI 텍스트와 버튼으로 화면에 연결해요.',kw:['변수','public 필드','UI 연결'],steps:['변수로 체력 깎기','한도까지만 회복하기','아이템 수량 바꾸기','아이템이 있을 때만 쓰기','가까운 아이템 줍기','UI 버튼으로 포션 쓰기']},
   'lesson-5':{lv:3,s:'엔진의 주인공 이동 스크립트(HeroMovement.cs)를 처음부터 끝까지 직접 만들어요.',kw:['Update()','키 입력','Vector2'],steps:['뼈대와 Hero 컴포넌트','Update와 입력 읽기','입력 방향으로 움직이기','멈춤과 바라보는 방향','대각선 속도 맞추기','Shift로 달리기','인스펙터 정리하고 완성']},
   'lesson-6':{lv:2,s:'애니메이터 창에서 상태 · 전환 · 파라미터를, 애니메이션 창에서 클립 · 키를 다루고, 새 동작을 만들어 스크립트로 발동해요.',kw:['애니메이터','애니메이션 클립','SetTrigger'],steps:['애니메이터 창 둘러보기','플레이하며 상태 바뀌는 것 보기','클립 고치기 (애니메이션 창)','새 클립 만들기 (깡충)','상태와 전환 연결하기','스크립트로 깡충 (SetTrigger)']},
-  'lesson-7':{lv:2,s:'룰 타일로 가장자리가 저절로 맞춰지는 지형을, 애니메이션 타일로 움직이는 물을 만들어요.',kw:['룰 타일','애니메이션 타일','타일 팔레트'],steps:['룰 타일 만들기','룰 타일 칠하기','규칙 추가하기 (섬)','애니메이션 타일 (물)']}
+  'lesson-7':{lv:2,s:'룰 타일로 가장자리가 저절로 맞춰지는 지형을, 애니메이션 타일로 움직이는 물을 만들어요.',kw:['룰 타일','애니메이션 타일','타일 팔레트'],steps:['룰 타일 만들기','룰 타일 칠하기','규칙 추가하기 (섬)','애니메이션 타일 (물)']},
+  'lesson-8':{lv:3,s:'게임을 여러 씬으로 나눠 포탈로 잇고 시작 씬을 정하고, 씬이 바뀌어도 살아 있는 매니저(BGM 매니저 · 게임 매니저)로 음악과 목숨을 이어 가요.',kw:['씬 전환','매니저','SceneManager'],steps:['새 씬 만들고 포탈로 잇기','시작 씬 바꾸기','BGM 매니저 · 이어지는 음악','게임 매니저 만들기','지금 씬 알아내기','다음 씬 불러오기','BGM 매니저 스크립트','게임 매니저 · 목숨과 다시 시작']}
 };
+if(window.TI18N)TI18N.add({"씬과 매니저": ["Scenes and Managers", "シーンとマネージャー", "场景与管理器"], "게임을 여러 씬으로 나눠 포탈로 잇고 시작 씬을 정하고, 씬이 바뀌어도 살아 있는 매니저(BGM 매니저 · 게임 매니저)로 음악과 목숨을 이어 가요.": ["Split a game into scenes, connect them with portals, set the start scene, and keep music and lives going with managers (BGM manager, game manager) that survive scene changes.", "ゲームを複数のシーンに分けてポータルでつなぎ、開始シーンを決め、シーンが変わっても生き続けるマネージャー（BGMマネージャー・ゲームマネージャー）で音楽と残機を引き継ぎます。", "把游戏拆成多个场景并用传送门连接、设定起始场景，再用切换场景后依然存在的管理器（BGM 管理器 · 游戏管理器）延续音乐和生命数。"], "씬 전환": ["Scene switching", "シーン切り替え", "场景切换"], "새 씬 만들고 포탈로 잇기": ["Create a scene and link it with a portal", "新しいシーンを作ってポータルでつなぐ", "新建场景并用传送门连接"], "시작 씬 바꾸기": ["Change the start scene", "開始シーンを変える", "更换起始场景"], "BGM 매니저 · 이어지는 음악": ["BGM manager · continuous music", "BGMマネージャー・途切れない音楽", "BGM 管理器 · 连续的音乐"], "게임 매니저 만들기": ["Create a game manager", "ゲームマネージャーを作る", "创建游戏管理器"], "지금 씬 알아내기": ["Find the current scene", "現在のシーンを調べる", "获取当前场景"], "다음 씬 불러오기": ["Load the next scene", "次のシーンを読み込む", "加载下一个场景"], "BGM 매니저 스크립트": ["BGM manager script", "BGMマネージャーのスクリプト", "BGM 管理器脚本"], "게임 매니저 · 목숨과 다시 시작": ["Game manager · lives and restart", "ゲームマネージャー・残機とリスタート", "游戏管理器 · 生命数与重新开始"], "「씬과 매니저」 학습하기": ["Learn “Scenes and Managers”", "「シーンとマネージャー」を学ぶ", "学习“场景与管理器”"], "학습하기": ["Learn", "学ぶ", "学习"]});
 function learnIntro(h){
   const I=LEARN_INFO[h];if(!I){learnGo(h);return}
   const body=`<div class="linfo"><p class="li-s">${esc(_t(I.s))}</p>`+
@@ -9964,7 +9968,7 @@ function mgrGuide(){
     AudioSource bgm = GetComponent<AudioSource>();
     bgm.loop = true;
     bgm.Play();   // 오디오 소스의 클립을 반복 재생
-}`)}</pre></div>`,[{t:'확인',cls:'pri'}]);
+}`)}</pre></div>`,[{t:'학습하기',fn:()=>{learnIntro('lesson-8');return false}},{t:'확인',cls:'pri'}]);
   $('#modal .modal').classList.add('wide');
 }
 const mgrGuideOnce=()=>{let seen=false;try{seen=localStorage.getItem(MGR_GUIDE_K)==='1'}catch(e){}if(!seen)setTimeout(mgrGuide,60)};
@@ -9985,7 +9989,7 @@ function mgrDelete(id){
 }
 function mgrInspHtml(){
   const o=hierPick==='mgr'?mgrSel():null,L0=mgrList();
-  const card=`<div class="mgrcard"><b>${ico('mgr')} 매니저</b><span>게임 전체를 맡는 보이지 않는 오브젝트입니다. 씬에 그려지지 않고, 스크립트와 오디오 소스 같은 보이지 않는 컴포넌트를 붙이며, 씬이 바뀌어도 계속 동작합니다.</span><button type="button" class="btn sm" data-mgract="guide">매니저란?</button></div>`;
+  const card=`<div class="mgrcard"><b>${ico('mgr')} 매니저</b><span>게임 전체를 맡는 보이지 않는 오브젝트입니다. 씬에 그려지지 않고, 스크립트와 오디오 소스 같은 보이지 않는 컴포넌트를 붙이며, 씬이 바뀌어도 계속 동작합니다.</span><span class="mgrbtns"><button type="button" class="btn sm" data-mgract="guide">매니저란?</button><button type="button" class="plearn" data-mgract="learn" title="「씬과 매니저」 학습하기" aria-label="「씬과 매니저」 학습하기">${ico('learn')}<span>학습</span></button></span></div>`;
   if(!o){
     return`<div class="ihead"><span class="ibadge" style="background:#7c6cf0">${ico('mgr')}</span><b style="font-size:13px">매니저</b><span class="spacer"></span><small class="hint">${L0.length}개</small></div>${card}
       <div class="mgrlist">${L0.map(x=>`<button type="button" class="mgrrow" data-mgrpick="${x.id}">${ico('mgr')}<b data-i18n-skip>${esc(x.name)}</b><small>${(x.scripts||[]).map(i=>{const s=scriptOf(i.sid);return s?esc(s.name)+'.cs':''}).filter(Boolean).join(', ')||esc(_t('스크립트 없음'))}</small></button>`).join('')||'<p class="hint">매니저가 없습니다.</p>'}</div>
@@ -9999,7 +10003,7 @@ function mgrInspHtml(){
     <div class="irow"><div class="addsplit"><button class="btn pri" id="iAddComp" type="button">컴포넌트 추가</button><span class="bar" aria-hidden="true"></span><button class="btn pri" id="iAddScript" type="button">스크립트 추가</button></div><p class="hint" style="margin-top:6px">매니저에는 스크립트와 오디오 소스 · 메모처럼 씬에 보이지 않는 컴포넌트만 붙일 수 있습니다. 그림 · 콜라이더 · 빛은 게임 오브젝트에 붙이세요.</p></div>`;
 }
 $('#insp').addEventListener('click',e=>{
-  const a=e.target.closest('[data-mgract]');if(a){const k=a.dataset.mgract;if(k==='guide')mgrGuide();else if(k==='new')mgrCreate();else if(k==='del'&&selMgr)mgrDelete(selMgr);return}
+  const a=e.target.closest('[data-mgract]');if(a){const k=a.dataset.mgract;if(k==='guide')mgrGuide();else if(k==='learn')learnIntro('lesson-8');else if(k==='new')mgrCreate();else if(k==='del'&&selMgr)mgrDelete(selMgr);return}
   const pk=e.target.closest('[data-mgrpick]');if(pk)mgrPick(pk.dataset.mgrpick);
 });
 $('#insp').addEventListener('input',e=>{if(e.target.dataset.mgr==='name'){const o=mgrSel();if(o){o.name=e.target.value;markDirty();renderHier()}}});

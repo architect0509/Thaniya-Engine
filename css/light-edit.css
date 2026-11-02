@@ -721,6 +721,7 @@ html[data-theme="light"] .aurow.on{background:var(--hover)}
 html[data-theme="light"] .mgrcard{background:rgba(124,108,240,.12);border:1px solid rgba(124,108,240,.35)}
 html[data-theme="light"] .mgrcard b{color:#0e007a}
 html[data-theme="light"] .mgrcard span{color:var(--mute)}
+html[data-theme="light"] .mgrcard .plearn span{color:inherit}
 html[data-theme="light"] .mgrrow{border:1px solid var(--line);background:var(--btn)}
 html[data-theme="light"] .mgrrow:hover{background:var(--btn-h)}
 html[data-theme="light"] .mgrrow .ic{color:#0e007a}

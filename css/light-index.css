@@ -153,3 +153,9 @@ html[data-theme="light"]{--bg:#f3f3f6;--panel:#ffffff;--raised:#ececf1;--fg:#121
 html[data-theme="light"] .btn.main{background:#131318;color:#fff;border-color:#131318}
 html[data-theme="light"] .btn.main:hover{background:var(--accent);border-color:var(--accent);color:#0b0b0e}
 html[data-theme="light"] .btn{border-color:rgba(0,0,0,.45);background:rgba(255,255,255,.6)}
+
+/* 헤더 (라이트) — 알약 묶음 메뉴와 그라데이션 버튼 */
+html[data-theme="light"] .hc{border-color:var(--line);background:rgba(0,0,0,.03)}
+html[data-theme="light"] header .hc a.on{background:rgba(233,189,12,.2);color:var(--accent-tx)}
+html[data-theme="light"] header a.cta{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);box-shadow:0 3px 10px rgba(233,189,12,.3),inset 0 1px 0 rgba(255,255,255,.5)}
+html[data-theme="light"] header a.cta:hover{background:linear-gradient(180deg,#f6cd2a,#e9bd0c)}

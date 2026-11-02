@@ -490,6 +490,44 @@ html[data-theme="light"] .stpv{background:#eaecf0}
 html[data-theme="light"] .stselpv{background:#eaecf0}
 html[data-theme="light"] .stinfo{color:var(--tx)}
 html[data-theme="light"] .stmk .btn small{color:var(--mut)}
+html[data-theme="light"] .smbar{border-bottom:1px solid var(--line);background:var(--panel)}
+html[data-theme="light"] .smbt{color:var(--tx)}
+html[data-theme="light"] .smsc{border:1px solid var(--line);background:var(--raised);color:var(--tx)}
+html[data-theme="light"] .smsc i{background:rgba(0,0,0,0.08);color:var(--mut)}
+html[data-theme="light"] .smsc em{color:var(--warnc,#a37b00)}
+html[data-theme="light"] .smsc:hover{border-color:var(--y)}
+html[data-theme="light"] .smsc.on{border-color:var(--y);background:rgba(246,205,42,.12)}
+html[data-theme="light"] .smsc.cur{box-shadow:0 0 0 2px rgba(92,192,138,0.49)}
+html[data-theme="light"] .smsc.cur i{background:#5cc08a;color:#06210f}
+html[data-theme="light"] .smbar .playbtn.on{background:#ea6773;border-color:#ea6773;color:#fff}
+html[data-theme="light"] .smside{border-left:1px solid var(--line);background:rgba(0,0,0,0.015)}
+html[data-theme="light"] .smh{color:var(--mut)}
+html[data-theme="light"] .smtip{color:var(--mut)}
+html[data-theme="light"] .smkv dt{color:var(--mut)}
+html[data-theme="light"] .smkv small{color:var(--mut)}
+html[data-theme="light"] .smm{border:1px solid rgba(154,140,255,.35);background:rgba(154,140,255,.07)}
+html[data-theme="light"] .smm small{color:var(--mut)}
+html[data-theme="light"] .smbad{background:rgba(154,140,255,.22);color:#11007a}
+html[data-theme="light"] .smon{color:#2c784f}
+html[data-theme="light"] .smoff{color:var(--mut)}
+html[data-theme="light"] .smlog li{background:rgba(0,0,0,0.035)}
+html[data-theme="light"] .smlog li .mono{color:var(--mut)}
+html[data-theme="light"] .smlog li.load{background:rgba(58,174,196,.12)}
+html[data-theme="light"] .smlog li.ok{background:rgba(92,192,138,.12)}
+html[data-theme="light"] .smlog li.warn{background:rgba(255,210,74,.13)}
+html[data-theme="light"] .smlog li.call{background:rgba(154,140,255,.12)}
+html[data-theme="light"] .tr.smt.start .tl::after{color:var(--warnc,#a37b00)}
+html[data-theme="light"] .tr.smt.on.start .tl::after{color:inherit}
+html[data-theme="light"] .smcard{border:1px solid rgba(154,140,255,.35);background:rgba(154,140,255,.08)}
+html[data-theme="light"] .smcard b{color:#11007a}
+html[data-theme="light"] .smcard span{color:var(--mut)}
+html[data-theme="light"] .smmrow{border:1px solid var(--line);background:var(--raised);color:var(--tx)}
+html[data-theme="light"] .smmrow:hover{border-color:var(--y)}
+html[data-theme="light"] .smmrow small{color:var(--mut)}
+html[data-theme="light"] .smcode{background:var(--field)}
+@media (max-width:860px){
+html[data-theme="light"] .smside{border-left:0;border-top:1px solid var(--line)}
+}
 
 /* ===== 수동 보정 ===== */
 /* 학습 (learning.html) */

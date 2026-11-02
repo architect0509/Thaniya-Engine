@@ -925,6 +925,63 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
 .stmk .btn{height:auto;min-height:46px;padding:7px 9px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
 .stbar .btn:disabled{opacity:.4;cursor:default}
 .stmk .btn small{font-size:10.5px;color:var(--mut);font-weight:400}
+/* ---- 레슨 8: 씬 · 매니저 실습장 (씬 뷰 자리) · 계층 구조 줄 버튼 ---- */
+.ws.sm8 #views,.ws.sm8 #sTools,.ws.sm8 .view-pn .vtabs,.ws.sm8 .view-pn .vtitle{display:none!important}
+.smtitle{display:none;font-size:12px;font-weight:600}.ws.sm8 .smtitle{display:inline-flex;align-items:center;gap:6px}
+.smview{flex:1;min-height:0;display:flex;flex-direction:column}
+.smview[hidden]{display:none}
+.smbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;border-bottom:1px solid var(--line);background:var(--panel)}
+.smbt{font-size:11.5px;font-weight:600;color:var(--tx)}
+.smscs{display:flex;gap:6px;flex-wrap:wrap}
+.smsc{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px 0 4px;border:1px solid var(--line);border-radius:999px;background:var(--raised);color:var(--tx);font:inherit;font-size:12px;cursor:pointer}
+.smsc i{font-style:normal;font:600 10.5px var(--fm);min-width:18px;height:18px;border-radius:999px;display:inline-grid;place-items:center;background:rgba(255,255,255,.08);color:var(--mut)}
+.smsc em{font-style:normal;color:var(--warnc,#ffd24a)}
+.smsc:hover{border-color:var(--y)}
+.smsc.on{border-color:var(--y);background:rgba(246,205,42,.12)}
+.smsc.cur{box-shadow:0 0 0 2px rgba(92,192,138,.7)}
+.smsc.cur i{background:#5cc08a;color:#06210f}
+.smbar .playbtn{margin-left:auto}
+.smbar .playbtn.on{background:#ea6773;border-color:#ea6773;color:#fff}
+.smmain{flex:1;min-height:0;display:flex;gap:0}
+.smstage{flex:1;min-width:0;display:flex;flex-direction:column}
+.smcvw{flex:1;min-height:170px;position:relative}
+.smcvw canvas{position:absolute;inset:0}
+.smacts{display:flex;gap:6px;flex-wrap:wrap;padding:6px 10px 8px;justify-content:center}
+.smacts[hidden]{display:none}
+.smacts .btn{height:28px}
+.smacts .note{margin:0}
+.smside{width:var(--smsw,250px);flex:none;overflow:auto;border-left:1px solid var(--line);padding:8px 10px 10px;font-size:12px;background:rgba(255,255,255,.015)}
+.smh{font-size:11px;font-weight:700;color:var(--mut);margin:10px 0 5px;text-transform:none;letter-spacing:.02em}
+.smh:first-child{margin-top:0}
+.smtip{margin:0 0 6px;font-size:11.5px;color:var(--mut);line-height:1.5}
+.smkv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0}
+.smkv dt{color:var(--mut)}.smkv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.smkv small{color:var(--mut)}
+.smside .mono,.smlog .mono{font-family:var(--fm)}
+.smml{display:flex;flex-direction:column;gap:5px}
+.smm{border:1px solid rgba(154,140,255,.35);border-radius:9px;padding:5px 8px;background:rgba(154,140,255,.07)}
+.smm b{font-weight:600;margin-right:6px}.smm small{color:var(--mut);font-size:11px}
+.smbad{display:inline-block;font:600 10px var(--fm);padding:0 6px;border-radius:999px;background:rgba(154,140,255,.22);color:#c9c0ff;line-height:16px}
+.smon{color:#5cc08a;font-family:var(--fm);font-size:11.5px}.smoff{color:var(--mut);font-size:11.5px}
+.smlog{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;font-size:11.5px;line-height:1.45}
+.smlog li{padding:3px 6px;border-radius:7px;background:rgba(255,255,255,.035)}
+.smlog li .mono{color:var(--mut);margin-right:6px;font-size:10.5px}
+.smlog li.load{background:rgba(58,174,196,.12)}.smlog li.ok{background:rgba(92,192,138,.12)}.smlog li.warn{background:rgba(255,210,74,.13)}.smlog li.call{background:rgba(154,140,255,.12)}
+.tr.smt .tact{display:inline-flex;gap:1px;margin-left:2px;opacity:0;transition:opacity .1s}
+.tr.smt:hover .tact,.tr.smt:focus-within .tact,.tr.smt.on .tact{opacity:1}
+.tr.smt .tact .ib{width:20px;height:20px;padding:0;display:inline-grid;place-items:center;font-size:11px;font-weight:700}
+.tr.smt .tact .ic{width:12px;height:12px}
+.tr.smt.start .tl::after{content:" ★";color:var(--warnc,#ffd24a)}
+.tr.smt.on.start .tl::after{color:inherit}
+.smcard{margin:0 8px 6px;padding:8px 10px;border:1px solid rgba(154,140,255,.35);border-radius:12px;background:rgba(154,140,255,.08);font-size:11.5px;line-height:1.5;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.smcard b{display:inline-flex;align-items:center;gap:5px;color:#c9c0ff}.smcard span{color:var(--mut)}
+.smmlist{display:flex;flex-direction:column;gap:4px;margin:4px 8px}
+.smmrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--raised);color:var(--tx);font:inherit;font-size:12px;cursor:pointer;text-align:left}
+.smmrow:hover{border-color:var(--y)}.smmrow small{margin-left:auto;color:var(--mut);font-size:11px}
+.smadd{gap:6px}.smadd .btn{max-width:none;flex:1}
+.smcode{margin:8px 0 0;max-height:240px;overflow:auto;padding:8px 10px;border-radius:9px;background:var(--field);font:11px/1.5 var(--fm);white-space:pre}
+.smguide{font-size:12.5px;line-height:1.6}.smguide ul{padding-left:18px;margin:6px 0}
+@media (max-width:860px){.smmain{flex-direction:column}.smside{width:auto;border-left:0;border-top:1px solid var(--line);max-height:260px}}
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -963,7 +1020,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
     <div class="phead">
       <span class="vtabs" role="tablist" aria-label="뷰 전환"><button class="vtab on" type="button" role="tab" aria-selected="true" data-v="pScene" data-ic="scene">씬</button><button class="vtab" type="button" role="tab" aria-selected="false" data-v="pGame" data-ic="game">게임</button></span>
       <span class="vtitle"><span class="vtab on" data-ic="scene">씬</span><span class="vtab on" data-ic="game">게임</span></span>
-      <span class="sttitle">특수 타일 실습장</span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
+      <span class="sttitle">특수 타일 실습장</span><span class="smtitle">씬 · 매니저 실습장</span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
     </div>
     <div class="ptool stools" id="sTools" hidden>
       <span class="sg" role="group" aria-label="칠할 곳"><b>칠할 곳</b><button type="button" data-layer="t">타일맵 1</button><button type="button" data-layer="c">콜라이더</button></span>
@@ -981,6 +1038,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
       </div><canvas id="cScene" aria-label="씬 뷰: 오브젝트를 눌러 선택하고 끌어서 옮길 수 있어요"></canvas><span class="vl">씬 뷰</span></div>
       <div class="vp" id="pGame"><span class="phint" id="pHint" hidden>방향키 또는 WASD로 주인공 이동 · Esc 정지</span><canvas id="cGame" aria-label="게임 뷰: 카메라에 보이는 화면"></canvas><span class="vl">게임 뷰</span></div>
     </div>
+    <div class="smview" id="smView" hidden><div class="smbar" id="smBar"></div><div class="smmain"><div class="smstage" id="smStage"><div class="smcvw"><canvas id="smCv" aria-label="씬 그림: 플레이 중에는 지금 씬을 보여 줘요"></canvas></div><div class="smacts" id="smActs" hidden></div></div><aside class="smside" id="smSide" aria-live="polite"></aside></div></div>
     <div class="stview" id="stView" hidden><div class="stpal" id="stPal"></div><div class="stgrid"><canvas id="stCv" aria-label="특수 타일을 칠해 보는 격자"></canvas></div></div>
   </section>
 
@@ -1079,7 +1137,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
 let OUT=[];
-function clog(type,msg){if(OUT.length<300)OUT.push([type,String(msg)])}
+function clog(type,msg){if(OUT.length<300)OUT.push([type,String(msg)]);if(SMRUN&&SMRUN.ev&&SMRUN.ev.length<80)SMRUN.ev.push([type==='info'?'':type,'💬 <span data-i18n-skip>'+esc(String(msg))+'</span>'])}
 let play=null;
 /* 레슨 5 입력 흉내: k = ['right','up','shift' …] → Input이 읽는 play 상태 (엔진과 같은 모양) */
 const FK_CODE={right:'ArrowRight',left:'ArrowLeft',up:'ArrowUp',down:'ArrowDown',shift:'ShiftLeft',space:'Space'};
@@ -1098,7 +1156,8 @@ function csErrMsg(e){
   if(e&&e.line!=null)msg=_t('({line}번째 줄) {msg}',{line:e.line,msg});
   return msg;
 }
-/* opt.ui = UI 요소 목록(Text 슬롯용) · opt.clicks = Start 다음에 OnClick()을 부를 횟수 (버튼 누르기) */
+/* opt.ui = UI 요소 목록(Text 슬롯용) · opt.clicks = Start 다음에 OnClick()을 부를 횟수 (버튼 누르기)
+   레슨 8: opt.sm = 씬 · 매니저 실행 문맥(SMRUN) · opt.selfObj = 스크립트가 붙은 오브젝트/매니저 · opt.calls = Start 다음에 부를 메서드 (엔진이 보내는 OnHeroDeath 등) */
 function runOnce(code,over,sc,opt){
   opt=opt||{};OUT=[];
   const res=parseCS(code);
@@ -1118,11 +1177,18 @@ function runOnce(code,over,sc,opt){
   /* 레슨 6: 주인공 애니메이터가 엔진과 같은 런타임으로 돎 (채점 결과는 sc.__an에) */
   const anPrev=L6RUN,anRun=(sc||[]).some(o=>o.props&&o.props.animator)?{m:mm,anim:new Map(),enter:{},seen:new Set(),last:null}:null;
   if(anRun){L6RUN=anRun;if(sc)sc.__an=anRun}
-  const cx={m:mm,o:(sc&&sc.find(q=>q.id===(opt.self||'quiz')))||{name:'Quiz',props:{}},rt,s:{id:1,name:res.cls||'Quiz'},pr:{r:res,ast:{}},scopes:[],me:null,loops:0,depth:0,dt:.016};
+  const smPrev=SMRUN;if(opt.sm)SMRUN=opt.sm;
+  const cx={m:mm,o:opt.selfObj||(sc&&sc.find(q=>q.id===(opt.self||'quiz')))||{name:'Quiz',props:{}},rt,s:{id:1,name:res.cls||'Quiz'},pr:{r:res,ast:{}},scopes:[],me:null,loops:0,depth:0,dt:.016};
   let fatal=false;
   csCur=cx;
   try{
     for(const n of['Awake','Start'])if(res.methods[n])csCallUser(cx,n,[]);
+    if(opt.sm)smFlush(opt.sm);
+    if(opt.calls)for(const n of opt.calls){
+      if(!res.methods[n]){OUT.push(['error',_t('{name}() 메서드가 없어요. void {name}() {{ }} 안에 할 일을 쓰세요.',{name:n}).replace('{{ }}','{ }')]);fatal=true;break}
+      if(opt.sm&&opt.sm.ev)opt.sm.ev.push(['call',esc(_t('엔진이 {name}()을(를) 보냄',{name:n}))]);
+      csCallUser(cx,n,[]);if(opt.sm)smFlush(opt.sm);
+    }
     if(opt.clicks){
       if(!res.methods.OnClick){OUT.push(['error',_t('OnClick() 메서드가 없어요. public void OnClick() { } 안에 버튼을 눌렀을 때 할 일을 쓰세요.')]);fatal=true}
       else for(let i=0;i<opt.clicks;i++)csCallUser(cx,'OnClick',[]);
@@ -1141,7 +1207,7 @@ function runOnce(code,over,sc,opt){
   }catch(e){
     fatal=true;
     OUT.push(['error',csErrMsg(e)]);
-  }finally{csCur=null;if(anRun&&!opt.keepAn)L6RUN=anPrev}
+  }finally{csCur=null;if(anRun&&!opt.keepAn)L6RUN=anPrev;SMRUN=smPrev}
   return{out:OUT.slice(),fatal,cx};
 }
 
@@ -1162,7 +1228,7 @@ function snTestScene(over,p){
 }
 function gradeProblem(p,code){
   const refs=p.scene?refsOf(p,code):{};
-  const runs=p.tests.map(t=>{const sc=p.scene?snTestScene(t.sc,p):null,ui=p.uiSetup?JSON.parse(JSON.stringify(p.uiSetup())):[];return{t,sc,ui,r:runOnce(code,Object.assign({},refs,t.f),sc,{ui,clicks:t.click||0,self:p.hero?'hero':null,frames:t.frames})}});
+  const runs=p.tests.map(t=>{const sc=p.scene?snTestScene(t.sc,p):null,ui=p.uiSetup?JSON.parse(JSON.stringify(p.uiSetup())):[],sm=p.sm?smCtx(p,t,false):null;return{t,sc:sc||sm,ui,r:runOnce(code,Object.assign({},refs,t.f),sc,{ui,clicks:t.click||0,self:p.hero?'hero':null,frames:t.frames,sm,selfObj:sm?sm.self:null,calls:t.calls})}});
   const first=runs[0].r;
   for(let i=0;i<runs.length;i++){
     const{t,sc,ui,r}=runs[i];
@@ -1901,6 +1967,506 @@ const L7P=[
  hint:'물 시트는 한 줄에 4칸이에요. 왼쪽 칸을 누른 채 오른쪽 끝까지 끌어요.\n저장하면 바로 그 타일이 골라져서 격자에 칠할 수 있어요.'}
 ];
 
+/* ===================== 레슨 8 · 씬과 매니저 (씬 전환 · 시작 씬 · BGM 매니저 · 게임 매니저) =====================
+   엔진(edit.html)의 씬 목록(P.maps · P.start · 포탈의 대상 씬)과 매니저(P.mgrs · 씬이 바뀌어도 계속 동작)를 줄인 실습장.
+   · 씬 뷰 자리 = 위쪽 「빌드 순서」(씬 목록 · 번호 = 계층 구조 순서) · 가운데 씬 그림 · 오른쪽 「플레이 상황」
+   · 계층 구조 = 프로젝트 → 씬(★ 시작 씬) → 게임 오브젝트 · 매니저 폴더 (엔진과 같은 자리 · 타일맵/UI 폴더는 줄임)
+   · 플레이: 시작 씬부터 열고 매니저 Start()를 한 번만 실행(엔진의 mgrTick과 같음) · 포탈 → 씬 전환 · 매니저와 BGM은 그대로
+   · 매니저 스크립트(BgmManager · GameManager)는 공용 C# 해석기(runOnce)로 실제로 실행 · BgmManager 코드는 엔진의 기본 BGM_CODE와 같음
+   · 코드 문제: SMRUN(실행 문맥)으로 SceneManager.GetActiveScene · LoadScene · RestartGame 과 AudioSource를 흉내 (엔진처럼 LoadScene은 그 메서드가 끝난 뒤 바뀜)
+   엔진의 매니저 · 씬 규칙을 바꾸면 여기도 같이 고칠 것 */
+if(window.TI18N)TI18N.add({"같은 매니저의 오디오 소스를 반복 재생해요 (엔진의 기본 BGM 매니저와 같은 코드).": ["Loops the Audio Source on the same manager (same code as the engine's default BGM manager).", "同じマネージャーのオーディオソースをループ再生します（エンジン標準の BGM マネージャーと同じコード）。", "循环播放同一管理器上的音频源（与引擎默认 BGM 管理器的代码相同）。"], "플레이를 시작하면 목숨을 출력해요. 씬이 바뀌어도 다시 불리지 않아요.": ["Prints the lives when play starts. It is not called again when the scene changes.", "プレイ開始時に残機を出力します。シーンが変わっても再び呼ばれません。", "开始运行时输出生命数。切换场景后不会再次调用。"], "매니저가 없어요.": ["No managers.", "マネージャーがありません。", "没有管理器。"], "MissingComponentException: {name}의 오디오 소스(AudioSource) 컴포넌트가 제거되었습니다": ["MissingComponentException: the Audio Source component of {name} has been removed", "MissingComponentException: {name} のオーディオソース（AudioSource）コンポーネントは削除されています", "MissingComponentException：{name} 的音频源（AudioSource）组件已被移除"], "{name}의 오디오 소스에 클립이 없습니다": ["The Audio Source on {name} has no clip", "{name} のオーディオソースにクリップがありません", "{name} 的音频源没有剪辑"], "▶ 플레이 시작 · 시작 씬 「{name}」부터": ["▶ Play started · from start scene “{name}”", "▶ プレイ開始 · 開始シーン「{name}」から", "▶ 开始运行 · 从起始场景“{name}”开始"], "씬 오브젝트를 새로 만들었어요": ["scene objects rebuilt", "シーンオブジェクトを作り直しました", "已重新创建场景对象"], "매니저 {n}개는 그대로": ["{n} manager(s) kept", "マネージャー {n} 個はそのまま", "{n} 个管理器保持不变"], "씬 「{name}」을(를) 불러왔어요 · 매니저 {n}개는 그대로 (Start는 다시 불리지 않아요)": ["Loaded scene “{name}” · {n} manager(s) kept (Start is not called again)", "シーン「{name}」を読み込みました · マネージャー {n} 個はそのまま（Start は再び呼ばれません）", "已加载场景“{name}” · {n} 个管理器保持不变（不会再次调用 Start）"], "포탈 「{name}」: 대상 씬이 지정되지 않았습니다": ["Portal “{name}”: no target scene is set", "ポータル「{name}」: 移動先シーンが指定されていません", "传送门“{name}”：未指定目标场景"], "씬에는 크기가 없습니다. 어디든 자유롭게 칠하고 배치하세요.": ["Scenes have no fixed size. Paint and place anywhere.", "シーンにはサイズがありません。どこにでも自由に塗って配置してください。", "场景没有固定大小，可以在任意位置绘制和摆放。"], "씬을 삭제합니다. 이 씬으로 연결된 포탈은 대상이 비게 됩니다.": ["scene will be deleted. Portals pointing to it will lose their target.", "シーンを削除します。このシーンにつながるポータルは移動先が空になります。", "场景将被删除。连接到此场景的传送门将失去目标。"], "매니저를 삭제합니다. 붙어 있던 스크립트 파일은 프로젝트에 남습니다.": ["manager will be deleted. Its script files stay in the project.", "マネージャーを削除します。付いていたスクリプトファイルはプロジェクトに残ります。", "管理器将被删除。挂载的脚本文件仍保留在项目中。"], "매니저 삭제": ["Delete manager", "マネージャーを削除", "删除管理器"], "지금 편집 중인 스크립트예요. public 변수 값을 여기서 바꿔 실행해 볼 수 있어요.": ["This is the script you are editing. Change its public variables here and run it.", "いま編集中のスクリプトです。public 変数の値をここで変えて実行できます。", "这是正在编辑的脚本。可以在这里修改 public 变量后运行。"], "게임 플레이를 시작할 때 가장 먼저 열리는 씬입니다. 씬 인스펙터의 「시작 씬」 체크와 같아요.": ["The scene that opens first when play starts. Same as the Start scene checkbox in the scene Inspector.", "ゲームプレイ開始時に最初に開くシーンです。シーンのインスペクターの「開始シーン」と同じです。", "开始运行时最先打开的场景，与场景检查器中的“起始场景”勾选相同。"], "엔진에서는 프로젝트 줄의 ⚙ 프로젝트 설정에서 시작 씬을 고를 수 있어요.": ["In the engine you can also pick the start scene in ⚙ Project Settings on the project row.", "エンジンではプロジェクト行の ⚙ プロジェクト設定でも開始シーンを選べます。", "在引擎中，也可以在项目行的 ⚙ 项目设置里选择起始场景。"], "계층 구조에서 이 씬의 순서예요(맨 위가 0). SceneManager.LoadScene(1)처럼 번호로 불러올 때 써요. 씬을 새로 만들면 맨 아래에 붙어요.": ["This scene's position in the Hierarchy (top is 0). Used when loading by number, like SceneManager.LoadScene(1). New scenes are added at the bottom.", "ヒエラルキーでのこのシーンの順番です（一番上が 0）。SceneManager.LoadScene(1) のように番号で読み込むときに使います。新しいシーンは一番下に追加されます。", "此场景在层级中的顺序（最上面为 0）。用于像 SceneManager.LoadScene(1) 这样按序号加载。新场景会加在最下面。"], "이 씬에 배치된 게임 오브젝트 수입니다.": ["Number of game objects placed in this scene.", "このシーンに配置されたゲームオブジェクトの数です。", "此场景中放置的游戏对象数量。"], "씬 안의 게임 오브젝트는 씬을 불러올 때마다 처음 상태로 새로 만들어져요. 씬이 바뀌어도 남아야 하는 값(목숨 · 음악)은 매니저에 두세요.": ["Game objects in a scene are rebuilt from scratch every time the scene loads. Keep values that must survive scene changes (lives, music) in a manager.", "シーン内のゲームオブジェクトは、シーンを読み込むたびに最初の状態で作り直されます。シーンが変わっても残すべき値（残機・音楽）はマネージャーに置きましょう。", "场景中的游戏对象每次加载场景时都会以初始状态重新创建。切换场景后仍需保留的值（生命数 · 音乐）请放在管理器中。"], "씬 안에서의 칸 좌표입니다.": ["Cell coordinates in the scene.", "シーン内のマス座標です。", "场景中的格子坐标。"], "도착 X": ["Arrival X", "到着 X", "到达 X"], "도착 Y": ["Arrival Y", "到着 Y", "到达 Y"], "주인공이 이 칸에 들어오면 대상 씬을 불러와요. 스크립트로는 SceneManager.LoadScene(\"씬 이름\")과 같아요.": ["When the hero steps on this cell, the target scene loads. In a script this is SceneManager.LoadScene(\"scene name\").", "主人公がこのマスに入ると移動先シーンを読み込みます。スクリプトでは SceneManager.LoadScene(\"シーン名\") と同じです。", "主角走到这一格时会加载目标场景。在脚本中相当于 SceneManager.LoadScene(\"场景名\")。"], "주인공은 씬마다 하나씩 있어요. 포탈로 들어가면 대상 씬의 주인공이 「도착 위치」에서 나타나요.": ["Every scene has its own hero. After a portal, the target scene's hero appears at the Arrival position.", "主人公はシーンごとに一人ずついます。ポータルに入ると、移動先シーンの主人公が「到着位置」に現れます。", "每个场景都有自己的主角。进入传送门后，目标场景的主角会出现在“到达位置”。"], "재생할 음악·효과음입니다. 스크립트: audioSource.clip = \"이름\"": ["The music or sound effect to play. Script: audioSource.clip = \"name\"", "再生する音楽・効果音です。スクリプト: audioSource.clip = \"名前\"", "要播放的音乐或音效。脚本：audioSource.clip = \"名称\""], "소리 크기입니다. 0 = 무음, 1 = 원래 크기": ["Loudness. 0 = silent, 1 = original", "音の大きさです。0 = 無音、1 = 元の大きさ", "音量大小。0 = 静音，1 = 原始音量"], "끝나면 처음부터 다시 재생합니다. 배경 음악에 켭니다.": ["Restarts from the beginning when it ends. Turn on for background music.", "終わると最初から再生し直します。BGM ではオンにします。", "播放结束后从头重新播放。背景音乐请勾选。"], "플레이를 시작할 때 저절로 재생합니다. 끄면 스크립트에서 audioSource.Play()로 재생합니다.": ["Plays automatically when play starts. When off, play it from a script with audioSource.Play().", "プレイ開始時に自動で再生します。オフにするとスクリプトで audioSource.Play() で再生します。", "开始运行时自动播放。关闭后在脚本中用 audioSource.Play() 播放。"], "플레이 중 이 오디오 소스의 재생 상태입니다.": ["Playback state of this Audio Source during play.", "プレイ中のこのオーディオソースの再生状態です。", "运行中此音频源的播放状态。"], "이 씬에는 포탈이 없어요.": ["This scene has no portal.", "このシーンにはポータルがありません。", "此场景中没有传送门。"], "매니저는 게임 전체를 맡는 보이지 않는 오브젝트예요. 주인공이나 몬스터처럼 씬 안을 돌아다니지 않고, 뒤에서 게임의 규칙과 흐름을 챙겨요.": ["A manager is an invisible object that looks after the whole game. It doesn't walk around a scene like the hero or monsters; it takes care of the rules and flow behind the scenes.", "マネージャーはゲーム全体を受け持つ見えないオブジェクトです。主人公やモンスターのようにシーンを歩き回らず、裏でゲームのルールと流れを管理します。", "管理器是负责整个游戏的不可见对象。它不像主角或怪物那样在场景中走动，而是在幕后照看游戏规则和流程。"], "🎵 BGM 매니저": ["🎵 BGM manager", "🎵 BGM マネージャー", "🎵 BGM 管理器"], "🏆 게임 매니저": ["🏆 Game manager", "🏆 ゲームマネージャー", "🏆 游戏管理器"], "🔊 사운드 매니저": ["🔊 Sound manager", "🔊 サウンドマネージャー", "🔊 音效管理器"], "💾 저장 매니저": ["💾 Save manager", "💾 セーブマネージャー", "💾 存档管理器"], "배경 음악을 틀고, 씬이 바뀌어도 끊기지 않게 이어 줘요. (새 프로젝트에 기본으로 들어 있어요)": ["Plays background music and keeps it going across scene changes. (Included in every new project)", "BGM を流し、シーンが変わっても途切れないようにつなぎます。（新しいプロジェクトに標準で入っています）", "播放背景音乐，切换场景时也不中断。（新项目默认包含）"], "점수 · 남은 목숨 · 클리어 조건 · 게임 오버를 관리해요.": ["Manages score, remaining lives, clear conditions and game over.", "スコア・残機・クリア条件・ゲームオーバーを管理します。", "管理分数、剩余生命、通关条件和游戏结束。"], "효과음을 한곳에서 재생하고 볼륨을 조절해요.": ["Plays sound effects from one place and controls volume.", "効果音を一か所で再生し、音量を調整します。", "在一个地方播放音效并调节音量。"], "진행 상황을 기억했다가 불러와요.": ["Remembers progress and loads it back.", "進行状況を記録して読み込みます。", "记住进度并重新读取。"], "씬에 그려지지 않고, 스크립트와 오디오 소스 · 메모처럼 보이지 않는 컴포넌트만 붙여요. 플레이를 시작할 때 Start()가 한 번 불리고, 씬이 바뀌어도 계속 살아 있어요.": ["It isn't drawn in scenes and only holds scripts and invisible components like Audio Source and Memo. Start() is called once when play starts, and it stays alive across scene changes.", "シーンには描かれず、スクリプトとオーディオソース・メモのような見えないコンポーネントだけを付けます。プレイ開始時に Start() が一度呼ばれ、シーンが変わっても生き続けます。", "它不会画在场景中，只挂脚本以及音频源、备注等不可见组件。开始运行时调用一次 Start()，切换场景后依然存在。"], "유니티에서 DontDestroyOnLoad(gameObject)를 부른 오브젝트와 같아요. Thaniya Engine에서는 매니저 폴더에 넣기만 하면 저절로 그렇게 돼요.": ["It's like a Unity object that called DontDestroyOnLoad(gameObject). In Thaniya Engine, just putting it in the Managers folder does this automatically.", "Unity で DontDestroyOnLoad(gameObject) を呼んだオブジェクトと同じです。Thaniya Engine ではマネージャーフォルダーに入れるだけで自動的にそうなります。", "相当于在 Unity 中调用了 DontDestroyOnLoad(gameObject) 的对象。在 Thaniya Engine 中，只要放进管理器文件夹就会自动如此。"], "SceneManager.LoadScene()으로 씬을 불러오지 않았어요.": ["No scene was loaded with SceneManager.LoadScene().", "SceneManager.LoadScene() でシーンを読み込んでいません。", "没有用 SceneManager.LoadScene() 加载场景。"], "씬을 {n}번 불러왔어요. 한 번만 불러오세요.": ["Loaded a scene {n} times. Load only once.", "シーンを {n} 回読み込みました。一度だけ読み込んでください。", "加载了 {n} 次场景。请只加载一次。"], "{want}번 씬을 불러와야 하는데 {got}번({name})을 불러왔어요.": ["Should load scene #{want}, but loaded #{got} ({name}).", "{want} 番のシーンを読み込むはずが、{got} 番（{name}）を読み込みました。", "应加载第 {want} 号场景，却加载了第 {got} 号（{name}）。"], "반복(loop)이 꺼져 있어요. bgm.loop = true; 로 켜 주세요.": ["Loop is off. Turn it on with bgm.loop = true;", "ループ（loop）がオフです。bgm.loop = true; でオンにしてください。", "循环（loop）已关闭。请用 bgm.loop = true; 打开。"], "음악이 재생되지 않았어요. bgm.Play(); 를 불러 주세요.": ["The music didn't play. Call bgm.Play();", "音楽が再生されていません。bgm.Play(); を呼んでください。", "音乐没有播放。请调用 bgm.Play();"], "SceneManager.RestartGame()을 {want}번 불러야 하는데 {got}번 불렀어요. 쓰러질 때마다 한 번씩 불러 주세요.": ["SceneManager.RestartGame() should be called {want} times but was called {got} times. Call it once per defeat.", "SceneManager.RestartGame() を {want} 回呼ぶはずが {got} 回でした。倒れるたびに一回ずつ呼んでください。", "SceneManager.RestartGame() 应调用 {want} 次，实际调用了 {got} 次。每次倒下调用一次。"], "엔진이 {name}()을(를) 보냄": ["Engine sends {name}()", "エンジンが {name}() を送信", "引擎发送 {name}()"], "{name}() 메서드가 없어요. void {name}() {{ }} 안에 할 일을 쓰세요.": ["There is no {name}() method. Write what to do inside void {name}() {{ }}.", "{name}() メソッドがありません。void {name}() {{ }} の中にやることを書いてください。", "没有 {name}() 方法。请在 void {name}() {{ }} 中写要做的事。"], "실행 중 오류": ["Runtime error", "実行時エラー", "运行出错"], "프로젝트": ["Project", "プロジェクト", "项目"], "씬": ["Scene", "シーン", "场景"], "컴포넌트 제거": ["Remove component", "コンポーネントを削除", "移除组件"], "씬 · 매니저": ["Scene · Manager", "シーン・マネージャー", "场景 · 管理器"], "씬 '{v}'을(를) 찾을 수 없습니다": ["Scene '{v}' not found", "シーン '{v}' が見つかりません", "找不到场景 '{v}'"], "씬 시간은 0부터": ["scene time from 0", "シーン時間は0から", "场景时间从 0 开始"]});
+if(window.TI18N)TI18N.add({"씬 · 매니저 실습장": ["Scene · Manager Playground", "シーン・マネージャー練習場", "场景 · 管理器练习场"], "씬과 매니저": ["Scenes and Managers", "シーンとマネージャー", "场景与管理器"], "게임을 여러 씬으로 나누고 포탈로 잇고, 씬이 바뀌어도 계속 살아 있는 매니저(BGM 매니저 · 게임 매니저)로 음악과 목숨을 이어 가 봐요.": ["Split a game into scenes, connect them with portals, and keep music and lives going with managers (BGM manager, game manager) that live on when the scene changes.", "ゲームを複数のシーンに分けてポータルでつなぎ、シーンが変わっても生き続けるマネージャー（BGMマネージャー・ゲームマネージャー）で音楽と残機を引き継ぎます。", "把游戏拆成多个场景并用传送门连接，再用切换场景后依然存在的管理器（BGM 管理器 · 游戏管理器）延续音乐和生命数。"], "빌드 순서": ["Build order", "ビルド順", "构建顺序"], "플레이 상황": ["Play status", "プレイ状況", "运行状况"], "지금 씬": ["Current scene", "現在のシーン", "当前场景"], "씬 시간": ["Scene time", "シーン時間", "场景时间"], "씬 오브젝트": ["Scene objects", "シーンオブジェクト", "场景对象"], "매니저 (씬이 바뀌어도 계속)": ["Managers (persist across scenes)", "マネージャー（シーンが変わっても継続）", "管理器（切换场景后继续）"], "흐름": ["Timeline", "流れ", "过程"], "포탈로 들어가기": ["Enter portal", "ポータルに入る", "进入传送门"], "대상 없음": ["No target", "対象なし", "无目标"], "시작 씬": ["Start scene", "開始シーン", "起始场景"], "빌드 번호": ["Build index", "ビルド番号", "构建序号"], "씬 설정": ["Scene settings", "シーン設定", "场景设置"], "통계": ["Statistics", "統計", "统计"], "대상 씬": ["Target scene", "移動先シーン", "目标场景"], "도착 위치": ["Arrival", "到着位置", "到达位置"], "매니저": ["Managers", "マネージャー", "管理器"], "씬 삭제": ["Delete scene", "シーンを削除", "删除场景"], "시작 씬으로 지정": ["Set as start scene", "開始シーンに設定", "设为起始场景"], "오디오 소스": ["Audio Source", "オーディオソース", "音频源"], "오디오 클립": ["Audio clip", "オーディオクリップ", "音频剪辑"], "볼륨": ["Volume", "音量", "音量"], "반복": ["Loop", "ループ", "循环"], "재생 상태 (실시간)": ["Playback (live)", "再生状態（リアルタイム）", "播放状态（实时）"], "내용": ["Content", "内容", "内容"], "코드 보기": ["Show code", "コードを見る", "查看代码"], "코드 숨기기": ["Hide code", "コードを隠す", "隐藏代码"], "매니저란?": ["What is a manager?", "マネージャーとは？", "什么是管理器？"], "스크립트 없음": ["No scripts", "スクリプトなし", "没有脚本"], "이미 있음": ["Already added", "追加済み", "已添加"], "매니저에는 붙일 수 없어요": ["Not for managers", "マネージャーには付けられません", "管理器不能添加"], "스프라이트 · 콜라이더 · 빛": ["Sprite · Collider · Light", "スプライト・コライダー・ライト", "精灵 · 碰撞体 · 光源"], "씬 {n}개": ["{n} scenes", "シーン {n} 個", "{n} 个场景"], "{n}번": ["#{n}", "{n}番", "第 {n} 号"], "▶ 플레이": ["▶ Play", "▶ プレイ", "▶ 运行"], "■ 정지": ["■ Stop", "■ 停止", "■ 停止"], "■ 소리 끄기": ["■ Mute", "■ 音を止める", "■ 停止声音"], "▶ 플레이를 누르면 ★ 시작 씬부터 시작해요.": ["Press ▶ Play to start from the ★ start scene.", "▶ プレイを押すと ★ 開始シーンから始まります。", "按 ▶ 运行，会从 ★ 起始场景开始。"], "씬은 바뀔 때마다 게임 오브젝트를 새로 만들지만, 매니저는 씬 목록 밖에 있어서 플레이 내내 하나로 살아 있어요.": ["Each scene change rebuilds the game objects, but managers live outside the scene list, so each one stays alive for the whole play session.", "シーンが変わるたびにゲームオブジェクトは作り直されますが、マネージャーはシーンの外にあるので、プレイ中ずっと一つのまま生きています。", "每次切换场景都会重新创建游戏对象，但管理器在场景列表之外，整个运行期间一直存在。"], "Start {n}번": ["Start ×{n}", "Start {n} 回", "Start {n} 次"], "끊김 없이 이어짐": ["continues without a break", "途切れず継続", "不间断继续"], "재생 안 함": ["Not playing", "再生していません", "未播放"], "살아 있음": ["Alive", "生存中", "存在中"], "게임 전체를 맡는 보이지 않는 오브젝트예요. 씬에 그려지지 않고, 스크립트와 오디오 소스 같은 보이지 않는 컴포넌트를 붙이며, 씬이 바뀌어도 계속 동작해요.": ["An invisible object that looks after the whole game. It is not drawn in scenes, holds scripts and invisible components like Audio Source, and keeps running when the scene changes.", "ゲーム全体を受け持つ見えないオブジェクトです。シーンには描かれず、スクリプトやオーディオソースのような見えないコンポーネントを付け、シーンが変わっても動き続けます。", "负责整个游戏的不可见对象。不会画在场景里，可以挂脚本和音频源等不可见组件，切换场景后仍会继续运行。"], "매니저에는 스크립트와 오디오 소스 · 메모처럼 씬에 보이지 않는 컴포넌트만 붙일 수 있어요.": ["Managers can only hold scripts and invisible components such as Audio Source and Memo.", "マネージャーにはスクリプトと、オーディオソース・メモのようにシーンに見えないコンポーネントだけを付けられます。", "管理器只能挂脚本以及音频源、备注这类场景中不可见的组件。"], "플레이 중에는 씬을 바꿀 수 없어요": ["You can't edit scenes during play", "プレイ中はシーンを変更できません", "运行中无法修改场景"], "플레이 중에는 매니저를 만들거나 지울 수 없어요": ["You can't create or delete managers during play", "プレイ中はマネージャーを作成・削除できません", "运行中无法创建或删除管理器"], "시작 씬은 하나 있어야 해요. 다른 씬에서 켜 주세요": ["There must be one start scene. Turn it on in another scene", "開始シーンは一つ必要です。別のシーンでオンにしてください", "必须有一个起始场景。请在其他场景中勾选"], "씬이 하나뿐이라 삭제할 수 없어요": ["Can't delete the only scene", "シーンが一つだけなので削除できません", "只有一个场景，无法删除"], "씬을 만들었어요": ["Scene created", "シーンを作成しました", "已创建场景"], "계층 구조나 빌드 순서에서 씬 · 오브젝트 · 매니저를 고르세요.": ["Pick a scene, object or manager in the Hierarchy or the build order.", "ヒエラルキーかビルド順でシーン・オブジェクト・マネージャーを選んでください。", "在层级或构建顺序中选择场景、对象或管理器。"], "씬 뷰": ["Scene view", "シーンビュー", "场景视图"], "게임 화면": ["Game view", "ゲーム画面", "游戏画面"], "작은 모험": ["Little Adventure", "小さな冒険", "小小冒险"], "마을": ["Village", "村", "村庄"], "숲": ["Forest", "森", "森林"], "동굴": ["Cave", "洞窟", "洞穴"], "타이틀": ["Title", "タイトル", "标题"], "주인공": ["Hero", "主人公", "主角"], "포탈": ["Portal", "ポータル", "传送门"], "촌장": ["Chief", "村長", "村长"], "안내판": ["Signpost", "案内板", "指示牌"], "BGM 매니저": ["BGM Manager", "BGM マネージャー", "BGM 管理器"], "게임 매니저": ["Game Manager", "ゲームマネージャー", "游戏管理器"], "타니아의 아침": ["Thaniya Morning", "タニアの朝", "塔尼亚的早晨"], "플레이 중에 바꾼 값은 정지하면 되돌아가요": ["Values changed during play revert when you stop", "プレイ中に変えた値は停止すると元に戻ります", "运行中修改的值会在停止后恢复"], "오디오 소스는 매니저마다 하나만 붙여요": ["Only one Audio Source per manager", "オーディオソースはマネージャーに一つだけ", "每个管理器只能有一个音频源"]});
+
+const SM_CLIP='타니아의 아침',SM_CLIP_DUR=32.05;
+const SM_SRC=()=>{const a=(window.THANIYA_BASE_ASSETS||[]).find(x=>x.id==='base_bgm_morning');return a&&a.src?a.src:'assets/base/bgm_morning.mp3'};
+/* 실습장에서 붙일 수 있는 스크립트: BgmManager = 엔진 기본 BGM 매니저와 같은 코드 */
+const SM_CODE={
+BgmManager:`using UnityEngine;
+
+// BGM 매니저 스크립트
+// 매니저는 씬에 보이지 않고, 씬이 바뀌어도 계속 살아 있는 「게임 전체 담당」 오브젝트입니다.
+// 이 매니저에 붙은 오디오 소스(AudioSource) 컴포넌트의 오디오 클립을 반복 재생합니다.
+// 다른 음악을 쓰려면 프로젝트 패널에 MP3 · WAV · OGG 를 넣고,
+// 인스펙터 「오디오 소스」의 오디오 클립 칸에서 고르거나 끌어다 놓으세요.
+public class BgmManager : MonoBehaviour
+{
+    [Tooltip("플레이를 시작하면 바로 음악을 틀지 정합니다")]
+    public bool playOnStart = true;
+
+    AudioSource bgm;
+
+    void Start()
+    {
+        // 같은 매니저에 붙은 오디오 소스 컴포넌트를 가져옵니다.
+        bgm = GetComponent<AudioSource>();
+        if (bgm == null)
+        {
+            Debug.LogWarning("BGM 매니저에 오디오 소스(AudioSource) 컴포넌트가 없습니다. 인스펙터의 「컴포넌트 추가」에서 붙여 주세요.");
+            return;
+        }
+
+        bgm.loop = true;            // 끝나면 처음부터 다시
+        if (playOnStart && !bgm.isPlaying)
+            bgm.Play();
+    }
+}
+`,
+GameManager:`using UnityEngine;
+
+// 게임 매니저 · 점수 · 목숨처럼 게임 전체의 값을 맡아요
+// 매니저라서 씬이 바뀌어도 사라지지 않고, Start()도 플레이를 시작할 때 한 번만 불려요.
+public class GameManager : MonoBehaviour
+{
+    public int lives = 3;
+
+    void Start()
+    {
+        Debug.Log("게임 시작! 목숨 " + lives);
+    }
+}
+`};
+const SM_SDESC={BgmManager:'같은 매니저의 오디오 소스를 반복 재생해요 (엔진의 기본 BGM 매니저와 같은 코드).',GameManager:'플레이를 시작하면 목숨을 출력해요. 씬이 바뀌어도 다시 불리지 않아요.'};
+const SM={proj:'작은 모험',scenes:[],start:'',mgrs:[],sel:'',fold:{},play:null,show:null,codeOpen:new Set()};
+var SMON=false,SMRUN=null;
+const smUid=()=>Math.random().toString(36).slice(2,8);
+const smScene=id=>SM.scenes.find(s=>s.id===id)||null;
+const smMgrs=()=>SM.play?SM.play.mgrs:SM.mgrs;
+const smMgr=id=>smMgrs().find(o=>o.id===id)||null;
+const smAudDef=o=>Object.assign({clip:SM_CLIP,vol:.5,loop:true,awake:false,mute:false},o||{});
+/* 기본 프로젝트: 마을(★) 하나 + BGM 매니저 (엔진의 새 프로젝트와 같은 매니저) */
+const smTown=map=>({id:'town',name:'마을',objs:[{id:'hero',name:'주인공',kind:'hero',x:2,y:3},{id:'chief',name:'촌장',kind:'npc',x:6,y:2},{id:'pt',name:'포탈',kind:'portal',x:10,y:3,map:map||null,tx:1,ty:3}]});
+const smForest=map=>({id:'forest',name:'숲',objs:[{id:'hero',name:'주인공',kind:'hero',x:1,y:3},{id:'pt',name:'포탈',kind:'portal',x:10,y:4,map:map||null,tx:9,ty:3}]});
+const smCave=()=>({id:'cave',name:'동굴',objs:[{id:'hero',name:'주인공',kind:'hero',x:1,y:3}]});
+const smBgm=a=>({id:'bgm',name:'BGM 매니저',props:{audio:smAudDef(a)},scripts:['BgmManager']});
+const smBase=()=>({scenes:[smTown()],start:'town',mgrs:[smBgm()]});
+/* ---- 그림: 씬마다 테마 (이름으로 정함 · 새 씬은 빈 회색 격자) ---- */
+const SM_W=12,SM_H=7;
+const smTheme=s=>{const n=String(s&&s.name||'');return /숲|forest|森/i.test(n)?'forest':/동굴|cave|洞/i.test(n)?'cave':/타이틀|title|タイトル|标题/i.test(n)?'title':/마을|town|village|村/i.test(n)?'town':'plain'};
+const smH=(x,y)=>{let h=Math.imul(x+11,374761393)+Math.imul(y+7,668265263)|0;h=Math.imul(h^(h>>>13),1274126177);return((h^(h>>>16))>>>0)%1000/1000};
+function smPaint(g,s,X,Y,S,t,hero){
+  const th=smTheme(s),R=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(X+x,Y+y,w,h)};
+  for(let y=0;y<SM_H;y++)for(let x=0;x<SM_W;x++){const px=x*S,py=y*S,r=smH(x,y);
+    if(th==='town'){R(px,py,S,S,y===3||y===4&&x>8?'#b8925a':(r<.5?'#4f9a50':'#56a356'));if(y!==3&&r>.85)R(px+S*.3,py+S*.4,S*.12,S*.12,'#f3e36b')}
+    else if(th==='forest')R(px,py,S,S,r<.5?'#2f6b3a':'#2a6234');
+    else if(th==='cave'){R(px,py,S,S,(x===0||y===0||x===SM_W-1||y===SM_H-1)?'#3b3f4c':(r<.5?'#575d6e':'#5f6577'))}
+    else if(th==='title'){R(px,py,S,S,`hsl(${235+y*4} 35% ${12+y*2}%)`)}
+    else{R(px,py,S,S,(x+y)%2?'#2a2d36':'#30333d')}}
+  if(th==='town'){[[1,0],[7,0]].forEach(([x,y])=>{R(x*S+S*.1,y*S+S*.9,S*1.8,S*1.1,'#c79a62');g.fillStyle='#b5423c';g.beginPath();g.moveTo(X+x*S,Y+y*S+S*.95);g.lineTo(X+x*S+S,Y+y*S+S*.15);g.lineTo(X+x*S+S*2,Y+y*S+S*.95);g.fill();R(x*S+S*.8,y*S+S*1.45,S*.4,S*.55,'#6b4426')})}
+  if(th==='forest')for(let y=0;y<SM_H;y++)for(let x=0;x<SM_W;x++){if(y>=2&&y<=4)continue;if(smH(x+3,y+5)<.55)continue;const cx=X+x*S+S/2,cy=Y+y*S+S/2;g.fillStyle='#5b3b22';g.fillRect(cx-S*.07,cy,S*.14,S*.38);g.fillStyle=smH(x,y+9)<.5?'#1f5a2b':'#287035';g.beginPath();g.arc(cx,cy-S*.05,S*.36,0,7);g.fill()}
+  if(th==='cave')for(let k=0;k<6;k++){const x=1+Math.floor(smH(k,3)*(SM_W-2)),y=Math.floor(smH(3,k)*2)*4+1;g.fillStyle='#8fd0f5';g.beginPath();g.moveTo(X+x*S+S*.5,Y+y*S+S*.2);g.lineTo(X+x*S+S*.68,Y+y*S+S*.7);g.lineTo(X+x*S+S*.32,Y+y*S+S*.7);g.fill()}
+  if(th==='title'){g.fillStyle='#f6cd2a';g.font=`700 ${Math.round(S*.9)}px ui-sans-serif,system-ui,"Malgun Gothic",sans-serif`;g.textAlign='center';g.fillText(_t(SM.proj),X+S*SM_W/2,Y+S*2.4);g.font=`500 ${Math.round(S*.36)}px ui-sans-serif,system-ui,"Malgun Gothic",sans-serif`;g.fillStyle='rgba(255,255,255,.7)';g.fillText(_t(s.name),X+S*SM_W/2,Y+S*3.2);g.textAlign='left'}
+  /* 게임 오브젝트 */
+  for(const o of s.objs||[]){
+    if(o.kind==='hero')continue;
+    const cx=X+(o.x+.5)*S,cy=Y+(o.y+.5)*S;
+    if(o.kind==='portal'){const k=.5+.5*Math.sin(t*3);g.strokeStyle=`rgba(90,210,235,${.55+.4*k})`;g.lineWidth=Math.max(2,S*.1);g.beginPath();g.ellipse(cx,cy,S*.34,S*.42,0,0,7);g.stroke();g.fillStyle='rgba(90,210,235,.22)';g.fill();
+      const tg=o.map&&smScene(o.map);g.font=`600 ${Math.max(9,Math.round(S*.3))}px ui-sans-serif,system-ui,"Malgun Gothic",sans-serif`;g.textAlign='center';g.fillStyle=tg?'#bdf1ff':'#f6cd2a';g.fillText(tg?'→ '+_t(tg.name):'→ ?',cx,cy-S*.55);g.textAlign='left'}
+    else if(o.kind==='npc'){g.fillStyle='#b69cff';g.beginPath();g.arc(cx,cy,S*.3,0,7);g.fill();g.fillStyle='#fff';g.fillRect(cx-S*.12,cy-S*.06,S*.07,S*.07);g.fillRect(cx+S*.05,cy-S*.06,S*.07,S*.07)}
+    else if(o.kind==='sign'){g.fillStyle='#6b4426';g.fillRect(cx-S*.05,cy-S*.05,S*.1,S*.42);g.fillStyle='#c79a62';g.fillRect(cx-S*.32,cy-S*.36,S*.64,S*.34)}
+  }
+  const h=hero||(s.objs||[]).find(o=>o.kind==='hero');
+  if(h){const cx=X+(h.x+.5)*S,cy=Y+(h.y+.5)*S;g.fillStyle='#f6cd2a';g.beginPath();g.arc(cx,cy,S*.3,0,7);g.fill();g.fillStyle='#1a1400';g.fillRect(cx-S*.12,cy-S*.08,S*.07,S*.09);g.fillRect(cx+S*.05,cy-S*.08,S*.07,S*.09)}
+}
+/* ---- 문제마다 차리기 ---- */
+function smSetup(p){
+  if(SM.play)smPlayStop(true);smAudOff();
+  SMON=!!(p&&p.sm);
+  const ws=document.querySelector('main.ws');if(ws)ws.classList.toggle('sm8',SMON);
+  const v=$('#smView');if(v)v.hidden=!SMON;
+  if(!SMON)return;
+  const d=p.sm.setup?p.sm.setup():smBase();
+  SM.scenes=d.scenes;SM.start=d.start||d.scenes[0].id;SM.mgrs=d.mgrs||[];SM.fold={};SM.show=null;SM.codeOpen=new Set();
+  SM.sel=p.sm.sel||('s:'+SM.start);
+  smRender();
+}
+const smIdx=id=>SM.scenes.findIndex(s=>s.id===id);
+const smSelScene=()=>{const k=SM.sel||'';if(k.startsWith('s:'))return smScene(k.slice(2));if(k.startsWith('o:'))return smScene(k.split(':')[1]);return null};
+function smSelect(k){SM.sel=k;TASK.ev.add('sm:sel:'+k);renderHier();renderInsp();smRender();tkPing()}
+/* 실습장 화면 */
+function smRender(){if(!SMON)return;smBar();smSide();smActs();smDraw()}
+function smBar(){
+  const box=$('#smBar');if(!box)return;const P0=P(),ss=smSelScene();
+  const showCur=SM.show?SM.show.names[SM.show.cur]:null;
+  box.innerHTML=`<b class="smbt">빌드 순서</b><span class="smscs">${SM.scenes.map((s,i)=>`<button type="button" class="smsc${ss&&ss.id===s.id?' on':''}${(SM.play&&SM.play.scene===s.id)||(showCur===s.name)?' cur':''}" data-smpick="s:${s.id}" title="${esc(_t('빌드 번호'))} ${i}"><i>${i}</i><span data-i18n-skip>${esc(_t(s.name))}</span>${SM.start===s.id?'<em title="시작 씬">★</em>':''}</button>`).join('')}</span><span class="spacer"></span>`+
+    (P0&&P0.task?`<button type="button" class="btn sm pri playbtn${SM.play?' on':''}" id="smPlay">${SM.play?'■ 정지':'▶ 플레이'}</button>`:'');
+}
+/* 씬 그림: 플레이 중 = 지금 씬 · 코드 실행 결과 = 마지막 씬 · 그 밖 = 고른 씬(없으면 시작 씬) */
+function smViewScene(){
+  if(SM.play)return smScene(SM.play.scene);
+  if(SM.show){const n=SM.show.names[SM.show.cur];return SM.scenes.find(s=>s.name===n)||{name:n,objs:[]}}
+  return smSelScene()||smScene(SM.start)||SM.scenes[0];
+}
+function smDraw(){
+  const cv=$('#smCv');if(!cv||!SMON)return;const host=cv.parentElement,r=host.getBoundingClientRect(),d=window.devicePixelRatio||1;if(!r.width||!r.height)return;
+  if(cv.width!==Math.round(r.width*d)||cv.height!==Math.round(r.height*d)){cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);cv.style.width=r.width+'px';cv.style.height=r.height+'px'}
+  const g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,r.width,r.height);
+  const s=smViewScene();if(!s)return;
+  const S=Math.max(10,Math.floor(Math.min((r.width-20)/SM_W,(r.height-20)/SM_H))),W=S*SM_W,H=S*SM_H,ox=Math.floor((r.width-W)/2),oy=Math.floor((r.height-H)/2);
+  g.save();g.beginPath();g.rect(ox,oy,W,H);g.clip();
+  const t=performance.now()/1000,pl=SM.play;
+  let hero=null;if(pl&&pl.hero){hero=pl.hero;if(pl.walk){const k=clamp((performance.now()-pl.walk.t0)/pl.walk.d,0,1);hero={x:pl.walk.x0+(pl.walk.x1-pl.walk.x0)*k,y:pl.walk.y0+(pl.walk.y1-pl.walk.y0)*k}}}
+  smPaint(g,s,ox,oy,S,t,hero);
+  if(pl&&pl.fade){const k=clamp((performance.now()-pl.fade)/350,0,1);g.fillStyle=`rgba(0,0,0,${1-k})`;g.fillRect(ox,oy,W,H)}
+  g.restore();
+  g.strokeStyle=pl?'rgba(246,205,42,.8)':'rgba(140,145,165,.35)';g.lineWidth=pl?2:1;g.strokeRect(ox+.5,oy+.5,W-1,H-1);
+  g.font='600 11px ui-sans-serif,system-ui,"Malgun Gothic",sans-serif';g.fillStyle=pl?'#f6cd2a':'rgba(200,204,215,.75)';
+  const i=SM.scenes.indexOf(s);g.fillText((pl?'▶ '+_t('게임 화면'):SM.show?_t('실행 결과'):_t('씬 뷰'))+' · '+_t(s.name)+(i>=0?' ('+_t('{n}번',{n:i})+')':''),ox+2,oy-5>10?oy-5:oy+13);
+}
+/* 플레이 중 아래 버튼: 지금 씬의 포탈마다 하나 */
+function smActs(){
+  const box=$('#smActs');if(!box)return;const pl=SM.play;
+  if(!pl){box.innerHTML='';box.hidden=true;return}
+  const s=smScene(pl.scene),ps=(s&&s.objs||[]).filter(o=>o.kind==='portal');box.hidden=false;
+  box.innerHTML=ps.length?ps.map(o=>{const tg=o.map&&smScene(o.map);return`<button type="button" class="btn sm" data-smportal="${o.id}"${pl.walk?' disabled':''}>🌀 ${esc(_t('포탈로 들어가기'))} → <b data-i18n-skip>${tg?esc(_t(tg.name)):esc(_t('대상 없음'))}</b></button>`}).join(''):`<span class="note">이 씬에는 포탈이 없어요.</span>`;
+}
+const smClock=sec=>{sec=Math.max(0,Math.floor(sec));return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0')};
+function smAudLabel(o){
+  const a=o.props&&o.props.audio;if(!a)return'';const s=SM_AUD.get(o.id);
+  if(!a.playing)return`<span class="smoff">${esc(_t('재생 안 함'))}</span>`;
+  const el=(performance.now()-a.t0)/1000,pos=a.loop?el%SM_CLIP_DUR:Math.min(el,SM_CLIP_DUR);
+  return`<span class="smon">♪ <span data-i18n-skip>${esc(_t(a.clipName||SM_CLIP))}</span> ▶ ${smClock(pos)}</span> <small>${esc(_t('볼륨'))} ${(+a.vol).toFixed(2)}${s&&s.blocked?' · 🔇':''}</small>`;
+}
+function smSide(){
+  const box=$('#smSide');if(!box)return;const n0=box.dataset.n,atEnd=box.scrollTop+box.clientHeight>=box.scrollHeight-8;smSide0(box);
+  const n=String(SM.play?SM.play.log.length:SM.show?SM.show.ev.length:0);box.dataset.n=n;if(n!==n0||atEnd)box.scrollTop=box.scrollHeight;
+}
+function smSide0(box){
+  const pl=SM.play,P0=P();
+  if(pl){
+    const s=smScene(pl.scene),now=performance.now();
+    box.innerHTML=`<div class="smh">플레이 상황</div>
+      <dl class="smkv"><dt>지금 씬</dt><dd><b data-i18n-skip>${esc(_t(s.name))}</b> <small>(${esc(_t('{n}번',{n:smIdx(s.id)}))})</small></dd><dt>씬 시간</dt><dd class="mono">${smClock((now-pl.sT0)/1000)}</dd>
+      <dt>씬 오브젝트</dt><dd data-i18n-skip>${(s.objs||[]).map(o=>esc(_t(o.name))).join(' · ')||'-'}</dd></dl>
+      <div class="smh">매니저 (씬이 바뀌어도 계속)</div>
+      <div class="smml">${pl.mgrs.map(o=>`<div class="smm"><b data-i18n-skip>${esc(_t(o.name))}</b><span class="smbad">${esc(_t('Start {n}번',{n:pl.starts[o.id]||0}))}</span>${o.props.audio?'<div>'+smAudLabel(o)+'</div>':''}</div>`).join('')||'<p class="note">매니저가 없어요.</p>'}</div>
+      <div class="smh">흐름</div><ol class="smlog">${pl.log.slice(-14).map(l=>`<li class="${l[1]}"><span class="mono">${smClock(l[0])}</span>${l[2]}</li>`).join('')}</ol>`;
+    return;
+  }
+  const r=SM.show;
+  if(r){
+    box.innerHTML=`<div class="smh">실행 결과</div><dl class="smkv"><dt>지금 씬</dt><dd><b data-i18n-skip>${esc(_t(r.names[r.cur]))}</b> <small>(${esc(_t('{n}번',{n:r.cur}))})</small></dd>${r.self&&r.self.props&&r.self.props.audio?`<dt>${esc(_t('오디오 소스'))}</dt><dd>${smAudLabel(r.self)}${r.self.props.audio.playing?` <button type="button" class="btn sm" data-smact="mute">■ 소리 끄기</button>`:''}</dd>`:''}</dl>
+      <div class="smh">흐름</div><ol class="smlog">${r.ev.map(l=>`<li class="${l[0]}">${l[1]}</li>`).join('')||'<li>-</li>'}</ol>`;
+    return;
+  }
+  const ms=SM.mgrs;
+  box.innerHTML=`<div class="smh">플레이 상황</div><p class="smtip">${P0&&P0.task?esc(_t('▶ 플레이를 누르면 ★ 시작 씬부터 시작해요.'))+' ':''}${esc(_t('씬은 바뀔 때마다 게임 오브젝트를 새로 만들지만, 매니저는 씬 목록 밖에 있어서 플레이 내내 하나로 살아 있어요.'))}</p>
+    <dl class="smkv"><dt>시작 씬</dt><dd data-i18n-skip>★ ${esc(_t((smScene(SM.start)||{name:'-'}).name))}</dd></dl>
+    <div class="smh">매니저 (씬이 바뀌어도 계속)</div><div class="smml">${ms.map(o=>`<div class="smm"><b data-i18n-skip>${esc(_t(o.name))}</b><small data-i18n-skip>${o.scripts.map(n=>esc(n)+'.cs').join(', ')||esc(_t('스크립트 없음'))}</small></div>`).join('')||'<p class="note">매니저가 없어요.</p>'}</div>`;
+}
+/* ---- 소리: 실제로 재생 (플레이 · 코드 실행 결과) ---- */
+const SM_AUD=new Map();
+function smAudReal(o){
+  const a=o.props.audio;let s=SM_AUD.get(o.id);
+  if(!s){s={el:new Audio(SM_SRC())};s.el.preload='auto';SM_AUD.set(o.id,s)}
+  s.el.loop=!!a.loop;s.el.volume=a.mute?0:clamp(+a.vol,0,1);try{s.el.currentTime=0}catch(e){}
+  const pr=s.el.play();if(pr&&pr.catch)pr.catch(()=>{s.blocked=true});
+}
+function smAudSync(o){const s=SM_AUD.get(o.id),a=o.props&&o.props.audio;if(!s||!a)return;s.el.loop=!!a.loop;s.el.volume=a.mute?0:clamp(+a.vol,0,1)}
+function smAudOff(id){[...SM_AUD.keys()].forEach(k=>{if(id&&k!==id)return;const s=SM_AUD.get(k);try{s.el.pause();s.el.removeAttribute('src');s.el.load()}catch(e){}SM_AUD.delete(k)})}
+/* 스크립트: GetComponent<AudioSource>() — 엔진 audioProxy의 줄인 판 (상태는 o.props.audio에) */
+function smAudioProxy(m,o){
+  const A=()=>{const a=o.props&&o.props.audio;if(!a)throw new Error(_t('MissingComponentException: {name}의 오디오 소스(AudioSource) 컴포넌트가 제거되었습니다',{name:o.name}));return a};
+  const real=()=>(SMRUN&&SMRUN.real)||(SM.play&&SM.play.mgrs.includes(o));
+  return{__h:'AudioSource',__o:o,name:o.name,
+    get(n){
+      if(n==='gameObject')return goProxy(m,o);if(n==='name')return o.name;
+      const a=A();
+      switch(n){case'volume':return+a.vol;case'loop':return!!a.loop;case'mute':return!!a.mute;case'playOnAwake':return!!a.awake;case'pitch':return 1;
+        case'isPlaying':return!!a.playing;case'clip':return a.clip?a.clip:'';case'length':return a.clip?SM_CLIP_DUR:0;case'enabled':return true;
+        case'time':return a.playing?((performance.now()-a.t0)/1000)%SM_CLIP_DUR:0}
+      throw csUnsup('AudioSource.'+n)},
+    set(n,v){
+      const a=A();
+      switch(n){case'volume':a.vol=clamp(csN(v),0,1);break;case'loop':a.loop=!!v;break;case'mute':a.mute=!!v;break;case'playOnAwake':a.awake=!!v;break;
+        case'clip':{const nm=csFmt(v);if(nm&&nm!==SM_CLIP)clog('warn',`AudioSource.clip: '${nm}' 오디오 클립이 없습니다 — 프로젝트 패널의 오디오 목록에서 이름을 확인하세요`);a.clip=nm===SM_CLIP?SM_CLIP:'';break}
+        default:throw csUnsup('AudioSource.'+n+' 대입')}
+      if(real())smAudSync(o)},
+    call(n){
+      const a=A();
+      switch(n){
+        case'Play':if(!a.clip){clog('warn',_t('{name}의 오디오 소스에 클립이 없습니다',{name:o.name}));return null}
+          a.playing=true;a.t0=performance.now();if(SMRUN&&SMRUN.ev)SMRUN.ev.push(['ok',esc(_t('오디오 소스'))+' ▶ <b data-i18n-skip>'+esc(_t(a.clip))+'</b>'+(a.loop?' · loop':'')]);if(real())smAudReal(o);return null;
+        case'Stop':a.playing=false;if(real())smAudOff(o.id);return null;
+        case'Pause':a.playing=false;{const s=SM_AUD.get(o.id);if(s)s.el.pause()}return null;
+        case'UnPause':if(a.clip){a.playing=true;const s=SM_AUD.get(o.id);if(s)s.el.play().catch(()=>{})}return null;
+      }
+      throw csUnsup('AudioSource.'+n+'()')}};
+}
+/* ---- SceneManager 흉내 (SMRUN = 지금 실행 문맥) ---- */
+function smLoad(v){
+  const c=SMRUN,idx=typeof v==='number'?Math.trunc(v):c.names.indexOf(csFmt(v));
+  if(idx<0||idx>=c.names.length)throw new Error(_t("씬 '{v}'을(를) 찾을 수 없습니다",{v:typeof v==='number'?v:csFmt(v)}));
+  c.loads.push(idx);c.pend={k:'load',i:idx};
+  c.ev.push(['load',`SceneManager.LoadScene(${typeof v==='number'?v:'"'+esc(csFmt(v))+'"'}) → <b data-i18n-skip>${esc(_t(c.names[idx]))}</b>`]);
+}
+function smRestart(){const c=SMRUN;c.restarts++;c.pend={k:'restart',i:c.start};c.ev.push(['load',`SceneManager.RestartGame() → ★ <b data-i18n-skip>${esc(_t(c.names[c.start]))}</b>`])}
+/* 메서드 하나가 끝난 뒤 씬을 바꿈 (엔진도 LoadScene · RestartGame을 스크립트 실행이 끝난 다음에 처리) */
+function smFlush(c){if(!c||!c.pend)return;const q=c.pend;c.pend=null;c.cur=q.i;if(c.live)c.live(q)}
+/* 코드 문제의 실행 문맥: 채점 = 문제의 처음 씬 · 화면 실행 = 지금 계층 구조/인스펙터 상태 */
+function smCtx(p,t,vis){
+  const d=vis?{scenes:SM.scenes,start:SM.start,mgrs:SM.mgrs}:p.sm.setup();
+  const names=d.scenes.map(s=>s.name),start=Math.max(0,d.scenes.findIndex(s=>s.id===d.start));
+  let self=null;const sid=p.sm.self;
+  if(sid){const k=sid.split(':');self=k[0]==='m'?d.mgrs.find(o=>o.id===k[1]):((d.scenes.find(s=>s.id===k[1])||{objs:[]}).objs.find(o=>o.id===k[2]));self=self?JSON.parse(JSON.stringify(self)):{name:'Quiz',props:{}};if(!self.props)self.props={}}
+  if(t&&t.noAudio&&self)delete self.props.audio;
+  const cur=t&&t.sc&&t.sc.scene?Math.max(0,names.indexOf(t.sc.scene)):start;
+  return{names,cur,start,pend:null,loads:[],restarts:0,ev:[['','▶ Start()']],self,real:!!vis};
+}
+function smInfo(){const c=SMRUN;return{name:c.names[c.cur]||'',index:c.cur}}
+/* ---- 플레이 ---- */
+function smLog(kind,html,con){const pl=SM.play;if(!pl)return;pl.log.push([(performance.now()-pl.t0)/1000,kind,html]);if(con)plog(kind==='warn'?'warn':'info',con)}
+function smPlayStart(){
+  if(SM.play)return;const st=smScene(SM.start)||SM.scenes[0];if(!st)return;
+  closePM();
+  SM.play={t0:performance.now(),sT0:performance.now(),mgrs:JSON.parse(JSON.stringify(SM.mgrs)),starts:{},log:[],scene:null,hero:null,walk:null,fade:0,moves:0};
+  setConsole([],false);plog('info',_t('▶ 플레이 시작 · 시작 씬 「{name}」부터',{name:_t(st.name)}));
+  smLog('ok','▶ '+esc(_t('플레이'))+' · ★ <b data-i18n-skip>'+esc(_t(st.name))+'</b>');
+  TASK.ev.add('sm:play');TASK.ev.add('sm:first:'+st.id);
+  smEnter(st.id,true);
+  /* 엔진의 mgrTick: 씬을 연 다음 프레임에 매니저마다 Awake/Start 한 번 */
+  SM.play.mgrs.forEach(smMgrStart);
+  smLoop();smRender();renderHier();renderInsp();tkPing();
+}
+function smMgrStart(o){
+  const pl=SM.play;if(!pl)return;pl.starts[o.id]=(pl.starts[o.id]||0)+1;
+  if(!o.scripts.length){smLog('',`<b data-i18n-skip>${esc(_t(o.name))}</b> · `+esc(_t('스크립트 없음')));}
+  for(const n of o.scripts){
+    const code=SM_CODE[n];if(!code)continue;
+    const ctx={names:SM.scenes.map(s=>s.name),cur:smIdx(pl.scene),start:Math.max(0,smIdx(SM.start)),pend:null,loads:[],restarts:0,ev:[],self:o,real:false,live:q=>{const s=SM.scenes[q.i];if(s)setTimeout(()=>{if(SM.play===pl)smEnter(s.id,false,q.k==='restart')},0)}};
+    const r=runOnce(code,{},null,{sm:ctx,selfObj:o});
+    smLog('',`<b data-i18n-skip>${esc(_t(o.name))}</b> · ${esc(n)}.Start()`);
+    r.out.forEach(l=>{plog(l[0],l[1]);smLog(l[0]==='info'?'':l[0],'<span data-i18n-skip>'+esc(l[1])+'</span>')});
+    if(n==='GameManager'&&!r.fatal)TASK.ev.add('sm:gmstart');
+  }
+  const a=o.props.audio;
+  if(a&&a.awake&&!a.playing&&a.clip){a.playing=true;a.t0=performance.now();smAudReal(o)}
+  if(a&&a.playing){TASK.ev.add('sm:bgm:play');smLog('ok','♪ <b data-i18n-skip>'+esc(_t(a.clip))+'</b> '+esc(_t('반복'))+(a.loop?' ✓':' ✕'))}
+}
+function smEnter(id,first,restart){
+  const pl=SM.play,s=smScene(id);if(!pl||!s)return;const from=pl.scene&&smScene(pl.scene);
+  const hero=(s.objs||[]).find(o=>o.kind==='hero')||{x:1,y:3};
+  let hx=hero.x,hy=hero.y;
+  if(!first&&pl.via){hx=clamp(+pl.via.tx||0,0,SM_W-1);hy=clamp(+pl.via.ty||0,0,SM_H-1)}
+  pl.via=null;pl.scene=id;pl.sT0=performance.now();pl.hero={x:hx,y:hy};pl.walk=null;pl.fade=first?0:performance.now();
+  if(!first){
+    pl.moves++;
+    const live=pl.mgrs.length,music=pl.mgrs.some(o=>o.props.audio&&o.props.audio.playing);
+    smLog('load',`${from?'<b data-i18n-skip>'+esc(_t(from.name))+'</b> → ':''}<b data-i18n-skip>${esc(_t(s.name))}</b> · ${esc(_t('씬 오브젝트를 새로 만들었어요'))} · ${esc(_t('매니저 {n}개는 그대로',{n:live}))}`);
+    plog('info',_t('씬 「{name}」을(를) 불러왔어요 · 매니저 {n}개는 그대로 (Start는 다시 불리지 않아요)',{name:_t(s.name),n:live}));
+    TASK.ev.add('sm:enter:'+s.id);if(from)TASK.ev.add('sm:go:'+from.id+'>'+s.id);
+    if(music){pl.keep=(pl.keep||0)+1;TASK.ev.add('sm:bgmkeep');TASK.ev.add('sm:bgmkeep:'+pl.keep)}
+    if(TASK.ev.has('sm:gmstart')&&pl.mgrs.some(o=>o.scripts.includes('GameManager')))TASK.ev.add('sm:gmkeep');
+  }
+  smRender();tkPing();
+}
+function smPortal(oid){
+  const pl=SM.play;if(!pl||pl.walk)return;const s=smScene(pl.scene),o=s&&s.objs.find(x=>x.id===oid);if(!o)return;
+  if(!o.map||!smScene(o.map)){smLog('warn',esc(_t('대상 씬이 지정되지 않았습니다')));plog('warn',_t('포탈 「{name}」: 대상 씬이 지정되지 않았습니다',{name:_t(o.name)}));smSide();return}
+  pl.walk={x0:pl.hero.x,y0:pl.hero.y,x1:o.x,y1:o.y,t0:performance.now(),d:420};pl.via=o;smActs();
+  setTimeout(()=>{if(SM.play!==pl)return;pl.walk=null;pl.via=o;smEnter(o.map,false)},440);
+}
+function smLoop(){const pl=SM.play;if(!pl)return;smDraw();pl.raf=requestAnimationFrame(smLoop);const n=performance.now();if(!pl.sideT||n-pl.sideT>250){pl.sideT=n;smSide();document.querySelectorAll('#insp [data-smlive]').forEach(el=>{const o=smMgr(el.dataset.smlive);if(o)el.innerHTML=smAudLabel(o)})}}
+function smPlayStop(quiet){
+  const pl=SM.play;if(!pl)return;cancelAnimationFrame(pl.raf);SM.play=null;smAudOff();
+  if(!quiet)plog('info',_t('■ 플레이 종료 · 플레이 중에 바뀐 것은 원래대로 되돌렸어요'));
+  smRender();renderHier();renderInsp();
+}
+/* ---- 계층 구조 ---- */
+function smHier(){
+  const q=($('#hFilter').value||'').trim().toLowerCase(),hit=n=>!q||String(n).toLowerCase().includes(q)||_t(n).toLowerCase().includes(q);
+  const open=k=>q?true:SM.fold[k]!==false;
+  const row=o=>`<div class="tr smt${o.on?' on':''}${o.start?' start':''}" style="--d:${o.d}" role="treeitem" tabindex="0"${o.k?` data-smpick="${o.k}" aria-selected="${!!o.on}"`:''}>`+
+    (o.fk?`<button class="fold${open(o.fk)?' open':''}" type="button" data-smfold="${o.fk}" aria-label="접기/펼치기"></button>`:'<span class="fold sp"></span>')+
+    `<span class="ti"${o.c?` style="color:${o.c}"`:''}>${ico(o.ic)}</span><span class="tl"${o.skip?' data-i18n-skip':''}>${o.l}</span>${o.sub!=null?`<span class="ts">${o.sub}</span>`:''}${o.acts?`<span class="tact">${o.acts}</span>`:''}</div>`;
+  const ib=(a,ic,tt,x)=>`<button class="ib" type="button" data-smact="${a}"${x||''} title="${esc(_t(tt))}" aria-label="${esc(_t(tt))}">${ic}</button>`;
+  let h=row({d:0,fk:'proj',ic:'proj',l:'<b>'+esc(_t(SM.proj))+'</b>',sub:esc(_t('씬 {n}개',{n:SM.scenes.length})),k:'p',on:SM.sel==='p',acts:ib('newscene',ico('plus'),'새 씬')});
+  if(open('proj')){
+    SM.scenes.forEach((s,i)=>{
+      const objs=s.objs.filter(o=>hit(o.name));if(q&&!objs.length&&!hit(s.name))return;
+      const fk='s:'+s.id;
+      h+=row({d:1,fk,ic:'scene',l:esc(_t(s.name)),skip:1,sub:i,k:'s:'+s.id,on:SM.sel==='s:'+s.id,start:SM.start===s.id,acts:ib('delscene',ico('x'),'씬 삭제',` data-sid="${s.id}"`)});
+      if(open(fk))objs.forEach(o=>{const tg=o.kind==='portal'?smScene(o.map):null;
+        h+=row({d:2,ic:o.kind==='hero'?'user':o.kind==='portal'?'portal':'cube',c:o.kind==='hero'?'#3fae7d':o.kind==='portal'?'#3aaec4':o.kind==='npc'?'#b69cff':'',l:esc(_t(o.name)),skip:1,sub:o.kind==='portal'?'→ '+(tg?esc(_t(tg.name)):'?'):(o.scripts&&o.scripts.length?o.scripts.length+'<small> .cs</small>':null),k:'o:'+s.id+':'+o.id,on:SM.sel==='o:'+s.id+':'+o.id})});
+    });
+    const ML=smMgrs().filter(o=>hit(o.name)||hit('매니저'));
+    h+=row({d:1,fk:'mgr',ic:'mgr',c:'#9a8cff',l:esc(_t('매니저')),sub:ML.length,k:'mf',on:SM.sel==='mf',acts:ib('mgrhelp','?','매니저란?')+ib('newmgr',ico('plus'),'새 매니저')});
+    if(open('mgr'))ML.forEach(o=>{h+=row({d:2,ic:'mgr',c:'#9a8cff',l:esc(_t(o.name)),skip:1,sub:o.scripts.length?o.scripts.length+'<small> .cs</small>':'',k:'m:'+o.id,on:SM.sel==='m:'+o.id,acts:ib('delmgr',ico('x'),'삭제',` data-mid="${o.id}"`)})});
+  }
+  $('#hier').innerHTML=h;tkPing();
+}
+/* ---- 만들기 · 지우기 (엔진과 같은 규칙) ---- */
+function smNewScene(){
+  if(SM.play){toast('플레이 중에는 씬을 바꿀 수 없어요');return}
+  const n=SM.scenes.length+1,def=_t('새 씬 {n}',{n});
+  openModal('새 씬',`<div class="field"><label for="smNsName">이름</label><input type="text" id="smNsName" maxlength="30" value="${esc(def)}" style="width:100%;height:26px"></div><p class="note" style="margin-top:8px">${esc(_t('씬에는 크기가 없습니다. 어디든 자유롭게 칠하고 배치하세요.'))}</p>`,
+    [{t:'취소'},{t:'만들기',cls:'pri',fn:()=>{const i=$('#smNsName'),nm=(i&&i.value.trim())||def;
+      const s={id:'s'+smUid(),name:nm.slice(0,30),objs:[{id:'hero',name:'주인공',kind:'hero',x:1,y:1}]};SM.scenes.push(s);SM.fold['s:'+s.id]=true;TASK.ev.add('sm:newscene');toast('씬을 만들었어요');smSelect('s:'+s.id)}}]);
+  const i=$('#smNsName');if(i){i.focus();i.select();i.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();const b=$('#mFoot .pri');if(b)b.click()}})}
+}
+function smDelScene(id){
+  if(SM.play){toast('플레이 중에는 씬을 바꿀 수 없어요');return}
+  if(SM.scenes.length<2){toast('씬이 하나뿐이라 삭제할 수 없어요');return}
+  const s=smScene(id);if(!s)return;
+  openModal('씬 삭제',`<p style="margin:0">"<b data-i18n-skip>${esc(_t(s.name))}</b>" ${esc(_t('씬을 삭제합니다. 이 씬으로 연결된 포탈은 대상이 비게 됩니다.'))}</p>`,[{t:'취소'},{t:'삭제',cls:'danger',fn:()=>{
+    SM.scenes=SM.scenes.filter(x=>x!==s);SM.scenes.forEach(x=>x.objs.forEach(o=>{if(o.map===id)o.map=null}));if(SM.start===id)SM.start=SM.scenes[0].id;
+    if((SM.sel||'').includes(id))SM.sel='s:'+SM.start;renderHier();renderInsp();smRender();tkPing()}}]);
+}
+function smNewMgr(){
+  if(SM.play){toast('플레이 중에는 매니저를 만들거나 지울 수 없어요');return}
+  const base=_t('새 매니저');let nm=base,k=1;while(SM.mgrs.some(o=>o.name===nm))nm=base+' '+(++k);
+  const o={id:'m'+smUid(),name:nm,props:{},scripts:[]};SM.mgrs.push(o);SM.fold.mgr=true;TASK.ev.add('sm:newmgr');smSelect('m:'+o.id);
+  setTimeout(()=>{const i=$('#insp input[data-smi="mname"]');if(i){i.focus();i.select()}},30);
+}
+function smDelMgr(id){
+  if(SM.play){toast('플레이 중에는 매니저를 만들거나 지울 수 없어요');return}
+  const o=SM.mgrs.find(x=>x.id===id);if(!o)return;
+  openModal('매니저 삭제',`<p style="margin:0"><b data-i18n-skip>${esc(_t(o.name))}</b> ${esc(_t('매니저를 삭제합니다. 붙어 있던 스크립트 파일은 프로젝트에 남습니다.'))}</p>`,[{t:'취소'},{t:'삭제',cls:'danger',fn:()=>{SM.mgrs=SM.mgrs.filter(x=>x!==o);if(SM.sel==='m:'+id)SM.sel='mf';renderHier();renderInsp();smRender();tkPing()}}]);
+}
+function smGuide(){
+  openModal('매니저란?',`<div class="smguide"><p>${esc(_t('매니저는 게임 전체를 맡는 보이지 않는 오브젝트예요. 주인공이나 몬스터처럼 씬 안을 돌아다니지 않고, 뒤에서 게임의 규칙과 흐름을 챙겨요.'))}</p>
+    <ul>${[['🎵 BGM 매니저','배경 음악을 틀고, 씬이 바뀌어도 끊기지 않게 이어 줘요. (새 프로젝트에 기본으로 들어 있어요)'],['🏆 게임 매니저','점수 · 남은 목숨 · 클리어 조건 · 게임 오버를 관리해요.'],['🔊 사운드 매니저','효과음을 한곳에서 재생하고 볼륨을 조절해요.'],['💾 저장 매니저','진행 상황을 기억했다가 불러와요.']].map(x=>`<li><b>${esc(_t(x[0]))}</b> · <span>${esc(_t(x[1]))}</span></li>`).join('')}</ul>
+    <p>${esc(_t('씬에 그려지지 않고, 스크립트와 오디오 소스 · 메모처럼 보이지 않는 컴포넌트만 붙여요. 플레이를 시작할 때 Start()가 한 번 불리고, 씬이 바뀌어도 계속 살아 있어요.'))}</p>
+    <p>${esc(_t('유니티에서 DontDestroyOnLoad(gameObject)를 부른 오브젝트와 같아요. Thaniya Engine에서는 매니저 폴더에 넣기만 하면 저절로 그렇게 돼요.'))}</p></div>`,[{t:'확인',cls:'pri'}]);
+}
+/* ---- 인스펙터 ---- */
+const smRo=()=>SM.play?' disabled':'';
+function smScriptComp(o,n,ownerKey){
+  const p=P(),mine=p&&!p.task&&p.sm&&p.sm.self===ownerKey&&p.sm.file===n+'.cs';
+  const key='sms:'+ownerKey+':'+n;
+  if(mine){const f=scriptFields();return comp(key,'script',esc(prettyName(f.cls||n)),'스크립트',f.html+`<p class="note">${esc(_t('지금 편집 중인 스크립트예요. public 변수 값을 여기서 바꿔 실행해 볼 수 있어요.'))}</p>`)}
+  const op=SM.codeOpen.has(key);
+  return comp(key,'script',esc(prettyName(n)),'스크립트',`<p class="note" style="margin:0 0 6px">${esc(_t(SM_SDESC[n]||''))}</p><button type="button" class="btn sm" data-smact="code" data-k="${esc(key)}">${esc(_t(op?'코드 숨기기':'코드 보기'))}</button>${op?`<pre class="smcode" data-i18n-skip>${csHighlight(SM_CODE[n]||'')}</pre>`:''}`)
+    .replace('<div class="cbody">',`<button class="ib cx" type="button" data-smact="rmscript" data-n="${esc(n)}" title="${esc(_t('컴포넌트 제거'))}" aria-label="${esc(_t('컴포넌트 제거'))}">✕</button><div class="cbody">`);
+}
+const smCard=()=>`<div class="smcard"><b>${ico('mgr')} ${esc(_t('매니저'))}</b><span>${esc(_t('게임 전체를 맡는 보이지 않는 오브젝트예요. 씬에 그려지지 않고, 스크립트와 오디오 소스 같은 보이지 않는 컴포넌트를 붙이며, 씬이 바뀌어도 계속 동작해요.'))}</span><button type="button" class="btn sm" data-smact="mgrhelp">${esc(_t('매니저란?'))}</button></div>`;
+function smInsp(){
+  const box=$('#insp'),k=SM.sel||'';let h='';
+  if(k==='p'){
+    h=`<div class="ihead"><span class="ibadge" style="background:#5a627a">${ico('proj')}</span><input type="text" class="iname" value="${esc(_t(SM.proj))}" readonly aria-label="프로젝트 이름" data-i18n-skip><span class="tag">${esc(_t('프로젝트'))}</span></div>`+
+      comp('smp','gear','프로젝트','Project',fr('시작 씬',`<select data-smi="pstart"${smRo()}>${SM.scenes.map(s=>`<option value="${s.id}"${s.id===SM.start?' selected':''} data-i18n-skip>${esc(_t(s.name))}</option>`).join('')}</select>`,'startScene','게임 플레이를 시작할 때 가장 먼저 열리는 씬입니다. 씬 인스펙터의 「시작 씬」 체크와 같아요.')+
+        fr('씬',`<input type="text" value="${SM.scenes.length}" readonly aria-label="씬 수">`,'scenes',''))+`<p class="note" style="padding:0 12px">${esc(_t('엔진에서는 프로젝트 줄의 ⚙ 프로젝트 설정에서 시작 씬을 고를 수 있어요.'))}</p>`;
+  }else if(k.startsWith('s:')){
+    const s=smScene(k.slice(2));if(!s){box.innerHTML='';return}const i=smIdx(s.id);
+    h=`<div class="ihead"><span class="ibadge" style="background:var(--sel)">${ico('scene')}</span><input type="text" class="iname" data-smi="sname" maxlength="30" value="${esc(_t(s.name))}" aria-label="씬 이름" data-i18n-skip${smRo()}><span class="tag">${esc(_t('씬'))}</span></div>`+
+      comp('sms','gear','씬 설정','Scene',fr('빌드 번호',`<input type="text" value="${i}" readonly aria-label="빌드 번호">`,'buildIndex','계층 구조에서 이 씬의 순서예요(맨 위가 0). SceneManager.LoadScene(1)처럼 번호로 불러올 때 써요. 씬을 새로 만들면 맨 아래에 붙어요.')+
+        fr('시작 씬',chkIn(`data-smi="start"${smRo()}`,SM.start===s.id,'시작 씬'),'startScene','체크하면 게임 플레이를 시작할 때 이 씬이 가장 먼저 열립니다.'))+
+      comp('smst','info','통계','Statistics',fr('게임 오브젝트',`<input type="text" value="${s.objs.length}" readonly aria-label="게임 오브젝트 수">`,'gameObjects','이 씬에 배치된 게임 오브젝트 수입니다.'))+
+      `<p class="note" style="padding:0 12px">${esc(_t('씬 안의 게임 오브젝트는 씬을 불러올 때마다 처음 상태로 새로 만들어져요. 씬이 바뀌어도 남아야 하는 값(목숨 · 음악)은 매니저에 두세요.'))}</p>`;
+    if(SM.play)h+=`<p class="note" style="padding:0 12px">${esc(_t('플레이 중에는 씬을 바꿀 수 없어요'))}</p>`;
+  }else if(k.startsWith('o:')){
+    const[,sid,oid]=k.split(':'),s=smScene(sid),o=s&&s.objs.find(x=>x.id===oid);if(!o){box.innerHTML='';return}
+    const K=o.kind==='hero'?['user','#3fae7d','주인공']:o.kind==='portal'?['portal','#3aaec4','포탈']:['cube','#8b90a3','게임 오브젝트'];
+    h=`<div class="ihead"><span class="ibadge" style="background:${K[1]}">${ico(K[0])}</span><input type="text" class="iname" value="${esc(_t(o.name))}" readonly aria-label="이름" data-i18n-skip><span class="tag">${esc(_t(K[2]))}</span></div>`+
+      comp('smt','select','변환','Transform',fr('위치',numIn('X','',o.x,1,null,null,'위치 X',1)+numIn('Y','',o.y,1,null,null,'위치 Y',1),'position','씬 안에서의 칸 좌표입니다.'));
+    if(o.kind==='portal')h+=comp('smpo','gear','씬 전환 포탈','Portal',
+      fr('대상 씬',`<select data-smi="map"${smRo()}><option value="">${esc(_t('(없음)'))}</option>${SM.scenes.map(q=>`<option value="${q.id}"${q.id===o.map?' selected':''} data-i18n-skip>${esc(_t(q.name))}</option>`).join('')}</select>`,'targetScene','이 포탈로 이동할 씬입니다.')+
+      fr('도착 위치',numIn('X',`data-smi="tx"${smRo()}`,o.tx||0,1,0,SM_W-1,'도착 X')+numIn('Y',`data-smi="ty"${smRo()}`,o.ty||0,1,0,SM_H-1,'도착 Y'),'tx, ty','이동한 씬에서 주인공이 나타나는 칸 좌표입니다.')+
+      `<p class="note">${esc(_t('주인공이 이 칸에 들어오면 대상 씬을 불러와요. 스크립트로는 SceneManager.LoadScene("씬 이름")과 같아요.'))}</p>`);
+    if(o.kind==='hero')h+=`<p class="note" style="padding:0 12px">${esc(_t('주인공은 씬마다 하나씩 있어요. 포탈로 들어가면 대상 씬의 주인공이 「도착 위치」에서 나타나요.'))}</p>`;
+    (o.scripts||[]).forEach(n=>{h+=smScriptComp(o,n,k)});
+  }else if(k==='mf'){
+    const L=smMgrs();
+    h=`<div class="ihead"><span class="ibadge" style="background:#7c6cf0">${ico('mgr')}</span><b style="font-size:13px">${esc(_t('매니저'))}</b><span class="spacer" style="flex:1"></span><small class="note" style="margin:0">${L.length}</small></div>${smCard()}
+      <div class="smmlist">${L.map(o=>`<button type="button" class="smmrow" data-smpick="m:${o.id}">${ico('mgr')}<b data-i18n-skip>${esc(_t(o.name))}</b><small data-i18n-skip>${o.scripts.map(n=>esc(n)+'.cs').join(', ')||esc(_t('스크립트 없음'))}</small></button>`).join('')}</div>
+      <div class="addc"><button class="btn pri" type="button" data-smact="newmgr">＋ 새 매니저</button></div>`;
+  }else if(k.startsWith('m:')){
+    const o=smMgr(k.slice(2));if(!o){box.innerHTML='';return}const a=o.props.audio;
+    h=`<div class="ihead"><span class="ibadge" style="background:#7c6cf0">${ico('mgr')}</span><input type="text" class="iname" data-smi="mname" maxlength="40" value="${esc(_t(o.name))}" aria-label="매니저 이름" data-i18n-skip${smRo()}><span class="tag">${esc(_t('매니저'))}</span>${SM.play?'':`<button class="ib" type="button" data-smact="delmgr" data-mid="${o.id}" title="${esc(_t('매니저 삭제'))}" aria-label="${esc(_t('매니저 삭제'))}">${ico('trash')}</button>`}</div>${smCard()}`;
+    if(a)h+=comp('smau','sound','오디오 소스','AudioSource',
+      fr('오디오 클립',`<select data-smi="clip"><option value="">${esc(_t('(없음)'))}</option><option value="${esc(SM_CLIP)}"${a.clip===SM_CLIP?' selected':''} data-i18n-skip>${esc(_t(SM_CLIP))}</option></select>`,'clip','재생할 음악·효과음입니다. 스크립트: audioSource.clip = "이름"')+
+      fr('볼륨',numIn('V','data-smi="vol"',a.vol,.05,0,1,'볼륨'),'volume','소리 크기입니다. 0 = 무음, 1 = 원래 크기')+
+      fr('반복',chkIn('data-smi="loop"',a.loop,'반복'),'loop','끝나면 처음부터 다시 재생합니다. 배경 음악에 켭니다.')+
+      fr('시작할 때 재생',chkIn('data-smi="awake"',a.awake,'시작할 때 재생'),'playOnAwake','플레이를 시작할 때 저절로 재생합니다. 끄면 스크립트에서 audioSource.Play()로 재생합니다.')+
+      (SM.play?fr('재생 상태 (실시간)',`<span class="mono" data-smlive="${o.id}">${smAudLabel(o)}</span>`,'isPlaying','플레이 중 이 오디오 소스의 재생 상태입니다.'):'')
+    ).replace('<div class="cbody">',SM.play?'<div class="cbody">':`<button class="ib cx" type="button" data-smact="rmaudio" title="${esc(_t('컴포넌트 제거'))}" aria-label="${esc(_t('컴포넌트 제거'))}">✕</button><div class="cbody">`);
+    if(o.props.memo!=null)h+=comp('smme','gear','메모','Memo',`<textarea data-smi="memo" rows="3" style="width:100%">${esc(o.props.memo)}</textarea>`);
+    o.scripts.forEach(n=>{h+=smScriptComp(o,n,k)});
+    h+=SM.play?`<p class="note" style="padding:0 12px">${esc(_t('플레이 중에 바꾼 값은 정지하면 되돌아가요'))}</p>`:`<div class="addc smadd"><button class="btn pri" type="button" data-smact="addcomp" aria-haspopup="menu">컴포넌트 추가</button><button class="btn pri" type="button" data-smact="addscript" aria-haspopup="menu">스크립트 추가</button></div><p class="note" style="padding:0 12px 10px">${esc(_t('매니저에는 스크립트와 오디오 소스 · 메모처럼 씬에 보이지 않는 컴포넌트만 붙일 수 있어요.'))}</p>`;
+  }else h=`<p class="note" style="padding:12px">${esc(_t('계층 구조나 빌드 순서에서 씬 · 오브젝트 · 매니저를 고르세요.'))}</p>`;
+  box.innerHTML=h;
+}
+/* ---- 레슨 8 문제 ---- */
+const L8={no:8,title:'씬과 매니저',clear:'통과했어요. 레슨 8 완료! 게임을 씬으로 나눠 포탈로 잇고, 시작 씬을 정하고, 씬이 바뀌어도 살아 있는 매니저로 배경 음악과 목숨을 이어 갔어요. 엔진의 계층 구조 「매니저」 줄과 SceneManager도 똑같이 동작해요.',
+ lead:'게임을 여러 씬으로 나누고 포탈로 잇고, 씬이 바뀌어도 계속 살아 있는 매니저(BGM 매니저 · 게임 매니저)로 음악과 목숨을 이어 가 봐요.'};
+const smO=(sid,oid)=>{const s=smScene(sid);return s&&s.objs.find(o=>o.id===oid)};
+/* 이름 확인은 한국어 원문 또는 지금 화면 언어의 번역 이름 둘 다 */
+const smIs=(v,n)=>{v=String(v||'').trim();return v===n||v===_t(n)};
+const smNamed=n=>SM.scenes.find(s=>smIs(s.name,n));
+const smGm=()=>SM.mgrs.find(o=>smIs(o.name,'게임 매니저'));
+const L8P=[
+{id:'m-scene',task:true,sm:{sel:'s:town'},title:'새 씬 만들고 포탈로 잇기',
+ desc:'<b>씬</b>은 게임의 한 장소예요. 마을 · 숲 · 동굴처럼 장소마다 씬을 따로 만들고, <b>포탈</b>의 <b>대상 씬</b>을 정해 서로 이어요. 씬은 계층 구조에서 프로젝트 아래에 차례로 놓이고, 위에서부터 <b>0번 · 1번 …</b>(빌드 번호)이 붙어요. ★ 표시가 있는 씬이 <b>시작 씬</b>이라 플레이는 늘 거기서 시작해요.',
+ goal:'「숲」 씬을 새로 만들고, 마을의 포탈이 숲으로 가게 이은 뒤 플레이해서 숲에 가 보세요.',
+ checks:[
+  {t:'<b>계층 구조</b> 맨 위 프로젝트 줄의 <b>＋</b>(또는 우클릭 → 새 씬)로 새 씬 만들기',ok:c=>c.ev.has('sm:newscene')},
+  {t:'새 씬을 고르고 <b>인스펙터</b>에서 이름을 <b>숲</b>으로 바꾸기',ok:()=>!!smNamed('숲')},
+  {t:'<b>계층 구조</b>에서 마을의 <b>포탈</b>을 고르고 <b>인스펙터</b>에서 대상 씬을 <b>숲</b>으로',ok:()=>{const o=smO('town','pt'),f=smNamed('숲');return !!(o&&f&&o.map===f.id)}},
+  {t:'<b>▶ 플레이</b>를 누르고 아래의 <b>포탈로 들어가기</b>로 숲에 도착하기',ok:c=>{const f=smNamed('숲');return !!(f&&c.ev.has('sm:enter:'+f.id))}}],
+ hint:'엔진에서도 프로젝트 줄을 우클릭하면 「새 씬」이 있어요. 새 씬은 계층 구조 맨 아래(1번)에 생겨요.\n이름을 숲으로 바꾸면 그림도 숲으로 바뀌어요 (이 실습장에서만).'},
+{id:'m-start',task:true,sm:{sel:'s:forest',setup:()=>({scenes:[smTown('forest'),smForest()],start:'town',mgrs:[smBgm()]})},title:'시작 씬 바꾸기',
+ desc:'플레이 버튼을 누르면 엔진은 언제나 <b>시작 씬</b>(★)부터 열어요. 지금 고친 씬이 아니라요! 숲을 시험하고 싶을 때는 숲의 인스펙터에서 <b>시작 씬</b>을 켜면 돼요. 시작 씬은 프로젝트에 하나뿐이라, 켜는 순간 ★가 그 씬으로 옮겨 가요. 유니티의 Build Settings에서 0번 씬이 먼저 열리는 것과 비슷해요.',
+ goal:'숲을 시작 씬으로 바꿔 플레이하고, 숲의 포탈로 마을에 가 보세요.',
+ checks:[
+  {t:'<b>계층 구조</b>에서 <b>숲</b> 씬을 고르고 <b>인스펙터</b>의 <b>시작 씬</b> 켜기 (★가 숲으로 옮겨 가요)',ok:()=>SM.start==='forest'},
+  {t:'<b>▶ 플레이</b>로 숲에서 시작하는 것 보기 (<b>플레이 상황</b>의 지금 씬)',ok:c=>c.ev.has('sm:first:forest')},
+  {t:'플레이를 멈추고 숲의 <b>포탈</b> 대상 씬을 <b>마을</b>로 (<b>인스펙터</b>)',ok:()=>{const o=smO('forest','pt');return !!(o&&o.map==='town')}},
+  {t:'다시 <b>▶ 플레이</b> → 숲의 포탈로 마을에 가기',ok:c=>c.ev.has('sm:go:forest>town')}],
+ hint:'플레이 중에는 씬을 고칠 수 없어요 (엔진은 플레이 중에 바꾼 것을 정지할 때 되돌려요). ■ 정지 후에 고치세요.\n빌드 번호는 바뀌지 않아요: 마을 0번 · 숲 1번 그대로예요.'},
+{id:'m-bgm',task:true,sm:{sel:'s:town',setup:()=>({scenes:[smTown('forest'),smForest('town')],start:'town',mgrs:[smBgm()]})},title:'BGM 매니저 · 이어지는 음악',
+ desc:'<b>매니저</b>는 계층 구조의 <b>매니저</b> 줄 아래에 있는, 씬에 그려지지 않는 오브젝트예요. 씬 목록 밖에 있어서 씬이 바뀌어도 사라지지 않고, <code>Start()</code>도 플레이를 시작할 때 <b>한 번만</b> 불려요. 새 프로젝트에 들어 있는 <b>BGM 매니저</b>는 자기 <b>오디오 소스</b>의 음악을 <code>BgmManager</code> 스크립트로 반복 재생해요. 그래서 씬을 오가도 음악이 처음부터 다시 시작하지 않고 이어져요. (소리가 나요. 볼륨을 확인하세요.)',
+ goal:'BGM 매니저의 볼륨을 0.3으로 낮추고, 플레이 중에 마을과 숲을 오가며 음악이 이어지는 것을 확인하세요.',
+ checks:[
+  {t:'<b>계층 구조</b>의 <b>매니저</b> 아래 <b>BGM 매니저</b> 고르기',ok:c=>c.ev.has('sm:sel:m:bgm')},
+  {t:'정지 상태에서 <b>인스펙터</b>의 오디오 소스 <b>볼륨</b>을 <b>0.3</b>으로',ok:()=>{const o=SM.mgrs.find(x=>x.id==='bgm');return !!(o&&o.props.audio&&Math.abs(o.props.audio.vol-.3)<.001)}},
+  {t:'<b>▶ 플레이</b> → <b>플레이 상황</b>에서 ♪ 음악이 재생되는 것 보기',ok:c=>c.ev.has('sm:bgm:play')},
+  {t:'포탈로 숲에 갔다가 다시 마을로 · 씬 시간은 0부터, 음악 시간은 끊김 없이 이어지는 것 보기',ok:c=>c.ev.has('sm:bgmkeep:2')}],
+ hint:'인스펙터의 BGM 매니저에서 「코드 보기」를 누르면 엔진의 기본 BgmManager 스크립트를 볼 수 있어요.\n스크립트를 떼거나(✕) 오디오 클립을 (없음)으로 바꾸고 플레이해 보면, 음악이 왜 나오는지 알 수 있어요.'},
+{id:'m-gm',task:true,sm:{sel:'mf',setup:()=>({scenes:[smTown('forest'),smForest('town')],start:'town',mgrs:[smBgm()]})},title:'게임 매니저 만들기',
+ desc:'목숨이나 점수처럼 <b>게임 전체에서 하나</b>여야 하는 값은 씬 안의 오브젝트에 두면 안 돼요. 씬을 불러올 때마다 오브젝트가 처음 상태로 새로 만들어지니까요. 그래서 <b>게임 매니저</b>를 만들어 맡겨요. 매니저는 <b>＋</b>로 만든 빈 매니저에 <b>스크립트 추가</b>로 일을 맡기면 돼요. 유니티에서는 <code>DontDestroyOnLoad</code>를 불러야 하지만, Thaniya Engine은 매니저 폴더에 넣기만 하면 돼요.',
+ goal:'「게임 매니저」를 만들어 GameManager 스크립트를 붙이고, 플레이해서 씬을 바꿔도 Start()가 다시 불리지 않는 것을 보세요.',
+ checks:[
+  {t:'<b>계층 구조</b>의 <b>매니저</b> 줄 <b>＋</b>로 새 매니저 만들기',ok:c=>c.ev.has('sm:newmgr')},
+  {t:'<b>인스펙터</b>에서 이름을 <b>게임 매니저</b>로 바꾸기',ok:()=>!!smGm()},
+  {t:'<b>인스펙터</b>의 <b>스크립트 추가</b>에서 <b>GameManager</b> 붙이기',ok:()=>{const o=smGm();return !!(o&&o.scripts.includes('GameManager'))}},
+  {t:'<b>▶ 플레이</b> → <b>콘솔</b>에 「게임 시작! 목숨 3」이 한 번 나온 뒤, 포탈로 씬을 바꿔도 다시 나오지 않는 것 보기',ok:c=>c.ev.has('sm:gmkeep')}],
+ hint:'매니저 줄의 ＋는 마우스를 올리면 보여요. 계층 구조 위의 + 메뉴에도 「새 매니저」가 있어요.\n플레이 상황의 매니저 칸에서 「Start 1번」이 그대로인 것도 확인해 보세요.'},
+{id:'m-info',sm:{self:'o:town:sign',file:'SceneInfo.cs',sel:'o:town:sign',setup:()=>({scenes:[Object.assign(smTown('forest'),{objs:smTown('forest').objs.concat([{id:'sign',name:'안내판',kind:'sign',x:4,y:4,scripts:['SceneInfo']}])}),smForest('town'),smCave()],start:'town',mgrs:[smBgm()]})},file:'SceneInfo.cs',
+ title:'지금 씬 알아내기',
+ desc:'스크립트에서 씬을 다루려면 맨 위에 <code>using UnityEngine.SceneManagement;</code>를 써요. <code>SceneManager.GetActiveScene()</code>은 지금 열린 씬을 돌려주고, 그 <code>.name</code>은 씬 이름, <code>.buildIndex</code>는 빌드 번호(계층 구조 순서 · 0부터)예요. <code>Scene s = SceneManager.GetActiveScene();</code>처럼 변수에 담아 써도 돼요.',
+ goal:'콘솔에 <b>지금 씬: 마을 (0번)</b>처럼 지금 씬의 이름과 빌드 번호를 출력하세요. 다른 씬에서 실행해도 맞아야 해요.',
+ starter:'using UnityEngine;\nusing UnityEngine.SceneManagement;\n\n// 마을의 안내판에 붙은 스크립트예요\npublic class SceneInfo : MonoBehaviour\n{\n    void Start()\n    {\n        // 지금 씬의 이름과 빌드 번호를 출력하세요\n    }\n}\n',
+ tests:[{sc:{scene:'마을'},out:[['info','지금 씬: 마을 (0번)']]},{sc:{scene:'동굴'},why:'동굴 씬(2번)에서 실행했더니 ',out:[['info','지금 씬: 동굴 (2번)']]}],
+ hint:'Scene s = SceneManager.GetActiveScene();\nDebug.Log("지금 씬: " + s.name + " (" + s.buildIndex + "번)");'},
+{id:'m-load',sm:{self:'o:town:sign',file:'NextScene.cs',sel:'o:town:sign',setup:()=>({scenes:[Object.assign(smTown('forest'),{objs:smTown('forest').objs.concat([{id:'sign',name:'안내판',kind:'sign',x:4,y:4,scripts:['NextScene']}])}),smForest('town'),smCave()],start:'town',mgrs:[smBgm()]})},file:'NextScene.cs',
+ title:'다음 씬 불러오기',
+ desc:'<code>SceneManager.LoadScene("숲")</code>은 이름으로, <code>SceneManager.LoadScene(1)</code>은 빌드 번호로 씬을 불러와요. 포탈이 하는 일을 코드로 하는 거예요. 불러오기는 지금 메서드가 끝난 다음에 일어나서, 같은 메서드 안에서는 아직 지금 씬이 그대로예요 (엔진도 같아요). 이 프로젝트의 씬은 <b>마을 0 · 숲 1 · 동굴 2</b>예요.',
+ goal:'지금 씬의 다음 번호 씬을 불러오세요. 마지막 씬이면 0번으로 돌아가요. 불러오기 전에 <b>1번 씬을 불러와요</b>처럼 출력하세요.',
+ starter:'using UnityEngine;\nusing UnityEngine.SceneManagement;\n\npublic class NextScene : MonoBehaviour\n{\n    // 이 게임의 씬 개수예요\n    public int sceneCount = 3;\n\n    void Start()\n    {\n        // 1) 지금 씬 번호 + 1 = 다음 번호\n        // 2) sceneCount 이상이면 0으로\n        // 3) 출력하고 그 번호의 씬 불러오기\n    }\n}\n',
+ tests:[{sc:{scene:'마을'},load:1,out:[['info','1번 씬을 불러와요']]},{sc:{scene:'동굴'},load:0,why:'동굴 씬(2번 · 마지막)에서 실행했더니 ',out:[['info','0번 씬을 불러와요']]},{sc:{scene:'숲'},f:{sceneCount:2},load:0,why:'씬이 2개(sceneCount = 2)일 때 숲(1번)에서 실행했더니 ',out:[['info','0번 씬을 불러와요']]}],
+ verify:(c,f,t)=>{if(!c.loads.length)return _t('SceneManager.LoadScene()으로 씬을 불러오지 않았어요.');const l=c.loads[c.loads.length-1];if(c.loads.length>1)return _t('씬을 {n}번 불러왔어요. 한 번만 불러오세요.',{n:c.loads.length});return l===t.load?'':_t('{want}번 씬을 불러와야 하는데 {got}번({name})을 불러왔어요.',{want:t.load,got:l,name:_t(c.names[l])})},
+ hint:'int next = SceneManager.GetActiveScene().buildIndex + 1;\nif (next >= sceneCount)\n    next = 0;\nDebug.Log(next + "번 씬을 불러와요");\nSceneManager.LoadScene(next);'},
+{id:'m-bgmcode',sm:{self:'m:bgm',file:'BgmManager.cs',sel:'m:bgm',setup:()=>({scenes:[smTown('forest'),smForest('town')],start:'town',mgrs:[Object.assign(smBgm({loop:false}),{scripts:['BgmManager']})]})},file:'BgmManager.cs',
+ title:'BGM 매니저 스크립트',
+ desc:'BGM 매니저의 스크립트를 직접 만들어 봐요. <code>GetComponent&lt;AudioSource&gt;()</code>는 같은 매니저에 붙은 <b>오디오 소스</b>를 가져와요. 없으면 <code>null</code>이라 그대로 쓰면 오류가 나니, 먼저 확인하고 경고를 남긴 뒤 <code>return</code>해요. 오디오 소스의 <code>loop</code>를 켜고 <code>Play()</code>하면 반복 재생되고, <code>clip</code>은 클립 이름이에요. 지금 BGM 매니저의 오디오 소스는 <b>반복이 꺼져</b> 있어요.',
+ goal:'오디오 소스를 가져와 반복을 켜고 재생한 뒤 <b>BGM 재생: 타니아의 아침</b>을 출력하세요. 오디오 소스가 없으면 경고 <b>오디오 소스가 없어요</b>만 출력하고 끝내요.',
+ starter:'using UnityEngine;\n\n// BGM 매니저 스크립트 · 매니저에 붙어 있어 씬이 바뀌어도 계속 살아 있어요\npublic class BgmManager : MonoBehaviour\n{\n    AudioSource bgm;\n\n    void Start()\n    {\n        // 1) 같은 매니저의 오디오 소스 가져오기\n        // 2) 없으면 경고를 남기고 끝내기\n        // 3) 반복을 켜고 재생하고, 클립 이름 출력하기\n    }\n}\n',
+ tests:[{out:[['info','BGM 재생: 타니아의 아침']]},{noAudio:true,why:'오디오 소스를 뗀 매니저에서 실행했더니 ',out:[['warn','오디오 소스가 없어요']]}],
+ verify:(c,f,t)=>{if(t.noAudio)return'';const a=c.self.props.audio;if(!a.loop)return _t('반복(loop)이 꺼져 있어요. bgm.loop = true; 로 켜 주세요.');if(!a.playing)return _t('음악이 재생되지 않았어요. bgm.Play(); 를 불러 주세요.');return''},
+ fatalHint:'오디오 소스가 없을 때(null) bgm.loop 처럼 쓰면 오류가 나요. if (bgm == null) 로 먼저 확인하세요.',
+ hint:'bgm = GetComponent<AudioSource>();\nif (bgm == null)\n{\n    Debug.LogWarning("오디오 소스가 없어요");\n    return;\n}\nbgm.loop = true;\nbgm.Play();\nDebug.Log("BGM 재생: " + bgm.clip);'},
+{id:'m-lives',sm:{self:'m:gm',file:'GameManager.cs',sel:'m:gm',setup:()=>({scenes:[smTown('forest'),smForest('town')],start:'town',mgrs:[smBgm(),{id:'gm',name:'게임 매니저',props:{},scripts:['GameManager']}]})},file:'GameManager.cs',
+ title:'게임 매니저 · 목숨과 다시 시작',
+ desc:'주인공이 쓰러지면 엔진은 씬의 스크립트와 <b>매니저</b>에 <code>OnHeroDeath()</code>를 보내요. <code>SceneManager.RestartGame()</code>은 체력을 채우고 시작 씬부터 다시 시작하는데, 매니저는 그대로 살아 있어서 <code>lives</code> 값이 남아요. 씬 안의 오브젝트였다면 다시 시작할 때마다 3으로 돌아갔을 거예요. 채점은 주인공이 여러 번 쓰러지는 상황으로 해요.',
+ goal:'쓰러질 때마다 목숨을 1 줄이고, 남았으면 <b>남은 목숨 2</b>처럼, 0이 되면 <b>게임 오버</b>를 출력하고 목숨을 3으로 되돌리세요. 어느 쪽이든 마지막에 <code>SceneManager.RestartGame()</code>으로 다시 시작해요.',
+ starter:'using UnityEngine;\nusing UnityEngine.SceneManagement;\n\n// 게임 매니저 · 매니저라서 다시 시작해도 lives 값이 그대로 남아요\npublic class GameManager : MonoBehaviour\n{\n    public int lives = 3;\n\n    void Start()\n    {\n        Debug.Log("게임 시작! 목숨 " + lives);\n    }\n\n    // 주인공이 쓰러지면 엔진이 불러 줘요\n    void OnHeroDeath()\n    {\n        // 목숨을 줄이고 · 출력하고 · 다시 시작하세요\n    }\n}\n',
+ expLabel:'기대 출력 (주인공이 세 번 쓰러짐)',
+ tests:[{calls:['OnHeroDeath','OnHeroDeath','OnHeroDeath'],restarts:3,out:[['info','게임 시작! 목숨 3'],['info','남은 목숨 2'],['info','남은 목숨 1'],['info','게임 오버']]},
+  {f:{lives:1},calls:['OnHeroDeath','OnHeroDeath'],restarts:2,why:'lives = 1에서 두 번 쓰러지게 했더니 ',out:[['info','게임 시작! 목숨 1'],['info','게임 오버'],['info','남은 목숨 2']]}],
+ verify:(c,f,t)=>c.restarts===t.restarts?'':_t('SceneManager.RestartGame()을 {want}번 불러야 하는데 {got}번 불렀어요. 쓰러질 때마다 한 번씩 불러 주세요.',{want:t.restarts,got:c.restarts}),
+ hint:'lives--;\nif (lives > 0)\n{\n    Debug.Log("남은 목숨 " + lives);\n}\nelse\n{\n    Debug.Log("게임 오버");\n    lives = 3;\n}\nSceneManager.RestartGame();'}
+];
+
 const LESSONS=[
   {...L2,problems:L2P,hash:'lesson-1',lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
   {...L1,problems:L1P,hash:'lesson-2',lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
@@ -1908,7 +2474,8 @@ const LESSONS=[
   {...L4,problems:L4P,hash:'lesson-4',lv:2,kw:['변수', 'public 필드', 'UI 연결'],preview:'public int damage = 30;\npublic Text label;\n\nvoid Start()\n{\n    hero.hp -= damage;\n    label.text = "HP " + hero.hp;\n}'},
   {...L5,problems:L5P,hash:'lesson-5',lv:3,kw:['Update()', '키 입력', 'Vector2'],preview:'void Update()\n{\n    Vector2 dir = new Vector2(h, v);\n    hero.Face(dir);\n    hero.Move(dir * speed\n              * Time.deltaTime);\n}'},
   {...L6,problems:L6P,hash:'lesson-6',lv:2,kw:['애니메이터', '애니메이션 클립', 'SetTrigger'],preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'},
-  {...L7,problems:L7P,hash:'lesson-7',lv:2,kw:['룰 타일', '애니메이션 타일', '타일 팔레트'],preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'}
+  {...L7,problems:L7P,hash:'lesson-7',lv:2,kw:['룰 타일', '애니메이션 타일', '타일 팔레트'],preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'},
+  {...L8,problems:L8P,hash:'lesson-8',lv:3,kw:['씬 전환', '매니저', 'SceneManager'],preview:'계층 구조 → ＋ 새 씬 · ★ 시작 씬\n포탈     → 대상 씬 「숲」\n매니저   → BGM 매니저 · 게임 매니저\nSceneManager.LoadScene("숲");'}
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
 const LVN=['','입문','초급','중급'];
@@ -1978,7 +2545,7 @@ function snRestore(){
 function snSetup(p){
   const base=p&&p.setup?p.setup():p&&p.task?SN_INIT.filter(o=>o.id!=='quiz').map(o=>({...o})):SN_INIT.map(o=>({...o}));
   SN_OBJS.length=0;base.forEach(o=>SN_OBJS.push(o));SN_EDIT=null;SN_EDIT_UI=null;
-  l6Setup(p);stSetup(p);
+  l6Setup(p);stSetup(p);smSetup(p);
   const tm=tmDefault();if(p&&p.task&&p.tiles)p.tiles(tm);tmLoad(tm);
   SN_UI.length=0;if(p&&p.uiSetup)p.uiSetup().forEach(u=>SN_UI.push(JSON.parse(JSON.stringify(u))));
   SN.tool='select';SN.layer=(p&&p.layer)||'t';SN.tile='floor';SN.hover=null;
@@ -2275,6 +2842,7 @@ function csGetComp(m,o,T){
     case'Hero':return o.kind==='hero'?heroProxy(m,o):null;
     case'Item':return o.kind==='item'?itemProxy(m,o):null;
     case'Animator':return o.props&&o.props.animator?ANX.animProxy(m,o):null;
+    case'AudioSource':return o.props&&o.props.audio?smAudioProxy(m,o):null;
   }
   throw csUnsup('GetComponent<'+T+'>()');
 }
@@ -2424,9 +2992,9 @@ const CS_WORLD={
   dialogOpen:()=>false,dialogClose:()=>{},
   message:text=>lsay(text),
   inventory:()=>LINV,
-  loadScene:()=>{throw new Error(_t('학습 씬은 하나뿐이라 다른 씬을 불러올 수 없어요'))},
-  restartGame:()=>setTimeout(()=>{if(PLAY){playStop(true);playStart()}},0),
-  sceneInfo:()=>({name:_t('학습 씬'),index:0}),
+  loadScene:v=>{if(SMRUN){smLoad(v);return}throw new Error(_t('학습 씬은 하나뿐이라 다른 씬을 불러올 수 없어요'))},
+  restartGame:()=>{if(SMRUN){smRestart();return}setTimeout(()=>{if(PLAY){playStop(true);playStart()}},0)},
+  sceneInfo:()=>SMRUN?smInfo():({name:_t('학습 씬'),index:0}),
   uiGroupFind:()=>null
 };
 CSHOST.use(CS_WORLD);
@@ -2468,6 +3036,11 @@ const ICON=(()=>{
     expand:s('<path d="M4 6.5L8 3l4 3.5M4 13l4-3.5 4 3.5"/>')
   };
 })();
+/* 레슨 8 (씬 · 매니저): 엔진과 같은 아이콘 */
+Object.assign(ICON,(()=>{const s=(d,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 16 16" aria-hidden="true">${d}</svg>`;return{
+  mgr:s('<rect x="2" y="4.5" width="12" height="8.5" rx="1.6"/><path d="M6 4.5V3.2a1 1 0 011-1h2a1 1 0 011 1v1.3M2 8.2h12M7 8.2v1.4h2V8.2"/>'),
+  sound:s('<path d="M2.5 6.2h2.6L8.6 3v10L5.1 9.8H2.5z"/><path d="M10.6 5.6a3.4 3.4 0 010 4.8M12.4 3.8a6 6 0 010 8.4"/>'),
+  proj:s('<path d="M2.5 3h11v10h-11zM2.5 6.5h11M6 6.5V13"/>'),plus:s('<path d="M8 3v10M3 8h10"/>'),x:s('<path d="M4 4l8 8M12 4l-8 8"/>')}})());
 const ico=n=>ICON[n]||'';
 /* ===================== 화면 ===================== */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -2527,6 +3100,7 @@ const KUI={
 let hOpen=true;
 function renderHier(){
   if(STON){stHier();return}
+  if(SMON){smHier();return}
   const q=($('#hFilter').value||'').trim().toLowerCase(),open=hOpen||!!q;
   const list=SN_OBJS.filter(o=>!q||o.name.toLowerCase().includes(q)||KUI[o.kind].tag.includes(q));
   if(q&&list.length&&list.length<=2)list.forEach(o=>TASK.ev.add('hfind:'+o.id));
@@ -2557,7 +3131,7 @@ $('#hier').addEventListener('click',e=>{
 });
 /* Delete 키: 입력칸 밖에서 누르면 고른 오브젝트·UI 삭제 (실습 문제) */
 document.addEventListener('keydown',e=>{
-  if(e.key!=='Delete'||$('#lessonView').hidden||!P()||!P().task||PLAY)return;
+  if(e.key!=='Delete'||$('#lessonView').hidden||!P()||!P().task||PLAY||SMON)return;
   if(e.target&&e.target.closest&&e.target.closest('input,textarea,select,#hier'))return;
   e.preventDefault();snDelete(SN.sel);
 });
@@ -2571,8 +3145,8 @@ $('#hFilter').addEventListener('input',renderHier);
 $('#hier').addEventListener('dragstart',e=>{const r=e.target.closest('.tr[data-id]');if(!r||r.dataset.id[0]==='L'&&r.dataset.id[1]===':'){e.preventDefault();return}
   e.dataTransfer.setData('text/plain','obj:'+r.dataset.id);e.dataTransfer.effectAllowed='link';r.classList.add('dragging')});
 $('#hier').addEventListener('dragend',e=>{const r=e.target.closest('.tr');if(r)r.classList.remove('dragging');$$('.objslot.over').forEach(x=>x.classList.remove('over'))});
-$('#hCollapse').onclick=()=>{hOpen=false;renderHier()};
-$('#hExpand').onclick=()=>{hOpen=true;renderHier()};
+$('#hCollapse').onclick=()=>{hOpen=false;if(SMON){SM.fold={mgr:false};SM.scenes.forEach(s=>SM.fold['s:'+s.id]=false)}renderHier()};
+$('#hExpand').onclick=()=>{hOpen=true;if(SMON)SM.fold={};renderHier()};
 
 /* ---- 인스펙터 ---- */
 const insFold=new Set();
@@ -2635,6 +3209,7 @@ function renderInspUi(id){
 }
 function renderInsp(){
   if(STON){stInsp();return}
+  if(SMON){smInsp();return}
   if(SN.sel&&SN.sel[1]===':'){if(SN.sel[0]==='L'){renderInspTm(SN.sel.slice(2));return}if(SN.sel[0]==='U'){renderInspUi(SN.sel.slice(2));return}}
   const o=SN_OBJS.find(x=>x.id===SN.sel);
   if(!o){$('#insp').innerHTML='<p class="note" style="padding:12px">계층 구조나 씬 뷰에서 오브젝트를 고르세요.</p>';return}
@@ -2844,6 +3419,7 @@ function tkPing(){
 /* ---- 창 위치 힌트: 할 일이 어느 창에서 하는 일인지 작은 표시 + 그 창을 살짝 빛나게 ----
    할 일 글에 나오는 창 이름으로 찾음 (레슨 6은 애니메이터 · 애니메이션 · 프로젝트 · 콘솔 탭) · 위치(왼쪽 위 등)는 지금 화면 배치에서 계산 */
 const LOC_RULES=[
+  [/빌드 순서/,'smbar'],[/플레이 상황/,'smside'],
   [/계층 구조/,'hier'],[/인스펙터/,'insp'],[/도구 모음/,'sbar'],[/칠할 곳|팔레트에서/,'stools'],[/씬 뷰/,'scene'],[/게임 뷰/,'game'],
   [/애니메이터 창|파라미터/,'animator'],[/애니메이션 (탭|창)/,'anim'],[/프로젝트 탭/,'proj'],[/콘솔/,'con'],[/플레이/,'play']];
 /* 창 이름이 없는 할 일 (레슨 6): 하는 일로 창을 짐작 */
@@ -2853,9 +3429,10 @@ function locEl(k){
   const an=t=>L6ON?document.querySelector('#anPn .antab[data-an="'+t+'"]'):null;
   switch(k){
     case'hier':return document.querySelector('.hier-pn');case'insp':return document.querySelector('.insp-pn');
-    case'sbar':return $('#sbar');case'stools':return $('#sTools');case'scene':return $('#pScene');case'game':return $('#pGame');
+    case'sbar':return $('#sbar');case'stools':return $('#sTools');case'scene':return SMON?$('#smStage'):$('#pScene');case'game':return SMON?$('#smStage'):$('#pGame');
+    case'smbar':return SMON?$('#smBar'):null;case'smside':return SMON?$('#smSide'):null;
     case'animator':case'anim':case'proj':return an(k);
-    case'con':return an('con')||document.querySelector('.con-pn');case'play':return $('#playBtn');}
+    case'con':return an('con')||document.querySelector('.con-pn');case'play':return SMON?$('#smPlay'):$('#playBtn');}
   return null;
 }
 function locKeys(html,only){
@@ -2953,6 +3530,78 @@ setInterval(()=>{if(!STON||document.hidden)return;stDraw();const pv=$('#stAnimPv
     for(let y=0;y<2;y++)for(let x=0;x<5;x++){const rr=stResolve(tmp,()=>0,x,y,t,'sp:__pv');if(rr&&rr.v)stTile(g,rr.v,x*S,y*S,S)}}
   document.querySelectorAll('#stPal canvas[data-stth]').forEach(c=>{const sp=stOf(c.dataset.stth);if(sp&&sp.kind==='anim')stThumb(c,sp,t)})},90);
 
+/* ---- 레슨 8 입력 (계층 구조 · 인스펙터 · 씬 · 매니저 실습장) ---- */
+const smEnt=()=>{const k=SM.sel||'';if(k.startsWith('m:'))return smMgr(k.slice(2));if(k.startsWith('o:')){const q=k.split(':');return smO(q[1],q[2])}return null};
+function smAct(b){
+  const a=b.dataset.smact,o=smEnt();
+  if(a==='newscene')smNewScene();
+  else if(a==='delscene')smDelScene(b.dataset.sid);
+  else if(a==='newmgr')smNewMgr();
+  else if(a==='delmgr')smDelMgr(b.dataset.mid);
+  else if(a==='mgrhelp'){TASK.ev.add('sm:guide');smGuide()}
+  else if(a==='code'){const k=b.dataset.k;if(SM.codeOpen.has(k))SM.codeOpen.delete(k);else{SM.codeOpen.add(k);TASK.ev.add('sm:code')}renderInsp()}
+  else if(a==='mute'){smAudOff();const r=SM.show;if(r&&r.self&&r.self.props.audio)r.self.props.audio.playing=false;smSide()}
+  else if(a==='rmscript'&&o){if(SM.play){toast('플레이 중에 바꾼 값은 정지하면 되돌아가요');return}o.scripts=o.scripts.filter(n=>n!==b.dataset.n);TASK.ev.add('sm:rmscript');renderInsp();renderHier();smRender();tkPing()}
+  else if(a==='rmaudio'&&o){if(SM.play)return;delete o.props.audio;TASK.ev.add('sm:rmaudio');renderInsp();smRender();tkPing()}
+  else if(a==='addcomp'&&o){popMenu(b,[
+    {t:'오디오 소스',ic:'sound',note:o.props.audio?_t('이미 있음'):'AudioSource',dis:!!o.props.audio,fn:()=>{o.props.audio=smAudDef({clip:'',vol:1,loop:false,awake:true});TASK.ev.add('sm:addaudio');renderInsp();smRender();tkPing()}},
+    {t:'메모',ic:'gear',note:o.props.memo!=null?_t('이미 있음'):'Memo',dis:o.props.memo!=null,fn:()=>{o.props.memo='';renderInsp()}},
+    {t:'스프라이트 · 콜라이더 · 빛',ic:'cube',note:_t('매니저에는 붙일 수 없어요'),dis:true}])}
+  else if(a==='addscript'&&o){popMenu(b,Object.keys(SM_CODE).map(n=>{const has=o.scripts.includes(n);return{t:n+'.cs',ic:'script',raw:1,note:has?_t('이미 있음'):_t(SM_SDESC[n]).slice(0,22)+'…',dis:has,fn:()=>{o.scripts.push(n);TASK.ev.add('sm:addscript:'+n);renderInsp();renderHier();smRender();tkPing()}}}))}
+}
+function smInput(t,f,done){
+  const k=SM.sel||'',o=smEnt(),s=k.startsWith('s:')?smScene(k.slice(2)):null,v=t.value;
+  if(f==='sname'&&s){const n=v.trim().slice(0,30);if(n)s.name=n;else if(done)t.value=_t(s.name);renderHier();smBar();smDraw()}
+  else if(f==='start'&&s){if(t.checked)SM.start=s.id;else if(SM.start===s.id){t.checked=true;toast('시작 씬은 하나 있어야 해요. 다른 씬에서 켜 주세요')}renderHier();smRender()}
+  else if(f==='pstart'){if(smScene(v))SM.start=v;renderHier();smRender()}
+  else if(f==='mname'&&o){const n=v.trim().slice(0,40);if(n)o.name=n;else if(done)t.value=_t(o.name);renderHier();smSide()}
+  else if(o&&(f==='map'||f==='tx'||f==='ty')){if(f==='map')o.map=v||null;else if(v!==''&&!isNaN(+v))o[f]=clamp(Math.round(+v),0,f==='tx'?SM_W-1:SM_H-1);renderHier();smDraw()}
+  else if(o&&o.props&&o.props.audio&&['clip','vol','loop','awake'].includes(f)){const a=o.props.audio;
+    if(f==='clip'){a.clip=v;if(!v&&a.playing){a.playing=false;smAudOff(o.id)}}
+    else if(f==='vol'){if(v!==''&&!isNaN(+v))a.vol=clamp(+v,0,1)}
+    else a[f]=t.checked;
+    if(SM.play)smAudSync(o);smSide()}
+  else if(o&&f==='memo')o.props.memo=v;
+  else return;
+  tkPing();
+}
+$('#hier').addEventListener('click',e=>{
+  if(!SMON)return;e.stopPropagation();
+  const f=e.target.closest('[data-smfold]');if(f){const k=f.dataset.smfold;SM.fold[k]=SM.fold[k]===false;renderHier();return}
+  const a=e.target.closest('[data-smact]');if(a){smAct(a);return}
+  const r=e.target.closest('[data-smpick]');if(r){smSelect(r.dataset.smpick);const n=$(`#hier .tr[data-smpick="${r.dataset.smpick}"]`);if(n)n.focus({preventScroll:true})}
+},true);
+$('#hier').addEventListener('keydown',e=>{
+  if(!SMON)return;const r=e.target.closest('[data-smpick]');if(!r)return;e.stopPropagation();
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();smSelect(r.dataset.smpick);const n=$(`#hier .tr[data-smpick="${r.dataset.smpick}"]`);if(n)n.focus()}
+  else if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const n=e.key==='ArrowDown'?r.nextElementSibling:r.previousElementSibling;if(n&&n.dataset.smpick)n.focus()}
+},true);
+$('#hier').parentElement.addEventListener('contextmenu',e=>{
+  if(!SMON)return;e.preventDefault();e.stopPropagation();
+  const r=e.target.closest('[data-smpick]'),k=r?r.dataset.smpick:'p';if(r&&SM.sel!==k)smSelect(k);
+  const anc=(r&&$(`#hier .tr[data-smpick="${k}"]`))||$('#hAdd'),sid=k.startsWith('s:')?k.slice(2):k.startsWith('o:')?k.split(':')[1]:null;
+  const items=k==='mf'||k.startsWith('m:')?[{t:'새 매니저',ic:'mgr',fn:smNewMgr}].concat(k.startsWith('m:')?[{t:'매니저 삭제',ic:'trash',fn:()=>smDelMgr(k.slice(2))}]:[])
+    :[{t:'새 씬',ic:'scene',fn:smNewScene}].concat(sid?[{t:'시작 씬으로 지정',ic:'scene',dis:SM.start===sid||!!SM.play,fn:()=>{SM.start=sid;renderHier();renderInsp();smRender();tkPing()}},{t:'씬 삭제',ic:'trash',dis:SM.scenes.length<2,fn:()=>smDelScene(sid)}]:[]);
+  popMenu(anc,items);
+},true);
+{const f0=$('#hAdd').onclick;$('#hAdd').onclick=e=>{if(!SMON)return f0(e);popMenu(e.currentTarget,[{t:'새 씬',ic:'scene',note:'씬',fn:smNewScene},{t:'새 매니저',ic:'mgr',note:'매니저',fn:smNewMgr}])}}
+$('#insp').addEventListener('click',e=>{
+  if(!SMON)return;const a=e.target.closest('[data-smact]');if(a){e.stopPropagation();smAct(a);return}
+  const r=e.target.closest('[data-smpick]');if(r){e.stopPropagation();smSelect(r.dataset.smpick)}
+},true);
+$('#insp').addEventListener('input',e=>{if(!SMON)return;const f=e.target.dataset&&e.target.dataset.smi;if(f&&e.target.type!=='checkbox'&&e.target.tagName!=='SELECT')smInput(e.target,f,false)});
+$('#insp').addEventListener('change',e=>{if(!SMON)return;const f=e.target.dataset&&e.target.dataset.smi;if(f)smInput(e.target,f,true)});
+$('#smView').addEventListener('click',e=>{
+  if(!SMON)return;
+  const pk=e.target.closest('[data-smpick]');if(pk){smSelect(pk.dataset.smpick);return}
+  if(e.target.closest('#smPlay')){if(SM.play)smPlayStop();else smPlayStart();return}
+  const pt=e.target.closest('[data-smportal]');if(pt){if(!pt.disabled)smPortal(pt.dataset.smportal);return}
+  const a=e.target.closest('[data-smact]');if(a)smAct(a);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&SM.play&&$('#modal').hidden&&!PM){smPlayStop()}});
+if(window.ResizeObserver)new ResizeObserver(()=>smDraw()).observe($('#smStage .smcvw'));
+/* 포탈 반짝임 · 실행 결과의 음악 시간 */
+setInterval(()=>{if(!SMON||SM.play||document.hidden)return;smDraw();const r=SM.show;if(r&&r.self&&r.self.props.audio&&r.self.props.audio.playing)smSide()},200);
 
 $('#tkReset').onclick=()=>{
   const p=P();if(!p||!p.task)return;
@@ -3312,7 +3961,7 @@ function show(i){
   const pr=P();snSetup(pr);TASK.ev=new Set();tkLast='';
   $('.edpn').hidden=!!pr.task;$('#taskPn').hidden=!pr.task;$('#playBtn').hidden=!pr.play;renderTools();
   renderTop();renderBrief();
-  ta.value=codeOf(P());ta.scrollTop=0;ta.scrollLeft=0;paintEd();edPos();$('#edFile').textContent=pr.hero?'HeroMovement.cs':'Quiz.cs';
+  ta.value=codeOf(P());ta.scrollTop=0;ta.scrollLeft=0;paintEd();edPos();$('#edFile').textContent=pr.file||(pr.hero?'HeroMovement.cs':'Quiz.cs');
   renderHier();renderInsp();setConsole([],false);idleVerdict();snRedraw();
 }
 
@@ -3348,6 +3997,7 @@ function run(){
   const g=gradeProblem(p,code);
   let vis;
   if(p.scene){snRestore();SN_EDIT=snClone(SN_OBJS);SN_EDIT_UI=JSON.parse(JSON.stringify(SN_UI));vis=runOnce(code,overridesFrom(p,res),SN_OBJS,{ui:SN_UI,self:p.hero?'hero':null,frames:p.hero?p.tests[0].frames:null})}
+  else if(p.sm){smAudOff();const t0=p.tests[0],sm=smCtx(p,t0,true);vis=runOnce(code,overridesFrom(p,res),null,{sm,selfObj:sm.self,calls:t0.calls});if(vis.fatal)sm.ev.push(['warn','✕ '+esc(_t('실행 중 오류'))]);SM.show=sm;smRender();renderInsp()}
   else vis=runOnce(code,overridesFrom(p,res));
   setConsole(vis.out,true);flash(!vis.fatal);
   if(p.scene){
@@ -3817,7 +4467,7 @@ function svOpen(){
 })();
 
 /* ===================== 코드 복습: 레슨마다 쓰는 코드를 모아 보여 줍니다 ===================== */
-const RV_DATA={"lesson-1": {"note": "코드를 쓰지 않고 화면을 직접 만지는 레슨이에요. 아래는 나중에 코드와 이어질 말들이에요.", "items": [{"t": "콜라이더 (막는 칸)", "d": "타일맵에서 막을 칸을 칠하거나, 게임 오브젝트(바위)에 박스 콜라이더 2D 컴포넌트를 붙이면 주인공이 지나가지 못해요.", "c": "BoxCollider2D   // 바위에 붙이는 컴포넌트 이름"}, {"t": "UI 텍스트에 값 넣기", "d": "UI 텍스트 안의 {hp} 자리에 hp 값이 들어가요. 코드로 숫자를 바꾸면 화면 글도 함께 바뀝니다.", "c": "HP {hp}"}]}, "lesson-2": {"items": [{"t": "뼈대: Start()", "d": "게임이 시작될 때 한 번 실행되는 함수예요. 쓰고 싶은 코드를 중괄호 안에 넣어요.", "c": "using UnityEngine;\n\npublic class Quiz : MonoBehaviour\n{\n    void Start()\n    {\n        // 여기에 코드를 쓰세요\n    }\n}"}, {"t": "콘솔에 한 줄 출력", "d": "글자는 큰따옴표로 감싸고, 문장 끝에는 세미콜론(;)을 붙여요.", "c": "Debug.Log(\"Hello, Thaniya!\");"}, {"t": "변수 값을 글자와 이어 붙이기", "d": "+로 이어 붙이거나, 글자 앞에 $를 붙이고 {변수}를 넣어요.", "c": "public int hp = 100;\n\nDebug.Log(\"HP: \" + hp);\nDebug.Log($\"HP: {hp}\");"}, {"t": "계산 결과를 글자 안에 넣기", "d": "중괄호 안에 식을 넣으면 계산된 값이 들어가요.", "c": "Debug.Log($\"{a} + {b} = {a + b}\");"}, {"t": "반복문 for", "d": "같은 일을 여러 번 할 때 써요. i가 1, 2, 3, 4, 5로 바뀌며 중괄호 안이 다섯 번 실행돼요.", "c": "for (int i = 1; i <= 5; i++)\n{\n    Debug.Log(i);\n}"}, {"t": "경고와 오류", "d": "Log는 일반, LogWarning은 경고(노란색), LogError는 오류(빨간색)예요.", "c": "Debug.LogWarning(\"배터리가 얼마 남지 않았어요\");\nDebug.LogError(\"저장에 실패했어요\");"}]}, "lesson-3": {"items": [{"t": "내 컴포넌트 꺼내기", "d": "스크립트가 붙은 오브젝트의 컴포넌트는 GetComponent<타입>()으로 꺼내요.", "c": "Transform tr = GetComponent<Transform>();\nDebug.Log($\"위치: {tr.position.x}, {tr.position.y}\");"}, {"t": "다른 오브젝트 찾기", "d": "GameObject.Find(\"이름\")으로 찾고, 그 오브젝트에서 GetComponent로 컴포넌트를 꺼내요. 값을 바꾸려면 대입하세요.", "c": "GameObject torch = GameObject.Find(\"횃불\");\nLight light = torch.GetComponent<Light>();\nlight.intensity = 0.3f;\nDebug.Log(\"횃불 밝기: \" + light.intensity);"}, {"t": "끌어다 놓아 연결하기", "d": "public 칸을 만들면 인스펙터에서 오브젝트를 끌어다 놓아 연결할 수 있어요 (Find 대신).", "c": "public GameObject torch;   // Start() 위에 쓰고 인스펙터 칸에 끌어다 놓기"}, {"t": "컴포넌트 켜고 끄기", "d": "컴포넌트는 enabled로 켜고 꺼요. 오브젝트 전체는 SetActive(…)를 써요.", "c": "light.enabled = lightOn;\nDebug.Log(\"켜짐 여부: \" + light.enabled);"}, {"t": "오브젝트 옮기기", "d": "position에 새 위치를 대입하면 이동해요. Vector2.right는 오른쪽 한 칸 (1, 0)이에요.", "c": "slime.transform.position = hero.transform.position + Vector2.right;"}, {"t": "컴포넌트 함께 쓰기 · 메인 카메라", "d": "Camera.main으로 메인 카메라를 바로 가져와요. orthographicSize가 작을수록 화면이 확대돼요.", "c": "Hero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp = hero.hp / 2;\nCamera.main.orthographicSize = 2;"}]}, "lesson-4": {"items": [{"t": "public 변수 · 값 깎기", "d": "public 변수는 인스펙터에 칸이 생겨 값을 바꿀 수 있어요. -=는 빼서 다시 저장해요.", "c": "public int damage = 30;\n\nHero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp -= damage;\nDebug.Log(\"HP: \" + hero.hp);"}, {"t": "한도까지만 회복 (Mathf.Min)", "d": "두 값 중 작은 쪽을 골라요. if로 써도 같은 결과예요.", "c": "hero.hp = Mathf.Min(hero.hp + heal, limit);\n\n// if로 쓰면\nhero.hp += heal;\nif (hero.hp > limit)\n{\n    hero.hp = limit;\n}"}, {"t": "아이템 수량 바꾸기", "d": "포션의 Item 컴포넌트에서 qty를 줄이고, 그만큼 주인공 hp를 올려요.", "c": "Item potion = GameObject.Find(\"포션\").GetComponent<Item>();\npotion.qty -= 1;\nhero.hp += healAmount;\nDebug.Log($\"포션 {potion.qty}개 · HP {hero.hp}\");"}, {"t": "조건문 if · else", "d": "조건이 참일 때만 실행하고, 아니면 else 쪽을 실행해요.", "c": "if (potion.qty > 0)\n{\n    potion.qty -= 1;\n    hero.hp += healAmount;\n}\nelse\n{\n    Debug.LogWarning(\"포션이 없어요\");\n}"}, {"t": "거리 재기 · 오브젝트 끄기", "d": "Vector2.Distance로 두 위치 사이 거리를 재요. SetActive(false)는 오브젝트를 화면에서 치워요.", "c": "float d = Vector2.Distance(hero.transform.position, coin.transform.position);\nif (d <= reach)\n{\n    coins += coin.GetComponent<Item>().qty;\n    coin.SetActive(false);\n}"}, {"t": "UI 글자와 버튼 함수", "d": "public Text 칸에 UI 텍스트를 연결하고 .text에 대입해요. 버튼의 클릭에 연결할 함수는 public void로 만들어요.", "c": "public Text label;\n\nvoid Start()\n{\n    label.text = \"포션 \" + potion.qty + \"개\";\n}\n\npublic void OnClick()\n{\n    if (potion.qty > 0)\n    {\n        potion.qty -= 1;\n    }\n}"}]}, "lesson-5": {"items": [{"t": "Start()에서 Hero 컴포넌트 잡아 두기", "d": "private 변수에 한 번 담아 두면 Update에서 계속 쓸 수 있어요.", "c": "private Hero hero;\n\nvoid Start()\n{\n    hero = GetComponent<Hero>();\n}"}, {"t": "Update()와 입력 읽기", "d": "Update는 매 프레임 실행돼요. 방향키/WASD 입력은 왼쪽·위 -1, 오른쪽·아래 +1로 읽혀요.", "c": "void Update()\n{\n    float h = Input.GetAxisRaw(\"Horizontal\");\n    float v = Input.GetAxisRaw(\"Vertical\");\n}"}, {"t": "입력 방향으로 움직이기", "d": "방향 × 속도 × Time.deltaTime으로 프레임 속도와 상관없이 같은 속도로 움직여요.", "c": "Vector2 dir = new Vector2(h, v);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "멈춤과 바라보는 방향", "d": "입력이 없으면 return으로 Update를 일찍 끝내요. Face로 바라보는 방향을 정해요.", "c": "if (h == 0 && v == 0)\n    return;\n\nVector2 dir = new Vector2(h, v);\nhero.Face(dir);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "대각선 속도 맞추기", "d": "normalized는 방향의 길이를 1로 맞춰요. 대각선이 더 빠르게 느껴지는 걸 막아요.", "c": "if (normalizeDiagonal)\n    dir = dir.normalized;"}, {"t": "Shift로 달리기", "d": "GetKey는 누르고 있는 동안 true예요.", "c": "float s = speed;\nif (Input.GetKey(KeyCode.LeftShift))\n    s = s * runMultiplier;"}, {"t": "완성한 HeroMovement.cs 전체", "d": "엔진에서 주인공을 고르고 「스크립트 편집」으로 열면 똑같은 코드가 있어요.", "c": "@L5_FINAL", "long": true}]}, "lesson-6": {"note": "대부분 애니메이터·애니메이션 창을 다루는 레슨이에요. 코드는 마지막 문제의 한 가지만 나와요.", "items": [{"t": "애니메이터 꺼내기", "d": "GetComponent로 이 오브젝트의 Animator를 꺼내요.", "c": "Animator animator = GetComponent<Animator>();"}, {"t": "Space를 누른 순간 깡충 (SetTrigger)", "d": "스크립트는 애니메이터의 파라미터만 바꿔요. GetKeyDown은 누른 순간 한 번만 true라서 한 번만 뛰어요. (누르는 동안 계속 true인 GetKey를 쓰면 여러 번 뛰어요.)", "c": "if (animator != null)\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        animator.SetTrigger(\"Hop\");\n}"}]}, "lesson-7": {"note": "코드 없이 타일 팔레트와 인스펙터를 다루는 레슨이에요. 외워 둘 코드는 없고, 아래 순서만 기억하면 돼요.", "items": [{"t": "룰 타일 · 애니메이션 타일 만드는 순서", "d": "저장하기 전에는 아직 쓸 수 없어요 (엔진도 같아요).", "c": "타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    → 외딴 칸(섬) 규칙 추가\n물 4칸     → 애니메이션 타일 (8 fps)"}]}};
+const RV_DATA={"lesson-1": {"note": "코드를 쓰지 않고 화면을 직접 만지는 레슨이에요. 아래는 나중에 코드와 이어질 말들이에요.", "items": [{"t": "콜라이더 (막는 칸)", "d": "타일맵에서 막을 칸을 칠하거나, 게임 오브젝트(바위)에 박스 콜라이더 2D 컴포넌트를 붙이면 주인공이 지나가지 못해요.", "c": "BoxCollider2D   // 바위에 붙이는 컴포넌트 이름"}, {"t": "UI 텍스트에 값 넣기", "d": "UI 텍스트 안의 {hp} 자리에 hp 값이 들어가요. 코드로 숫자를 바꾸면 화면 글도 함께 바뀝니다.", "c": "HP {hp}"}]}, "lesson-2": {"items": [{"t": "뼈대: Start()", "d": "게임이 시작될 때 한 번 실행되는 함수예요. 쓰고 싶은 코드를 중괄호 안에 넣어요.", "c": "using UnityEngine;\n\npublic class Quiz : MonoBehaviour\n{\n    void Start()\n    {\n        // 여기에 코드를 쓰세요\n    }\n}"}, {"t": "콘솔에 한 줄 출력", "d": "글자는 큰따옴표로 감싸고, 문장 끝에는 세미콜론(;)을 붙여요.", "c": "Debug.Log(\"Hello, Thaniya!\");"}, {"t": "변수 값을 글자와 이어 붙이기", "d": "+로 이어 붙이거나, 글자 앞에 $를 붙이고 {변수}를 넣어요.", "c": "public int hp = 100;\n\nDebug.Log(\"HP: \" + hp);\nDebug.Log($\"HP: {hp}\");"}, {"t": "계산 결과를 글자 안에 넣기", "d": "중괄호 안에 식을 넣으면 계산된 값이 들어가요.", "c": "Debug.Log($\"{a} + {b} = {a + b}\");"}, {"t": "반복문 for", "d": "같은 일을 여러 번 할 때 써요. i가 1, 2, 3, 4, 5로 바뀌며 중괄호 안이 다섯 번 실행돼요.", "c": "for (int i = 1; i <= 5; i++)\n{\n    Debug.Log(i);\n}"}, {"t": "경고와 오류", "d": "Log는 일반, LogWarning은 경고(노란색), LogError는 오류(빨간색)예요.", "c": "Debug.LogWarning(\"배터리가 얼마 남지 않았어요\");\nDebug.LogError(\"저장에 실패했어요\");"}]}, "lesson-3": {"items": [{"t": "내 컴포넌트 꺼내기", "d": "스크립트가 붙은 오브젝트의 컴포넌트는 GetComponent<타입>()으로 꺼내요.", "c": "Transform tr = GetComponent<Transform>();\nDebug.Log($\"위치: {tr.position.x}, {tr.position.y}\");"}, {"t": "다른 오브젝트 찾기", "d": "GameObject.Find(\"이름\")으로 찾고, 그 오브젝트에서 GetComponent로 컴포넌트를 꺼내요. 값을 바꾸려면 대입하세요.", "c": "GameObject torch = GameObject.Find(\"횃불\");\nLight light = torch.GetComponent<Light>();\nlight.intensity = 0.3f;\nDebug.Log(\"횃불 밝기: \" + light.intensity);"}, {"t": "끌어다 놓아 연결하기", "d": "public 칸을 만들면 인스펙터에서 오브젝트를 끌어다 놓아 연결할 수 있어요 (Find 대신).", "c": "public GameObject torch;   // Start() 위에 쓰고 인스펙터 칸에 끌어다 놓기"}, {"t": "컴포넌트 켜고 끄기", "d": "컴포넌트는 enabled로 켜고 꺼요. 오브젝트 전체는 SetActive(…)를 써요.", "c": "light.enabled = lightOn;\nDebug.Log(\"켜짐 여부: \" + light.enabled);"}, {"t": "오브젝트 옮기기", "d": "position에 새 위치를 대입하면 이동해요. Vector2.right는 오른쪽 한 칸 (1, 0)이에요.", "c": "slime.transform.position = hero.transform.position + Vector2.right;"}, {"t": "컴포넌트 함께 쓰기 · 메인 카메라", "d": "Camera.main으로 메인 카메라를 바로 가져와요. orthographicSize가 작을수록 화면이 확대돼요.", "c": "Hero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp = hero.hp / 2;\nCamera.main.orthographicSize = 2;"}]}, "lesson-4": {"items": [{"t": "public 변수 · 값 깎기", "d": "public 변수는 인스펙터에 칸이 생겨 값을 바꿀 수 있어요. -=는 빼서 다시 저장해요.", "c": "public int damage = 30;\n\nHero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp -= damage;\nDebug.Log(\"HP: \" + hero.hp);"}, {"t": "한도까지만 회복 (Mathf.Min)", "d": "두 값 중 작은 쪽을 골라요. if로 써도 같은 결과예요.", "c": "hero.hp = Mathf.Min(hero.hp + heal, limit);\n\n// if로 쓰면\nhero.hp += heal;\nif (hero.hp > limit)\n{\n    hero.hp = limit;\n}"}, {"t": "아이템 수량 바꾸기", "d": "포션의 Item 컴포넌트에서 qty를 줄이고, 그만큼 주인공 hp를 올려요.", "c": "Item potion = GameObject.Find(\"포션\").GetComponent<Item>();\npotion.qty -= 1;\nhero.hp += healAmount;\nDebug.Log($\"포션 {potion.qty}개 · HP {hero.hp}\");"}, {"t": "조건문 if · else", "d": "조건이 참일 때만 실행하고, 아니면 else 쪽을 실행해요.", "c": "if (potion.qty > 0)\n{\n    potion.qty -= 1;\n    hero.hp += healAmount;\n}\nelse\n{\n    Debug.LogWarning(\"포션이 없어요\");\n}"}, {"t": "거리 재기 · 오브젝트 끄기", "d": "Vector2.Distance로 두 위치 사이 거리를 재요. SetActive(false)는 오브젝트를 화면에서 치워요.", "c": "float d = Vector2.Distance(hero.transform.position, coin.transform.position);\nif (d <= reach)\n{\n    coins += coin.GetComponent<Item>().qty;\n    coin.SetActive(false);\n}"}, {"t": "UI 글자와 버튼 함수", "d": "public Text 칸에 UI 텍스트를 연결하고 .text에 대입해요. 버튼의 클릭에 연결할 함수는 public void로 만들어요.", "c": "public Text label;\n\nvoid Start()\n{\n    label.text = \"포션 \" + potion.qty + \"개\";\n}\n\npublic void OnClick()\n{\n    if (potion.qty > 0)\n    {\n        potion.qty -= 1;\n    }\n}"}]}, "lesson-5": {"items": [{"t": "Start()에서 Hero 컴포넌트 잡아 두기", "d": "private 변수에 한 번 담아 두면 Update에서 계속 쓸 수 있어요.", "c": "private Hero hero;\n\nvoid Start()\n{\n    hero = GetComponent<Hero>();\n}"}, {"t": "Update()와 입력 읽기", "d": "Update는 매 프레임 실행돼요. 방향키/WASD 입력은 왼쪽·위 -1, 오른쪽·아래 +1로 읽혀요.", "c": "void Update()\n{\n    float h = Input.GetAxisRaw(\"Horizontal\");\n    float v = Input.GetAxisRaw(\"Vertical\");\n}"}, {"t": "입력 방향으로 움직이기", "d": "방향 × 속도 × Time.deltaTime으로 프레임 속도와 상관없이 같은 속도로 움직여요.", "c": "Vector2 dir = new Vector2(h, v);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "멈춤과 바라보는 방향", "d": "입력이 없으면 return으로 Update를 일찍 끝내요. Face로 바라보는 방향을 정해요.", "c": "if (h == 0 && v == 0)\n    return;\n\nVector2 dir = new Vector2(h, v);\nhero.Face(dir);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "대각선 속도 맞추기", "d": "normalized는 방향의 길이를 1로 맞춰요. 대각선이 더 빠르게 느껴지는 걸 막아요.", "c": "if (normalizeDiagonal)\n    dir = dir.normalized;"}, {"t": "Shift로 달리기", "d": "GetKey는 누르고 있는 동안 true예요.", "c": "float s = speed;\nif (Input.GetKey(KeyCode.LeftShift))\n    s = s * runMultiplier;"}, {"t": "완성한 HeroMovement.cs 전체", "d": "엔진에서 주인공을 고르고 「스크립트 편집」으로 열면 똑같은 코드가 있어요.", "c": "@L5_FINAL", "long": true}]}, "lesson-6": {"note": "대부분 애니메이터·애니메이션 창을 다루는 레슨이에요. 코드는 마지막 문제의 한 가지만 나와요.", "items": [{"t": "애니메이터 꺼내기", "d": "GetComponent로 이 오브젝트의 Animator를 꺼내요.", "c": "Animator animator = GetComponent<Animator>();"}, {"t": "Space를 누른 순간 깡충 (SetTrigger)", "d": "스크립트는 애니메이터의 파라미터만 바꿔요. GetKeyDown은 누른 순간 한 번만 true라서 한 번만 뛰어요. (누르는 동안 계속 true인 GetKey를 쓰면 여러 번 뛰어요.)", "c": "if (animator != null)\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        animator.SetTrigger(\"Hop\");\n}"}]}, "lesson-7": {"note": "코드 없이 타일 팔레트와 인스펙터를 다루는 레슨이에요. 외워 둘 코드는 없고, 아래 순서만 기억하면 돼요.", "items": [{"t": "룰 타일 · 애니메이션 타일 만드는 순서", "d": "저장하기 전에는 아직 쓸 수 없어요 (엔진도 같아요).", "c": "타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    → 외딴 칸(섬) 규칙 추가\n물 4칸     → 애니메이션 타일 (8 fps)"}]}, "lesson-8": {"items": [{"t": "새 씬 · 시작 씬 · 포탈", "d": "씬은 계층 구조에서 위에서부터 0번 · 1번… 빌드 번호가 붙어요. ★ 시작 씬부터 플레이가 시작돼요.", "c": "계층 구조 → ＋ 새 씬 → 이름 「숲」\n인스펙터  → 시작 씬 ✓ (★)\n포탈      → 대상 씬 「숲」"}, {"t": "지금 씬 알아내기", "d": "using UnityEngine.SceneManagement; 를 맨 위에 써요. name은 씬 이름, buildIndex는 빌드 번호예요.", "c": "Scene s = SceneManager.GetActiveScene();\nDebug.Log(s.name + \" (\" + s.buildIndex + \"번)\");"}, {"t": "씬 불러오기", "d": "이름이나 번호로 불러와요. 지금 메서드가 끝난 다음에 씬이 바뀌어요.", "c": "SceneManager.LoadScene(\"숲\");\nSceneManager.LoadScene(1);"}, {"t": "BGM 매니저 (오디오 소스 반복 재생)", "d": "매니저는 씬이 바뀌어도 살아 있어서 음악이 끊기지 않아요. 오디오 소스가 없으면 null이니 먼저 확인해요.", "c": "AudioSource bgm = GetComponent<AudioSource>();\nif (bgm == null)\n    return;\nbgm.loop = true;\nbgm.Play();"}, {"t": "게임 매니저 · 목숨과 다시 시작", "d": "OnHeroDeath()는 주인공이 쓰러지면 엔진이 매니저에도 보내요. RestartGame()은 시작 씬부터 다시 하지만 매니저의 값은 남아요.", "c": "void OnHeroDeath()\n{\n    lives--;\n    SceneManager.RestartGame();\n}"}]}};
 const RV_OPEN=new Set();let RV_ON=false;try{RV_ON=localStorage.getItem('thaniya.rvon')==='1'}catch(e){}
 function rvCode(c){return c==='@L5_FINAL'?L5_FINAL:c}
 const rvLv=L=>`<span class="rv-lv"><span class="dots lv${L.lv}" aria-hidden="true"><i></i><i></i><i></i></span>${esc(lvName(L))}</span>`;
@@ -3874,7 +4524,7 @@ function route(){
   const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search';
   $('#home').hidden=!!L||S;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;
   if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
-  else{playStop(true);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':'Thaniya Engine Edu';if(S)svOpen();else renderHome()}
+  else{playStop(true);if(SMON)smSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':'Thaniya Engine Edu';if(S)svOpen();else renderHome()}
   window.scrollTo(0,0);
 }
 addEventListener('hashchange',route);

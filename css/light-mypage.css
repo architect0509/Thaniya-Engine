@@ -94,3 +94,7 @@ html[data-theme="light"] .b.ghostd:hover{background:rgba(255,107,107,.1)}
 /* ===== 수동 보정 ===== */
 /* 마이페이지 (mypage.html) */
 html[data-theme="light"]{--bg:#f3f3f6;--panel:#ffffff;--raised:#ececf1;--fg:#121217;--mute:#5b5b66;--accent-tx:#8a6a00;--danger-tx:#c22c3c}
+
+/* 헤더 (라이트) — 그라데이션 버튼 */
+html[data-theme="light"] header .cta{background:linear-gradient(180deg,#f6cd2a,#e9bd0c)!important;box-shadow:0 3px 10px rgba(233,189,12,.3),inset 0 1px 0 rgba(255,255,255,.5)!important}
+html[data-theme="light"] header .cta:hover{background:linear-gradient(180deg,#f6cd2a,#e9bd0c)!important}
