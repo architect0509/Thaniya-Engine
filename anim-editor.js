@@ -131,9 +131,10 @@ function anPoseFor(m,o,p){
   let q=null,got=false;
   if(p&&p.anim){const rt=p.anim.get(o.id);if(rt){q=rt.pose;got=true}}
   if(!got)q=anRestPose(a);
-  /* 자동으로 붙은 기본 「주인공」 애니메이터(검은 고양이 시트)는 스프라이트 렌더러에 직접 고른 스프라이트를 덮어쓰지 않음
+  /* 자동으로 붙은 기본 「주인공」 애니메이터의 검은 고양이 시트 프레임(base_hero:*)은 스프라이트 렌더러에 직접 고른 스프라이트를 덮어쓰지 않음.
+     그 클립의 스프라이트 키를 직접 다른 그림으로 바꾸면(고양이 시트가 아니면) 렌더러에 스프라이트가 있어도 애니메이션이 그대로 적용됨
      (스프라이트가 있는 주인공에는 원래 기본 애니메이터를 붙이지 않는 규칙과 맞춤 · 사용자가 만든 컨트롤러는 그대로 덮어씀) */
-  if(q&&q.sprite&&o.props.sprite&&spriteRef(o.props.sprite)&&a.ctrl&&a.ctrl===anData().heroCtrl){q=Object.assign({},q);delete q.sprite}
+  if(q&&q.sprite&&o.props.sprite&&spriteRef(o.props.sprite)&&a.ctrl&&a.ctrl===anData().heroCtrl&&/^base_hero:/.test(String(q.sprite))){q=Object.assign({},q);delete q.sprite}
   return q;
 }
 function anApplyProps(props,q){

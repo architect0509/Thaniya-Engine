@@ -187,6 +187,8 @@ a.brand.nolink{cursor:default}a.brand.nolink:hover{color:inherit}
 .fold.sp::before{content:""}
 .ti{display:inline-flex;color:var(--mute);flex:none}
 .tl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* 언어 선택 버튼(i18n.js의 .tl 래퍼)은 드롭다운이 잘리지 않게 위 규칙에서 제외 */
+.tl[data-i18n-skip]{flex:none;overflow:visible;text-overflow:clip}
 .tl b{font-weight:600}
 .ts{color:var(--mute);font:10.5px var(--fm);flex:none}
 .wbadge{font:600 9px var(--fm);padding:0 4px;border-radius:3px;background:var(--warnc);color:#1a1100;margin-left:4px;vertical-align:1px}
@@ -520,6 +522,12 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .hero{max-width:1120px;margin:0 auto;padding:44px 24px 8px}
 .hero h1{margin:0 0 6px;font-size:28px;letter-spacing:-.02em}
 .hero p{margin:0;color:rgba(235,235,245,.62);max-width:62ch}
+.lvbar{max-width:1120px;margin:0 auto;padding:4px 24px 0;display:flex;flex-wrap:wrap;gap:8px}
+.lvb{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:var(--tx);font:500 13px "IBM Plex Sans KR",var(--f);cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.lvb:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.34)}
+.lvb[aria-pressed="true"]{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);border-color:transparent;color:#1a1400;font-weight:600}
+.lvb .dots{opacity:.9}
+.lvb b{font:500 11px "IBM Plex Mono",ui-monospace,monospace;opacity:.65}
 .cards{max-width:1120px;margin:0 auto;padding:24px 24px 56px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
 .card{position:relative;isolation:isolate;display:flex;flex-direction:column;gap:12px;padding:20px;text-align:left;color:var(--tx);cursor:pointer;font:14px/1.6 "IBM Plex Sans KR",var(--f);
   background:linear-gradient(155deg,rgba(255,255,255,.17),rgba(255,255,255,.06) 42%,rgba(255,255,255,.09));
@@ -538,11 +546,28 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .card h2{margin:0;font-size:20px;letter-spacing:-.01em}
 .card p{margin:0;color:rgba(235,235,245,.68);font-size:13.5px}
 .card pre{margin:0;padding:11px 13px;border-radius:16px;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 1px 2px rgba(0,0,0,.25);font:12.5px/1.6 "IBM Plex Mono",ui-monospace,monospace;color:#e6e6ea;overflow:hidden;white-space:pre}
+/* 레슨 난이도 · 키워드 */
+.card .chip.lv{gap:8px}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.3}
+.lv1 .dots i:nth-child(-n+1),.lv2 .dots i:nth-child(-n+2),.lv3 .dots i{opacity:1}
+.kws{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}
+.kws li{padding:2px 9px;border-radius:8px;font:500 12px/1.6 "IBM Plex Mono",ui-monospace,monospace;color:rgba(235,235,245,.8);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.kws li::before{content:"#";opacity:.5;margin-right:1px}
 .card .cfoot{display:flex;align-items:center;gap:12px;margin-top:auto}
 .card .cbar{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
 .card .cbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#f6cd2a,#ffdf6b)}
 .card .cnum{font-size:12px;color:rgba(235,235,245,.55);white-space:nowrap}
 .card .go{height:32px;padding:0 17px;display:inline-flex;align-items:center;border-radius:999px;background:linear-gradient(180deg,rgba(255,221,90,.96),rgba(233,189,12,.92));color:#1a1400;font-weight:600;font-size:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 18px rgba(233,189,12,.32)}
+.dq{max-width:1120px;margin:0 auto;padding:30px 24px 0;text-align:center}
+.dq:empty{display:none}
+.dq-l{margin:0 0 10px;font-size:12px;font-weight:500;letter-spacing:.08em;color:var(--mut)}
+.dq blockquote{margin:0;display:inline-flex;align-items:flex-start;gap:10px;max-width:100%}
+.dq-q{flex:none;font:700 38px/.9 Georgia,"Times New Roman",serif;color:var(--y);opacity:.55;user-select:none}
+.dq blockquote code.dq-c{font:600 clamp(14px,2.3vw,19px)/1.55 var(--m);color:var(--tx);background:none;border:0;padding:3px 0 0;overflow-wrap:anywhere;white-space:pre-wrap;text-align:left}
+.dq figcaption{margin-top:8px;font-size:12.5px;line-height:1.55;color:var(--mut);opacity:.85}
+html[data-theme="light"] .dq-q{color:#8a6a00;opacity:.6}
+@media (max-width:640px){.dq{padding:22px 16px 0}.dq-q{font-size:30px}}
 .tools{max-width:1120px;margin:0 auto;padding:28px 24px 0}
 .tools .sec{display:flex;align-items:center;gap:14px;margin:0 0 14px;font-size:15px;font-weight:600;color:rgba(235,235,245,.62)}
 .tools .sec::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
@@ -555,7 +580,19 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .card.tool .chip{background:rgba(94,224,198,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(94,224,198,.4);color:#8ff0da}
 .card.tool pre{flex:0 0 min(340px,42%);border-color:rgba(94,224,198,.22)}
 .card.tool .go{background:linear-gradient(180deg,rgba(130,240,216,.96),rgba(70,200,174,.92));color:#06241e;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 18px rgba(70,200,174,.32)}
-@media (max-width:720px){.card.tool{flex-direction:column;align-items:stretch;gap:12px}.card.tool pre{flex:none}}
+.card p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card.tool{padding:13px 20px;gap:20px}
+.card.tool p{white-space:normal;overflow:visible;text-overflow:clip}
+/* 코드 검색 단독 창 (?solo=search): 레슨 목록으로 돌아가는 길을 숨김 */
+#topSearchWin:hover,#svWin:hover{background:rgba(94,224,198,.16);border-color:rgba(94,224,198,.5);color:inherit}
+.solo #svBack,.solo #svWin{display:none}
+.solo #svHome{pointer-events:none;cursor:default}
+.card.tool .tl{gap:6px;align-self:center}
+.card.tool h2{font-size:17px}
+.card.tool .cfoot{margin-top:2px}
+.card.tool .go{height:28px;padding:0 15px;font-size:12.5px}
+.card.tool pre{padding:8px 12px;font-size:12px;line-height:1.5;align-self:center}
+@media (max-width:720px){.card.tool{flex-direction:column;align-items:stretch;gap:10px}.card.tool pre{flex:none}}
 .card.soon{cursor:default;color:rgba(235,235,245,.5);justify-content:center;align-items:center;text-align:center;min-height:200px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.16);box-shadow:none}
 .card.soon::before{display:none}
 .card.soon:hover{transform:none;border-color:rgba(255,255,255,.16);box-shadow:none}
@@ -639,7 +676,8 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .treset{height:26px;padding:0 12px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.04);color:#c9cbd2;font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
 .treset:hover{background:rgba(255,107,120,.12);border-color:rgba(255,107,120,.45);color:#ffc9ce}
 .home .top .treset{margin-left:auto}
-.home .top .tl{--tl-h:26px;font-size:12px}.home .top .tl .tl-btn{font-size:12px}
+.top .tl{--tl-h:26px;font-size:12px}.top .tl .tl-btn{font-size:12px}
+#lessonView>.top,#searchView>.top{position:relative;z-index:30}
 .sbar{position:absolute;left:10px;top:10px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:3px;width:40px;padding:4px 0 6px;background:rgba(30,30,36,.82);border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.4);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .sbar .sgrip{display:flex;align-items:center;justify-content:center;gap:1px;width:100%;height:28px;padding-bottom:2px;margin-bottom:2px;border-bottom:1px solid rgba(255,255,255,.1);color:#c9cbd2}
 .sbar .sgrip .ic{width:16px;height:16px}
@@ -691,6 +729,70 @@ code.rc-sig{display:block;margin:5px 0 0;padding:0;border:0;background:none;font
 .ro .none{color:var(--mute);font:12px var(--fb)}
 .rc-note{margin-top:5px;font-size:11px;color:var(--mute)}
 @media (max-width:900px){.sv-main{grid-template-columns:1fr}.sv-left{position:static}}
+/* ===== 코드 복습: 작은 레슨 카드 → 눌러서 여는 창 ===== */
+.rvwrap{max-width:1120px;margin:0 auto;padding:24px 24px 56px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.lvb.rvt{margin-left:auto}
+.rv-card{display:flex;flex-direction:column;gap:8px;min-height:112px;padding:14px 16px 12px;text-align:left;color:var(--tx);background:var(--panel);border:1px solid var(--line);border-radius:18px;transition:transform .2s cubic-bezier(.2,.8,.2,1),border-color .2s,box-shadow .2s}
+.rv-card:hover{transform:translateY(-2px);border-color:var(--y);box-shadow:0 12px 28px -14px rgba(0,0,0,.5)}
+.rv-card:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+.rv-ct{display:flex;align-items:center;gap:8px}
+.rv-cn{margin-left:auto;font:500 11.5px var(--m);color:var(--mut)}
+.rv-card h3{margin:0;font-size:15px;line-height:1.4;letter-spacing:-.01em;font-weight:600}
+.rv-cf{display:flex;align-items:center;margin-top:auto;font-size:12px;color:var(--mut)}
+.rv-cf i{margin-left:auto;width:7px;height:7px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(-45deg);transition:transform .2s}
+.rv-card:hover .rv-cf i{transform:rotate(-45deg) translate(2px,2px);color:var(--y-tx,var(--y))}
+.rv-sh{display:flex;align-items:center;gap:10px}
+.rv-lv{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--mut);white-space:nowrap}
+.rv-lv .dots{display:inline-flex;gap:3px}
+.rv-lv .dots i{width:6px;height:6px;border-radius:50%;background:var(--mut);opacity:.35}
+.rv-lv .dots.lv1 i:nth-child(-n+1),.rv-lv .dots.lv2 i:nth-child(-n+2),.rv-lv .dots.lv3 i{background:var(--y);opacity:1}
+.rv-sh .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mut)}
+.rv-sh .chip .dots{display:inline-flex;gap:2px}
+.rv-none{margin:10px 0 0;padding:10px 12px;border-radius:10px;border:1px dashed var(--line);color:var(--mut);font-size:13px}
+/* 창 */
+.rv-dlg{width:min(720px,calc(100vw - 24px));max-height:min(86vh,780px);margin:auto;padding:0;border:1px solid var(--line);border-radius:24px;color:var(--tx);background:radial-gradient(120% 70% at 0 0,rgba(246,205,42,.13),transparent 55%),var(--panel);box-shadow:0 30px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);overflow:hidden}
+.rv-dlg[open]{display:flex;flex-direction:column;animation:rvIn .22s cubic-bezier(.2,.8,.2,1)}
+.rv-dlg::backdrop{background:rgba(8,9,12,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+html[data-theme="light"] .rv-dlg::backdrop{background:rgba(30,34,46,.38)}
+html[data-theme="light"] .rv-dlg{box-shadow:0 30px 80px rgba(20,24,40,.25)}
+@keyframes rvIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.rv-mh{flex:none;padding:18px 22px 12px}
+.rv-mh h2{margin:10px 0 0;font-size:21px;line-height:1.35;letter-spacing:-.02em}
+.rv-mh p{margin:6px 0 0;color:var(--mut);font-size:13px}
+.rv-x{margin-left:auto;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--mut);font-size:15px;line-height:1}
+.rv-x:hover{color:var(--tx);border-color:var(--mut)}
+.rv-mt{flex:none;display:flex;align-items:center;gap:8px;padding:6px 22px;border-top:1px solid var(--line);font-size:12px;color:var(--mut)}
+.rv-mt button{height:26px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--mut);font-size:12px}
+.rv-mt button:hover{color:var(--tx);border-color:var(--mut)}
+.rv-mt .sp{flex:1}
+.rv-mb{flex:1;min-height:0;overflow:auto;padding:0 22px 8px;border-top:1px solid var(--line)}
+.rv-it{border-bottom:1px solid var(--line)}
+.rv-it:last-child{border-bottom:0}
+.rv-th{display:flex;align-items:center;gap:8px;width:100%;padding:12px 2px;background:none;border:0;color:var(--tx);text-align:left;font-size:14px;font-weight:600}
+.rv-th:hover{color:var(--y-tx,var(--y))}
+.rv-th:focus-visible{outline:2px solid var(--y);outline-offset:2px;border-radius:6px}
+.rv-th i{margin-left:auto;flex:none;width:7px;height:7px;border-right:1.6px solid var(--mut);border-bottom:1.6px solid var(--mut);transform:rotate(-45deg);transition:transform .18s}
+.rv-it.open .rv-th i{transform:rotate(45deg)}
+.rv-body[hidden]{display:none}
+.rv-body{padding-bottom:14px}
+.rv-body>p{margin:0 0 8px;font-size:13px;color:var(--mut)}
+.rv-cw{position:relative}
+.rv-cw pre{margin:0;padding:10px 12px;background:var(--code);border:1px solid var(--line);border-radius:12px;font:12.5px/1.6 var(--m);overflow-x:auto;white-space:pre;tab-size:4;color:var(--tx)}
+.rv-cw pre.long{max-height:320px;overflow:auto}
+.rv-cp{position:absolute;top:6px;right:6px;height:24px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--mut);font-size:11.5px}
+.rv-cp:hover{color:var(--tx);border-color:var(--mut)}
+.rv-mf{flex:none;display:flex;align-items:center;gap:8px;padding:12px 22px;border-top:1px solid var(--line);background:rgba(0,0,0,.08)}
+.rv-mf button{height:32px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--tx);font-size:12.5px}
+.rv-mf button:hover:not(:disabled){border-color:var(--mut)}
+.rv-mf button:disabled{opacity:.35;cursor:default}
+.rv-mf a.rv-go{margin-left:auto;display:inline-flex;align-items:center;height:32px;padding:0 16px;border-radius:999px;background:var(--y);color:var(--y-fg);font-size:13px;font-weight:600;text-decoration:none}
+.rv-mf a.rv-go:hover{filter:brightness(1.07)}
+body.rv-lock{overflow:hidden}
+.rv-mf button,.rv-mf a.rv-go{white-space:nowrap}
+@media (max-width:640px){.rv-mf{gap:6px}.rv-mf button{padding:0 10px;font-size:12px}.rv-mf a.rv-go{padding:0 12px;font-size:12.5px}}
+@media (max-width:640px){.rvwrap{padding:16px 14px 40px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.rv-mh,.rv-mt,.rv-mb,.rv-mf{padding-left:16px;padding-right:16px}.rv-mh h2{font-size:18px}}
+@media (prefers-reduced-motion:reduce){.rv-dlg[open]{animation:none}.rv-th i,.rv-card,.rv-cf i{transition:none}}
+
 
 /* 입력할 필요 없는 글자는 선택되지 않게 (입력칸 · 콘솔 출력만 선택 가능) */
 body{-webkit-user-select:none;user-select:none}
@@ -830,9 +932,13 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
 <body>
 <div id="home" class="home">
 <header class="top"><a class="brand" href="mypage.html" data-home title="마이페이지로 (내 프로젝트)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a><div class="lesson">엔진 · C# 기초</div><button class="treset" type="button" id="homeReset" title="모든 레슨의 통과 기록과 작성한 코드를 지웁니다">학습 기록 초기화</button><span class="thost"></span><span id="langHost"></span></header>
+<figure class="dq" id="dq" aria-labelledby="dqT"></figure>
 <section class="tools" aria-labelledby="toolsT"><h2 class="sec" id="toolsT">도구</h2><div id="tools"></div></section>
-<section class="hero"><h1>레슨</h1><p>Thaniya Engine의 화면 사용법과 C# 스크립트를 짧은 문제로 하나씩 익혀요. 카드를 눌러 시작하세요.</p></section>
+<section class="hero"><h1>레슨</h1></section>
+<div class="lvbar" id="lvbar" role="group" aria-label="난이도별 보기"></div>
 <div class="cards" id="cards"></div>
+<div class="rvwrap" id="rvList" hidden></div>
+<dialog class="rv-dlg" id="rvDlg" aria-labelledby="rvMt"></dialog>
 </div>
 <div id="lessonView" hidden>
 <header class="top">
@@ -840,7 +946,8 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
   <a class="brand" href="#" id="lvHome" title="학습 메인으로 (레슨 목록)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a>
   <div class="lesson"><b id="lNo"></b><span id="lTitle"></span></div>
   <div class="prog"><span id="progT"></span><div class="bar"><i id="progB"></i></div></div>
-  <span class="thost"></span>
+  <span class="thost"></span><span class="lhost"></span>
+  <button class="treset" type="button" id="topSearchWin" title="코드 검색을 따로 떠 있는 새 창으로 열기" aria-label="코드 검색을 새 창으로 열기">코드 검색 ↗</button>
   <button class="treset" type="button" id="topReset" aria-haspopup="menu" title="초기화">초기화</button>
   <button class="tg" type="button" id="topTg" aria-expanded="true" aria-controls="topx" title="안내·문제 목록 접기/펼치기" aria-label="안내와 문제 목록 접기/펼치기"></button>
 </header>
@@ -939,7 +1046,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
   <button class="back" type="button" id="svBack" aria-label="레슨 목록으로">← 레슨 목록</button>
   <a class="brand" href="#" id="svHome" title="학습 메인으로 (레슨 목록)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a>
   <div class="lesson tool"><b>도구</b><span>코드 검색 · 코드를 넣으면 설명과 예시를 보여 줘요</span></div>
-  <span class="spacer"></span><span class="thost"></span>
+  <span class="spacer"></span><button class="treset" type="button" id="svWin" title="코드 검색을 따로 떠 있는 새 창으로 열기" aria-label="코드 검색을 새 창으로 열기">새 창으로 열기 ↗</button><span class="thost"></span><span class="lhost"></span>
 </header>
 <main class="sv-main">
   <div class="sv-left">
@@ -967,7 +1074,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
 
 <script src="script-engine.js?v=20261101g"></script>
 <script src="script-editor.js?v=20261101g"></script>
-<script src="anim-editor.js?v=20261101j"></script>
+<script src="anim-editor.js?v=20261102a"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
@@ -1795,14 +1902,30 @@ const L7P=[
 ];
 
 const LESSONS=[
-  {...L2,problems:L2P,hash:'lesson-1',preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
-  {...L1,problems:L1P,hash:'lesson-2',preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
-  {...L3,problems:L3P,hash:'lesson-3',preview:'void Start()\n{\n    Light l = GetComponent<Light>();\n    l.intensity = 0.3f;\n}'},
-  {...L4,problems:L4P,hash:'lesson-4',preview:'public int damage = 30;\npublic Text label;\n\nvoid Start()\n{\n    hero.hp -= damage;\n    label.text = "HP " + hero.hp;\n}'},
-  {...L5,problems:L5P,hash:'lesson-5',preview:'void Update()\n{\n    Vector2 dir = new Vector2(h, v);\n    hero.Face(dir);\n    hero.Move(dir * speed\n              * Time.deltaTime);\n}'},
-  {...L6,problems:L6P,hash:'lesson-6',preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'},
-  {...L7,problems:L7P,hash:'lesson-7',preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'}
+  {...L2,problems:L2P,hash:'lesson-1',lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
+  {...L1,problems:L1P,hash:'lesson-2',lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
+  {...L3,problems:L3P,hash:'lesson-3',lv:2,kw:['GetComponent', 'Light', '값 바꾸기'],preview:'void Start()\n{\n    Light l = GetComponent<Light>();\n    l.intensity = 0.3f;\n}'},
+  {...L4,problems:L4P,hash:'lesson-4',lv:2,kw:['변수', 'public 필드', 'UI 연결'],preview:'public int damage = 30;\npublic Text label;\n\nvoid Start()\n{\n    hero.hp -= damage;\n    label.text = "HP " + hero.hp;\n}'},
+  {...L5,problems:L5P,hash:'lesson-5',lv:3,kw:['Update()', '키 입력', 'Vector2'],preview:'void Update()\n{\n    Vector2 dir = new Vector2(h, v);\n    hero.Face(dir);\n    hero.Move(dir * speed\n              * Time.deltaTime);\n}'},
+  {...L6,problems:L6P,hash:'lesson-6',lv:2,kw:['애니메이터', '애니메이션 클립', 'SetTrigger'],preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'},
+  {...L7,problems:L7P,hash:'lesson-7',lv:2,kw:['룰 타일', '애니메이션 타일', '타일 팔레트'],preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'}
 ];
+/* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
+const LVN=['','입문','초급','중급'];
+if(window.TI18N)TI18N.add({"난이도":["Difficulty","難易度","难度"],"입문":["Beginner","入門","入门"],"초급":["Basic","初級","初级"],"중급":["Intermediate","中級","中级"],
+ "전체":["All","すべて","全部"],"난이도별 보기":["Filter by difficulty","難易度で絞り込む","按难度筛选"],
+ "다음 레슨":["Next lesson","次のレッスン","下一课"],
+ "「{title}」 레슨의 통과 기록과 작성한 코드를 모두 지우고 처음부터 시작할까요?":["Clear all pass records and code you wrote for the lesson “{title}” and start over?","「{title}」レッスンの合格記録と作成したコードをすべて消して、最初からやり直しますか？","要清除“{title}”课程的通过记录和你编写的代码，并从头开始吗？"],
+ "타일맵":["Tilemap","タイルマップ","瓦片地图"],"콜라이더":["Collider","コライダー","碰撞体"],"UI 텍스트":["UI Text","UIテキスト","UI 文本"],"콘솔":["Console","コンソール","控制台"],
+ "값 바꾸기":["Change values","値を変える","修改数值"],"변수":["Variables","変数","变量"],"public 필드":["public fields","publicフィールド","public 字段"],"UI 연결":["UI binding","UI連携","UI 联动"],
+ "키 입력":["Key input","キー入力","按键输入"],"애니메이터":["Animator","アニメーター","动画控制器"],"애니메이션 클립":["Animation clips","アニメーションクリップ","动画片段"],
+ "룰 타일":["Rule Tile","ルールタイル","规则图块"],"애니메이션 타일":["Animated Tile","アニメーションタイル","动画图块"],"타일 팔레트":["Tile Palette","タイルパレット","图块调色板"]});
+const lvName=L=>_t(LVN[L.lv]||'입문');
+const lvChip=L=>`<span class="chip lv lv${L.lv}"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>${esc(_t('난이도'))} ${esc(lvName(L))}</span></span>`;
+const kwList=L=>`<ul class="kws" aria-label="keywords">${L.kw.map(k=>`<li>${esc(_t(k))}</li>`).join('')}</ul>`;
+/* 클리어 문구의 「레슨 N」에서 번호만 빼기 (번역 사전 키는 그대로 두고, 번역한 뒤에 지움) */
+const clearMsg=m=>String(_t(m)).replace(/(레슨|Lesson|レッスン)\s*\d+/,'$1').replace(/第\s*\d+\s*课/,'本课');
+
 let LESSON=LESSONS[0],PROBLEMS=LESSON.problems;
 
 /* ===== 미니 씬: 씬 뷰 · 게임 뷰 · 하이어라키 · 인스펙터가 함께 쓰는 데이터와 그리기 ===== */
@@ -2381,7 +2504,7 @@ $$('.cf').forEach(b=>b.onclick=()=>{conF[b.dataset.k]=!conF[b.dataset.k];renderC
 
 /* ---- 위쪽 · 문제 ---- */
 function renderTop(){
-  $('#lNo').textContent=_t('레슨 {n}',{n:LESSON.no});$('#lTitle').textContent=LESSON.title;$('#lead').textContent=LESSON.lead;
+  $('#lNo').textContent=_t('난이도')+' '+lvName(LESSON);$('#lTitle').textContent=LESSON.title;$('#lead').textContent=LESSON.lead;
   const n=PROBLEMS.filter(p=>st.done[p.id]).length;
   $('#progT').textContent=_t('{n} / {total} 통과',{n,total:PROBLEMS.length});$('#progB').style.width=(n/PROBLEMS.length*100)+'%';
   $('#steps').innerHTML=PROBLEMS.map((p,i)=>`<button type="button" class="step${i===st.cur?' cur':''}${st.done[p.id]?' done':''}" data-i="${i}" aria-label="${esc(_t('문제 {n}',{n:i+1}))} ${esc(p.title)}${st.done[p.id]?esc(_t(' (통과)')):''}"><span class="n"><span>${i+1}</span></span><span class="t">${esc(p.title)}</span></button>`).join('');
@@ -3238,8 +3361,8 @@ function passed(p){
   {
     st.done[p.id]=true;save();renderTop();
     const last=st.cur===PROBLEMS.length-1,all=PROBLEMS.every(q=>st.done[q.id]),nextL=LESSONS[LESSONS.indexOf(LESSON)+1];
-    const btn=!last?'<button class="btn pri nx" type="button" id="nx">다음 문제</button>':(all&&nextL?`<button class="btn pri nx" type="button" id="nxL">${esc(_t('레슨 {n} 시작',{n:nextL.no}))}</button>`:'');
-    setVerdict('ok',(all&&last?LESSON.clear:'통과했어요.')+btn);
+    const btn=!last?'<button class="btn pri nx" type="button" id="nx">다음 문제</button>':(all&&nextL?`<button class="btn pri nx" type="button" id="nxL">${esc(_t('다음 레슨'))} · ${esc(_t(nextL.title))}</button>`:'');
+    setVerdict('ok',(all&&last?clearMsg(LESSON.clear):'통과했어요.')+btn);
     const nx=$('#nx');if(nx)nx.onclick=()=>show(st.cur+1);
     const nl=$('#nxL');if(nl)nl.onclick=()=>{location.hash=nextL.hash};
   }
@@ -3339,20 +3462,40 @@ renderHier();
 show(st.cur);
 
 /* ===================== 메인 화면 · 화면 전환 ===================== */
-function renderHome(){
-  $('#cards').innerHTML=LESSONS.map(L=>{
+let LVF=0;try{LVF=+localStorage.getItem('thaniya.lvf')||0}catch(e){}
+function renderLvBar(refocus){
+  const cnt=n=>n?LESSONS.filter(L=>L.lv===n).length:LESSONS.length;
+  $('#lvbar').setAttribute('aria-label',_t('난이도별 보기'));
+  $('#lvbar').innerHTML=[0,1,2,3].map(n=>`<button type="button" class="lvb" data-lv="${n}" aria-pressed="${LVF===n}">${n?`<span class="dots lv${n}" aria-hidden="true"><i></i><i></i><i></i></span>`:''}<span>${esc(_t(n?LVN[n]:'전체'))}</span><b>${cnt(n)}</b></button>`).join('')+`<button type="button" class="lvb rvt" id="rvToggle" aria-pressed="${RV_ON}" title="${esc(_t('레슨 대신 레슨별 코드 모음 보기'))}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span>${esc(_t('코드 복습'))}</span></button>`;
+  if(refocus){const b=$('#lvbar .lvb[data-lv="'+LVF+'"]');if(b)b.focus()}
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('#lvbar .lvb[data-lv]');if(!b)return;
+  LVF=+b.dataset.lv;try{localStorage.setItem('thaniya.lvf',LVF)}catch(_){}
+  renderHome(true);
+});
+const DQ_POOL=[["Debug.Log(\"Hello, Thaniya!\");", "콘솔에 글자를 한 줄 출력해요."], ["Debug.Log(\"HP: \" + hp);", "글자와 변수 값을 + 로 이어 붙여 출력해요."], ["Debug.Log($\"{a} + {b} = {a + b}\");", "글자 앞에 $를 붙이면 중괄호 안의 식이 계산돼 글자에 들어가요."], ["for (int i = 1; i <= 5; i++)", "i를 1부터 5까지 바꿔 가며 중괄호 안을 다섯 번 실행해요."], ["Debug.LogWarning(\"체력이 낮아요\");", "콘솔에 노란색 경고로 알려요."], ["Debug.LogError(\"저장에 실패했어요\");", "콘솔에 빨간색 오류로 알려요."], ["Light light = GetComponent<Light>();", "이 오브젝트에 붙은 Light 컴포넌트를 꺼내요."], ["GameObject torch = GameObject.Find(\"횃불\");", "이름으로 다른 오브젝트를 찾아요."], ["light.intensity = 0.3f;", "값을 대입하면 인스펙터와 게임 뷰가 바로 바뀌어요."], ["light.enabled = false;", "컴포넌트를 끄면 빛이 꺼져요. 오브젝트 전체는 SetActive를 써요."], ["Camera.main.orthographicSize = 2;", "카메라 크기가 작을수록 화면이 더 확대돼요."], ["slime.transform.position = hero.transform.position + Vector2.right;", "슬라임을 주인공의 오른쪽 한 칸 옆으로 옮겨요."], ["hero.hp -= damage;", "hp에서 damage만큼 빼고 다시 저장해요."], ["hero.hp = Mathf.Min(hero.hp + heal, limit);", "회복해도 한도를 넘지 않게 둘 중 작은 값을 골라요."], ["coin.SetActive(false);", "오브젝트를 화면에서 치워요."], ["float d = Vector2.Distance(hero.transform.position, coin.transform.position);", "두 위치 사이의 거리를 재요."], ["public void OnClick()", "버튼의 클릭에 연결할 함수는 public void로 만들어요."], ["float h = Input.GetAxisRaw(\"Horizontal\");", "왼쪽은 -1, 오른쪽은 +1, 입력이 없으면 0으로 읽어요."], ["hero.Move(dir * speed * Time.deltaTime);", "프레임 속도와 상관없이 같은 속도로 움직여요."], ["dir = dir.normalized;", "방향의 길이를 1로 맞춰서 대각선이 더 빠르지 않게 해요."], ["if (Input.GetKeyDown(KeyCode.Space))", "키를 누른 순간에만 한 번 true가 돼요."], ["animator.SetTrigger(\"Hop\");", "애니메이터의 Hop 트리거를 발동해 깡충 뛰게 해요."]];
+let DQ_I=Math.floor(Math.random()*DQ_POOL.length);
+function dqRender(){
+  const p=DQ_POOL[DQ_I];
+  $('#dq').innerHTML=`<p class="dq-l" id="dqT">${esc(_t('오늘의 코드 한 줄'))}</p><blockquote><span class="dq-q" aria-hidden="true">“</span><code class="dq-c" translate="no">${csHighlight(p[0]).replace(/\n\s*$/,'')}</code><span class="dq-q" aria-hidden="true">”</span></blockquote><figcaption>${esc(p[1])}</figcaption>`;
+}
+function renderHome(refocus){
+  dqRender();
+  renderLvBar(refocus);
+  $('#cards').innerHTML=LESSONS.filter(L=>!LVF||L.lv===LVF).map(L=>{
     const n=L.problems.filter(p=>st.done[p.id]).length,t=L.problems.length,done=n===t;
     const label=done?'다시 보기':n?'이어하기':'시작하기',state=done?'완료':n?'진행 중':'시작 전';
-    return`<button type="button" class="card" data-go="${L.hash}" aria-label="${esc(_t('레슨 {n}',{n:L.no}))} ${esc(L.title)} · ${esc(_t(state))}">
-      <div class="ctop"><span class="chip">${esc(_t('레슨 {n}',{n:L.no}))}</span><span class="state${done?' done':''}">${done?'✓ ':''}${state}</span></div>
-      <h2>${esc(L.title)}</h2><p>${esc(L.lead)}</p><pre>${csHighlight(L.preview)}</pre>
+    return`<button type="button" class="card" data-go="${L.hash}" aria-label="${esc(_t('난이도'))} ${esc(lvName(L))} · ${esc(L.title)} · ${esc(_t(state))}">
+      <div class="ctop">${lvChip(L)}<span class="state${done?' done':''}">${done?'✓ ':''}${state}</span></div>
+      <h2>${esc(L.title)}</h2><p title="${esc(L.lead)}">${esc(L.lead)}</p>${kwList(L)}<pre>${csHighlight(L.preview)}</pre>
       <div class="cfoot"><div class="cbar"><i style="width:${n/t*100}%"></i></div><span class="cnum">${esc(_t('{n} / {t} 문제',{n,t}))}</span><span class="go">${label}</span></div></button>`;
-  }).join('')+`<div class="card soon" aria-hidden="true"><p>다음 레슨을 준비하고 있어요</p></div>`;
+  }).join('')+(LVF?'':`<div class="card soon" aria-hidden="true"><p>다음 레슨을 준비하고 있어요</p></div>`);
+  $('#cards').hidden=RV_ON;$('#rvList').hidden=!RV_ON;if(RV_ON)rvRender();
   $('#tools').innerHTML=`<button type="button" class="card tool" data-go="search" aria-label="도구 · 코드 검색 · 코드를 넣으면 설명과 예시를 보여 줘요">
       <div class="tl">
         <div class="ctop"><span class="chip">레슨 아님 · 찾아보기</span></div>
-        <h2>코드 검색</h2><p>스크립트에 코드를 넣으면 쓰인 코드마다 설명과 예시, 예시 출력을 보여 줘요. 이름이나 설명으로 찾아볼 수도 있어요. 진행도나 채점은 없어요.</p>
-        <div class="cfoot"><span class="go">열기</span></div>
+        <h2>코드 검색</h2><p>스크립트에 코드를 넣으면 쓰인 코드마다 설명과 예시, 출력을 보여줍니다.</p>
       </div>
       <pre>${csHighlight('Debug.Log("HP: " + hp);\n→ 콘솔에 글을 출력합니다')}</pre></button>`;
 }
@@ -3673,6 +3816,60 @@ function svOpen(){
   $('#svHome').onclick=e=>{e.preventDefault();location.hash=''};
 })();
 
+/* ===================== 코드 복습: 레슨마다 쓰는 코드를 모아 보여 줍니다 ===================== */
+const RV_DATA={"lesson-1": {"note": "코드를 쓰지 않고 화면을 직접 만지는 레슨이에요. 아래는 나중에 코드와 이어질 말들이에요.", "items": [{"t": "콜라이더 (막는 칸)", "d": "타일맵에서 막을 칸을 칠하거나, 게임 오브젝트(바위)에 박스 콜라이더 2D 컴포넌트를 붙이면 주인공이 지나가지 못해요.", "c": "BoxCollider2D   // 바위에 붙이는 컴포넌트 이름"}, {"t": "UI 텍스트에 값 넣기", "d": "UI 텍스트 안의 {hp} 자리에 hp 값이 들어가요. 코드로 숫자를 바꾸면 화면 글도 함께 바뀝니다.", "c": "HP {hp}"}]}, "lesson-2": {"items": [{"t": "뼈대: Start()", "d": "게임이 시작될 때 한 번 실행되는 함수예요. 쓰고 싶은 코드를 중괄호 안에 넣어요.", "c": "using UnityEngine;\n\npublic class Quiz : MonoBehaviour\n{\n    void Start()\n    {\n        // 여기에 코드를 쓰세요\n    }\n}"}, {"t": "콘솔에 한 줄 출력", "d": "글자는 큰따옴표로 감싸고, 문장 끝에는 세미콜론(;)을 붙여요.", "c": "Debug.Log(\"Hello, Thaniya!\");"}, {"t": "변수 값을 글자와 이어 붙이기", "d": "+로 이어 붙이거나, 글자 앞에 $를 붙이고 {변수}를 넣어요.", "c": "public int hp = 100;\n\nDebug.Log(\"HP: \" + hp);\nDebug.Log($\"HP: {hp}\");"}, {"t": "계산 결과를 글자 안에 넣기", "d": "중괄호 안에 식을 넣으면 계산된 값이 들어가요.", "c": "Debug.Log($\"{a} + {b} = {a + b}\");"}, {"t": "반복문 for", "d": "같은 일을 여러 번 할 때 써요. i가 1, 2, 3, 4, 5로 바뀌며 중괄호 안이 다섯 번 실행돼요.", "c": "for (int i = 1; i <= 5; i++)\n{\n    Debug.Log(i);\n}"}, {"t": "경고와 오류", "d": "Log는 일반, LogWarning은 경고(노란색), LogError는 오류(빨간색)예요.", "c": "Debug.LogWarning(\"배터리가 얼마 남지 않았어요\");\nDebug.LogError(\"저장에 실패했어요\");"}]}, "lesson-3": {"items": [{"t": "내 컴포넌트 꺼내기", "d": "스크립트가 붙은 오브젝트의 컴포넌트는 GetComponent<타입>()으로 꺼내요.", "c": "Transform tr = GetComponent<Transform>();\nDebug.Log($\"위치: {tr.position.x}, {tr.position.y}\");"}, {"t": "다른 오브젝트 찾기", "d": "GameObject.Find(\"이름\")으로 찾고, 그 오브젝트에서 GetComponent로 컴포넌트를 꺼내요. 값을 바꾸려면 대입하세요.", "c": "GameObject torch = GameObject.Find(\"횃불\");\nLight light = torch.GetComponent<Light>();\nlight.intensity = 0.3f;\nDebug.Log(\"횃불 밝기: \" + light.intensity);"}, {"t": "끌어다 놓아 연결하기", "d": "public 칸을 만들면 인스펙터에서 오브젝트를 끌어다 놓아 연결할 수 있어요 (Find 대신).", "c": "public GameObject torch;   // Start() 위에 쓰고 인스펙터 칸에 끌어다 놓기"}, {"t": "컴포넌트 켜고 끄기", "d": "컴포넌트는 enabled로 켜고 꺼요. 오브젝트 전체는 SetActive(…)를 써요.", "c": "light.enabled = lightOn;\nDebug.Log(\"켜짐 여부: \" + light.enabled);"}, {"t": "오브젝트 옮기기", "d": "position에 새 위치를 대입하면 이동해요. Vector2.right는 오른쪽 한 칸 (1, 0)이에요.", "c": "slime.transform.position = hero.transform.position + Vector2.right;"}, {"t": "컴포넌트 함께 쓰기 · 메인 카메라", "d": "Camera.main으로 메인 카메라를 바로 가져와요. orthographicSize가 작을수록 화면이 확대돼요.", "c": "Hero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp = hero.hp / 2;\nCamera.main.orthographicSize = 2;"}]}, "lesson-4": {"items": [{"t": "public 변수 · 값 깎기", "d": "public 변수는 인스펙터에 칸이 생겨 값을 바꿀 수 있어요. -=는 빼서 다시 저장해요.", "c": "public int damage = 30;\n\nHero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp -= damage;\nDebug.Log(\"HP: \" + hero.hp);"}, {"t": "한도까지만 회복 (Mathf.Min)", "d": "두 값 중 작은 쪽을 골라요. if로 써도 같은 결과예요.", "c": "hero.hp = Mathf.Min(hero.hp + heal, limit);\n\n// if로 쓰면\nhero.hp += heal;\nif (hero.hp > limit)\n{\n    hero.hp = limit;\n}"}, {"t": "아이템 수량 바꾸기", "d": "포션의 Item 컴포넌트에서 qty를 줄이고, 그만큼 주인공 hp를 올려요.", "c": "Item potion = GameObject.Find(\"포션\").GetComponent<Item>();\npotion.qty -= 1;\nhero.hp += healAmount;\nDebug.Log($\"포션 {potion.qty}개 · HP {hero.hp}\");"}, {"t": "조건문 if · else", "d": "조건이 참일 때만 실행하고, 아니면 else 쪽을 실행해요.", "c": "if (potion.qty > 0)\n{\n    potion.qty -= 1;\n    hero.hp += healAmount;\n}\nelse\n{\n    Debug.LogWarning(\"포션이 없어요\");\n}"}, {"t": "거리 재기 · 오브젝트 끄기", "d": "Vector2.Distance로 두 위치 사이 거리를 재요. SetActive(false)는 오브젝트를 화면에서 치워요.", "c": "float d = Vector2.Distance(hero.transform.position, coin.transform.position);\nif (d <= reach)\n{\n    coins += coin.GetComponent<Item>().qty;\n    coin.SetActive(false);\n}"}, {"t": "UI 글자와 버튼 함수", "d": "public Text 칸에 UI 텍스트를 연결하고 .text에 대입해요. 버튼의 클릭에 연결할 함수는 public void로 만들어요.", "c": "public Text label;\n\nvoid Start()\n{\n    label.text = \"포션 \" + potion.qty + \"개\";\n}\n\npublic void OnClick()\n{\n    if (potion.qty > 0)\n    {\n        potion.qty -= 1;\n    }\n}"}]}, "lesson-5": {"items": [{"t": "Start()에서 Hero 컴포넌트 잡아 두기", "d": "private 변수에 한 번 담아 두면 Update에서 계속 쓸 수 있어요.", "c": "private Hero hero;\n\nvoid Start()\n{\n    hero = GetComponent<Hero>();\n}"}, {"t": "Update()와 입력 읽기", "d": "Update는 매 프레임 실행돼요. 방향키/WASD 입력은 왼쪽·위 -1, 오른쪽·아래 +1로 읽혀요.", "c": "void Update()\n{\n    float h = Input.GetAxisRaw(\"Horizontal\");\n    float v = Input.GetAxisRaw(\"Vertical\");\n}"}, {"t": "입력 방향으로 움직이기", "d": "방향 × 속도 × Time.deltaTime으로 프레임 속도와 상관없이 같은 속도로 움직여요.", "c": "Vector2 dir = new Vector2(h, v);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "멈춤과 바라보는 방향", "d": "입력이 없으면 return으로 Update를 일찍 끝내요. Face로 바라보는 방향을 정해요.", "c": "if (h == 0 && v == 0)\n    return;\n\nVector2 dir = new Vector2(h, v);\nhero.Face(dir);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "대각선 속도 맞추기", "d": "normalized는 방향의 길이를 1로 맞춰요. 대각선이 더 빠르게 느껴지는 걸 막아요.", "c": "if (normalizeDiagonal)\n    dir = dir.normalized;"}, {"t": "Shift로 달리기", "d": "GetKey는 누르고 있는 동안 true예요.", "c": "float s = speed;\nif (Input.GetKey(KeyCode.LeftShift))\n    s = s * runMultiplier;"}, {"t": "완성한 HeroMovement.cs 전체", "d": "엔진에서 주인공을 고르고 「스크립트 편집」으로 열면 똑같은 코드가 있어요.", "c": "@L5_FINAL", "long": true}]}, "lesson-6": {"note": "대부분 애니메이터·애니메이션 창을 다루는 레슨이에요. 코드는 마지막 문제의 한 가지만 나와요.", "items": [{"t": "애니메이터 꺼내기", "d": "GetComponent로 이 오브젝트의 Animator를 꺼내요.", "c": "Animator animator = GetComponent<Animator>();"}, {"t": "Space를 누른 순간 깡충 (SetTrigger)", "d": "스크립트는 애니메이터의 파라미터만 바꿔요. GetKeyDown은 누른 순간 한 번만 true라서 한 번만 뛰어요. (누르는 동안 계속 true인 GetKey를 쓰면 여러 번 뛰어요.)", "c": "if (animator != null)\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        animator.SetTrigger(\"Hop\");\n}"}]}, "lesson-7": {"note": "코드 없이 타일 팔레트와 인스펙터를 다루는 레슨이에요. 외워 둘 코드는 없고, 아래 순서만 기억하면 돼요.", "items": [{"t": "룰 타일 · 애니메이션 타일 만드는 순서", "d": "저장하기 전에는 아직 쓸 수 없어요 (엔진도 같아요).", "c": "타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    → 외딴 칸(섬) 규칙 추가\n물 4칸     → 애니메이션 타일 (8 fps)"}]}};
+const RV_OPEN=new Set();let RV_ON=false;try{RV_ON=localStorage.getItem('thaniya.rvon')==='1'}catch(e){}
+function rvCode(c){return c==='@L5_FINAL'?L5_FINAL:c}
+const rvLv=L=>`<span class="rv-lv"><span class="dots lv${L.lv}" aria-hidden="true"><i></i><i></i><i></i></span>${esc(lvName(L))}</span>`;
+const rvList=()=>LESSONS.filter(L=>!LVF||L.lv===LVF);
+let RV_CUR='';
+function rvRender(){
+  $('#rvList').innerHTML=rvList().map(L=>{const n=((RV_DATA[L.hash]||{}).items||[]).length;
+    return`<button type="button" class="rv-card" data-h="${L.hash}" aria-haspopup="dialog"><div class="rv-ct">${rvLv(L)}<span class="rv-cn">${esc(_t('레슨 {n}',{n:L.no}))}</span></div><h3>${esc(L.title)}</h3><div class="rv-cf"><span>${esc(_t('코드 {n}개',{n}))}</span><i aria-hidden="true"></i></div></button>`}).join('');
+  const d=$('#rvDlg');if(d.open)rvFill(RV_CUR);
+}
+function rvFill(h){
+  const list=rvList(),L=LESSONS.find(x=>x.hash===h);if(!L)return;RV_CUR=h;
+  const R=RV_DATA[h]||{items:[]},ix=list.indexOf(L),prev=list[ix-1],next=list[ix+1];
+  $('#rvDlg').innerHTML=`<div class="rv-mh"><div class="rv-sh">${rvLv(L)}<span class="rv-cn" style="font:500 12px var(--m);color:var(--mut)">${esc(_t('레슨 {n}',{n:L.no}))}</span><button type="button" class="rv-x" data-a="close" aria-label="${esc(_t('닫기'))}">✕</button></div>
+    <h2 id="rvMt">${esc(L.title)}</h2>${R.note?`<p class="rv-none">${esc(R.note)}</p>`:`<p>${esc(L.lead)}</p>`}</div>
+    <div class="rv-mt"><span>${esc(_t('코드 {n}개',{n:R.items.length}))}</span><span class="sp"></span><button type="button" data-a="all">${esc(_t('모두 펼치기'))}</button></div>
+    <div class="rv-mb">${R.items.map((it,i)=>{const k=h+':'+i,o=RV_OPEN.has(k);return`<div class="rv-it${o?' open':''}" data-k="${k}"><button type="button" class="rv-th" aria-expanded="${o}">${esc(it.t)}<i aria-hidden="true"></i></button><div class="rv-body"${o?'':' hidden'}><p>${esc(it.d)}</p><div class="rv-cw"><pre${it.long?' class="long"':''}>${csHighlight(rvCode(it.c)).replace(/\n\s*$/,'')}</pre><button type="button" class="rv-cp" data-l="${h}" data-i="${i}">${esc(_t('복사'))}</button></div></div></div>`}).join('')}</div>
+    <div class="rv-mf"><button type="button" data-a="prev"${prev?` data-h="${prev.hash}"`:' disabled'}>← ${esc(_t('이전 레슨'))}</button><button type="button" data-a="next"${next?` data-h="${next.hash}"`:' disabled'}>${esc(_t('다음 레슨'))} →</button><a class="rv-go" href="#${L.hash}">${esc(_t('레슨으로 가기'))} →</a></div>`;
+  rvAll();
+}
+function rvAll(){const its=[...$('#rvDlg').querySelectorAll('.rv-it')],b=$('#rvDlg [data-a="all"]');if(!b)return;b.textContent=_t(its.length&&its.every(e=>e.classList.contains('open'))?'모두 접기':'모두 펼치기')}
+function rvOpen(h){const d=$('#rvDlg');rvFill(h);if(!d.open){d.showModal();document.body.classList.add('rv-lock')}$('#rvDlg .rv-mb').scrollTop=0}
+$('#rvList').addEventListener('click',e=>{const c=e.target.closest('.rv-card');if(c)rvOpen(c.dataset.h)});
+$('#rvDlg').addEventListener('close',()=>{document.body.classList.remove('rv-lock');const c=$('#rvList .rv-card[data-h="'+RV_CUR+'"]');if(c)c.focus({preventScroll:true})});
+$('#rvDlg').addEventListener('click',e=>{
+  const d=e.currentTarget;if(e.target===d){d.close();return}
+  const a=e.target.closest('[data-a]');
+  if(a){const k=a.dataset.a;
+    if(k==='close')d.close();
+    else if(k==='prev'||k==='next'){if(a.dataset.h){rvFill(a.dataset.h);d.querySelector('.rv-mb').scrollTop=0}}
+    else if(k==='all'){const its=[...d.querySelectorAll('.rv-it')],on=!its.every(x=>x.classList.contains('open'));
+      its.forEach(x=>{x.classList.toggle('open',on);x.querySelector('.rv-th').setAttribute('aria-expanded',String(on));x.querySelector('.rv-body').hidden=!on;if(on)RV_OPEN.add(x.dataset.k);else RV_OPEN.delete(x.dataset.k)});rvAll()}
+    return}
+  const h=e.target.closest('.rv-th');
+  if(h){const it=h.closest('.rv-it'),k=it.dataset.k,on=!it.classList.contains('open');
+    it.classList.toggle('open',on);h.setAttribute('aria-expanded',String(on));it.querySelector('.rv-body').hidden=!on;
+    if(on)RV_OPEN.add(k);else RV_OPEN.delete(k);rvAll();return}
+  const b=e.target.closest('.rv-cp');if(!b)return;
+  const it=(RV_DATA[b.dataset.l]||{items:[]}).items[+b.dataset.i];if(!it)return;
+  const txt=rvCode(it.c),done=()=>{b.textContent=_t('복사됨');setTimeout(()=>{b.textContent=_t('복사')},1200)};
+  const fb=()=>{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove();done()};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb();
+});
+/* 창 안의 링크로 레슨에 들어가면 창을 닫음 */
+addEventListener('hashchange',()=>{const d=$('#rvDlg');if(d.open)d.close()});
+document.addEventListener('click',e=>{
+  const t=e.target.closest&&e.target.closest('#rvToggle');if(!t)return;
+  RV_ON=!RV_ON;try{localStorage.setItem('thaniya.rvon',RV_ON?'1':'0')}catch(_){}
+  renderHome(false);const b=$('#rvToggle');if(b)b.focus();
+});
+if(window.TI18N)TI18N.add({"코드 복습":["Code review","コード復習","代码复习"],"레슨 {n}":["Lesson {n}","レッスン {n}","第 {n} 课"],"레슨으로 가기":["Go to lesson","レッスンへ","前往课程"],"오늘의 코드 한 줄":["Code of the day","今日のコード一行","今日一行代码"],"코드 {n}개":["{n} snippets","コード {n} 個","{n} 段代码"],"모두 펼치기":["Expand all","すべて開く","全部展开"],"모두 접기":["Collapse all","すべて閉じる","全部收起"],"이전 레슨":["Previous","前のレッスン","上一课"],"다음 레슨":["Next","次のレッスン","下一课"],"닫기":["Close","閉じる","关闭"],"복사":["Copy","コピー","复制"],"복사됨":["Copied","コピーしました","已复制"],"레슨 아님 · 다시 보기":["Not a lesson · Review","レッスンではありません · 復習","非课程 · 复习"],"레슨 대신 레슨별 코드 모음 보기":["Show code per lesson instead of lessons","レッスンの代わりにコードをまとめて表示","不显示课程,改为按课汇总代码"],"코드 복습 · 레슨마다 쓰는 코드를 모아 봤어요":["Code review · The code used in each lesson","コード復習 · レッスンごとに使うコードをまとめました","代码复习 · 汇总每节课用到的代码"],"각 레슨에서 꼭 알아야 하는 코드를 한곳에 모아 놨어요. 복사해서 바로 써 보세요.":["The code you need to know in each lesson, all in one place. Copy it and try it right away.","各レッスンで必ず知っておきたいコードを1か所にまとめました。コピーしてすぐ試せます。","把每节课必须掌握的代码集中在一处,复制后即可直接试用。"]});
+
 function route(){
   const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search';
   $('#home').hidden=!!L||S;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;
@@ -3682,11 +3879,30 @@ function route(){
 }
 addEventListener('hashchange',route);
 route();
+/* 코드 검색을 따로 떠 있는 새 창(단독 창)으로 열기 · 같은 창이 있으면 그 창을 다시 씀 */
+function openSearchWin(){
+  const w=Math.min(1000,Math.max(480,(screen.availWidth||1200)-80)),h=Math.min(780,Math.max(420,(screen.availHeight||900)-80));
+  const l=Math.round((window.screenX||0)+Math.max(0,((window.outerWidth||w)-w)/2)),t=Math.round((window.screenY||0)+Math.max(0,((window.outerHeight||h)-h)/2));
+  const u=(location.pathname.split('/').pop()||'learning.html')+'?solo=search#search';
+  const win=window.open(u,'thaniya-codesearch','popup=yes,width='+w+',height='+h+',left='+l+',top='+t);
+  if(!win){alert(_t('팝업이 차단됐어요. 브라우저에서 이 페이지의 팝업을 허용해 주세요'));return}
+  try{win.focus()}catch(e){}
+}
+$('#topSearchWin').onclick=openSearchWin;$('#svWin').onclick=openSearchWin;
+(function(){
+  let solo=false;try{solo=new URLSearchParams(location.search).get('solo')==='search'}catch(e){}
+  if(!solo)return;
+  document.documentElement.classList.add('solo');
+  const hm=$('#svHome');if(hm){hm.removeAttribute('href');hm.removeAttribute('title')}
+  if(location.hash!=='#search')location.hash='#search';
+  addEventListener('hashchange',()=>{if(location.hash!=='#search')location.hash='#search'});
+})();
 /* 테마: 상단의 해/달 버튼 · 엔진 설정이나 다른 페이지에서 바꿔도 따라감 (theme.js) */
 if(window.TTheme){$$('.thost').forEach(h=>TTheme.button(h,{small:true}));TTheme.onChange(()=>snRedraw())}
 /* 언어: 홈 상단의 언어 버튼 · 엔진 설정이나 다른 페이지에서 바꿔도 따라감 */
 if(window.TI18N){
   TI18N.picker($('#langHost'),{compact:true});
+  $$('.lhost').forEach(h=>TI18N.picker(h,{compact:true}));
   TI18N.onChange(()=>{
     try{
       if(!$('#home').hidden)renderHome();
@@ -3704,7 +3920,7 @@ function resetProblem(){
   delete st.code[p.id];delete st.vals[p.id];save();show(st.cur);
 }
 function resetLesson(){
-  if(!confirm(_t('레슨 {n} 「{title}」의 통과 기록과 작성한 코드를 모두 지우고 처음부터 시작할까요?',{n:LESSON.no,title:LESSON.title})))return;
+  if(!confirm(_t('「{title}」 레슨의 통과 기록과 작성한 코드를 모두 지우고 처음부터 시작할까요?',{title:_t(LESSON.title)})))return;
   PROBLEMS.forEach(q=>{delete st.done[q.id];delete st.code[q.id];delete st.vals[q.id]});
   st.curs[LESSON.no]=0;save();show(0);
 }
@@ -3715,7 +3931,7 @@ function resetAll(){
 }
 $('#topReset').onclick=e=>popMenu(e.currentTarget,[
   {t:'이 문제 처음 상태로',ic:'select',fn:resetProblem},
-  {t:'이 레슨 기록 초기화',ic:'collapse',note:_t('레슨 {n}',{n:LESSON.no}),fn:resetLesson},
+  {t:'이 레슨 기록 초기화',ic:'collapse',note:lvName(LESSON),fn:resetLesson},
   {t:'전체 학습 기록 초기화',ic:'trash',fn:resetAll}]);
 $('#homeReset').onclick=resetAll;
 

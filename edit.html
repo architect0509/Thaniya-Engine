@@ -21,6 +21,22 @@
 .lwin.min{left:16px!important;top:auto!important;bottom:34px;width:auto!important;height:auto!important;border-radius:999px}
 .lwin.min .lbody,.lwin.min .lgrip{display:none}
 .lwin.min .lhead{border-bottom:0;cursor:pointer}
+/* 창별 학습: 창 머리글의 「학습」 버튼 · 상황별 안내 */
+.plearn{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 7px 0 5px;margin-right:2px;background:none;border:0;border-radius:5px;color:var(--mute);font:inherit;font-size:11px;white-space:nowrap;flex:none;align-self:center}
+.plearn:hover{background:var(--hover);color:var(--accent)}
+.plearn .ic{width:13px;height:13px;color:inherit}
+.lnudge{position:fixed;left:16px;bottom:72px;z-index:9050;display:flex;align-items:flex-start;gap:10px;max-width:min(360px,calc(100vw - 32px));padding:11px 12px;background:var(--head);color:var(--fg);border:1px solid var(--line2);border-left:3px solid var(--accent);border-radius:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .2s,transform .2s}
+.lnudge.on{opacity:1;transform:none;pointer-events:auto}
+.lnudge>.ic{width:16px;height:16px;flex:none;margin-top:1px;color:var(--accent)}
+.lnudge .ln-t{font-weight:600}
+.lnudge .ln-d{margin-top:2px;color:var(--mute);line-height:1.45}
+.lnudge .ln-b{display:flex;gap:6px;margin-top:9px}
+.linfo .li-s{margin:0 0 12px;line-height:1.6}
+.linfo .li-m{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:14px}
+.linfo .li-lv{padding:2px 10px;border-radius:999px;background:var(--hover);color:var(--accent);font-size:12px;font-weight:600}
+.linfo .li-k{padding:1px 8px;border-radius:8px;background:var(--hover);color:var(--mute);font:500 12px var(--f-mono,ui-monospace,monospace)}
+.linfo .li-h{margin:0 0 6px;font-weight:600}
+.linfo ol{margin:0;padding-left:22px;color:var(--mute);line-height:1.75}
 @media (prefers-reduced-transparency:reduce){.lwin{background:rgba(34,34,40,.98);-webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* 버튼 색: 회색 모드 (설정 > 화면 > 버튼 색 · 기본) — 유니티처럼 패널보다 살짝 밝은 회색 + 흰 글자. 노란 그림자·강조 배경도 회색으로 */
@@ -1651,7 +1667,7 @@ body.popbody .pcol{display:none}
 
 <script src="script-engine.js?v=20261101g"></script>
 <script src="script-editor.js?v=20261101g"></script>
-<script src="anim-editor.js?v=20261101j"></script>
+<script src="anim-editor.js?v=20261102a"></script>
 <script>
 (()=>{
 'use strict';
@@ -5777,6 +5793,7 @@ function newScript(o){
     const s={id:uid(),name:v,code:(o&&isUiEl(o)?CS_UI_TEMPLATE:CS_TEMPLATE)(v)};SC().push(s);if(aMode==='scripts'&&sFol){(P.sfmap||(P.sfmap={}))[s.id]=sFol}markDirty();
     clog('info',scPath(s)+' 를 만들었습니다',s.id);compileScript(s,true);
     if(o)attachScript(o,s,true);
+    try{learnNudge((o&&o.type==='spawn')||/hero|player|주인공|movement|이동/i.test(v)?'hero':null)}catch(_){}
     renderScripts();setTimeout(()=>openScriptEditor(s),0);
   }}]);
   const i=$('#nsName');i.focus();i.select();i.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();$('#mFoot .pri').click()}});
@@ -6504,7 +6521,7 @@ const CS_WORLD={
 /* 공용 스크립트 편집기(script-editor.js): 프로젝트 스크립트 목록 · 편집기 설정 */
 CSED.use({scripts:()=>SC(),settings:()=>setv});
 CSHOST.use(CS_WORLD);
-CSHOST.use({clog,get play(){return play},objOn,isUiEl,startCamera,goProxy,trProxy,camProxy,csGetComp,csDestroy,uiGo:true,uiGroupH:(m,id)=>{const g=(m.uiGroups||[]).find(x=>x.id===id);return g?uiGroupH(m,g):null}});
+CSHOST.use({clog:(t,m,s,d)=>{clog(t,m,s,d);if(t==='info'&&s){try{learnNudge('console')}catch(_){}}},get play(){return play},objOn,isUiEl,startCamera,goProxy,trProxy,camProxy,csGetComp,csDestroy,uiGo:true,uiGroupH:(m,id)=>{const g=(m.uiGroups||[]).find(x=>x.id===id);return g?uiGroupH(m,g):null}});
 /* 스크립트 인스턴스별 실행 상태 (필드 값) — 씬에 들어갈 때마다 새로 만듭니다 */
 function csFieldInit(fd,inst){
   const kind=csKind(fd.type),has=fd.exposed&&inst.vals&&fd.name in inst.vals,v=has?inst.vals[fd.name]:csDefault(fd.type,fd.def);
@@ -6534,7 +6551,7 @@ function csRun(m,o,inst,fn,dt,perFrame){
   const old={m,fields,inst,sname:s.name,sid:s.id,quiet:perFrame,locals:{},warn:msg=>clog('warn',`[${s.name}] ${msg}`,s.id)};
   const runOld=txt=>{
     const dm=/^Debug\s*\.\s*(Log|LogWarning|LogError)\s*\(([\s\S]*)\)$/.exec(txt);
-    if(dm){clog(dm[1]==='Log'?'info':dm[1]==='LogWarning'?'warn':'error',csEvalArg(dm[2].trim(),o,inst,fields,m),s.id);return true}
+    if(dm){clog(dm[1]==='Log'?'info':dm[1]==='LogWarning'?'warn':'error',csEvalArg(dm[2].trim(),o,inst,fields,m),s.id);if(dm[1]==='Log'){try{learnNudge('console')}catch(_){}}return true}
     return csExec(txt,o,inst,old);
   };
   const fail=(e,txt)=>{
@@ -9435,7 +9452,7 @@ function learnPop(){
   try{h=learn.fr.contentWindow.location.hash||''}catch(e){}
   const w=window.open(LEARN_URL+h,'thaniya-learning',`popup=yes,width=${r.w},height=${r.h},left=${Math.round((window.screenX||0)+r.x)},top=${Math.round((window.screenY||0)+r.y+80)}`);
   if(!w){toast('팝업이 차단됐어요. 브라우저에서 이 페이지의 팝업을 허용해 주세요');return}
-  learnClose();
+  learn.pop=w;learnClose();
 }
 function learnBuild(){
   const e=document.createElement('section');e.className='lwin';e.setAttribute('role','dialog');e.setAttribute('aria-label','Thaniya Engine Edu');
@@ -9444,7 +9461,7 @@ function learnBuild(){
     `<button class="ib" type="button" data-a="full" title="전체화면" aria-label="전체화면">${ico('lfull')}</button>`+
     `<button class="ib" type="button" data-a="pop" title="새 창으로 열기" aria-label="새 창으로 열기">${ico('popout')}</button>`+
     `<button class="ib lclose" type="button" data-a="close" title="닫기" aria-label="닫기">${ico('x')}</button></div>`+
-    `<div class="lbody"><iframe title="Thaniya Engine Edu" src="${LEARN_URL}"></iframe></div><div class="lgrip" aria-hidden="true"></div>`;
+    `<div class="lbody"><iframe title="Thaniya Engine Edu" src="${LEARN_URL}${learn.goHash||''}"></iframe></div><div class="lgrip" aria-hidden="true"></div>`;
   document.body.appendChild(e);learn.el=e;learn.fr=e.querySelector('iframe');
   const head=e.querySelector('.lhead'),grip=e.querySelector('.lgrip');
   e.addEventListener('click',ev=>{
@@ -9475,10 +9492,94 @@ function learnOpen(){
   if(learn.el){learnMin(false);try{learn.fr.focus()}catch(e){}return}
   let r=null;try{r=JSON.parse(localStorage.getItem(LEARN_KEY))}catch(e){}
   if(!(r&&[r.x,r.y,r.w,r.h].every(Number.isFinite)))r=learnDefRect();
-  learn.rect=learnClamp(r);learnBuild();learnApply();syncLearnBtn();
+  /* 열 때마다 화면 가운데에 (크기는 마지막에 쓰던 대로) */
+  learnClamp(r);r.x=Math.round((innerWidth-r.w)/2);r.y=Math.round((innerHeight-r.h)/2);
+  learn.rect=learnClamp(r);learnBuild();learn.goHash='';learnApply();syncLearnBtn();
 }
 function learnToggle(){if(!learn.el||learn.min)learnOpen();else learnClose()}
 document.getElementById('bLearn').onclick=learnToggle;
+
+/* ===================== 창별 학습 =====================
+   창 머리글의 「학습」 버튼: 그 창과 관련된 레슨으로 학습 창을 바로 열어 줍니다 (레슨이 둘 이상이면 고르기).
+   상황별 안내: 주인공 스크립트를 만들었을 때 · 처음 Debug.Log가 콘솔에 찍힐 때 · 애니메이터/애니메이션 탭을 처음 열 때 (각각 한 번만).
+   새 레슨을 만들면 LEARN_LESSONS(해시 → 제목)와 LEARN_PANEL(창 → 해시들)에 한 줄만 더하면 됩니다. */
+const LEARN_LESSONS={'lesson-1':'타일맵 · 게임 오브젝트 · UI','lesson-2':'콘솔 출력','lesson-3':'컴포넌트 활용','lesson-4':'변수 · 캐릭터 · 아이템 · UI','lesson-5':'주인공 스크립트 만들기','lesson-6':'애니메이션 다루기','lesson-7':'특수 타일 (룰 · 애니메이션)'};
+const LEARN_PANEL={hier:['lesson-1'],insp:['lesson-3','lesson-4'],console:['lesson-2'],script:['lesson-2','lesson-5'],palette:['lesson-1','lesson-7'],animator:['lesson-6'],anim:['lesson-6']};
+const LEARN_NUDGES={
+  console:{h:'lesson-2',t:'콘솔 출력 배우기',d:'Debug.Log로 콘솔에 값을 찍어 보는 방법을 연습해 볼까요?'},
+  anim:{h:'lesson-6',t:'애니메이션 다루기 배우기',d:'애니메이터의 상태 · 전환과 애니메이션 클립을 직접 만져 보며 익혀요.'},
+  hero:{h:'lesson-5',t:'주인공 스크립트 만들기 배우기',d:'키 입력으로 주인공을 움직이는 이동 스크립트를 처음부터 만들어 봐요.'}
+};
+/* 레슨 소개 창: 간단한 내용을 보여 주고 「배우기」를 누르면 학습 창이 그 레슨으로 열립니다 */
+const LEARN_LV=['','입문','초급','중급'];
+const LEARN_INFO={
+  'lesson-1':{lv:1,s:'타일맵으로 바닥과 벽을 칠하고, 콜라이더로 막을 곳을 정하고, 게임 오브젝트와 UI 텍스트 · 버튼을 다뤄요.',kw:['타일맵','콜라이더','UI 텍스트'],steps:['타일맵 칠하기','콜라이더 타일맵으로 막기','비밀 통로 만들기','게임 오브젝트 만들고 정리하기','박스 콜라이더 2D로 막기','트리거로 출구 만들기','UI 텍스트로 체력 보여 주기','UI 버튼 달기']},
+  'lesson-2':{lv:1,s:'콘솔은 프로그램이 개발자에게 말을 거는 창이에요. Debug.Log로 값을 찍어 보면서 코드가 제대로 움직이는지 확인해요.',kw:['Debug.Log','콘솔','Start()'],steps:['인사 한 줄 출력하기','변수 값 출력하기','여러 줄 출력하기','경고와 오류 구분하기','계산 결과 출력하기']},
+  'lesson-3':{lv:2,s:'컴포넌트를 꺼내 값을 읽고 바꾸는 법(GetComponent)을 익혀요.',kw:['GetComponent','Light','값 바꾸기'],steps:['내 Transform 꺼내기','다른 오브젝트의 컴포넌트 바꾸기','컴포넌트 켜고 끄기','오브젝트 위치 옮기기','컴포넌트 함께 쓰기']},
+  'lesson-4':{lv:2,s:'변수로 캐릭터와 아이템의 값을 바꾸고, 그 값을 UI 텍스트와 버튼으로 화면에 연결해요.',kw:['변수','public 필드','UI 연결'],steps:['변수로 체력 깎기','한도까지만 회복하기','아이템 수량 바꾸기','아이템이 있을 때만 쓰기','가까운 아이템 줍기','UI 버튼으로 포션 쓰기']},
+  'lesson-5':{lv:3,s:'엔진의 주인공 이동 스크립트(HeroMovement.cs)를 처음부터 끝까지 직접 만들어요.',kw:['Update()','키 입력','Vector2'],steps:['뼈대와 Hero 컴포넌트','Update와 입력 읽기','입력 방향으로 움직이기','멈춤과 바라보는 방향','대각선 속도 맞추기','Shift로 달리기','인스펙터 정리하고 완성']},
+  'lesson-6':{lv:2,s:'애니메이터 창에서 상태 · 전환 · 파라미터를, 애니메이션 창에서 클립 · 키를 다루고, 새 동작을 만들어 스크립트로 발동해요.',kw:['애니메이터','애니메이션 클립','SetTrigger'],steps:['애니메이터 창 둘러보기','플레이하며 상태 바뀌는 것 보기','클립 고치기 (애니메이션 창)','새 클립 만들기 (깡충)','상태와 전환 연결하기','스크립트로 깡충 (SetTrigger)']},
+  'lesson-7':{lv:2,s:'룰 타일로 가장자리가 저절로 맞춰지는 지형을, 애니메이션 타일로 움직이는 물을 만들어요.',kw:['룰 타일','애니메이션 타일','타일 팔레트'],steps:['룰 타일 만들기','룰 타일 칠하기','규칙 추가하기 (섬)','애니메이션 타일 (물)']}
+};
+function learnIntro(h){
+  const I=LEARN_INFO[h];if(!I){learnGo(h);return}
+  const body=`<div class="linfo"><p class="li-s">${esc(_t(I.s))}</p>`+
+    `<div class="li-m"><span class="li-lv">${esc(_t('난이도'))} ${esc(_t(LEARN_LV[I.lv]))}</span>${I.kw.map(k=>`<span class="li-k">#${esc(_t(k))}</span>`).join('')}</div>`+
+    `<div class="li-h">${esc(_t('이 레슨에서 하는 것'))}</div><ol>${I.steps.map(x=>`<li>${esc(_t(x))}</li>`).join('')}</ol></div>`;
+  openModal(_t(LEARN_LESSONS[h]||h),body,[{t:_t('닫기')},{t:_t('배우기'),cls:'pri',fn:()=>{learnGo(h)}}]);
+}
+/* 학습 창을 특정 레슨으로 열기 (이미 열려 있으면 그 레슨으로 이동, 새 창으로 꺼내 둔 상태면 그 창을 이동) */
+function learnGo(h){
+  const hs=h?'#'+h:'';
+  if(learn.pop&&!learn.pop.closed){try{learn.pop.location.hash=hs;learn.pop.focus();return}catch(e){}}
+  if(!learn.el){learn.goHash=hs;learnOpen();return}
+  learnMin(false);
+  try{learn.fr.contentWindow.location.hash=hs}catch(e){learn.fr.src=LEARN_URL+hs}
+}
+function learnBtnSync(){
+  Object.entries(panelEl).forEach(([id,el])=>{
+    const b=el.querySelector('.plearn'),hs=LEARN_PANEL[id];if(!b||!hs)return;
+    const tt=hs.length===1?_t('「{t}」 학습하기',{t:_t(LEARN_LESSONS[hs[0]])}):_t('이 창과 관련된 학습');
+    b.querySelector('span').textContent=_t('학습');b.title=tt;b.setAttribute('aria-label',tt);
+  });
+}
+Object.entries(panelEl).forEach(([id,el])=>{
+  const hs=LEARN_PANEL[id],pp=el.querySelector('.ppop');if(!hs||!pp||el.querySelector('.plearn'))return;
+  const b=document.createElement('button');b.type='button';b.className='plearn';b.setAttribute('data-menu','');
+  b.innerHTML=ico('learn')+'<span></span>';
+  b.addEventListener('click',ev=>{
+    ev.stopPropagation();
+    if(hs.length===1)learnIntro(hs[0]);
+    else showMenu(b,hs.map(h=>({label:_t(LEARN_LESSONS[h]),fn:()=>learnIntro(h)})),true);
+  });
+  pp.before(b);
+});
+learnBtnSync();
+if(window.TI18N)TI18N.onChange(learnBtnSync);
+
+/* 상황별 안내: 오른쪽 아래가 아니라 왼쪽 아래(화면 축소된 학습 창 위)에 잠깐 떠서 「학습하기」를 누르면 바로 그 레슨이 열립니다 */
+const LEARN_NUDGE_KEY='thaniya.learnnudge.v1';
+let nudgeSeen={},nudgeEl=null,nudgeT=0;
+try{nudgeSeen=JSON.parse(localStorage.getItem(LEARN_NUDGE_KEY))||{}}catch(e){}
+function nudgeHide(){clearTimeout(nudgeT);if(nudgeEl)nudgeEl.classList.remove('on')}
+function nudgeLater(ms){clearTimeout(nudgeT);nudgeT=setTimeout(nudgeHide,ms)}
+function learnNudge(k){
+  const n=LEARN_NUDGES[k];if(!n||nudgeSeen[k]||(learn.el&&!learn.min)||(learn.pop&&!learn.pop.closed))return;
+  nudgeSeen[k]=1;try{localStorage.setItem(LEARN_NUDGE_KEY,JSON.stringify(nudgeSeen))}catch(e){}
+  if(!nudgeEl){
+    nudgeEl=document.createElement('div');nudgeEl.className='lnudge';nudgeEl.setAttribute('role','status');document.body.appendChild(nudgeEl);
+    nudgeEl.addEventListener('click',ev=>{const a=ev.target.closest('[data-a]');if(!a)return;nudgeHide();if(a.dataset.a==='go')learnGo(nudgeEl.dataset.h)});
+    nudgeEl.addEventListener('pointerenter',()=>clearTimeout(nudgeT));
+    nudgeEl.addEventListener('pointerleave',()=>nudgeLater(6000));
+  }
+  nudgeEl.dataset.h=n.h;
+  nudgeEl.innerHTML=ico('learn')+`<div><div class="ln-t">${esc(_t(n.t))}</div><div class="ln-d">${esc(_t(n.d))}</div><div class="ln-b"><button type="button" class="btn sm pri" data-a="go">${esc(_t('학습하기'))}</button><button type="button" class="btn sm" data-a="x">${esc(_t('나중에'))}</button></div></div>`;
+  requestAnimationFrame(()=>nudgeEl.classList.add('on'));nudgeLater(14000);
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('.ptabbtn');
+  if(b&&(b.dataset.id==='animator'||b.dataset.id==='anim'))setTimeout(()=>learnNudge('anim'),250);
+});
 addEventListener('resize',()=>{if(learn.el&&!learnIsFull()){learnClamp(learn.rect);learnApply()}});
 
 /* ===================== 언어 바꾸기 (설정 > 일반 > 언어 · 다른 페이지에서 바꿔도 따라감) ===================== */

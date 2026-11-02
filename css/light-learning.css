@@ -304,6 +304,9 @@ html[data-theme="light"] .home::before{background:radial-gradient(440px 440px at
   radial-gradient(440px 440px at 96% 100%,rgba(255,110,140,.26),transparent 70%)}
 html[data-theme="light"] .home .top{background:rgba(228,230,235,0.38);border-bottom-color:rgba(0,0,0,0.08)}
 html[data-theme="light"] .hero p{color:rgba(40,40,83,0.62)}
+html[data-theme="light"] .lvb{border:1px solid rgba(0,0,0,0.18);background:rgba(0,0,0,0.05);color:var(--tx)}
+html[data-theme="light"] .lvb:hover{background:rgba(0,0,0,0.12);border-color:rgba(0,0,0,0.34)}
+html[data-theme="light"] .lvb[aria-pressed="true"]{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);border-color:transparent;color:#1a1400}
 html[data-theme="light"] .card{color:var(--tx);background:linear-gradient(155deg,rgba(0,0,0,0.17),rgba(0,0,0,0.06) 42%,rgba(0,0,0,0.09));border:1px solid rgba(0,0,0,0.2);box-shadow:inset 0 1px 0 rgba(255,255,255,0.4),inset 0 0 0 .5px rgba(255,255,255,0.08),0 18px 40px -12px rgba(0,0,0,0.16)}
 html[data-theme="light"] .card::before{background:radial-gradient(90% 55% at 18% 0%,rgba(0,0,0,0.16),transparent 70%)}
 html[data-theme="light"] .card:hover{border-color:rgba(0,0,0,0.34);box-shadow:inset 0 1px 0 rgba(255,255,255,0.5),inset 0 0 0 .5px rgba(255,255,255,0.1),0 24px 48px -14px rgba(0,0,0,0.176)}
@@ -313,6 +316,8 @@ html[data-theme="light"] .card .state{color:rgba(40,40,83,0.55)}
 html[data-theme="light"] .card .state.done{color:#1a894b}
 html[data-theme="light"] .card p{color:rgba(40,40,83,0.68)}
 html[data-theme="light"] .card pre{background:rgba(255,255,255,0.26);border:1px solid rgba(0,0,0,0.1);box-shadow:inset 0 1px 2px rgba(0,0,0,0.08);color:#151519}
+html[data-theme="light"] .dots i{background:currentColor}
+html[data-theme="light"] .kws li{color:rgba(40,40,83,0.8);background:rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.12)}
 html[data-theme="light"] .card .cbar{background:rgba(0,0,0,0.16)}
 html[data-theme="light"] .card .cbar i{background:linear-gradient(90deg,#f6cd2a,#ffdf6b)}
 html[data-theme="light"] .card .cnum{color:rgba(40,40,83,0.55)}
@@ -443,6 +448,48 @@ html[data-theme="light"] .wsz.drag::after{background:var(--accent)}
 html[data-theme="light"] .an-pn .agrz::after{background:var(--line2)}
 html[data-theme="light"] .an-pn .agrz:hover::after,
 html[data-theme="light"] .an-pn .agrz.drag::after{background:var(--accent)}
+html[data-theme="light"] .stpal{border-bottom:1px solid var(--line);background:var(--panel)}
+html[data-theme="light"] .stp-h{color:var(--mut)}
+html[data-theme="light"] .stp-h b{color:var(--tx)}
+html[data-theme="light"] .stseg{border:1px solid var(--line)}
+html[data-theme="light"] .stseg button{border:0;background:none;color:var(--mut)}
+html[data-theme="light"] .stseg button[aria-pressed="true"]{background:var(--y);color:var(--y-fg)}
+html[data-theme="light"] .stsi{border:1px solid var(--line);background:var(--raised);color:var(--tx)}
+html[data-theme="light"] .stsi:hover{border-color:var(--y)}
+html[data-theme="light"] .stsi.on{border-color:var(--y);background:rgba(246,205,42,.12)}
+html[data-theme="light"] .stsi canvas{background:#eaecf0}
+html[data-theme="light"] .sttag{background:rgba(61,139,217,.18);color:#0a4885}
+html[data-theme="light"] .sttag.anim{background:rgba(180,106,208,.18);color:#501566}
+html[data-theme="light"] .sttool{border:1px solid var(--line);background:var(--raised);color:var(--mut)}
+html[data-theme="light"] .sttool.on{border-color:var(--y);color:var(--tx);background:rgba(246,205,42,.12)}
+html[data-theme="light"] .stbadge{background:#3d8bd9;color:#fff}
+html[data-theme="light"] .stbadge.anim{background:#b46ad0}
+html[data-theme="light"] .stbar{border:1px solid var(--line);color:var(--mut)}
+html[data-theme="light"] .stbar.dirty{border-color:var(--y);color:var(--y-tx,var(--y))}
+html[data-theme="light"] .stsec{border:1px solid var(--line);background:rgba(0,0,0,0.02)}
+html[data-theme="light"] .sthd small{color:var(--mut)}
+html[data-theme="light"] .strow{color:var(--mut)}
+html[data-theme="light"] .strow small{color:var(--mut)}
+html[data-theme="light"] .stslot{border:1px solid var(--line);background:repeating-conic-gradient(rgba(115,115,127,0.16) 0 25%,transparent 0 50%) 0 0/8px 8px,#eaecf0;color:var(--mut)}
+html[data-theme="light"] .stslot:hover{border-color:var(--y)}
+html[data-theme="light"] .strl{border:1px solid var(--line)}
+html[data-theme="light"] .strh{border-bottom:1px solid var(--line)}
+html[data-theme="light"] .strl .ib{border:0;background:none;color:var(--mut)}
+html[data-theme="light"] .strl .ib:hover:not(:disabled){background:var(--raised);color:var(--tx)}
+html[data-theme="light"] .stn{border:1px solid var(--line);background:var(--raised);color:var(--tx)}
+html[data-theme="light"] .stn:hover{border-color:var(--y)}
+html[data-theme="light"] .stn.s1{background:rgba(92,192,138,.2);border-color:rgba(92,192,138,.75);color:#2c784f}
+html[data-theme="light"] .stn.s2{background:rgba(234,103,115,.18);border-color:rgba(234,103,115,.75);color:#92111d}
+html[data-theme="light"] .stc{background:#eaecf0}
+html[data-theme="light"] .stins .note{color:var(--mut)}
+html[data-theme="light"] .stins .note .g{color:#2c784f}
+html[data-theme="light"] .stins .note .r{color:#92111d}
+html[data-theme="light"] .stfi{color:var(--mut)}
+html[data-theme="light"] .stfi .ib{border:0;background:none;color:var(--mut)}
+html[data-theme="light"] .stpv{background:#eaecf0}
+html[data-theme="light"] .stselpv{background:#eaecf0}
+html[data-theme="light"] .stinfo{color:var(--tx)}
+html[data-theme="light"] .stmk .btn small{color:var(--mut)}
 
 /* ===== 수동 보정 ===== */
 /* 학습 (learning.html) */

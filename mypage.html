@@ -28,19 +28,20 @@ button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
 .wrap{width:min(1180px,100% - 40px);margin-inline:auto}
 svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+header svg.i{width:16px;height:16px}
 
 /* 헤더 (index와 같은 모양) */
 header{position:sticky;top:0;z-index:20;background:rgba(11,11,14,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.hbar{display:flex;align-items:center;justify-content:space-between;min-height:60px;gap:8px}
-.hr{display:flex;align-items:center;gap:4px}
-header a,header button.hb{text-decoration:none;color:var(--mute);padding:8px 18px;border-radius:999px;font-size:15px;font-weight:500;white-space:nowrap;transition:color .15s,background .15s;border:0;background:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.hbar{display:flex;align-items:center;justify-content:space-between;min-height:50px;gap:8px}
+.hr{display:flex;align-items:center;gap:4px;--tl-h:30px}
+header a,header button.hb{text-decoration:none;color:var(--mute);padding:6px 14px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap;transition:color .15s,background .15s;border:0;background:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 header a:hover,header button.hb:hover{color:var(--fg);background:rgba(255,255,255,.07)}
 header .tl{margin-left:6px}
 header .cta{color:var(--accent-fg)!important;background:var(--accent)!important;font-weight:600!important;margin-left:6px}
 header .cta:hover{background:#f5cc2a!important}
-header a.brand{display:inline-flex;align-items:center;gap:10px;padding:6px 12px 6px 0;color:var(--fg);font-weight:700;font-size:16px;letter-spacing:-.01em}
+header a.brand{display:inline-flex;align-items:center;gap:10px;padding:4px 10px 4px 0;color:var(--fg);font-weight:700;font-size:15px;letter-spacing:-.01em}
 header a.brand:hover{background:none;color:var(--accent)}
-.brand img{display:block;width:36px;height:36px;flex:none}
+.brand img{display:block;width:30px;height:30px;flex:none}
 
 /* 제목 */
 main{flex:1}
@@ -176,9 +177,9 @@ dialog.det{width:min(820px,calc(100% - 32px));padding:0;overflow:hidden}
   .tools,.search,.search input{width:100%}
   .search{flex:1 1 100%}
   select{flex:1}
-  header a,header button.hb{padding:8px 10px;font-size:14px}
+  header a,header button.hb{padding:6px 9px;font-size:13px}
   .brand span{display:none}
-  .brand img{width:30px;height:30px}
+  .brand img{width:26px;height:26px}
   #hNew svg{display:none}
   .grid{grid-template-columns:1fr}
   .newc{min-height:150px}
