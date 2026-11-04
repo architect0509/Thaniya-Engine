@@ -756,3 +756,14 @@ html[data-theme="light"] .lbody,html[data-theme="light"] .lbody iframe,html[data
 html[data-theme="light"] .lgrip::before{border-color:rgba(0,0,0,.3)}
 html[data-theme="light"] .playlock{background:rgba(214,48,64,.1);border-color:rgba(214,48,64,.4);color:#b4222f}
 html[data-theme="light"]{--good-tx:#14804a;--warnc-tx:#946400}
+
+/* ===== 학습 창 모양의 직접 그리기 · 에셋 스토어 · UI 빌더 창 (2026-11-05) ===== */
+html[data-theme="light"] .xwin .lbody{background:#eff0f3}
+html[data-theme="light"] #pmo .lbody iframe{background:#fff}
+html[data-theme="light"] .xwin .pmst{color:var(--ok-tx,var(--ok))}
+html[data-theme="light"] .lhead .pmedit{background:rgba(233,189,12,.16);color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .xwin .lhead .xbtn{color:var(--fg)}
+html[data-theme="light"] .xwin .lhead .xbtn.pri{color:var(--sel-fg)}
+html[data-theme="light"] .panel.uibwin>.phead .ptab{color:var(--fg)}
+html[data-theme="light"] .panel.uibwin>.phead .ptab .ic,html[data-theme="light"] .panel.uibwin>.phead .ptab .ticon{color:var(--accent-tx,var(--accent))}
+html[data-theme="light"] .panel.uibwin>.phead .pclose:hover{background:var(--danger);color:#1a0004}

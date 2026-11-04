@@ -755,6 +755,81 @@ code.rc-sig{display:block;margin:5px 0 0;padding:0;border:0;background:none;font
 .rv-dlg::backdrop{background:rgba(8,9,12,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 html[data-theme="light"] .rv-dlg::backdrop{background:rgba(30,34,46,.38)}
 html[data-theme="light"] .rv-dlg{box-shadow:0 30px 80px rgba(20,24,40,.25)}
+
+/* ===== 레슨 미리 살펴보기 (#about-lesson-N) · 블로그 글 ===== */
+.pv{min-height:100vh}
+.pv .top{position:sticky;top:0;z-index:5}
+.pv .pv-start-t{margin-left:auto;height:28px;padding:0 14px;border:0;border-radius:999px;background:linear-gradient(180deg,#f6cd2a,#e9bd0c);color:#1a1400;font-weight:700;font-size:12.5px;box-shadow:0 4px 14px rgba(233,189,12,.28)}
+.pv-art{max-width:780px;margin:0 auto;padding:40px 24px 80px;font-size:16px;line-height:1.85}
+.pv-eb{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:12.5px;color:var(--mut)}
+.pv-eb .chip{display:inline-flex;align-items:center;gap:8px;height:24px;padding:0 11px;border-radius:999px;background:rgba(246,205,42,.16);box-shadow:inset 0 0 0 1px rgba(246,205,42,.3);color:var(--y);font-size:12px;font-weight:600}
+html[data-theme="light"] .pv-eb .chip{color:#8a6a00}
+html[data-theme="light"] .pv-sec h2 .n,html[data-theme="light"] .pv-toc li.next::after{color:#8a6a00}
+html[data-theme="light"] .pv-fig .shot{box-shadow:0 18px 40px -20px rgba(20,24,40,.35)}
+.pv-eb .sep{opacity:.4}
+.pv-eb .ok{color:var(--ok)}
+.pv-art h1{margin:14px 0 14px;font-size:clamp(28px,4.4vw,40px);line-height:1.25;letter-spacing:-.02em}
+.pv-lead{margin:0 0 18px;font-size:18px;line-height:1.8;color:var(--tx);opacity:.88}
+.pv-art .kws{margin:0 0 28px}
+.pv-cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 18px;border:1px solid var(--line);border-radius:18px;background:radial-gradient(120% 140% at 0 0,rgba(246,205,42,.12),transparent 60%),var(--panel)}
+.pv-cta .pv-pr{flex:1;min-width:180px}
+.pv-cta .pv-pr b{display:block;font-size:14px}
+.pv-cta .pv-pr span{font-size:12.5px;color:var(--mut)}
+.pv-bar{height:5px;border-radius:9px;background:rgba(127,127,140,.22);overflow:hidden;margin-top:8px}.pv-bar i{display:block;height:100%;background:var(--y);border-radius:inherit}
+.pv-go{height:42px;padding:0 22px;border:0;border-radius:999px;background:linear-gradient(180deg,#f6cd2a,#e9bd0c);color:#1a1400;font-weight:700;font-size:15px;box-shadow:0 6px 20px rgba(233,189,12,.32);display:inline-flex;align-items:center;gap:8px}
+.pv-go:hover{filter:brightness(1.05)}.pv-go:active{transform:scale(.98)}
+.pv-toc{margin:34px 0 8px;padding:18px 20px;border-left:3px solid var(--y);background:var(--panel);border-radius:0 14px 14px 0}
+.pv-toc h2{margin:0 0 8px;font-size:13px;letter-spacing:.04em;color:var(--mut);font-weight:600}
+.pv-toc ol{margin:0;padding-left:22px;font-size:14.5px;line-height:1.9}
+.pv-toc li.done{color:var(--mut)}.pv-toc li.done::after{content:" ✓";color:var(--ok)}
+.pv-toc li.next{font-weight:700}.pv-toc li.next::after{content:"  ← 여기부터";font-weight:500;font-size:12px;color:var(--y)}
+.pv-sec{margin-top:44px}
+.pv-sec h2{margin:0 0 12px;font-size:23px;line-height:1.4;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px}
+.pv-sec h2 .n{font:600 13px var(--m);color:var(--y);flex:none}
+.pv-sec p{margin:0 0 14px}
+.pv-art code{font-size:.86em;overflow-wrap:anywhere}
+.pv-fig{margin:22px 0 22px;padding:0}
+.pv-fig .shot{display:block;width:100%;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--code);cursor:zoom-in;box-shadow:0 18px 44px -18px rgba(0,0,0,.6)}
+.pv-fig img{display:block;width:100%;height:auto}
+.pv-fig figcaption{margin-top:9px;font-size:13px;line-height:1.6;color:var(--mut);text-align:center}
+.pv-code{margin:20px 0;border:1px solid var(--line);border-radius:14px;background:var(--code);overflow:hidden}
+.pv-code .ch{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--line);font:500 12px var(--m);color:var(--mut)}
+.pv-code .ch i{width:8px;height:8px;border-radius:50%;background:var(--y);opacity:.7}
+.pv-code .ch button{margin-left:auto;height:22px;padding:0 9px;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--mut);font:500 11.5px var(--f)}
+.pv-code .ch button:hover{color:var(--tx)}
+.pv-code pre{margin:0;padding:14px 16px;font:13.5px/1.7 var(--m);overflow:auto;white-space:pre;tab-size:4}
+.pv-code.long pre{max-height:420px}
+.pv-terms{margin-top:52px}
+.pv-terms h2{margin:0 0 4px;font-size:23px}
+.pv-terms>p{margin:0 0 16px;color:var(--mut);font-size:14px}
+.pv-terms dl{margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.pv-terms dl>div{padding:13px 15px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.pv-terms dt{font-weight:700;font-size:14.5px;margin-bottom:3px}
+.pv-terms dd{margin:0;font-size:13.5px;line-height:1.65;color:var(--mut)}
+.pv-end{margin-top:52px}
+.pv-nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px;font-size:13.5px}
+.pv-nav a{color:var(--mut);text-decoration:none;padding:6px 2px}.pv-nav a:hover{color:var(--tx)}
+.pv-zoom{width:min(1400px,96vw);max-height:94vh;margin:auto;padding:0;border:1px solid var(--line);border-radius:14px;background:var(--code);overflow:auto;cursor:zoom-out}
+.pv-zoom img{display:block;width:100%;height:auto}
+.pv-zoom::backdrop{background:rgba(8,9,12,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+@media (max-width:640px){.pv-art{padding:26px 16px 64px;font-size:15.5px}.pv-lead{font-size:16.5px}.pv-sec h2{font-size:20px}.pv .pv-start-t{display:none}}
+/* 자체 확인창 (마치지 않은 문제에서 나갈 때) */
+.lc-dlg{width:min(400px,calc(100vw - 32px));margin:auto;padding:0;border:1px solid var(--line);border-radius:20px;color:var(--tx);background:radial-gradient(120% 80% at 0 0,rgba(246,205,42,.14),transparent 60%),var(--panel);box-shadow:0 30px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);overflow:hidden}
+.lc-dlg[open]{animation:rvIn .2s cubic-bezier(.2,.8,.2,1)}
+.lc-dlg::backdrop{background:rgba(8,9,12,.55);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+html[data-theme="light"] .lc-dlg::backdrop{background:rgba(30,34,46,.34)}
+html[data-theme="light"] .lc-dlg{box-shadow:0 30px 80px rgba(20,24,40,.25)}
+.lc-in{padding:22px 22px 18px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.lc-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(246,205,42,.16);color:var(--y);margin-bottom:6px}
+.lc-ic svg{width:22px;height:22px}
+.lc-t{margin:0;font-size:16px;font-weight:700;line-height:1.45}
+.lc-s{margin:0;font-size:13px;color:var(--mut);line-height:1.55}
+.lc-f{display:flex;gap:8px;padding:0 18px 18px}
+.lc-f button{flex:1;height:38px;border-radius:12px;font:600 13.5px inherit;font-family:inherit;cursor:pointer;border:1px solid var(--line);background:rgba(127,127,140,.12);color:var(--tx)}
+.lc-f button:hover{background:rgba(127,127,140,.2)}
+.lc-f .lc-ok{border:0;background:linear-gradient(180deg,#f6cd2a,#e9bd0c);color:#1a1400;box-shadow:0 4px 16px rgba(233,189,12,.3)}
+.lc-f .lc-ok:hover{filter:brightness(1.05);background:linear-gradient(180deg,#f6cd2a,#e9bd0c)}
+.lc-f button:focus-visible{outline:2px solid var(--y);outline-offset:2px}
 @keyframes rvIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
 .rv-mh{flex:none;padding:18px 22px 12px}
 .rv-mh h2{margin:10px 0 0;font-size:21px;line-height:1.35;letter-spacing:-.02em}
@@ -925,6 +1000,35 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
 .stmk .btn{height:auto;min-height:46px;padding:7px 9px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
 .stbar .btn:disabled{opacity:.4;cursor:default}
 .stmk .btn small{font-size:10.5px;color:var(--mut);font-weight:400}
+/* ---- 레슨 9: UI 빌더 실습장 (위 = 엔진과 같은 UI 빌더 · 아래 오른쪽 = 마을 씬 UI · 게임 화면) ---- */
+.ws.ub9{--panel:var(--pbg);--win:#0b0b0e;--warn:var(--warnc);--ok:var(--good);--shadow:0 18px 48px rgba(0,0,0,.6);--f-mono:var(--fm)}
+html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.18)}
+.ws.ub9 #views,.ws.ub9 #sTools,.ws.ub9 .view-pn .vtabs,.ws.ub9 .view-pn .vtitle,.ws.ub9 #playBtn,.ws.ub9 .hier-pn,.ws.ub9 .insp-pn,.ws.ub9 .con-pn,.ws.ub9 .wsz{display:none!important}
+.ubtitle{display:none;font-size:12px;font-weight:600}.ws.ub9 .ubtitle{display:inline-flex;align-items:center;gap:6px}
+.ubview{flex:1;min-height:0;display:flex;flex-direction:column}
+.ubview[hidden]{display:none}
+.ubview>.panel{flex:1;min-height:0;display:flex;flex-direction:column}
+.ub-pn{grid-area:ub}
+.ubmain{flex:1;min-height:0;display:grid;grid-template-columns:minmax(170px,38%) minmax(0,1fr)}
+.ubside{min-height:0;overflow:auto;border-right:1px solid var(--line);padding:8px}
+.ubsh{font-size:11px;font-weight:600;color:var(--mute);margin:2px 2px 6px;display:flex;gap:6px;align-items:center}
+.ubrow{display:flex;align-items:center;gap:6px;width:100%;height:28px;padding:0 8px;border:0;border-radius:8px;background:none;color:var(--fg);font:inherit;font-size:12px;text-align:left;cursor:pointer}
+.ubrow:hover{background:var(--hover)}.ubrow.on{background:rgba(246,205,42,.14)}
+.ubrow .ic{color:var(--warnc,#ffd24a);flex:none}.ubrow span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ubrow small{color:var(--mute)}
+.ubrow.sub{height:22px;padding-left:28px;font-size:11.5px;color:var(--mute);cursor:default}.ubrow.sub:hover{background:none}
+.ubcard{margin:8px 2px 2px;padding:10px;border:1px solid var(--line2);border-radius:12px;background:var(--field);display:flex;flex-direction:column;gap:6px}
+.ubcard .btn{height:32px;font-weight:700;background:var(--sel);color:var(--sel-fg);border-color:transparent}
+.ubcard p{margin:0;font-size:11px;color:var(--mute);line-height:1.5}
+.ubempty{font-size:11.5px;color:var(--mute);line-height:1.5;padding:4px 2px}
+.ubgame{min-height:0;min-width:0;display:grid;place-items:center;padding:8px;position:relative}
+.ubgame-in{position:relative;border-radius:10px;overflow:hidden;background:#101218;box-shadow:0 0 0 1px var(--line2)}
+.ubgame-in canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ubgh{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:3;font-size:11px;color:#fff;background:rgba(0,0,0,.55);padding:3px 10px;border-radius:999px;white-space:nowrap;pointer-events:none}
+@media (min-width:1181px) and (min-height:620px){
+  #lessonView>.ws.ub9{grid-template-areas:"brief view view view view" "brief code code ub ub";--rt:1.45fr;--rb:.9fr}
+}
+@media (max-width:1180px){.ws.ub9{grid-template-areas:"brief view" "brief code" "brief ub"}.ws.ub9 .view-pn{min-height:560px}.ws.ub9 .ub-pn{min-height:300px}}
+@media (max-width:860px){.ws.ub9{grid-template-areas:"brief" "code" "view" "ub"}.ubmain{grid-template-columns:1fr}.ubside{border-right:0;border-bottom:1px solid var(--line)}}
 /* ---- 레슨 8: 씬 · 매니저 실습장 (씬 뷰 자리) · 계층 구조 줄 버튼 ---- */
 .ws.sm8 #views,.ws.sm8 #sTools,.ws.sm8 .view-pn .vtabs,.ws.sm8 .view-pn .vtitle{display:none!important}
 .smtitle{display:none;font-size:12px;font-weight:600}.ws.sm8 .smtitle{display:inline-flex;align-items:center;gap:6px}
@@ -996,6 +1100,12 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
 <div class="cards" id="cards"></div>
 <div class="rvwrap" id="rvList" hidden></div>
 <dialog class="rv-dlg" id="rvDlg" aria-labelledby="rvMt"></dialog>
+<dialog class="lc-dlg" id="lcDlg" aria-labelledby="lcT" aria-describedby="lcS"></dialog>
+</div>
+<div id="pvView" class="pv" hidden>
+<header class="top"><button class="back" type="button" id="pvBack" aria-label="레슨 목록으로">← 레슨 목록</button><a class="brand" href="#" id="pvHome" title="학습 메인으로 (레슨 목록)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a><button type="button" class="pv-start-t" id="pvStartT">시작하기</button></header>
+<article class="pv-art" id="pvArt"></article>
+<dialog class="pv-zoom" id="pvZoom" aria-label="화면 크게 보기"></dialog>
 </div>
 <div id="lessonView" hidden>
 <header class="top">
@@ -1020,7 +1130,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
     <div class="phead">
       <span class="vtabs" role="tablist" aria-label="뷰 전환"><button class="vtab on" type="button" role="tab" aria-selected="true" data-v="pScene" data-ic="scene">씬</button><button class="vtab" type="button" role="tab" aria-selected="false" data-v="pGame" data-ic="game">게임</button></span>
       <span class="vtitle"><span class="vtab on" data-ic="scene">씬</span><span class="vtab on" data-ic="game">게임</span></span>
-      <span class="sttitle">특수 타일 실습장</span><span class="smtitle">씬 · 매니저 실습장</span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
+      <span class="sttitle">특수 타일 실습장</span><span class="smtitle">씬 · 매니저 실습장</span><span class="ubtitle">UI 빌더 실습장 · 엔진과 같은 창</span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
     </div>
     <div class="ptool stools" id="sTools" hidden>
       <span class="sg" role="group" aria-label="칠할 곳"><b>칠할 곳</b><button type="button" data-layer="t">타일맵 1</button><button type="button" data-layer="c">콜라이더</button></span>
@@ -1039,6 +1149,7 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
       <div class="vp" id="pGame"><span class="phint" id="pHint" hidden>방향키 또는 WASD로 주인공 이동 · Esc 정지</span><canvas id="cGame" aria-label="게임 뷰: 카메라에 보이는 화면"></canvas><span class="vl">게임 뷰</span></div>
     </div>
     <div class="smview" id="smView" hidden><div class="smbar" id="smBar"></div><div class="smmain"><div class="smstage" id="smStage"><div class="smcvw"><canvas id="smCv" aria-label="씬 그림: 플레이 중에는 지금 씬을 보여 줘요"></canvas></div><div class="smacts" id="smActs" hidden></div></div><aside class="smside" id="smSide" aria-live="polite"></aside></div></div>
+    <div class="ubview" id="ubView" hidden><div class="panel" data-id="uib" id="ubPanel"><div class="pbody"><div id="uibBox"></div></div></div></div>
     <div class="stview" id="stView" hidden><div class="stpal" id="stPal"></div><div class="stgrid"><canvas id="stCv" aria-label="특수 타일을 칠해 보는 격자"></canvas></div></div>
   </section>
 
@@ -1070,6 +1181,11 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
     <div class="phead"><button class="pcol" type="button" aria-label="접기/펼치기"></button><span class="ptab" data-ic="term">콘솔</span><span class="spacer"></span></div>
     <div class="ptool"><button class="btn sm" id="conClear" type="button">지우기</button><span class="spacer"></span><button class="cf" id="conI" type="button" data-k="info" title="일반 로그"><i class="d info"></i><b>0</b></button><button class="cf" id="conW" type="button" data-k="warn" title="경고"><i class="d warn"></i><b>0</b></button><button class="cf" id="conE" type="button" data-k="error" title="오류"><i class="d error"></i><b>0</b></button></div>
     <div class="conlist" id="conList"></div>
+  </section>
+
+  <section class="pn ub-pn" id="ubPn" hidden>
+    <div class="phead"><span class="ptab" data-ic="scene">마을 씬 UI · 게임 화면</span><span class="spacer"></span><button class="btn sm pri playbtn" id="ubPlay" type="button">▶ 플레이</button></div>
+    <div class="ubmain"><div class="ubside" id="ubSide" aria-live="polite"></div><div class="ubgame" id="ubGameW"><div class="ubgame-in" id="ubGame"><canvas id="ubCv" aria-label="게임 화면: 마을 위에 저장한 UI 그룹이 떠요"></canvas><span class="ubgh" id="ubGh"></span></div></div></div>
   </section>
 
   <section class="pn hier-pn">
@@ -1130,9 +1246,11 @@ body.wsdrag.v,body.wsdrag.v *{cursor:col-resize!important}body.wsdrag.h,body.wsd
 </main>
 </div>
 
-<script src="script-engine.js?v=20261101g"></script>
-<script src="script-editor.js?v=20261101g"></script>
+<script src="script-engine.js?v=20261104u"></script>
+<script src="script-editor.js?v=20261104y"></script>
 <script src="anim-editor.js?v=20261102a"></script>
+<script src="ui-builder.js?v=20261105d"></script>
+<script src="learn-preview.js?v=20261105a"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
@@ -2467,6 +2585,49 @@ const L8P=[
  hint:'lives--;\nif (lives > 0)\n{\n    Debug.Log("남은 목숨 " + lives);\n}\nelse\n{\n    Debug.Log("게임 오버");\n    lives = 3;\n}\nSceneManager.RestartGame();'}
 ];
 
+const L9={no:9,title:'UI 빌더로 화면 만들기',clear:'통과했어요. 레슨 9 완료! UI 빌더로 메인 화면과 게임 UI를 만들어 마을 씬에 UI 그룹으로 저장하고, 스크립트 없이 버튼 동작만으로 화면을 바꿨어요. 엔진에서는 툴바의 「UI 화면 만들기」나 UI 그룹 인스펙터 맨 위 「UI 빌더로 편집하기」로 똑같이 해요.',
+ lead:'엔진의 UI 빌더로 게임의 첫 화면을 만들어요. 요소를 끌어다 놓고, 저장해서 씬의 UI 그룹으로 넣고, 「게임 시작」을 누르면 메인 화면이 닫히고 게임 UI가 뜨게 해 봐요.'};
+const L9P=[
+{id:'u-main',task:true,ub:{},title:'메인 화면 만들고 저장하기',
+ desc:'<b>UI 빌더</b>는 피그마처럼 요소를 끌어다 놓아 UI를 만드는 창이에요. 위쪽 큰 창이 엔진과 똑같은 UI 빌더예요. 왼쪽 아래 <b>요소</b>에서 텍스트 · 버튼을 캔버스로 끌어다 놓거나 클릭해서 넣고, 오른쪽 <b>인스펙터</b>에서 글자와 모양을 바꿔요. 왼쪽 <b>계층 구조</b> 맨 위 폴더의 이름이 곧 <b>UI 그룹</b> 이름이고, <b>저장</b>하면 고른 씬의 UI 안에 그 그룹으로 들어가요.',
+ goal:'제목 「나의 게임」과 「게임 시작」 버튼이 있는 「메인 화면」을 만들어 마을 씬에 저장하세요.',
+ checks:[
+  {t:'UI 빌더의 <b>요소</b>에서 <b>텍스트</b>를 캔버스로 끌어다 놓기 (클릭해도 돼요)',ok:()=>ubHasText(ubDraft(),'text')||!!ubG('메인 화면')},
+  {t:'텍스트를 고르고 UI 빌더 <b>인스펙터</b>의 글자를 <b>나의 게임</b>으로',ok:()=>ubHasText(ubDraft(),'text','나의 게임')||!!(ubG('메인 화면')&&ubHasText(ubG('메인 화면').uib,'text','나의 게임'))},
+  {t:'<b>버튼</b>을 넣고 글자를 <b>게임 시작</b>으로',ok:()=>!!ubBtn(ubDraft())||!!(ubG('메인 화면')&&ubBtn(ubG('메인 화면').uib))},
+  {t:'UI 빌더 <b>계층 구조</b> 맨 위 폴더를 고르고 이름을 <b>메인 화면</b>으로',ok:()=>ubIs(ubDraft().name,'메인 화면')||!!ubG('메인 화면')},
+  {t:'UI 빌더 위쪽 <b>저장</b> → 「[마을]의 UI에 저장하시겠습니까?」에서 <b>저장</b>',ok:()=>{const g=ubG('메인 화면');return !!(g&&g.uib&&ubBtn(g.uib)&&ubHasText(g.uib,'text','나의 게임'))}}],
+ hint:'글자는 캔버스에서 요소를 고른 뒤 한 번 더 더블클릭해도 바로 고칠 수 있어요.\n저장하면 아래 「마을 › UI」에 메인 화면 그룹이 생겨요. 엔진에서는 계층 구조 › 마을 › UI 안에 다른 그룹과 똑같이 들어가요.'},
+{id:'u-game',task:true,ub:{groups:()=>[ubMainDoc()]},title:'게임 화면 만들고 저장하기',
+ desc:'게임을 하는 동안 보이는 <b>게임 UI</b>(점수 · 체력 같은 HUD)도 UI 빌더로 따로 만들어 <b>다른 UI 그룹</b>으로 저장해요. 그룹마다 따로 열고 닫을 수 있어요. 게임 UI는 게임이 시작될 때 보여야 하니, 처음에는 숨겨 두게 그룹(맨 위 폴더)의 <b>표시</b>를 <b>스크립트·버튼으로 열기</b>로 바꿔요. 요소를 화면 구석에 두려면 인스펙터 <b>앵커</b>로 붙일 곳(오른쪽 위 등)을 정하면 화면 크기가 바뀌어도 그 자리를 지켜요.',
+ goal:'「점수 0」 텍스트와 진행 막대가 있는 「게임 UI」를 만들어, 처음에는 숨겨지게 마을 씬에 저장하세요.',
+ checks:[
+  {t:'빈 UI 빌더에 <b>텍스트</b>를 넣고 글자를 <b>점수 0</b>으로',ok:()=>ubHasText(ubDraft(),'text','점수 0')||!!(ubG('게임 UI')&&ubHasText(ubG('게임 UI').uib,'text','점수 0'))},
+  {t:'<b>진행 막대</b>를 넣기 (체력 막대로 쓸 거예요)',ok:()=>ubNodes(ubDraft()).some(n=>n.type==='progress')||!!(ubG('게임 UI')&&ubNodes(ubG('게임 UI').uib).some(n=>n.type==='progress'))},
+  {t:'UI 빌더 <b>계층 구조</b> 맨 위 폴더 이름을 <b>게임 UI</b>로, <b>인스펙터</b>의 <b>표시</b>를 <b>스크립트·버튼으로 열기</b>로',ok:()=>{const d=ubDraft(),g=ubG('게임 UI');return (ubIs(d.name,'게임 UI')&&d.show==='manual')||!!(g&&g.uib&&g.uib.show==='manual')}},
+  {t:'<b>저장</b> → 아래 <b>마을 › UI</b>에 <b>메인 화면</b>과 <b>게임 UI</b> 두 그룹이 있는지 보기',ok:()=>{const g=ubG('게임 UI');return !!(ubG('메인 화면')&&g&&g.uib&&g.uib.show==='manual'&&ubHasText(g.uib,'text','점수 0'))}},
+  {t:'<b>▶ 플레이</b>로 처음에는 메인 화면만 보이고 게임 UI는 숨겨진 것 보기',ok:c=>c.ev.has('ub:play')&&!!ubG('게임 UI')&&!!(ubG('게임 UI').uib&&ubG('게임 UI').uib.show==='manual')}],
+ hint:'지금 UI 빌더는 비어 있는 새 화면이에요. 여기서 만들어 저장하면 메인 화면과 다른 새 그룹이 생겨요.\n점수를 오른쪽 위에 두려면 텍스트를 고르고 앵커 칸에서 오른쪽 위를 Shift+클릭하세요.'},
+{id:'u-close',task:true,ub:{groups:()=>[ubMainDoc(),ubGameDoc()]},title:'게임 시작을 누르면 화면 닫기',
+ desc:'저장한 그룹은 다른 UI 그룹과 똑같아요. 다시 고칠 때는 그룹을 고르고 <b>UI 빌더로 편집하기</b>를 눌러 UI 빌더로 불러와요. 버튼 인스펙터의 <b>동작</b>에서 「누르면」을 고르면 스크립트 없이도 화면을 닫거나 열 수 있어요.',
+ goal:'메인 화면을 불러와 「게임 시작」 버튼이 이 그룹을 닫게 하고, 플레이해서 눌러 보세요.',
+ checks:[
+  {t:'아래 <b>마을 › UI</b>에서 <b>메인 화면</b> 그룹을 고르고 <b>UI 빌더로 편집하기</b>',ok:c=>[...c.ev].some(e=>e.startsWith('ub:load:')&&ubIs(e.slice(8),'메인 화면'))},
+  {t:'「게임 시작」 버튼을 고르고 UI 빌더 <b>인스펙터</b>의 <b>동작</b> › 누르면 = <b>이 그룹 닫기</b>',ok:()=>{const b=ubBtn(ubDraft())||(ubG('메인 화면')&&ubBtn(ubG('메인 화면').uib));return !!(b&&b.act&&b.act.t==='close')}},
+  {t:'<b>저장</b> (「메인 화면」 그룹에 덮어쓰기)',ok:()=>{const g=ubG('메인 화면'),b=g&&ubBtn(g.uib);return !!(b&&b.act&&b.act.t==='close')}},
+  {t:'아래 게임 화면의 <b>▶ 플레이</b>(또는 UI 빌더의 <b>미리보기</b>) → <b>게임 시작</b>을 눌러 메인 화면이 닫히는 것 보기',ok:c=>c.ev.has('ub:mainclosed')}],
+ hint:'플레이 중에 바꾼 것은 정지하면 처음으로 돌아가요. 다시 보려면 ■ 정지 → ▶ 플레이.\n엔진에서도 UI 그룹을 고르면 인스펙터 맨 위에 「UI 빌더로 편집하기」가 있어요.'},
+{id:'u-hud',task:true,ub:{groups:()=>[ubMainDoc({t:'close'}),ubGameDoc()]},title:'화면이 닫히면 게임 UI 띄우기',
+ desc:'메인 화면이 닫히기만 하면 빈 화면이 남아요. 버튼 동작을 <b>다른 UI 그룹 열기</b>로 바꿔 숨겨 둔 <b>게임 UI</b>를 열고, <b>이 그룹은 닫기</b>를 켜면 게임 UI를 연 다음 메인 화면이 닫혀요. 화면 전환을 스크립트 없이 버튼 하나로 하는 거예요.',
+ goal:'게임 시작 버튼이 메인 화면을 닫고 게임 UI를 열게 하세요.',
+ checks:[
+  {t:'<b>마을 › UI</b>의 <b>메인 화면</b>을 <b>UI 빌더로 편집하기</b>로 불러오기',ok:c=>[...c.ev].some(e=>e.startsWith('ub:load:')&&ubIs(e.slice(8),'메인 화면'))},
+  {t:'「게임 시작」 동작을 <b>다른 UI 그룹 열기</b>로, UI 그룹은 <b>게임 UI</b>로',ok:()=>{const b=ubBtn(ubDraft())||(ubG('메인 화면')&&ubBtn(ubG('메인 화면').uib));return !!(b&&b.act&&b.act.t==='open'&&ubIs(b.act.v,'게임 UI'))}},
+  {t:'<b>이 그룹은 닫기</b> 켜고 <b>저장</b>',ok:()=>{const g=ubG('메인 화면'),b=g&&ubBtn(g.uib);return !!(b&&b.act&&b.act.t==='open'&&ubIs(b.act.v,'게임 UI')&&b.act.cs)}},
+  {t:'<b>▶ 플레이</b> → <b>게임 시작</b> → 메인 화면이 닫히고 게임 UI가 뜨는 것 보기',ok:c=>c.ev.has('ub:flow')}],
+ hint:'「다른 UI 그룹 열기」 목록에는 같은 씬의 UI 그룹 이름이 나와요.\n「이 그룹은 닫기」를 끄면 메인 화면 위에 게임 UI가 겹쳐 떠요.'}
+];
+
 const LESSONS=[
   {...L2,problems:L2P,hash:'lesson-1',lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
   {...L1,problems:L1P,hash:'lesson-2',lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
@@ -2475,7 +2636,8 @@ const LESSONS=[
   {...L5,problems:L5P,hash:'lesson-5',lv:3,kw:['Update()', '키 입력', 'Vector2'],preview:'void Update()\n{\n    Vector2 dir = new Vector2(h, v);\n    hero.Face(dir);\n    hero.Move(dir * speed\n              * Time.deltaTime);\n}'},
   {...L6,problems:L6P,hash:'lesson-6',lv:2,kw:['애니메이터', '애니메이션 클립', 'SetTrigger'],preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'},
   {...L7,problems:L7P,hash:'lesson-7',lv:2,kw:['룰 타일', '애니메이션 타일', '타일 팔레트'],preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'},
-  {...L8,problems:L8P,hash:'lesson-8',lv:3,kw:['씬 전환', '매니저', 'SceneManager'],preview:'계층 구조 → ＋ 새 씬 · ★ 시작 씬\n포탈     → 대상 씬 「숲」\n매니저   → BGM 매니저 · 게임 매니저\nSceneManager.LoadScene("숲");'}
+  {...L8,problems:L8P,hash:'lesson-8',lv:3,kw:['씬 전환', '매니저', 'SceneManager'],preview:'계층 구조 → ＋ 새 씬 · ★ 시작 씬\n포탈     → 대상 씬 「숲」\n매니저   → BGM 매니저 · 게임 매니저\nSceneManager.LoadScene("숲");'},
+  {...L9,problems:L9P,hash:'lesson-9',lv:2,kw:['UI 빌더', 'UI 그룹', '버튼 동작'],preview:'요소     → 텍스트 · 버튼 끌어다 놓기\n저장     → 「메인 화면」 · 「게임 UI」\n게임 시작 → 다른 UI 그룹 열기 「게임 UI」\n          + 이 그룹은 닫기'}
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
 const LVN=['','입문','초급','중급'];
@@ -2545,7 +2707,7 @@ function snRestore(){
 function snSetup(p){
   const base=p&&p.setup?p.setup():p&&p.task?SN_INIT.filter(o=>o.id!=='quiz').map(o=>({...o})):SN_INIT.map(o=>({...o}));
   SN_OBJS.length=0;base.forEach(o=>SN_OBJS.push(o));SN_EDIT=null;SN_EDIT_UI=null;
-  l6Setup(p);stSetup(p);smSetup(p);
+  l6Setup(p);stSetup(p);smSetup(p);ubSetup(p);
   const tm=tmDefault();if(p&&p.task&&p.tiles)p.tiles(tm);tmLoad(tm);
   SN_UI.length=0;if(p&&p.uiSetup)p.uiSetup().forEach(u=>SN_UI.push(JSON.parse(JSON.stringify(u))));
   SN.tool='select';SN.layer=(p&&p.layer)||'t';SN.tile='floor';SN.hover=null;
@@ -3131,7 +3293,7 @@ $('#hier').addEventListener('click',e=>{
 });
 /* Delete 키: 입력칸 밖에서 누르면 고른 오브젝트·UI 삭제 (실습 문제) */
 document.addEventListener('keydown',e=>{
-  if(e.key!=='Delete'||$('#lessonView').hidden||!P()||!P().task||PLAY||SMON)return;
+  if(e.key!=='Delete'||$('#lessonView').hidden||!P()||!P().task||PLAY||SMON||UBON)return;
   if(e.target&&e.target.closest&&e.target.closest('input,textarea,select,#hier'))return;
   e.preventDefault();snDelete(SN.sel);
 });
@@ -3406,7 +3568,27 @@ document.addEventListener('keydown',e=>{
 const TASK={ev:new Set()};
 const tkCtx=()=>({o:id=>SN_OBJS.find(q=>q.id===id),named:n=>SN_OBJS.find(q=>q.name===n),objs:SN_OBJS,ui:SN_UI,ev:TASK.ev});
 function tkState(p){const c=tkCtx();return p.checks.map(k=>{try{return !!k.ok(c)}catch(e){return false}})}
-let tkLast='';
+let tkLast='',tkBase=null;
+/* 해야 할 일을 하나 이상 마쳤는데 확인하기(통과) 전에 다른 문제·레슨으로 가면 묻기 — 할 일 진행은 저장되지 않음 */
+function tkLeaveDirty(){
+  if($('#lessonView').hidden)return false;
+  const p=P();if(!p||!p.task||st.done[p.id])return false;
+  const s=tkState(p),b=tkBase||[];return s.some((v,i)=>v&&!b[i]);
+}
+/* 자체 확인창 → Promise<boolean> */
+function lConfirm(t,sub,okT,noT){
+  const d=$('#lcDlg');if(d.parentElement!==document.body)document.body.append(d);
+  d.innerHTML=`<div class="lc-in"><div class="lc-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div><p class="lc-t" id="lcT">${esc(t)}</p>${sub?`<p class="lc-s" id="lcS">${esc(sub)}</p>`:''}</div><div class="lc-f"><button type="button" class="lc-no">${esc(noT)}</button><button type="button" class="lc-ok">${esc(okT)}</button></div>`;
+  return new Promise(res=>{
+    let v=false;
+    d.querySelector('.lc-no').onclick=()=>{v=false;d.close()};
+    d.querySelector('.lc-ok').onclick=()=>{v=true;d.close()};
+    d.onclick=e=>{if(e.target===d){v=false;d.close()}};
+    d.onclose=()=>{d.onclose=null;res(v)};
+    d.showModal();d.querySelector('.lc-no').focus();
+  });
+}
+const tkLeaveAsk=()=>lConfirm(_t('마치지 않은 문제는 저장되지 않습니다.'),_t('정말 다음으로 넘어가시겠습니까?'),_t('넘어가기'),_t('계속 풀기'));
 function tkPing(){
   const p=P();if(!p||!p.task)return;
   const s=tkState(p),n=s.filter(Boolean).length,sig=s.join();
@@ -3419,6 +3601,7 @@ function tkPing(){
 /* ---- 창 위치 힌트: 할 일이 어느 창에서 하는 일인지 작은 표시 + 그 창을 살짝 빛나게 ----
    할 일 글에 나오는 창 이름으로 찾음 (레슨 6은 애니메이터 · 애니메이션 · 프로젝트 · 콘솔 탭) · 위치(왼쪽 위 등)는 지금 화면 배치에서 계산 */
 const LOC_RULES=[
+  [/마을 › UI|게임 화면/,'ubpn'],[/UI 빌더/,'ub'],
   [/빌드 순서/,'smbar'],[/플레이 상황/,'smside'],
   [/계층 구조/,'hier'],[/인스펙터/,'insp'],[/도구 모음/,'sbar'],[/칠할 곳|팔레트에서/,'stools'],[/씬 뷰/,'scene'],[/게임 뷰/,'game'],
   [/애니메이터 창|파라미터/,'animator'],[/애니메이션 (탭|창)/,'anim'],[/프로젝트 탭/,'proj'],[/콘솔/,'con'],[/플레이/,'play']];
@@ -3426,6 +3609,7 @@ const LOC_RULES=[
 const LOC_GUESS=[[/샘플|반복 끄기|타임라인|속성 추가|클립 (버튼|메뉴)/,'anim',1],[/Any State|전환|상태 속성|깡충 상태/,'animator',1],
   [/지우개|브러시|이동 도구/,'sbar'],[/칠하기|칠해|점선|칸에|씬에서|끌어/,'scene'],[/키로|키를 떼|방향키|움직여|걸어/,'game'],[/앵커|글자|색을|이름을|트리거|사용은|메시지|콜라이더 모두/,'insp']];
 function locEl(k){
+  if(UBON){if(k==='hier'||k==='insp'||k==='ub')return $('#ubView');if(k==='play'||k==='game'||k==='scene'||k==='ubpn')return $('#ubPn')}
   const an=t=>L6ON?document.querySelector('#anPn .antab[data-an="'+t+'"]'):null;
   switch(k){
     case'hier':return document.querySelector('.hier-pn');case'insp':return document.querySelector('.insp-pn');
@@ -3704,6 +3888,106 @@ $$('#anPn .antab').forEach(b=>{b.onclick=()=>anTab(b.dataset.an);
   let dt=0;b.addEventListener('dragenter',e=>{e.preventDefault();clearTimeout(dt);dt=setTimeout(()=>anTab(b.dataset.an),250)});
   b.addEventListener('dragover',e=>e.preventDefault());b.addEventListener('dragleave',()=>clearTimeout(dt))});
 
+/* ===================== 레슨 9: UI 빌더 실습장 — 엔진의 ui-builder.js를 그대로 씀 =====================
+   UBP = 실습 프로젝트(엔진 P 모양: 마을 씬 하나 · uiCv 640×360) · 위 큰 창 = UI 빌더 · 아래 = 마을 씬 UI 그룹 목록 + 게임 화면(플레이)
+   엔진에서 쓰는 이름(P · play · cur · uiRect …)은 over로 넘기고, 할 일 확인은 uibEvent 알림(ub:save · ub:load · ub:click · ub:show/hide)으로 */
+const UB_ANCH={tl:[0,0],tc:[.5,0],tr:[1,0],ts:[null,0],ml:[0,.5],mc:[.5,.5],mr:[1,.5],ms:[null,.5],bl:[0,1],bc:[.5,1],br:[1,1],bs:[null,1],sl:[0,null],sc:[.5,null],sr:[1,null],ss:[null,null]};
+Object.keys(UB_ANCH).forEach(k=>UB_ANCH[k].unshift(''));
+function ubRect(e,cw,ch){const a=UB_ANCH[e.anchor]||UB_ANCH.tl,fx=a[1],fy=a[2];let x,y,w,h;
+  if(fx==null){x=e.l||0;w=Math.max(2,cw-(e.l||0)-(e.r||0))}else{w=e.w;x=cw*fx+e.x-e.w*fx}
+  if(fy==null){y=e.t||0;h=Math.max(2,ch-(e.t||0)-(e.b||0))}else{h=e.h;y=ch*fy+e.y-e.h*fy}return{x,y,w,h}}
+function ubSetRect(e,r,cw,ch){const a=UB_ANCH[e.anchor]||UB_ANCH.tl,fx=a[1],fy=a[2];e.w=Math.max(2,Math.round(r.w));e.h=Math.max(2,Math.round(r.h));
+  if(fx==null){e.l=Math.round(r.x);e.r=Math.round(cw-r.x-r.w)}else e.x=Math.round(r.x+e.w*fx-cw*fx);
+  if(fy==null){e.t=Math.round(r.y);e.b=Math.round(ch-r.y-r.h)}else e.y=Math.round(r.y+e.h*fy-ch*fy)}
+function ubScale(m,W,H){const c=m.uiCv||{w:640,h:360};W=Math.max(1,W);H=Math.max(1,H);const lw=Math.log2(W/c.w),lh=Math.log2(H/c.h),s=Math.max(.05,Math.pow(2,lw+(lh-lw)*.5));return{s,w:W/s,h:H/s}}
+const ubNormUi=u=>{u.id=u.id||uid();u.visible=u.visible!==false;u.props=u.props||{};['x','y','l','r','t','b'].forEach(k=>u[k]=+u[k]||0);return u};
+const UBP={maps:[],start:'town'};
+let UBON=false,UBPLAY=null,UBSEL=null;
+const ubScene=()=>UBP.maps[0]||null;
+const UB_L={hidden:{uib:false},tabs:{},active:{},collapsed:{},float:{},center:[]};
+const UB_PANEL={uib:document.getElementById('ubPanel')};
+const UBX=UI_BUILDER(n=>{(0,eval)(n);return(0,eval)('()=>('+n+')')},(n,v)=>{window.__ubv=v;(0,eval)(n+'=window.__ubv')},{
+  P:UBP,get play(){return UBPLAY},set play(v){UBPLAY=v},cur:()=>ubScene(),get curId(){const m=ubScene();return m?m.id:''},
+  $:(s,r)=>(r||document).querySelector(s),ico,toast,openModal,closeModal,showMenu,showMenuAt,hideMenu,esc,uid,_t,
+  panelEl:UB_PANEL,POPPED:new Map(),L:UB_L,mqN:{matches:false},movePanel:()=>{},bigFloat:()=>({}),raise:()=>{},saveLayout:()=>{},renderLayout:()=>{},rootOf:id=>id,kidsOf:()=>[],
+  dirty:false,saveTimer:0,save:()=>{},renderStatus:()=>{},markDirty:()=>{},commit:()=>{},need:()=>{},renderHier:()=>ubSide(),renderInsp:()=>{},
+  GV_DEV:[{g:'모니터',items:[{id:'hd',n:'HD',w:1280,h:720},{id:'fhd',n:'Full HD',w:1920,h:1080},{id:'cv',n:'UI 캔버스',w:640,h:360}]},{g:'휴대폰 (논리 해상도)',items:[{id:'ip15',n:'iPhone 15',w:393,h:852},{id:'gs24',n:'Galaxy S24',w:360,h:780}]}],GV:{mine:[]},
+  fontFamily:()=>'"IBM Plex Sans KR",sans-serif',UI_FONTS:{sans:{n:'기본 고딕',en:'IBM Plex Sans KR',fam:'"IBM Plex Sans KR",sans-serif'}},fonts:[],
+  spritePickerModal:()=>toast(_t('이 실습에서는 이미지를 쓰지 않아요')),spriteRef:()=>null,
+  UI_ANCH:UB_ANCH,uiRect:ubRect,uiSetRect:ubSetRect,uiScaleFor:ubScale,normUi:ubNormUi,
+  objOn:()=>true,uiHasHandler:()=>false,csRunMethods:()=>{},uiFire:()=>{},clog:()=>{},enter:()=>{},stopPlay:()=>ubPlayStop(),
+  uibPlayEl:()=>document.getElementById('ubGame'),uibEvent:(k,d)=>ubEv(k,d)
+});
+/* 이름 확인: 한국어 원문 또는 화면 언어 번역 */
+const ubIs=(v,n)=>{v=String(v||'').trim();return v===n||v===_t(n)};
+const ubG=n=>{const m=ubScene();return m?(m.uiGroups||[]).find(g=>ubIs(g.name,n))||null:null};
+const ubNodes=d=>{const out=[];const w=n=>{out.push(n);(n.kids||[]).forEach(w)};if(d&&d.root)w(d.root);return out.filter(n=>n.type!=='root')};
+const ubDraft=()=>UBX.draft().doc;
+const ubHasText=(d,type,txt)=>ubNodes(d).some(n=>n.type===type&&(txt==null||ubIs(String(n.pr&&n.pr.text||''),txt)));
+const ubBtn=d=>ubNodes(d).find(n=>n.type==='button'&&ubIs(String(n.pr&&n.pr.text||''),'게임 시작'))||null;
+const ubVis=(m,g)=>!!g&&(m.ui||[]).some(u=>u.group===g.id&&u.visible!==false);
+/* 문제 처음 상태에 넣을 UI 그룹 */
+function ubMainDoc(act){const N=(t,o)=>UBX.newNode(t,o);return{name:_t('메인 화면'),w:640,h:360,show:'start',root:{type:'root',st:{bg:'#14183a',bgA:1},pr:{layout:'none'},kids:[
+  N('text',{name:_t('제목'),ax:'c',ay:'m',x:0,y:-60,w:360,h:60,pr:{text:_t('나의 게임')},st:{color:'#ffffff',fs:40,fw:800,ta:'center',va:'middle'}}),
+  N('button',{name:_t('게임 시작'),ax:'c',ay:'m',x:0,y:40,w:180,h:48,pr:{text:_t('게임 시작')},act:act||{t:'none'}})]}}}
+function ubGameDoc(){const N=(t,o)=>UBX.newNode(t,o);return{name:_t('게임 UI'),w:640,h:360,show:'manual',root:{type:'root',st:{bgA:0},pr:{layout:'none'},kids:[
+  N('text',{name:_t('점수'),ax:'r',ay:'t',x:16,y:12,w:160,h:32,pr:{text:_t('점수 0')},st:{color:'#ffe066',fs:22,fw:800,ta:'right',va:'middle'}}),
+  N('progress',{name:_t('체력 막대'),ax:'l',ay:'t',x:16,y:20,w:180,h:14,pr:{min:0,max:100,value:80}})]}}}
+function ubEv(k,d){
+  const g=d&&d.g,nm=g?g.name:'';
+  if(k==='save')TASK.ev.add('ub:save:'+nm);
+  if(k==='load')TASK.ev.add('ub:load:'+nm);
+  if(k==='hide'&&UBPLAY)TASK.ev.add('ub:hide:'+nm);
+  if(k==='show'&&UBPLAY)TASK.ev.add('ub:show:'+nm);
+  if(k==='click'&&UBPLAY){const m=UBPLAY.m,a=d.a||{};TASK.ev.add('ub:click');
+    if(ubIs(String(d.n&&d.n.pr&&d.n.pr.text||''),'게임 시작')){const main=ubG('메인 화면'),hud=ubG('게임 UI');
+      if(main&&!ubVis(m,main))TASK.ev.add('ub:mainclosed');
+      if(main&&hud&&!ubVis(m,main)&&ubVis(m,hud))TASK.ev.add('ub:flow')}}
+  if(k==='preview'){const a=d.a||{};if(ubIs(String(d.n&&d.n.pr&&d.n.pr.text||''),'게임 시작')&&(a.t==='close'||(a.t==='open'&&a.cs)))TASK.ev.add('ub:mainclosed');tkPing();return}
+  if(k==='save'||k==='load')UBSEL=g?g.id:UBSEL;
+  if(k==='edit'){clearTimeout(ubEv.t);ubEv.t=setTimeout(tkPing,60);return}
+  ubSide();tkPing();
+}
+/* 아래 패널: 마을 씬 UI (그룹 목록 · 고른 그룹 카드) */
+function ubSide(){
+  const box=$('#ubSide');if(!box||!UBON)return;const m=ubScene();if(!m)return;const gs=m.uiGroups||[];
+  if(UBSEL&&!gs.some(g=>g.id===UBSEL))UBSEL=null;
+  let h=`<div class="ubsh">${ico('scene')}<span data-i18n-skip>${esc(_t(m.name))}</span> › UI</div>`;
+  if(!gs.length)h+=`<p class="ubempty">${esc(_t('아직 UI 그룹이 없어요. 위 UI 빌더에서 「저장」하면 여기(엔진의 계층 구조 › 마을 › UI)에 생겨요.'))}</p>`;
+  gs.forEach(g=>{const mem=(m.ui||[]).filter(u=>u.group===g.id);
+    h+=`<button type="button" class="ubrow${UBSEL===g.id?' on':''}" data-ubsel="${esc(g.id)}">${ico('folder')}<span data-i18n-skip>${esc(g.name)}</span><small>${mem.length}</small></button>`;
+    if(UBSEL===g.id){mem.slice(0,6).forEach(u=>{h+=`<div class="ubrow sub"><span data-i18n-skip>${esc(u.name)}</span></div>`});
+      const man=g.uib&&g.uib.show==='manual';
+      h+=`<div class="ubcard"><button type="button" class="btn" data-ubload="${esc(g.id)}">${esc(_t('UI 빌더로 편집하기'))}</button><p>${esc(_t(man?'처음에는 숨겨져 있다가 버튼·스크립트로 열려요.':'플레이를 시작하면 바로 보여요.'))} ${esc(_t('엔진에서는 이 그룹을 고르면 인스펙터 맨 위에 같은 버튼이 있어요.'))}</p></div>`}});
+  box.innerHTML=h;
+}
+$('#ubSide').addEventListener('click',e=>{const l=e.target.closest('[data-ubload]');if(l){if(UBPLAY)ubPlayStop();UBX.loadGroup('town',l.dataset.ubload);return}
+  const r=e.target.closest('[data-ubsel]');if(r){UBSEL=UBSEL===r.dataset.ubsel?null:r.dataset.ubsel;TASK.ev.add('ub:sel');ubSide()}});
+/* 게임 화면: 마을 그림 위에 저장한 UI 그룹 (엔진 플레이와 같은 런타임) */
+function ubFit(){const w=$('#ubGameW'),g=$('#ubGame');if(!w||!g||!UBON)return;const W=w.clientWidth-16,H=w.clientHeight-16;if(W<20||H<20)return;let gw=W,gh=W*9/16;if(gh>H){gh=H;gw=H*16/9}g.style.width=Math.floor(gw)+'px';g.style.height=Math.floor(gh)+'px';ubPaint()}
+function ubPaint(){const cv=$('#ubCv'),g=$('#ubGame');if(!cv||!g)return;const d=window.devicePixelRatio||1,W=g.clientWidth,H=g.clientHeight;if(!W||!H)return;cv.width=Math.round(W*d);cv.height=Math.round(H*d);const x=cv.getContext('2d');x.setTransform(d,0,0,d,0,0);
+  const S=Math.max(W/SM_W,H/SM_H);try{const tw=smTown();tw.objs=tw.objs.filter(o=>o.kind!=='portal');smPaint(x,tw,(W-S*SM_W)/2,(H-S*SM_H)/2,S,performance.now()/1000)}catch(e){x.fillStyle='#2a3a2a';x.fillRect(0,0,W,H)}
+  if(!UBPLAY){x.fillStyle='rgba(0,0,0,.35)';x.fillRect(0,0,W,H)}
+  const hint=$('#ubGh');if(hint){hint.textContent=_t(UBPLAY?'게임 화면 · 버튼을 눌러 보세요 (■ 정지로 끝)':'▶ 플레이를 누르면 저장한 UI 그룹이 이 화면 위에 떠요');}}
+new ResizeObserver(()=>ubFit()).observe(document.getElementById('ubGameW'));
+function ubPlayStart(){const m=ubScene();if(!m)return;UBPLAY={m:JSON.parse(JSON.stringify(m)),vw:640,vh:360,mgrs:[],hp:100};UBX.playStart();TASK.ev.add('ub:play');ubPlayBtn();ubPaint();tkPing()}
+function ubPlayStop(){if(!UBPLAY)return;UBX.playStop();UBPLAY=null;ubPlayBtn();ubPaint()}
+function ubPlayBtn(){const b=$('#ubPlay');if(b){b.textContent=_t(UBPLAY?'■ 정지':'▶ 플레이');b.classList.toggle('on',!!UBPLAY)}}
+$('#ubPlay').addEventListener('click',()=>{if(UBPLAY)ubPlayStop();else ubPlayStart()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&UBPLAY&&$('#modal').hidden){ubPlayStop()}});
+/* ---- 문제마다 차리기 ---- */
+function ubSetup(p){
+  if(UBPLAY)ubPlayStop();
+  UBON=!!(p&&p.ub);
+  const ws=document.querySelector('main.ws');if(ws)ws.classList.toggle('ub9',UBON);
+  $('#ubView').hidden=!UBON;$('#ubPn').hidden=!UBON;
+  if(!UBON){try{UBX.setFull(false)}catch(e){}return}
+  UBP.maps=[{id:'town',name:'마을',uiCv:{w:640,h:360,mode:'match',match:.5},ui:[],uiGroups:[],objs:[]}];delete UBP.uibDraft;UBSEL=null;
+  (p.ub.groups?p.ub.groups():[]).forEach(d=>UBX.putGroup(d,'town'));
+  UBX.newDraft();UBSEL=null;
+  requestAnimationFrame(()=>{UBX.open();ubSide();ubFit();ubPlayBtn()});
+}
+
 /* ---- 학습 화면 경계 끌기: 문제 너비(--bw) · 위아래 줄(--rt/--rb) · 아래 줄 나눔(--v1/--v2) — 레슨 6과 다른 레슨을 따로 기억 ---- */
 (()=>{
   const ws=document.querySelector('#lessonView main.ws');if(!ws)return;
@@ -3958,7 +4242,7 @@ function flash(ok){
 function show(i){
   try{acHide()}catch(e){}
   snRestore();playStop(true);closePM();st.cur=i;st.curs[LESSON.no]=i;save();
-  const pr=P();snSetup(pr);TASK.ev=new Set();tkLast='';
+  const pr=P();snSetup(pr);TASK.ev=new Set();tkLast='';try{tkBase=pr.task?tkState(pr):null}catch(e){tkBase=null}
   $('.edpn').hidden=!!pr.task;$('#taskPn').hidden=!pr.task;$('#playBtn').hidden=!pr.play;renderTools();
   renderTop();renderBrief();
   ta.value=codeOf(P());ta.scrollTop=0;ta.scrollLeft=0;paintEd();edPos();$('#edFile').textContent=pr.file||(pr.hero?'HeroMovement.cs':'Quiz.cs');
@@ -4023,7 +4307,7 @@ $('#reset').onclick=()=>{
   const p=P();if(ta.value!==starterCode(p)&&!confirm(_t('작성한 코드가 사라져요. 처음 코드로 되돌릴까요?')))return;
   delete st.code[p.id];save();ta.value=starterCode(p);paintEd();edPos();renderInsp();setConsole([],false);idleVerdict();
 };
-$('#steps').onclick=e=>{const b=e.target.closest('.step');if(b)show(+b.dataset.i)};
+$('#steps').onclick=async e=>{const b=e.target.closest('.step');if(!b)return;const i=+b.dataset.i;if(i!==st.cur&&tkLeaveDirty()&&!(await tkLeaveAsk()))return;show(i)};
 
 /* ===================== 스크립트 자동완성 · 편집기 =====================
    엔진과 똑같은 공용 편집기(script-editor.js)를 씁니다: 자동완성 후보·설명 · 한/영 자판 보정 · 대소문자 자동 보정 · 실행 취소.
@@ -4149,7 +4433,7 @@ function renderHome(refocus){
       </div>
       <pre>${csHighlight('Debug.Log("HP: " + hp);\n→ 콘솔에 글을 출력합니다')}</pre></button>`;
 }
-$('#cards').addEventListener('click',e=>{const c=e.target.closest('[data-go]');if(c)location.hash=c.dataset.go});
+$('#cards').addEventListener('click',e=>{const c=e.target.closest('[data-go]');if(c)location.hash=(window.PV_DATA&&PV_DATA[c.dataset.go]?'about-':'')+c.dataset.go});
 $('#tools').addEventListener('click',e=>{const c=e.target.closest('[data-go]');if(c)location.hash=c.dataset.go});
 $('#toHome').onclick=()=>{location.hash=''};
 $('#lvHome').onclick=e=>{e.preventDefault();location.hash=''};
@@ -4518,16 +4802,60 @@ document.addEventListener('click',e=>{
   RV_ON=!RV_ON;try{localStorage.setItem('thaniya.rvon',RV_ON?'1':'0')}catch(_){}
   renderHome(false);const b=$('#rvToggle');if(b)b.focus();
 });
-if(window.TI18N)TI18N.add({"코드 복습":["Code review","コード復習","代码复习"],"레슨 {n}":["Lesson {n}","レッスン {n}","第 {n} 课"],"레슨으로 가기":["Go to lesson","レッスンへ","前往课程"],"오늘의 코드 한 줄":["Code of the day","今日のコード一行","今日一行代码"],"코드 {n}개":["{n} snippets","コード {n} 個","{n} 段代码"],"모두 펼치기":["Expand all","すべて開く","全部展开"],"모두 접기":["Collapse all","すべて閉じる","全部收起"],"이전 레슨":["Previous","前のレッスン","上一课"],"다음 레슨":["Next","次のレッスン","下一课"],"닫기":["Close","閉じる","关闭"],"복사":["Copy","コピー","复制"],"복사됨":["Copied","コピーしました","已复制"],"레슨 아님 · 다시 보기":["Not a lesson · Review","レッスンではありません · 復習","非课程 · 复习"],"레슨 대신 레슨별 코드 모음 보기":["Show code per lesson instead of lessons","レッスンの代わりにコードをまとめて表示","不显示课程,改为按课汇总代码"],"코드 복습 · 레슨마다 쓰는 코드를 모아 봤어요":["Code review · The code used in each lesson","コード復習 · レッスンごとに使うコードをまとめました","代码复习 · 汇总每节课用到的代码"],"각 레슨에서 꼭 알아야 하는 코드를 한곳에 모아 놨어요. 복사해서 바로 써 보세요.":["The code you need to know in each lesson, all in one place. Copy it and try it right away.","各レッスンで必ず知っておきたいコードを1か所にまとめました。コピーしてすぐ試せます。","把每节课必须掌握的代码集中在一处,复制后即可直接试用。"]});
+if(window.TI18N)TI18N.add({"마치지 않은 문제는 저장되지 않습니다.":["Unfinished problems are not saved.","終わっていない問題は保存されません。","未完成的题目不会被保存。"],"정말 다음으로 넘어가시겠습니까?":["Do you really want to move on?","本当に次へ進みますか?","确定要继续吗?"],"넘어가기":["Move on","進む","继续"],"계속 풀기":["Keep working","続ける","继续答题"],"코드 복습":["Code review","コード復習","代码复习"],"레슨 {n}":["Lesson {n}","レッスン {n}","第 {n} 课"],"레슨으로 가기":["Go to lesson","レッスンへ","前往课程"],"오늘의 코드 한 줄":["Code of the day","今日のコード一行","今日一行代码"],"코드 {n}개":["{n} snippets","コード {n} 個","{n} 段代码"],"모두 펼치기":["Expand all","すべて開く","全部展开"],"모두 접기":["Collapse all","すべて閉じる","全部收起"],"이전 레슨":["Previous","前のレッスン","上一课"],"다음 레슨":["Next","次のレッスン","下一课"],"닫기":["Close","閉じる","关闭"],"복사":["Copy","コピー","复制"],"복사됨":["Copied","コピーしました","已复制"],"레슨 아님 · 다시 보기":["Not a lesson · Review","レッスンではありません · 復習","非课程 · 复习"],"레슨 대신 레슨별 코드 모음 보기":["Show code per lesson instead of lessons","レッスンの代わりにコードをまとめて表示","不显示课程,改为按课汇总代码"],"코드 복습 · 레슨마다 쓰는 코드를 모아 봤어요":["Code review · The code used in each lesson","コード復習 · レッスンごとに使うコードをまとめました","代码复习 · 汇总每节课用到的代码"],"각 레슨에서 꼭 알아야 하는 코드를 한곳에 모아 놨어요. 복사해서 바로 써 보세요.":["The code you need to know in each lesson, all in one place. Copy it and try it right away.","各レッスンで必ず知っておきたいコードを1か所にまとめました。コピーしてすぐ試せます。","把每节课必须掌握的代码集中在一处,复制后即可直接试用。"]});
 
-function route(){
-  const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search';
-  $('#home').hidden=!!L||S;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;
-  if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
-  else{playStop(true);if(SMON)smSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':'Thaniya Engine Edu';if(S)svOpen();else renderHome()}
+/* ===== 레슨 미리 살펴보기 ===== */
+let PV_L=null;
+function pvFirst(L){const i=L.problems.findIndex(p=>!st.done[p.id]);return i<0?0:i}
+function pvStart(L){L=L||PV_L;if(!L)return;st.curs[L.no]=pvFirst(L);save();location.hash=L.hash}
+function pvRender(L){
+  PV_L=L;const D=(window.PV_DATA||{})[L.hash]||{intro:L.lead,s:[],terms:[]};
+  const n=L.problems.filter(p=>st.done[p.id]).length,t=L.problems.length,all=n===t,fi=pvFirst(L);
+  const list=LESSONS,ix=list.indexOf(L),prev=list[ix-1],next=list[ix+1];
+  const paras=p=>(Array.isArray(p)?p:p?[p]:[]).map(x=>`<p>${x}</p>`).join('');
+  const code=(c,ct,long)=>{const src=c==='@L5_FINAL'?L5_FINAL:c;return`<div class="pv-code${long?' long':''}"><div class="ch"><i aria-hidden="true"></i><span>${esc(ct||'코드')}</span><button type="button" data-cp>${esc(_t('복사'))}</button></div><pre data-src="${esc(src)}">${csHighlight(src)}</pre></div>`};
+  const fig=(img,cap)=>`<figure class="pv-fig"><button type="button" class="shot" data-zoom="assets/learn/${esc(img)}.webp" aria-label="${esc(_t('화면 크게 보기'))}"><img src="assets/learn/${esc(img)}.webp" alt="${esc(cap||'')}" loading="lazy" decoding="async"></button>${cap?`<figcaption>${esc(cap)}</figcaption>`:''}</figure>`;
+  const stLabel=all?_t('모두 통과했다 · 1번 문제부터 다시 볼 수 있다'):n?_t('{n} / {t} 통과 · {k}번 문제부터 이어서 한다',{n,t,k:fi+1}):_t('문제 {t}개 · 1번 문제부터 시작한다',{t});
+  const cta=`<div class="pv-cta"><div class="pv-pr"><b>${esc(_t('레슨 {n}',{n:L.no}))} · ${esc(L.title)}</b><span>${esc(stLabel)}</span><div class="pv-bar"><i style="width:${n/t*100}%"></i></div></div><button type="button" class="pv-go" data-start>${esc(_t('시작하기'))} →</button></div>`;
+  $('#pvArt').innerHTML=`
+    <div class="pv-eb">${lvChip(L)}<span>${esc(_t('레슨 {n}',{n:L.no}))}</span><span class="sep">·</span><span>${esc(_t('문제 {t}개',{t}))}</span>${n?`<span class="sep">·</span><span class="${all?'ok':''}">${all?'✓ '+esc(_t('완료')):esc(_t('진행 중'))}</span>`:''}</div>
+    <h1>${esc(L.title)}</h1>
+    <p class="pv-lead">${D.intro||esc(L.lead)}</p>
+    ${kwList(L)}
+    ${cta}
+    <nav class="pv-toc" aria-label="${esc(_t('이 레슨에서 푸는 문제'))}"><h2>${esc(_t('이 레슨에서 푸는 문제'))}</h2><ol>${L.problems.map((p,i)=>`<li class="${st.done[p.id]?'done':''}${!all&&i===fi?' next':''}">${esc(p.title)}</li>`).join('')}</ol></nav>
+    ${(D.s||[]).map((x,i)=>`<section class="pv-sec"><h2><span class="n">${String(i+1).padStart(2,'0')}</span><span>${esc(x.h)}</span></h2>${paras(x.p)}${x.img?fig(x.img,x.cap):''}${x.code?code(x.code,x.ct,x.long):''}${x.tip?`<p class="pv-tip">${x.tip}</p>`:''}</section>`).join('')}
+    ${D.terms&&D.terms.length?`<section class="pv-terms"><h2>${esc(_t('용어'))}</h2><p>${esc(_t('이 레슨에서 처음 나오거나 자주 쓰는 말이다.'))}</p><dl>${D.terms.map(([k,d])=>`<div><dt>${esc(k)}</dt><dd>${esc(d)}</dd></div>`).join('')}</dl></section>`:''}
+    <div class="pv-end">${cta}<div class="pv-nav">${prev?`<a href="#about-${prev.hash}">← ${esc(prev.title)}</a>`:'<span></span>'}${next?`<a href="#about-${next.hash}">${esc(next.title)} →</a>`:'<span></span>'}</div></div>`;
   window.scrollTo(0,0);
 }
-addEventListener('hashchange',route);
+$('#pvArt').addEventListener('click',e=>{
+  if(e.target.closest('[data-start]')){pvStart();return}
+  const z=e.target.closest('[data-zoom]');if(z){const d=$('#pvZoom');d.innerHTML=`<img src="${z.dataset.zoom}" alt="">`;d.showModal();return}
+  const cp=e.target.closest('[data-cp]');if(cp){const txt=cp.closest('.pv-code').querySelector('pre').dataset.src,done=()=>{cp.textContent=_t('복사됨');setTimeout(()=>{cp.textContent=_t('복사')},1200)};
+    const fb=()=>{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove();done()};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fb);else fb()}
+});
+$('#pvZoom').addEventListener('click',()=>$('#pvZoom').close());
+$('#pvStartT').onclick=()=>pvStart();
+$('#pvBack').onclick=()=>{location.hash=''};
+$('#pvHome').onclick=e=>{e.preventDefault();location.hash=''};
+function route(){
+  const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search',PVL=LESSONS.find(x=>'#about-'+x.hash===location.hash);
+  $('#home').hidden=!!L||S||!!PVL;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;$('#pvView').hidden=!PVL;
+  if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
+  else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else renderHome()}
+  window.scrollTo(0,0);
+}
+let tkPass=false;
+addEventListener('hashchange',async e=>{
+  if(!tkPass&&tkLeaveDirty()){
+    const to=location.hash;try{history.replaceState(history.state,'',e.oldURL)}catch(_){ }
+    if(!(await tkLeaveAsk()))return;
+    tkPass=true;location.hash=to;return;
+  }
+  tkPass=false;route();
+});
 route();
 /* 코드 검색을 따로 떠 있는 새 창(단독 창)으로 열기 · 같은 창이 있으면 그 창을 다시 씀 */
 function openSearchWin(){

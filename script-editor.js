@@ -101,9 +101,10 @@ CS_API.Light2D=CS_API.Light;CS_API.NPC=CS_API.Npc;
 CS_API.Hero=[_P('position','Vector2'),_P('facing','Vector2'),_P('facingAngle','float'),_P('hp','int'),_P('maxHp','int'),_P('isMoving','bool'),_P('isDead','bool'),_P('isInvincible','bool'),_P('invincibleTime','float'),_P('radius','float'),_F('Move','bool','Vector2 delta'),_F('Face','void','Vector2 dir'),_F('CanMove','bool','Vector2 delta'),_F('Attack','int','int damage, float reach'),_F('Interact','bool','float distance'),_F('TakeDamage','bool','int amount'),_F('Heal','int','int amount'),..._base];
 CS_API['Hero:static']=[_P('main','Hero')];
 CS_API['Sound:static']=[_F('PlayMusic','void','string name, float volume'),_F('StopMusic','void'),_F('PauseMusic','void'),_F('ResumeMusic','void'),_F('SetMusicVolume','void','float volume'),_F('PlayEffect','void','string name, float volume'),_P('isMusicPlaying','bool'),_P('musicVolume','float'),_P('currentMusic','string')];
+CS_API['UIScreen:static']=[_F('Show','void','string screen'),_F('Hide','void','string screen'),_F('Toggle','void','string screen'),_F('HideAll','void'),_F('IsOpen','bool','string screen'),_F('SetText','void','string screen, string element, string text'),_F('GetText','string','string screen, string element'),_F('GetValue','object','string screen, string element'),_F('SetValue','void','string screen, string element, object value'),_F('SetVisible','void','string screen, string element, bool visible'),_F('SetColor','void','string screen, string element, string color')];
 CS_API['Random:static']=[_F('Range','float','float min, float max'),_P('value','float')];
 CS_API.Camera.unshift(_P('smoothFollow','bool'),_P('smoothTime','float'));
-const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','AudioSource','Camera','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound'];
+const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','AudioSource','Camera','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen'];
 const AC_COMPS=['Hero','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','SpriteRenderer','Rigidbody2D','Collider2D','Animator','AudioSource','Camera','Transform'];
 const AC_EV=[['Awake','void Awake()\n{\n    |\n}'],['Start','void Start()\n{\n    |\n}'],['Update','void Update()\n{\n    |\n}'],['FixedUpdate','void FixedUpdate()\n{\n    |\n}'],['LateUpdate','void LateUpdate()\n{\n    |\n}'],['OnEnable','void OnEnable()\n{\n    |\n}'],['OnDisable','void OnDisable()\n{\n    |\n}'],['OnDestroy','void OnDestroy()\n{\n    |\n}'],['OnTriggerEnter2D','void OnTriggerEnter2D(Collider2D other)\n{\n    |\n}'],['OnTriggerExit2D','void OnTriggerExit2D(Collider2D other)\n{\n    |\n}'],['OnCollisionEnter2D','void OnCollisionEnter2D(Collision2D collision)\n{\n    |\n}'],['OnHeroEnter','void OnHeroEnter()\n{\n    |\n}'],['OnHeroExit','void OnHeroExit()\n{\n    |\n}'],['OnInteract','void OnInteract()\n{\n    |\n}'],['OnHit','void OnHit()\n{\n    |\n}'],['OnHeroDeath','void OnHeroDeath()\n{\n    |\n}']];
 const AC_SN=[['if','if (|)\n{\n}'],['else','else\n{\n    |\n}'],['for','for (int i = 0; i < |; i++)\n{\n}'],['foreach','foreach (var item in |)\n{\n}'],['while','while (|)\n{\n}'],['switch','switch (|)\n{\n    case 0:\n        break;\n}']];
@@ -475,6 +476,18 @@ const AC_DOC={
 'Animator.Play':['지정한 애니메이션 상태를 재생합니다.','anim.Play("Walk");'],
 'Animator.speed':['애니메이션 재생 속도입니다.','anim.speed = 2f;'],
 'AudioSource':['오디오 소스 컴포넌트입니다. 인스펙터에서 고른 오디오 클립(음악·효과음)을 재생합니다.','AudioSource audioSource = GetComponent<AudioSource>();\naudioSource.Play();'],
+'UIScreen':['씬의 UI 그룹(UI 빌더로 만든 그룹 포함)을 이름으로 열고 닫고, 그 안 요소의 글자·값을 다루는 정적 클래스입니다.','UIScreen.Show("설정 창");\nUIScreen.SetText("게임 HUD", "점수", "점수 " + score);'],
+'UIScreen.Show':['UI 화면을 보이게 합니다 (가장 앞에 놓임).','UIScreen.Show("설정 창");'],
+'UIScreen.Hide':['UI 화면을 숨깁니다.','UIScreen.Hide("설정 창");'],
+'UIScreen.Toggle':['UI 화면이 보이면 숨기고, 숨어 있으면 보이게 합니다.','if (Input.GetKeyDown(KeyCode.Escape)) UIScreen.Toggle("메인 메뉴");'],
+'UIScreen.HideAll':['모든 UI 화면을 숨깁니다.','UIScreen.HideAll();'],
+'UIScreen.IsOpen':['UI 화면이 지금 보이는지 알려 줍니다.','if (UIScreen.IsOpen("설정 창")) return;'],
+'UIScreen.SetText':['텍스트 · 버튼 · 체크박스의 글자를 바꿉니다.','UIScreen.SetText("게임 HUD", "점수", "점수 " + score);'],
+'UIScreen.GetText':['요소의 글자를 읽습니다 (입력 상자 = 입력한 글자, 드롭다운 = 고른 항목 글자).','string name = UIScreen.GetText("설정 창", "이름");'],
+'UIScreen.GetValue':['요소의 값을 읽습니다: 슬라이더·진행 막대 = 숫자, 체크박스 = true/false, 드롭다운 = 고른 번호(0부터), 입력 상자 = 글자.','float volume = UIScreen.GetValue("설정 창", "음량");'],
+'UIScreen.SetValue':['요소의 값을 바꿉니다 (슬라이더 · 진행 막대 · 체크박스 · 드롭다운 · 입력 상자).','UIScreen.SetValue("게임 HUD", "체력 막대", hero.hp);'],
+'UIScreen.SetVisible':['화면 안의 요소 하나를 보이거나 숨깁니다.','UIScreen.SetVisible("게임 HUD", "메뉴 버튼", false);'],
+'UIScreen.SetColor':['요소의 색을 바꿉니다 (글자 요소는 글자색, 나머지는 배경색). "#ff0000" 같은 값.','UIScreen.SetColor("게임 HUD", "점수", "#ffd24a");'],
 'Sound':['게임 전체의 배경 음악과 효과음을 다루는 정적 클래스입니다. 어느 스크립트에서나 쓸 수 있고, 배경 음악은 씬이 바뀌어도 이어서 재생됩니다. 보통 BGM 매니저에서 씁니다.','Sound.PlayMusic("타니아의 아침", 0.5f);'],
 'PlayMusic':['프로젝트 패널의 오디오 이름으로 배경 음악을 반복 재생합니다. 이미 같은 음악이 나오고 있으면 처음부터 다시 틀지 않습니다.','Sound.PlayMusic("타니아의 아침", 0.5f);'],
 'StopMusic':['배경 음악을 멈춥니다.','Sound.StopMusic();'],
