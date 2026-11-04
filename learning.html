@@ -812,6 +812,25 @@ html[data-theme="light"] .pv-fig .shot{box-shadow:0 18px 40px -20px rgba(20,24,4
 .pv-zoom{width:min(1400px,96vw);max-height:94vh;margin:auto;padding:0;border:1px solid var(--line);border-radius:14px;background:var(--code);overflow:auto;cursor:zoom-out}
 .pv-zoom img{display:block;width:100%;height:auto}
 .pv-zoom::backdrop{background:rgba(8,9,12,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.pv-side{position:fixed;top:calc(50% - 44px);z-index:4;display:flex;flex-direction:column;align-items:center;gap:8px;width:120px;padding:14px 8px;border-radius:18px;text-decoration:none;color:var(--mut);transition:color .15s,background .15s}
+.pv-side.prev{left:max(12px,calc(50% - 390px - 150px))}.pv-side.next{right:max(12px,calc(50% - 390px - 150px))}
+.pv-side .ar{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--panel);color:var(--tx);font-size:20px;box-shadow:0 10px 26px -12px rgba(0,0,0,.6);transition:transform .15s,border-color .15s,background .15s}
+.pv-side small{font-size:11px;letter-spacing:.04em;opacity:.8}
+.pv-side b{font-size:12.5px;font-weight:600;line-height:1.4;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pv-side:hover{color:var(--tx)}.pv-side:hover .ar{border-color:var(--y);background:rgba(246,205,42,.14);transform:scale(1.06)}
+.pv-side.prev:hover .ar{transform:translateX(-3px) scale(1.06)}.pv-side.next:hover .ar{transform:translateX(3px) scale(1.06)}
+.pv-side:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+.pv-fab{position:fixed;right:20px;bottom:20px;z-index:6;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.pv-fab button{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 15px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--tx);font-size:13px;font-weight:600;box-shadow:0 10px 28px -10px rgba(0,0,0,.6);transition:opacity .2s,transform .2s,border-color .15s}
+.pv-fab button:hover{border-color:var(--y)}
+.pv-fab .pv-up{opacity:0;transform:translateY(8px);pointer-events:none}
+.pv-fab .pv-up.show{opacity:1;transform:none;pointer-events:auto}
+.pv-end .pv-list{display:flex;justify-content:center;margin-top:20px}
+.pv-end .pv-list button{height:38px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--tx);font-size:13.5px;font-weight:600}
+.pv-end .pv-list button:hover{border-color:var(--y)}
+html[data-theme="light"] .pv-side .ar,html[data-theme="light"] .pv-fab button{box-shadow:0 10px 24px -14px rgba(20,24,40,.35)}
+@media (max-width:1180px){.pv-side{display:none}}
+@media (max-width:640px){.pv-fab{right:14px;bottom:14px}.pv-fab button{height:38px;padding:0 13px}.pv-fab .pv-lst span{display:none}}
 @media (max-width:640px){.pv-art{padding:26px 16px 64px;font-size:15.5px}.pv-lead{font-size:16.5px}.pv-sec h2{font-size:20px}.pv .pv-start-t{display:none}}
 /* 자체 확인창 (마치지 않은 문제에서 나갈 때) */
 .lc-dlg{width:min(400px,calc(100vw - 32px));margin:auto;padding:0;border:1px solid var(--line);border-radius:20px;color:var(--tx);background:radial-gradient(120% 80% at 0 0,rgba(246,205,42,.14),transparent 60%),var(--panel);box-shadow:0 30px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);overflow:hidden}
@@ -1105,6 +1124,8 @@ html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.
 <div id="pvView" class="pv" hidden>
 <header class="top"><button class="back" type="button" id="pvBack" aria-label="레슨 목록으로">← 레슨 목록</button><a class="brand" href="#" id="pvHome" title="학습 메인으로 (레슨 목록)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a><button type="button" class="pv-start-t" id="pvStartT">시작하기</button></header>
 <article class="pv-art" id="pvArt"></article>
+<nav id="pvSides" aria-label="이전 · 다음 레슨"></nav>
+<div class="pv-fab"><button type="button" class="pv-lst" id="pvList" title="레슨 목록으로 돌아가기" aria-label="레슨 목록으로 돌아가기">☰ <span>목록으로</span></button><button type="button" class="pv-up" id="pvUp" title="맨 위로" aria-label="맨 위로 올라가기">↑ <span>맨 위로</span></button></div>
 <dialog class="pv-zoom" id="pvZoom" aria-label="화면 크게 보기"></dialog>
 </div>
 <div id="lessonView" hidden>
@@ -4802,7 +4823,7 @@ document.addEventListener('click',e=>{
   RV_ON=!RV_ON;try{localStorage.setItem('thaniya.rvon',RV_ON?'1':'0')}catch(_){}
   renderHome(false);const b=$('#rvToggle');if(b)b.focus();
 });
-if(window.TI18N)TI18N.add({"마치지 않은 문제는 저장되지 않습니다.":["Unfinished problems are not saved.","終わっていない問題は保存されません。","未完成的题目不会被保存。"],"정말 다음으로 넘어가시겠습니까?":["Do you really want to move on?","本当に次へ進みますか?","确定要继续吗?"],"넘어가기":["Move on","進む","继续"],"계속 풀기":["Keep working","続ける","继续答题"],"코드 복습":["Code review","コード復習","代码复习"],"레슨 {n}":["Lesson {n}","レッスン {n}","第 {n} 课"],"레슨으로 가기":["Go to lesson","レッスンへ","前往课程"],"오늘의 코드 한 줄":["Code of the day","今日のコード一行","今日一行代码"],"코드 {n}개":["{n} snippets","コード {n} 個","{n} 段代码"],"모두 펼치기":["Expand all","すべて開く","全部展开"],"모두 접기":["Collapse all","すべて閉じる","全部收起"],"이전 레슨":["Previous","前のレッスン","上一课"],"다음 레슨":["Next","次のレッスン","下一课"],"닫기":["Close","閉じる","关闭"],"복사":["Copy","コピー","复制"],"복사됨":["Copied","コピーしました","已复制"],"레슨 아님 · 다시 보기":["Not a lesson · Review","レッスンではありません · 復習","非课程 · 复习"],"레슨 대신 레슨별 코드 모음 보기":["Show code per lesson instead of lessons","レッスンの代わりにコードをまとめて表示","不显示课程,改为按课汇总代码"],"코드 복습 · 레슨마다 쓰는 코드를 모아 봤어요":["Code review · The code used in each lesson","コード復習 · レッスンごとに使うコードをまとめました","代码复习 · 汇总每节课用到的代码"],"각 레슨에서 꼭 알아야 하는 코드를 한곳에 모아 놨어요. 복사해서 바로 써 보세요.":["The code you need to know in each lesson, all in one place. Copy it and try it right away.","各レッスンで必ず知っておきたいコードを1か所にまとめました。コピーしてすぐ試せます。","把每节课必须掌握的代码集中在一处,复制后即可直接试用。"]});
+if(window.TI18N)TI18N.add({"마치지 않은 문제는 저장되지 않습니다.":["Unfinished problems are not saved.","終わっていない問題は保存されません。","未完成的题目不会被保存。"],"정말 다음으로 넘어가시겠습니까?":["Do you really want to move on?","本当に次へ進みますか?","确定要继续吗?"],"넘어가기":["Move on","進む","继续"],"목록으로 돌아가기":["Back to lessons","一覧に戻る","返回列表"],"목록으로":["Lessons","一覧へ","列表"],"맨 위로":["Top","トップへ","回到顶部"],"계속 풀기":["Keep working","続ける","继续答题"],"코드 복습":["Code review","コード復習","代码复习"],"레슨 {n}":["Lesson {n}","レッスン {n}","第 {n} 课"],"레슨으로 가기":["Go to lesson","レッスンへ","前往课程"],"오늘의 코드 한 줄":["Code of the day","今日のコード一行","今日一行代码"],"코드 {n}개":["{n} snippets","コード {n} 個","{n} 段代码"],"모두 펼치기":["Expand all","すべて開く","全部展开"],"모두 접기":["Collapse all","すべて閉じる","全部收起"],"이전 레슨":["Previous","前のレッスン","上一课"],"다음 레슨":["Next","次のレッスン","下一课"],"닫기":["Close","閉じる","关闭"],"복사":["Copy","コピー","复制"],"복사됨":["Copied","コピーしました","已复制"],"레슨 아님 · 다시 보기":["Not a lesson · Review","レッスンではありません · 復習","非课程 · 复习"],"레슨 대신 레슨별 코드 모음 보기":["Show code per lesson instead of lessons","レッスンの代わりにコードをまとめて表示","不显示课程,改为按课汇总代码"],"코드 복습 · 레슨마다 쓰는 코드를 모아 봤어요":["Code review · The code used in each lesson","コード復習 · レッスンごとに使うコードをまとめました","代码复习 · 汇总每节课用到的代码"],"각 레슨에서 꼭 알아야 하는 코드를 한곳에 모아 놨어요. 복사해서 바로 써 보세요.":["The code you need to know in each lesson, all in one place. Copy it and try it right away.","各レッスンで必ず知っておきたいコードを1か所にまとめました。コピーしてすぐ試せます。","把每节课必须掌握的代码集中在一处,复制后即可直接试用。"]});
 
 /* ===== 레슨 미리 살펴보기 ===== */
 let PV_L=null;
@@ -4826,11 +4847,14 @@ function pvRender(L){
     <nav class="pv-toc" aria-label="${esc(_t('이 레슨에서 푸는 문제'))}"><h2>${esc(_t('이 레슨에서 푸는 문제'))}</h2><ol>${L.problems.map((p,i)=>`<li class="${st.done[p.id]?'done':''}${!all&&i===fi?' next':''}">${esc(p.title)}</li>`).join('')}</ol></nav>
     ${(D.s||[]).map((x,i)=>`<section class="pv-sec"><h2><span class="n">${String(i+1).padStart(2,'0')}</span><span>${esc(x.h)}</span></h2>${paras(x.p)}${x.img?fig(x.img,x.cap):''}${x.code?code(x.code,x.ct,x.long):''}${x.tip?`<p class="pv-tip">${x.tip}</p>`:''}</section>`).join('')}
     ${D.terms&&D.terms.length?`<section class="pv-terms"><h2>${esc(_t('용어'))}</h2><p>${esc(_t('이 레슨에서 처음 나오거나 자주 쓰는 말이다.'))}</p><dl>${D.terms.map(([k,d])=>`<div><dt>${esc(k)}</dt><dd>${esc(d)}</dd></div>`).join('')}</dl></section>`:''}
-    <div class="pv-end">${cta}<div class="pv-nav">${prev?`<a href="#about-${prev.hash}">← ${esc(prev.title)}</a>`:'<span></span>'}${next?`<a href="#about-${next.hash}">${esc(next.title)} →</a>`:'<span></span>'}</div></div>`;
+    <div class="pv-end">${cta}<div class="pv-nav">${prev?`<a href="#about-${prev.hash}">← ${esc(prev.title)}</a>`:'<span></span>'}${next?`<a href="#about-${next.hash}">${esc(next.title)} →</a>`:'<span></span>'}</div><div class="pv-list"><button type="button" data-list>☰ ${esc(_t('목록으로 돌아가기'))}</button></div></div>`;
+  $('#pvSides').innerHTML=(prev?`<a class="pv-side prev" href="#about-${prev.hash}" title="${esc(_t('이전 레슨'))} · ${esc(prev.title)}"><span class="ar" aria-hidden="true">←</span><small>${esc(_t('이전 레슨'))}</small><b>${esc(prev.title)}</b></a>`:'')+(next?`<a class="pv-side next" href="#about-${next.hash}" title="${esc(_t('다음 레슨'))} · ${esc(next.title)}"><span class="ar" aria-hidden="true">→</span><small>${esc(_t('다음 레슨'))}</small><b>${esc(next.title)}</b></a>`:'');
+  pvUpSync();
   window.scrollTo(0,0);
 }
 $('#pvArt').addEventListener('click',e=>{
   if(e.target.closest('[data-start]')){pvStart();return}
+  if(e.target.closest('[data-list]')){location.hash='';return}
   const z=e.target.closest('[data-zoom]');if(z){const d=$('#pvZoom');d.innerHTML=`<img src="${z.dataset.zoom}" alt="">`;d.showModal();return}
   const cp=e.target.closest('[data-cp]');if(cp){const txt=cp.closest('.pv-code').querySelector('pre').dataset.src,done=()=>{cp.textContent=_t('복사됨');setTimeout(()=>{cp.textContent=_t('복사')},1200)};
     const fb=()=>{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove();done()};
@@ -4838,6 +4862,10 @@ $('#pvArt').addEventListener('click',e=>{
 });
 $('#pvZoom').addEventListener('click',()=>$('#pvZoom').close());
 $('#pvStartT').onclick=()=>pvStart();
+function pvUpSync(){const b=$('#pvUp');if(b)b.classList.toggle('show',!$('#pvView').hidden&&scrollY>360)}
+addEventListener('scroll',pvUpSync,{passive:true});
+$('#pvUp').onclick=()=>{window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});$('#pvStartT').focus({preventScroll:true})};
+$('#pvList').onclick=()=>{location.hash=''};
 $('#pvBack').onclick=()=>{location.hash=''};
 $('#pvHome').onclick=e=>{e.preventDefault();location.hash=''};
 function route(){
