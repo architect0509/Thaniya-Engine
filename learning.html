@@ -528,6 +528,24 @@ body.scrub,body.scrub *{cursor:ew-resize!important;user-select:none!important}
 .lvb[aria-pressed="true"]{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);border-color:transparent;color:#1a1400;font-weight:600}
 .lvb .dots{opacity:.9}
 .lvb b{font:500 11px "IBM Plex Mono",ui-monospace,monospace;opacity:.65}
+.lvb svg{flex:none;opacity:.85}
+.lvb b.soon{font:600 10.5px inherit;font-family:inherit;opacity:.7;padding:1px 7px;border-radius:999px;background:rgba(255,255,255,.1)}
+.lvb.empty:not([aria-pressed="true"]){opacity:.72}
+.card .chip.cat{height:22px;padding:0 9px;font-size:11.5px;font-weight:600}
+.card .chip.cat.c-feature{background:rgba(49,193,236,.16);box-shadow:inset 0 0 0 1px rgba(49,193,236,.38);color:#7fd8f5}
+.card .chip.cat.c-cs{background:rgba(191,99,255,.16);box-shadow:inset 0 0 0 1px rgba(191,99,255,.4);color:#d3a2ff}
+.card .chip.cat.c-vs{background:rgba(16,211,94,.16);box-shadow:inset 0 0 0 1px rgba(16,211,94,.4);color:#6fe6a0}
+html[data-theme="light"] .card .chip.cat.c-feature{color:#0b6f8f}html[data-theme="light"] .card .chip.cat.c-cs{color:#7a2bc0}html[data-theme="light"] .card .chip.cat.c-vs{color:#0b7a3a}
+html[data-theme="light"] .lvb b.soon{background:rgba(0,0,0,.07)}
+.card.soon.empty-cat{grid-column:1/-1;flex-direction:column;gap:12px;min-height:200px;padding:28px 24px;color:var(--tx,#ebebf5);border-color:rgba(16,211,94,.35);background:linear-gradient(180deg,rgba(16,211,94,.07),rgba(255,255,255,.03))}
+.card.soon.empty-cat .ec-ic{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:rgba(16,211,94,.16);box-shadow:inset 0 0 0 1px rgba(16,211,94,.4);color:#6fe6a0;flex:none}
+.card.soon.empty-cat .ec-ic svg{width:28px;height:28px}
+.card.soon.empty-cat p{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0;max-width:460px}
+.card.soon.empty-cat b{font-size:16px;color:inherit}.card.soon.empty-cat span{opacity:.68;line-height:1.6;font-size:13.5px}
+.card.soon.empty-cat:hover{border-color:rgba(16,211,94,.35)}
+.card.soon.empty-cat p{white-space:normal;overflow:visible;text-overflow:clip;color:inherit}
+html[data-theme="light"] .card.soon.empty-cat{color:#202033;border-color:rgba(11,122,58,.35);background:linear-gradient(180deg,rgba(16,211,94,.08),rgba(0,0,0,.02))}
+html[data-theme="light"] .card.soon.empty-cat .ec-ic{color:#0b7a3a}
 .cards{max-width:1120px;margin:0 auto;padding:24px 24px 56px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
 .card{position:relative;isolation:isolate;display:flex;flex-direction:column;gap:12px;padding:20px;text-align:left;color:var(--tx);cursor:pointer;font:14px/1.6 "IBM Plex Sans KR",var(--f);
   background:linear-gradient(155deg,rgba(255,255,255,.17),rgba(255,255,255,.06) 42%,rgba(255,255,255,.09));
@@ -2736,16 +2754,16 @@ const L10P=[
  hint:'void Update()\n{\n    if (!talking)\n    {\n        return;\n    }\n    float d = Vector2.Distance(Hero.main.position, transform.position);\n    if (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))\n    {\n        CloseDialog();\n    }\n}'}
 ];
 const LESSONS=[
-  {...L2,problems:L2P,hash:'lesson-1',lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
-  {...L1,problems:L1P,hash:'lesson-2',lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
-  {...L3,problems:L3P,hash:'lesson-3',lv:2,kw:['GetComponent', 'Light', '값 바꾸기'],preview:'void Start()\n{\n    Light l = GetComponent<Light>();\n    l.intensity = 0.3f;\n}'},
-  {...L4,problems:L4P,hash:'lesson-4',lv:2,kw:['변수', 'public 필드', 'UI 연결'],preview:'public int damage = 30;\npublic Text label;\n\nvoid Start()\n{\n    hero.hp -= damage;\n    label.text = "HP " + hero.hp;\n}'},
-  {...L5,problems:L5P,hash:'lesson-5',lv:3,kw:['Update()', '키 입력', 'Vector2'],preview:'void Update()\n{\n    Vector2 dir = new Vector2(h, v);\n    hero.Face(dir);\n    hero.Move(dir * speed\n              * Time.deltaTime);\n}'},
-  {...L6,problems:L6P,hash:'lesson-6',lv:2,kw:['애니메이터', '애니메이션 클립', 'SetTrigger'],preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'},
-  {...L7,problems:L7P,hash:'lesson-7',lv:2,kw:['룰 타일', '애니메이션 타일', '타일 팔레트'],preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'},
-  {...L8,problems:L8P,hash:'lesson-8',lv:3,kw:['씬 전환', '매니저', 'SceneManager'],preview:'계층 구조 → ＋ 새 씬 · ★ 시작 씬\n포탈     → 대상 씬 「숲」\n매니저   → BGM 매니저 · 게임 매니저\nSceneManager.LoadScene("숲");'},
-  {...L9,problems:L9P,hash:'lesson-9',lv:2,kw:['UI 빌더', 'UI 그룹', '버튼 동작'],preview:'요소     → 텍스트 · 버튼 끌어다 놓기\n저장     → 「메인 화면」 · 「게임 UI」\n게임 시작 → 다른 UI 그룹 열기 「게임 UI」\n          + 이 그룹은 닫기'},
-  {...L10,problems:L10P,hash:'lesson-10',lv:3,kw:['UIScreen','UIGroup','OnInteract'],preview:'dialogUI = UIGroup.Find("대화창");\n\nvoid OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n}'}
+  {...L2,problems:L2P,hash:'lesson-1',cats:['feature'],lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
+  {...L1,problems:L1P,hash:'lesson-2',cats:['cs'],lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
+  {...L3,problems:L3P,hash:'lesson-3',cats:['cs'],lv:2,kw:['GetComponent', 'Light', '값 바꾸기'],preview:'void Start()\n{\n    Light l = GetComponent<Light>();\n    l.intensity = 0.3f;\n}'},
+  {...L4,problems:L4P,hash:'lesson-4',cats:['cs'],lv:2,kw:['변수', 'public 필드', 'UI 연결'],preview:'public int damage = 30;\npublic Text label;\n\nvoid Start()\n{\n    hero.hp -= damage;\n    label.text = "HP " + hero.hp;\n}'},
+  {...L5,problems:L5P,hash:'lesson-5',cats:['cs'],lv:3,kw:['Update()', '키 입력', 'Vector2'],preview:'void Update()\n{\n    Vector2 dir = new Vector2(h, v);\n    hero.Face(dir);\n    hero.Move(dir * speed\n              * Time.deltaTime);\n}'},
+  {...L6,problems:L6P,hash:'lesson-6',cats:['feature'],lv:2,kw:['애니메이터', '애니메이션 클립', 'SetTrigger'],preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'},
+  {...L7,problems:L7P,hash:'lesson-7',cats:['feature'],lv:2,kw:['룰 타일', '애니메이션 타일', '타일 팔레트'],preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'},
+  {...L8,problems:L8P,hash:'lesson-8',cats:['feature','cs'],lv:3,kw:['씬 전환', '매니저', 'SceneManager'],preview:'계층 구조 → ＋ 새 씬 · ★ 시작 씬\n포탈     → 대상 씬 「숲」\n매니저   → BGM 매니저 · 게임 매니저\nSceneManager.LoadScene("숲");'},
+  {...L9,problems:L9P,hash:'lesson-9',cats:['feature'],lv:2,kw:['UI 빌더', 'UI 그룹', '버튼 동작'],preview:'요소     → 텍스트 · 버튼 끌어다 놓기\n저장     → 「메인 화면」 · 「게임 UI」\n게임 시작 → 다른 UI 그룹 열기 「게임 UI」\n          + 이 그룹은 닫기'},
+  {...L10,problems:L10P,hash:'lesson-10',cats:['cs'],lv:3,kw:['UIScreen','UIGroup','OnInteract'],preview:'dialogUI = UIGroup.Find("대화창");\n\nvoid OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n}'}
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
 const LVN=['','입문','초급','중급'];
@@ -2759,6 +2777,17 @@ if(window.TI18N)TI18N.add({"난이도":["Difficulty","難易度","难度"],"입�
  "룰 타일":["Rule Tile","ルールタイル","规则图块"],"애니메이션 타일":["Animated Tile","アニメーションタイル","动画图块"],"타일 팔레트":["Tile Palette","タイルパレット","图块调色板"]});
 const lvName=L=>_t(LVN[L.lv]||'입문');
 const lvChip=L=>`<span class="chip lv lv${L.lv}"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>${esc(_t('난이도'))} ${esc(lvName(L))}</span></span>`;
+/* ===== 레슨 분류 (전체 · 기능 위주 · 비주얼 스크립트 위주 · C# 스크립트 위주) · 정렬은 난이도 순 (같은 난이도면 원래 순서) ===== */
+const LCATS=[['all','전체보기'],['feature','기능 위주'],['vs','비주얼 스크립트 위주'],['cs','C# 스크립트 위주']];
+const LCATN={feature:'기능',vs:'비주얼 스크립트',cs:'C# 스크립트'};
+const LCAT_IC={all:'<path d="M4 5h16M4 12h16M4 19h16"/>',feature:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',vs:'<circle cx="5.5" cy="6" r="2.5"/><rect x="14" y="3.5" width="7" height="5" rx="1.4"/><rect x="8.5" y="15.5" width="7" height="5" rx="1.4"/><path d="M8 6h6M5.5 8.5v6c0 1.7 1.2 3 3 3"/>',cs:'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>'};
+const lcatSvg=k=>`<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${LCAT_IC[k]}</svg>`;
+const LORDER=LESSONS.map((L,i)=>({L,i})).sort((a,b)=>(a.L.lv-b.L.lv)||(a.i-b.i)).map(x=>x.L);
+const inCat=(L,c)=>c==='all'||(L.cats||[]).includes(c);
+const catChips=L=>(L.cats||[]).map(c=>`<span class="chip cat c-${c}">${esc(_t(LCATN[c]))}</span>`).join('');
+if(window.TI18N)TI18N.add({"전체보기":["All","すべて","全部"],"기능 위주":["Features","機能中心","功能为主"],"비주얼 스크립트 위주":["Visual Scripting","ビジュアルスクリプト中心","可视化脚本为主"],"C# 스크립트 위주":["C# Scripting","C# スクリプト中心","C# 脚本为主"],
+ "기능":["Features","機能","功能"],"비주얼 스크립트":["Visual Scripting","ビジュアルスクリプト","可视化脚本"],"C# 스크립트":["C# Script","C# スクリプト","C# 脚本"],"레슨 분류":["Lesson categories","レッスンの分類","课程分类"],
+ "비주얼 스크립트 레슨을 준비하고 있어요":["Visual Scripting lessons are on the way","ビジュアルスクリプトのレッスンを準備中です","可视化脚本课程正在准备中"],"노드를 선으로 이어 만드는 레슨이 곧 나와요. 그동안 엔진의 「비주얼 스크립트」 창에서 먼저 만들어 보세요.":["Lessons on connecting nodes with wires are coming soon. Meanwhile, try the Visual Scripting window in the engine.","ノードを線でつなぐレッスンがもうすぐ登場します。それまでエンジンの「ビジュアルスクリプト」ウィンドウで試してみてください。","连接节点的课程即将推出。在此之前，可以先在引擎的「可视化脚本」窗口中试试。"],"준비 중":["Coming soon","準備中","准备中"]});
 const kwList=L=>`<ul class="kws" aria-label="keywords">${L.kw.map(k=>`<li>${esc(_t(k))}</li>`).join('')}</ul>`;
 /* 클리어 문구의 「레슨 N」에서 번호만 빼기 (번역 사전 키는 그대로 두고, 번역한 뒤에 지움) */
 const clearMsg=m=>String(_t(m)).replace(/(레슨|Lesson|レッスン)\s*\d+/,'$1').replace(/第\s*\d+\s*课/,'本课');
@@ -4443,7 +4472,7 @@ function run(){
 function passed(p){
   {
     st.done[p.id]=true;save();renderTop();
-    const last=st.cur===PROBLEMS.length-1,all=PROBLEMS.every(q=>st.done[q.id]),nextL=LESSONS[LESSONS.indexOf(LESSON)+1];
+    const last=st.cur===PROBLEMS.length-1,all=PROBLEMS.every(q=>st.done[q.id]),nextL=LORDER[LORDER.indexOf(LESSON)+1];
     const btn=!last?'<button class="btn pri nx" type="button" id="nx">다음 문제</button>':(all&&nextL?`<button class="btn pri nx" type="button" id="nxL">${esc(_t('다음 레슨'))} · ${esc(_t(nextL.title))}</button>`:'');
     setVerdict('ok',(all&&last?clearMsg(LESSON.clear):'통과했어요.')+btn);
     const nx=$('#nx');if(nx)nx.onclick=()=>show(st.cur+1);
@@ -4545,16 +4574,16 @@ renderHier();
 show(st.cur);
 
 /* ===================== 메인 화면 · 화면 전환 ===================== */
-let LVF=0;try{LVF=+localStorage.getItem('thaniya.lvf')||0}catch(e){}
+let LCF='all';try{const v=localStorage.getItem('thaniya.lcat');if(LCATS.some(c=>c[0]===v))LCF=v}catch(e){}
 function renderLvBar(refocus){
-  const cnt=n=>n?LESSONS.filter(L=>L.lv===n).length:LESSONS.length;
-  $('#lvbar').setAttribute('aria-label',_t('난이도별 보기'));
-  $('#lvbar').innerHTML=[0,1,2,3].map(n=>`<button type="button" class="lvb" data-lv="${n}" aria-pressed="${LVF===n}">${n?`<span class="dots lv${n}" aria-hidden="true"><i></i><i></i><i></i></span>`:''}<span>${esc(_t(n?LVN[n]:'전체'))}</span><b>${cnt(n)}</b></button>`).join('')+`<button type="button" class="lvb rvt" id="rvToggle" aria-pressed="${RV_ON}" title="${esc(_t('레슨 대신 레슨별 코드 모음 보기'))}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span>${esc(_t('코드 복습'))}</span></button>`;
-  if(refocus){const b=$('#lvbar .lvb[data-lv="'+LVF+'"]');if(b)b.focus()}
+  const cnt=c=>LESSONS.filter(L=>inCat(L,c)).length;
+  $('#lvbar').setAttribute('aria-label',_t('레슨 분류'));
+  $('#lvbar').innerHTML=LCATS.map(([c,n])=>{const k=cnt(c);return`<button type="button" class="lvb lcb c-${c}${k?'':' empty'}" data-lc="${c}" aria-pressed="${LCF===c}">${lcatSvg(c)}<span>${esc(_t(n))}</span>${k?`<b>${k}</b>`:`<b class="soon">${esc(_t('준비 중'))}</b>`}</button>`}).join('')+`<button type="button" class="lvb rvt" id="rvToggle" aria-pressed="${RV_ON}" title="${esc(_t('레슨 대신 레슨별 코드 모음 보기'))}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span>${esc(_t('코드 복습'))}</span></button>`;
+  if(refocus){const b=$('#lvbar .lvb[data-lc="'+LCF+'"]');if(b)b.focus()}
 }
 document.addEventListener('click',e=>{
-  const b=e.target.closest&&e.target.closest('#lvbar .lvb[data-lv]');if(!b)return;
-  LVF=+b.dataset.lv;try{localStorage.setItem('thaniya.lvf',LVF)}catch(_){}
+  const b=e.target.closest&&e.target.closest('#lvbar .lvb[data-lc]');if(!b)return;
+  LCF=b.dataset.lc;try{localStorage.setItem('thaniya.lcat',LCF)}catch(_){}
   renderHome(true);
 });
 const DQ_POOL=[["Debug.Log(\"Hello, Thaniya!\");", "콘솔에 글자를 한 줄 출력해요."], ["Debug.Log(\"HP: \" + hp);", "글자와 변수 값을 + 로 이어 붙여 출력해요."], ["Debug.Log($\"{a} + {b} = {a + b}\");", "글자 앞에 $를 붙이면 중괄호 안의 식이 계산돼 글자에 들어가요."], ["for (int i = 1; i <= 5; i++)", "i를 1부터 5까지 바꿔 가며 중괄호 안을 다섯 번 실행해요."], ["Debug.LogWarning(\"체력이 낮아요\");", "콘솔에 노란색 경고로 알려요."], ["Debug.LogError(\"저장에 실패했어요\");", "콘솔에 빨간색 오류로 알려요."], ["Light light = GetComponent<Light>();", "이 오브젝트에 붙은 Light 컴포넌트를 꺼내요."], ["GameObject torch = GameObject.Find(\"횃불\");", "이름으로 다른 오브젝트를 찾아요."], ["light.intensity = 0.3f;", "값을 대입하면 인스펙터와 게임 뷰가 바로 바뀌어요."], ["light.enabled = false;", "컴포넌트를 끄면 빛이 꺼져요. 오브젝트 전체는 SetActive를 써요."], ["Camera.main.orthographicSize = 2;", "카메라 크기가 작을수록 화면이 더 확대돼요."], ["slime.transform.position = hero.transform.position + Vector2.right;", "슬라임을 주인공의 오른쪽 한 칸 옆으로 옮겨요."], ["hero.hp -= damage;", "hp에서 damage만큼 빼고 다시 저장해요."], ["hero.hp = Mathf.Min(hero.hp + heal, limit);", "회복해도 한도를 넘지 않게 둘 중 작은 값을 골라요."], ["coin.SetActive(false);", "오브젝트를 화면에서 치워요."], ["float d = Vector2.Distance(hero.transform.position, coin.transform.position);", "두 위치 사이의 거리를 재요."], ["public void OnClick()", "버튼의 클릭에 연결할 함수는 public void로 만들어요."], ["float h = Input.GetAxisRaw(\"Horizontal\");", "왼쪽은 -1, 오른쪽은 +1, 입력이 없으면 0으로 읽어요."], ["hero.Move(dir * speed * Time.deltaTime);", "프레임 속도와 상관없이 같은 속도로 움직여요."], ["dir = dir.normalized;", "방향의 길이를 1로 맞춰서 대각선이 더 빠르지 않게 해요."], ["if (Input.GetKeyDown(KeyCode.Space))", "키를 누른 순간에만 한 번 true가 돼요."], ["animator.SetTrigger(\"Hop\");", "애니메이터의 Hop 트리거를 발동해 깡충 뛰게 해요."]];
@@ -4566,14 +4595,15 @@ function dqRender(){
 function renderHome(refocus){
   dqRender();
   renderLvBar(refocus);
-  $('#cards').innerHTML=LESSONS.filter(L=>!LVF||L.lv===LVF).map(L=>{
+  const shown=LORDER.filter(L=>inCat(L,LCF));
+  $('#cards').innerHTML=shown.map(L=>{
     const n=L.problems.filter(p=>st.done[p.id]).length,t=L.problems.length,done=n===t;
     const label=done?'다시 보기':n?'이어하기':'시작하기',state=done?'완료':n?'진행 중':'시작 전';
     return`<button type="button" class="card" data-go="${L.hash}" aria-label="${esc(_t('난이도'))} ${esc(lvName(L))} · ${esc(L.title)} · ${esc(_t(state))}">
-      <div class="ctop">${lvChip(L)}<span class="state${done?' done':''}">${done?'✓ ':''}${state}</span></div>
+      <div class="ctop">${lvChip(L)}${catChips(L)}<span class="state${done?' done':''}">${done?'✓ ':''}${state}</span></div>
       <h2>${esc(L.title)}</h2><p title="${esc(L.lead)}">${esc(L.lead)}</p>${kwList(L)}<pre>${csHighlight(L.preview)}</pre>
       <div class="cfoot"><div class="cbar"><i style="width:${n/t*100}%"></i></div><span class="cnum">${esc(_t('{n} / {t} 문제',{n,t}))}</span><span class="go">${label}</span></div></button>`;
-  }).join('')+(LVF?'':`<div class="card soon" aria-hidden="true"><p>다음 레슨을 준비하고 있어요</p></div>`);
+  }).join('')+(shown.length?(LCF==='all'?`<div class="card soon" aria-hidden="true"><p>다음 레슨을 준비하고 있어요</p></div>`:''):`<div class="card soon empty-cat"><div class="ec-ic" aria-hidden="true">${lcatSvg(LCF)}</div><p><b>${esc(_t(LCF==='vs'?'비주얼 스크립트 레슨을 준비하고 있어요':'다음 레슨을 준비하고 있어요'))}</b>${LCF==='vs'?`<span>${esc(_t('노드를 선으로 이어 만드는 레슨이 곧 나와요. 그동안 엔진의 「비주얼 스크립트」 창에서 먼저 만들어 보세요.'))}</span>`:''}</p></div>`);
   $('#cards').hidden=RV_ON;$('#rvList').hidden=!RV_ON;if(RV_ON)rvRender();
   $('#tools').innerHTML=`<button type="button" class="card tool" data-go="search" aria-label="도구 · 코드 검색 · 코드를 넣으면 설명과 예시를 보여 줘요">
       <div class="tl">
@@ -4904,7 +4934,7 @@ const RV_DATA={"lesson-1": {"note": "코드를 쓰지 않고 화면을 직접 �
 const RV_OPEN=new Set();let RV_ON=false;try{RV_ON=localStorage.getItem('thaniya.rvon')==='1'}catch(e){}
 function rvCode(c){return c==='@L5_FINAL'?L5_FINAL:c}
 const rvLv=L=>`<span class="rv-lv"><span class="dots lv${L.lv}" aria-hidden="true"><i></i><i></i><i></i></span>${esc(lvName(L))}</span>`;
-const rvList=()=>LESSONS.filter(L=>!LVF||L.lv===LVF);
+const rvList=()=>LORDER.filter(L=>inCat(L,LCF));
 let RV_CUR='';
 function rvRender(){
   $('#rvList').innerHTML=rvList().map(L=>{const n=((RV_DATA[L.hash]||{}).items||[]).length;

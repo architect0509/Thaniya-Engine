@@ -1523,8 +1523,11 @@ function rtStart(){
   const el=document.createElement('div');el.className='uibRt';const bar=host.querySelector('.pbar');host.insertBefore(el,bar||null);
   RT.el=el;RT.on=true;RT.mid=null;RT.key='';RT.list=[];
   el.addEventListener('click',rtClick);el.addEventListener('input',rtInput);el.addEventListener('change',rtChange);
-  el.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)||e.target.closest('[data-n]'))e.stopPropagation();if(e.key==='Escape'&&e.target.blur)e.target.blur()});
-  el.addEventListener('keyup',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))e.stopPropagation()});
+  /* 글자를 치는 칸(입력 상자 · 드롭다운)에서만 키를 막음 — 버튼 · 체크박스 · 슬라이더를 누른 뒤에도 방향키 · Space가 게임으로 감
+     (예전: 동작 없는 버튼을 누르면 그 버튼이 포커스를 쥔 채 남아 화면을 다시 누를 때까지 키 입력이 막혔음) */
+  const typing=t=>t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.tagName==='INPUT'&&!/^(checkbox|radio|range|button|submit|reset)$/.test(t.type)||t.isContentEditable;
+  el.addEventListener('keydown',e=>{if(typing(e.target))e.stopPropagation();if(e.key==='Escape'&&e.target.blur)e.target.blur()});
+  el.addEventListener('keyup',e=>{if(typing(e.target))e.stopPropagation()});
   el.addEventListener('pointerdown',e=>{if(e.target.closest('[data-n]'))e.stopPropagation()});
   rtTick();
 }
@@ -1574,6 +1577,7 @@ function rtClick(e){
   if(!play)return;const el=e.target.closest('[data-n]');if(!el)return;const s=rtOf(el);if(!s)return;const n=rtNode(s,el.dataset.n);if(!n)return;const m=play.m;
   if(n.type==='toggle'){const on=!el.classList.contains('on');n.pr.checked=on;setToggle(el,n,on);fire(s,n,'OnValueChanged');if(n.pr.onChange)broadcast(n.pr.onChange);return}
   if(n.type!=='button')return;e.stopPropagation();
+  {const b=e.target.closest('button');if(b)setTimeout(()=>{if(document.activeElement===b)b.blur()},0)}
   fire(s,n,'OnClick');if(!play||play.m!==m)return;
   const a=n.act||{};
   if(a.t==='close')grpVis(m,s.g,false);

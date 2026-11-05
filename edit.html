@@ -1607,7 +1607,7 @@ body.popbody .pcol{display:none}
   <div class="toolbar" id="toolbar">
     <div class="tgroup" id="layers" role="toolbar" aria-label="편집 레이어"></div>
     <button class="tbtn uibbtn" id="bUib" type="button" data-ic="ui" title="UI 화면 만들기 — UI 빌더 창을 엽니다 (버튼 · 텍스트 · 체크박스 · 슬라이더 · 입력 상자를 끌어다 놓아 화면을 만듭니다)">UI 화면 만들기</button>
-    <button class="tbtn uibbtn sedbtn" id="bSed" type="button" data-ic="script" title="스크립트 편집하기 — 스크립트 창을 열고, 현재 씬과 매니저의 스크립트를 계층 구조 그대로 골라 편집합니다">스크립트 편집하기</button>
+    <span class="tgroup codegrp" role="group" aria-label="스크립트 편집"><button class="tbtn sedbtn" id="bSed" type="button" data-ic="script" title="C# 스크립트 편집하기 — 스크립트 창을 열고, 현재 씬과 매니저의 스크립트를 계층 구조 그대로 골라 편집합니다">C#</button><button class="tbtn vsbtn" id="bVs" type="button" data-ic="vscript" title="비주얼 스크립트 — 노드를 선으로 이어 스크립트 머신 · 상태 머신을 만듭니다">비주얼 스크립트</button></span>
     <span class="spacer"></span>
     <span class="playgrp"><button class="tbtn playbtn" id="bPlay" data-ic="play">플레이</button><button class="tbtn playopt" id="bPlayOpt" title="플레이 화면 옵션" aria-label="플레이 화면 옵션">▾</button></span>
     <span class="spacer"></span>
@@ -1741,6 +1741,11 @@ body.popbody .pcol{display:none}
     <div class="pbody"><div id="uibBox"></div></div>
   </section>
 
+  <section class="panel vswin" data-id="vs">
+    <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="vscript"></span><span class="ptitle">비주얼 스크립트</span></span><span class="spacer"></span><button class="ppop" aria-label="엔진 밖 새 창으로 꺼내기" title="엔진 밖 새 창으로 꺼내기" data-ic="popout"></button><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button><button class="pclose lclose" id="vsX" aria-label="비주얼 스크립트 창 닫기" title="닫기 (그래프는 프로젝트에 그대로 남습니다)" data-ic="x"></button></header>
+    <div class="pbody"><div id="vsBox" tabindex="-1"></div></div>
+  </section>
+
   <section class="panel" data-id="anim">
     <header class="phead"><button class="pcol" aria-label="접기/펼치기"></button><span class="ptab"><span class="ticon" data-ic="anim"></span><span class="ptitle">애니메이션</span></span><span class="spacer"></span><button class="ppop" aria-label="엔진 밖 새 창으로 꺼내기" title="엔진 밖 새 창으로 꺼내기" data-ic="popout"></button><button class="pmenu" aria-label="패널 메뉴" data-ic="more"></button></header>
     <div class="pbody anbody"><div id="awBox" class="anbox"></div></div>
@@ -1803,10 +1808,11 @@ body.popbody .pcol{display:none}
   <button id="padA">행동</button>
 </div>
 
-<script src="script-engine.js?v=20261104u"></script>
-<script src="script-editor.js?v=20261105a"></script>
+<script src="script-engine.js?v=20261106a"></script>
+<script src="script-editor.js?v=20261106a"></script>
 <script src="anim-editor.js?v=20261102a"></script>
-<script src="ui-builder.js?v=20261105e"></script>
+<script src="ui-builder.js?v=20261106a"></script>
+<script src="visual-script.js?v=20261106i"></script>
 <script>
 (()=>{
 'use strict';
@@ -1918,7 +1924,7 @@ const HINTS={
   obj:'배치(B)로 게임 오브젝트를 놓고, 이동(W)·회전(E)·크기(R)·사각형(T)·변환(Y) 도구의 핸들을 끌어 다듬습니다. Ctrl을 누르면 칸·15°·0.1 단위로 맞춥니다.',
   ui:'UI 요소를 클릭해 배치하고, 끌어서 이동하며 모서리 핸들로 크기를 바꿉니다. 점선 사각형이 UI 캔버스이고 플레이 화면 위에 겹쳐 표시됩니다.'
 };
-const PANELS={hier:'계층 구조',insp:'인스펙터',assets:'프로젝트',console:'콘솔',script:'스크립트',palette:'타일 팔레트',animator:'애니메이터',anim:'애니메이션',uib:'UI 빌더'};
+const PANELS={hier:'계층 구조',insp:'인스펙터',assets:'프로젝트',console:'콘솔',script:'스크립트',palette:'타일 팔레트',animator:'애니메이터',anim:'애니메이션',uib:'UI 빌더',vs:'비주얼 스크립트'};
 const ICON=(()=>{
   const s=(d,c)=>`<svg class="ic${c?' '+c:''}" viewBox="0 0 16 16" aria-hidden="true">${d}</svg>`;
   return{
@@ -1994,6 +2000,7 @@ const ICON=(()=>{
     mgr:s('<rect x="2" y="4.5" width="12" height="8.5" rx="1.6"/><path d="M6 4.5V3.2a1 1 0 011-1h2a1 1 0 011 1v1.3M2 8.2h12M7 8.2v1.4h2V8.2"/>'),
     sound:s('<path d="M2.5 6.2h2.6L8.6 3v10L5.1 9.8H2.5z"/><path d="M10.6 5.6a3.4 3.4 0 010 4.8M12.4 3.8a6 6 0 010 8.4"/>'),
     anim:s('<rect x="1.8" y="3.5" width="12.4" height="9" rx="1.4"/><path d="M1.8 6h12.4M1.8 10h12.4M4.5 3.5V6M8 3.5V6M11.5 3.5V6M4.5 10v2.5M8 10v2.5M11.5 10v2.5"/>'),
+    vscript:s('<circle cx="3.2" cy="4" r="1.7"/><rect x="9" y="2.3" width="5.5" height="3.4" rx="1"/><rect x="5.2" y="10.3" width="5.5" height="3.4" rx="1"/><path d="M4.9 4H9M3.2 5.7v4.3c0 1.2.8 2 2 2"/>'),
     animator:s('<rect x="1.5" y="2.5" width="5" height="3.4" rx="1"/><rect x="9.5" y="2.5" width="5" height="3.4" rx="1"/><rect x="5.5" y="10.2" width="5" height="3.4" rx="1"/><path d="M6.5 4.2h3M4.6 5.9l2.2 4.3M11.4 5.9l-2.2 4.3"/>'),
     anchor:s('<circle cx="8" cy="3.4" r="1.6"/><path d="M8 5v9.2M5.2 7.6h5.6M2.6 9.6a5.4 5.4 0 0 0 10.8 0"/>'),
     layers:s('<path d="M8 2l6 3.1-6 3.1-6-3.1z"/><path d="M2 8.1l6 3.1 6-3.1M2 11l6 3.1 6-3.1"/>'),
@@ -2807,6 +2814,7 @@ $('#insp').addEventListener('click',e=>{
     const u=getUi();if(!u)return;
     const items=[{label:'새 C# 스크립트…',fn:()=>newScript(u)}];
     if(SC().length){items.push({sep:1});SC().forEach(sc=>items.push({label:sc.name+'.cs',fn:()=>attachScript(u,sc)}))}
+    items.push(...(vsCall('menuItems',u)||[]));
     showMenu(e.target,items);
   }
 });
@@ -2930,7 +2938,7 @@ function sampleProject(){
   return{name:_t('새 게임'),start:m.id,maps:[m],nextN:0,playerSprite:'',afolders:[],afmap:{},sfmap:{}};
 }
 function validProject(p){return p&&Array.isArray(p.maps)&&p.maps.length&&p.maps.every(m=>m&&m.id&&m.w>=0&&m.h>=0&&Array.isArray(m.l)&&m.l.length>=1&&m.l.every(a=>Array.isArray(a)&&a.length===m.w*m.h)&&Array.isArray(m.col)&&m.col.length===m.w*m.h&&Array.isArray(m.objs))}
-function normProject(p){p.nextN=p.nextN||0;if(p.uiDocs&&!Array.isArray(p.uiDocs))delete p.uiDocs;spNormP(p);if(!Array.isArray(p.scripts))p.scripts=[];p.scripts=p.scripts.filter(s=>s&&typeof s.name==='string'&&typeof s.code==='string').map(s=>({id:s.id||uid(),name:s.name,code:s.code}));
+function normProject(p){p.nextN=p.nextN||0;if(p.uiDocs&&!Array.isArray(p.uiDocs))delete p.uiDocs;if(p.vgraphs!==undefined&&!Array.isArray(p.vgraphs))delete p.vgraphs;if(Array.isArray(p.vgraphs))p.vgraphs=p.vgraphs.filter(g=>g&&g.id&&(g.kind==='flow'||g.kind==='state'));spNormP(p);if(!Array.isArray(p.scripts))p.scripts=[];p.scripts=p.scripts.filter(s=>s&&typeof s.name==='string'&&typeof s.code==='string').map(s=>({id:s.id||uid(),name:s.name,code:s.code}));
   (p.maps||[]).forEach(m=>{if(!Array.isArray(m.objs))return;m.objs.forEach(o=>{if(o.scripts!==undefined){o.scripts=Array.isArray(o.scripts)?o.scripts.filter(x=>x&&x.sid).map(x=>({id:x.id||uid(),sid:x.sid,vals:x.vals&&typeof x.vals==='object'?x.vals:{}})):[];if(!o.scripts.length)delete o.scripts}});m.objs.forEach(o=>{if(o.type==='spawn'&&(!o.props||typeof o.props!=='object'))o.props={}});fixStart(m)});if(!Array.isArray(p.afolders))p.afolders=[];if(!p.afmap||typeof p.afmap!=='object')p.afmap={};if(!p.sfmap||typeof p.sfmap!=='object')p.sfmap={};p.playerSprite=p.playerSprite||'';p.maps.forEach(m=>{if(!Array.isArray(m.ui))m.ui=[];m.ui=m.ui.filter(u=>u&&typeof u==='object'&&UI_NAMES[u.type]).map(normUi);if(!Array.isArray(m.uiGroups))m.uiGroups=[];m.uiGroups=m.uiGroups.filter(g=>g&&g.id).map(g=>Object.assign({id:String(g.id),name:String(g.name||'UI 그룹').slice(0,30)},g.uib&&typeof g.uib==='object'?{uib:g.uib}:{},g.dialog?{dialog:true}:{}));m.ui.forEach(u=>{if(!m.uiGroups.some(g=>g.id===u.group))u.group=null});if(!m.uiCv||typeof m.uiCv!=='object')m.uiCv={};m.uiCv={w:clamp(+m.uiCv.w||640,64,4096),h:clamp(+m.uiCv.h||360,64,4096),mode:UI_SCALE[m.uiCv.mode]?m.uiCv.mode:'match',match:clamp(m.uiCv.match==null?1:+m.uiCv.match||0,0,1)};m.theme=typeof m.theme==='string'&&m.theme?m.theme:'기본';if(!Array.isArray(m.groups))m.groups=[];if(!m.objs.some(o=>o.type==='spawn')){let fx=1,fy=1;search:for(let y=1;y<30;y++)for(let x=1;x<30;x++)if(!m.objs.some(o=>o.x===x&&o.y===y)){fx=x;fy=y;break search}m.objs.push({id:uid(),type:'spawn',name:'주인공',x:fx,y:fy,props:{},group:null})}if(!Array.isArray(m.lm))m.lm=[];while(m.lm.length<m.l.length)m.lm.push({name:'타일맵 '+(m.lm.length+1),wall:false});m.lm.length=m.l.length;m.lm.forEach((q,i)=>{if(!q||typeof q!=='object')m.lm[i]=q={};q.name=String(q.name||'타일맵 '+(i+1)).slice(0,30);q.wall=!!q.wall});if(!m.dark||typeof m.dark!=='object')m.dark={};m.dark={on:!!m.dark.on,color:/^#[0-9a-f]{6}$/i.test(m.dark.color)?m.dark.color:'#05060d',level:clamp(+m.dark.level>=0?+m.dark.level:.88,0,1)};m.objs.forEach(o=>{if(o.props&&o.props.memo==='')delete o.props.memo;if(o.group&&!m.groups.some(g=>g.id===o.group))o.group=null;if(!o.group)o.group=null});normObjTree(m);m.bg=ownBg(m)?m.bg:'';m.ox=Number.isFinite(+m.ox)?Math.round(+m.ox):0;m.oy=Number.isFinite(+m.oy)?Math.round(+m.oy):0;tTrim(m)});if(!p.heroInit){p.maps.forEach(m=>m.objs.forEach(o=>{if(o.type==='spawn')giveHeroScript(o,p)}));p.heroInit=true}
   if(!p.roleIds||typeof p.roleIds!=='object')p.roleIds={};
   if(!p.roleInit){p.maps.forEach(m=>{m.objs.forEach(o=>giveRoleScripts(o,p))});p.roleInit=true}
@@ -6359,7 +6367,7 @@ function scriptComps(o){
     if(!fields.length)b+='<p class="hint">공개(public) 변수가 없습니다. [Header("제목")] 과 public 변수를 쓰면 여기에 표시됩니다.</p>';
     b+=`<div style="margin-top:8px"><button class="btn" data-editsc="${s.id}" style="height:24px">스크립트 편집</button></div>`;
     return wrap(`${esc(prettyName(r.cls||s.name))} <small style="color:var(--mute);font-weight:400">(스크립트)</small>`,b);
-  }).join('');
+  }).join('')+(vsCall('compsHtml',o)||'');
 }
 $('#insp').addEventListener('input',e=>{
   const t=e.target,id=t.dataset.sf;if(!id)return;
@@ -6403,6 +6411,7 @@ $('#insp').addEventListener('click',e=>{
     const o=hierPick==='mgr'?mgrSel():getSel();if(!o)return;
     const items=[{label:'새 C# 스크립트…',fn:()=>newScript(o)}];
     if(SC().length){items.push({sep:1});SC().forEach(s=>items.push({label:s.name+'.cs',fn:()=>attachScript(o,s)}))}
+    items.push(...(vsCall('menuItems',o)||[]));
     showMenu(e.target,items);
   }
 });
@@ -6780,7 +6789,7 @@ function heroProxy(m,o){
 /* ===== 역할 컴포넌트 (Monster · Npc · Item · Portal · EventTrigger): GetComponent<T>() =====
    값(체력·속도·대사…)은 컴포넌트(인스펙터)에 두고, 동작은 붙은 C# 스크립트가 이 기능들을 불러 정합니다 */
 const ROLE_T={Monster:'monster',Npc:'npc',NPC:'npc',Item:'item',Portal:'portal',EventTrigger:'event'};
-const scriptHas=(o,fn)=>(o.scripts||[]).some(i=>{const s=scriptOf(i.sid);return!!s&&!!parseCSc(s.code).methods[fn]});
+const scriptHas=(o,fn)=>(o.scripts||[]).some(i=>{const s=scriptOf(i.sid);return!!s&&!!parseCSc(s.code).methods[fn]})||!!(o.vs&&o.vs.length&&vsCall('has',o,fn));
 function monOf(m,o){return play&&play.m===m?(play.mons||[]).find(z=>z.o===o)||null:null}
 /* 몬스터 이동 (칸×TS 픽셀): 축마다 벽·NPC·박스 콜라이더를 검사 · 한 축이라도 막히면 false */
 function monMove(z,dx,dy){let ok=true;if(dx){if(standable(z.x+dx,z.y,8))z.x+=dx;else ok=false}if(dy){if(standable(z.x,z.y+dy,8))z.y+=dy;else ok=false}return ok}
@@ -6911,6 +6920,7 @@ const CS_WORLD={
 /* 공용 스크립트 편집기(script-editor.js): 프로젝트 스크립트 목록 · 편집기 설정 */
 CSED.use({scripts:()=>SC(),settings:()=>setv});
 CSHOST.use(CS_WORLD);
+CSHOST.use({vscript:(k,n,a,cx)=>{const r=vsCall('csHook',k,n,a,cx);return r===undefined?null:r}});
 CSHOST.use({clog:(t,m,s,d)=>{clog(t,m,s,d);if(t==='info'&&s){try{learnNudge('console')}catch(_){}}},get play(){return play},objOn,isUiEl,startCamera,goProxy,trProxy,camProxy,csGetComp,csDestroy,uiGo:true,uiGroupH:(m,id)=>{const g=(m.uiGroups||[]).find(x=>x.id===id);return g?uiGroupH(m,g):null}});
 /* 스크립트 인스턴스별 실행 상태 (필드 값) — 씬에 들어갈 때마다 새로 만듭니다 */
 function csFieldInit(fd,inst){
@@ -7565,6 +7575,8 @@ function heroMoveInst(o){
 /* 소유자(게임 오브젝트 또는 UI 요소)에 붙은 스크립트의 지정한 메서드들을 실행 */
 function csRunMethods(m,o,fns){
   (o.scripts||[]).slice().forEach(inst=>fns.forEach(fn=>{if(play&&play.m===m)csRun(m,o,inst,fn,0,false)}));
+  /* 같은 메시지를 비주얼 스크립트(스크립트 머신 · 상태 머신)에도 · Start = 머신 시작 */
+  if(o.vs&&o.vs.length&&play&&play.m===m)vsCall('msg',m,o,fns);
 }
 function runScriptsStart(m){
   if(play&&!play.started)play.started=new Set();
@@ -7572,7 +7584,7 @@ function runScriptsStart(m){
 }
 /* UI 이벤트 메서드 */
 const UI_EVENTS=['OnClick','OnPointerEnter','OnPointerExit','OnValueChanged'];
-const uiHasHandler=(u,fn)=>(u.scripts||[]).some(inst=>{const s=scriptOf(inst.sid);return s&&parseCSc(s.code).methods[fn]});
+const uiHasHandler=(u,fn)=>(u.scripts||[]).some(inst=>{const s=scriptOf(inst.sid);return s&&parseCSc(s.code).methods[fn]})||!!(u.vs&&u.vs.length&&vsCall('has',u,fn));
 const uiInteractive=u=>uiCanClick(u)&&(!!uiClickProps(u)||!!uiComp(u,'toggle')||UI_EVENTS.some(fn=>uiHasHandler(u,fn)));
 function uiFire(u,fn){if(play&&uiHasHandler(u,fn))csRunMethods(play.m,u,[fn])}
 function scriptsPlayCheck(){
@@ -7614,7 +7626,7 @@ function openSceneSettings(){
   renderInsp();renderHier();need();
 }
 function exportData(withImg){
-  return{format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:P.name,start:P.start,playerSprite:P.playerSprite,nextN:P.nextN,scripts:P.scripts,heroScript:P.heroScript,heroInit:true,roleIds:P.roleIds,roleInit:true,sfmap:P.sfmap,anim:anData(),animInit:true,animV2:true,mgrs:P.mgrs,mgrInit:true,mgrV2:!!P.mgrV2,stiles:P.stiles||[],stN:P.stN||0,audio:audios.map(a=>Object.assign({id:a.id,name:a.name,size:a.size,dur:a.dur,mime:a.mime},withImg?{data:a.src}:{})),fonts:fonts.map(a=>Object.assign({id:a.id,name:a.name,size:a.size},withImg?{data:a.src}:{})),
+  return{format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:P.name,start:P.start,playerSprite:P.playerSprite,nextN:P.nextN,scripts:P.scripts,heroScript:P.heroScript,heroInit:true,roleIds:P.roleIds,roleInit:true,sfmap:P.sfmap,anim:anData(),animInit:true,animV2:true,mgrs:P.mgrs,mgrInit:true,mgrV2:!!P.mgrV2,vgraphs:P.vgraphs||[],stiles:P.stiles||[],stN:P.stN||0,audio:audios.map(a=>Object.assign({id:a.id,name:a.name,size:a.size,dur:a.dur,mime:a.mime},withImg?{data:a.src}:{})),fonts:fonts.map(a=>Object.assign({id:a.id,name:a.name,size:a.size},withImg?{data:a.src}:{})),
     assets:assets.map(a=>{const r={id:a.id,n:a.n,name:a.name,kind:a.kind,tileW:a.tw,tileH:a.th,cols:a.cols,rows:a.rows,theme:a.theme,solid:a.solid,spriteMode:a.mode||'single',sprites:(a.slices||[]).map(q=>({id:q.id,name:q.name,x:q.x,y:q.y,w:q.w,h:q.h,pivotX:q.px,pivotY:q.py}))};if(withImg)r.image=a.src;return r}),maps:P.maps};
 }
 function doExport(){
@@ -7636,7 +7648,7 @@ function doImport(){
       const p=JSON.parse($('#imTxt').value);if(!validProject(p))throw 0;
       normProject(p);
       const keep=p.assets,keepAu=p.audio,keepFn=p.fonts;delete p.assets;delete p.audio;delete p.fonts;
-      P={name:p.name||_t('새 게임'),start:p.maps.some(m=>m.id===p.start)?p.start:p.maps[0].id,maps:p.maps,nextN:p.nextN,playerSprite:p.playerSprite,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,roleIds:p.roleIds,roleInit:true,anim:p.anim,animInit:true,animV2:true,mgrs:p.mgrs,mgrInit:true,mgrV2:!!p.mgrV2,stiles:p.stiles,stN:p.stN,uiDocs:p.uiDocs,afolders:[],afmap:{},sfmap:p.sfmap||{}};try{UIB.migrate()}catch(e){console.error(e)}
+      P={name:p.name||_t('새 게임'),start:p.maps.some(m=>m.id===p.start)?p.start:p.maps[0].id,maps:p.maps,nextN:p.nextN,playerSprite:p.playerSprite,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,roleIds:p.roleIds,roleInit:true,anim:p.anim,animInit:true,animV2:true,mgrs:p.mgrs,mgrInit:true,mgrV2:!!p.mgrV2,vgraphs:Array.isArray(p.vgraphs)?p.vgraphs:[],stiles:p.stiles,stN:p.stN,uiDocs:p.uiDocs,afolders:[],afmap:{},sfmap:p.sfmap||{}};try{UIB.migrate()}catch(e){console.error(e)}
       (async()=>{
         if(Array.isArray(keep)&&keep.some(a=>a.image)){
           assets=[];reindex();
@@ -8347,7 +8359,7 @@ addEventListener('beforeunload',()=>{if(dirty){try{localStorage.setItem(KEY,JSON
 
 /* ===================== 패널 도킹 ===================== */
 /* center = 씬 뷰 머리의 씬·게임 탭 옆에 탭으로 붙는 패널 (기본: 애니메이터) · cActive = 지금 보이는 가운데 패널 (없으면 씬/게임 뷰) */
-const defLayout=()=>({lv:2,left:['hier'],right:['insp','animator'],bottom:['assets','console','script','palette','anim','uib'],center:[],cActive:null,float:{},hidden:{script:true,uib:true},collapsed:{},tabs:{console:'assets',anim:'palette',animator:'insp'},active:{},size:{left:280,right:300,bottom:260},z:{},brk:{},cw:{},bw:{}});
+const defLayout=()=>({lv:2,left:['hier'],right:['insp','animator'],bottom:['assets','console','script','palette','anim','uib','vs'],center:[],cActive:null,float:{},hidden:{script:true,uib:true,vs:true},collapsed:{},tabs:{console:'assets',anim:'palette',animator:'insp'},active:{},size:{left:280,right:300,bottom:260},z:{},brk:{},cw:{},bw:{}});
 let L;
 const mqN=matchMedia('(max-width: 900px)');
 const zoneEl={left:$('#dockL'),right:$('#dockR'),bottom:$('#dockB')};
@@ -8365,6 +8377,7 @@ function loadLayout(){
   const conNew=!seen.has('console')&&seen.has('assets');
   if(!seen.has('script')&&!(l.hidden&&'script' in l.hidden))out.hidden.script=true;
   if(!seen.has('uib')&&!(l.hidden&&'uib' in l.hidden))out.hidden.uib=true;
+  if(!seen.has('vs')&&!(l.hidden&&'vs' in l.hidden))out.hidden.vs=true;
   Object.keys(PANELS).forEach(id=>{if(!seen.has(id)){
     if(d.center.includes(id)){out.center.push(id);return}
     /* 새로 생긴 애니메이션 창: 타일 팔레트와 같은 자리에 탭으로 */
@@ -8884,6 +8897,7 @@ function startPlay(){
   $('#bPlay').classList.add('on');$('#bPlay').innerHTML=ico('stop')+'정지';
   plast=performance.now();playRaf=requestAnimationFrame(loop);
   try{UIB.playStart()}catch(e){console.error(e)}
+  vsCall('playStart');
   clog('info','▶ 플레이 시작 · '+play.m.name);
   document.documentElement.classList.add('is-playing');liveSig='';
   if(sel&&!play.m.objs.some(o=>o.id===sel))sel=null;
@@ -8897,7 +8911,7 @@ function stopPlay(){
   const p=play,wasEmbed=!!(p&&p.view==='embed');
   if(p){T(()=>clog('info','■ 플레이 종료 · 플레이 중 바꾼 값은 원래대로 되돌렸습니다'))}
   /* 소리 먼저 모두 끔 (오디오 소스 · 매니저 · 배경 음악 · 효과음) — 하나가 실패해도 나머지는 계속 */
-  T(()=>UIB.playStop());
+  T(()=>UIB.playStop());T(()=>vsCall('playStop'));
   T(()=>audStopAll());T(()=>musicStop());
   if(p){const fx=Array.isArray(p.sfx)?p.sfx:[];fx.forEach(x=>T(()=>x.pause()));p.sfx=[]}
   play=null;cancelAnimationFrame(playRaf);playRaf=0;
@@ -8943,6 +8957,13 @@ addEventListener('keydown',e=>{
   }
 });
 addEventListener('keyup',e=>{if(!play)return;if(play.kraw){play.kraw.delete(e.code);play.kup.add(e.code)}if(KMAP[e.code])play.keys[KMAP[e.code]]=false});
+/* 플레이 중 게임 화면 위 버튼(UI 빌더 화면 · 플레이 막대 · 이벤트 흐름)을 누르면 포커스를 바로 놓아 줍니다.
+   동작이 없는 버튼은 사라지지 않아 포커스를 쥔 채 남고, 그동안 방향키 · Space가 게임에 가지 않던 문제 */
+(function(){
+  const rel=e=>{if(!play)return;const t=e.target,b=t&&t.closest&&t.closest('button,[role="button"],input[type="checkbox"],input[type="radio"],input[type="range"],select');
+    if(!b||!b.closest('#play'))return;if(b.tagName==='SELECT'&&e.type!=='change')return;setTimeout(()=>{if(play&&b.ownerDocument.activeElement===b)b.blur()},0)};
+  document.addEventListener('click',rel,true);document.addEventListener('change',rel,true);
+})();
 addEventListener('blur',()=>{if(play){play.keys={};if(play.kraw)play.kraw.clear()}});
 pv.addEventListener('pointerdown',e=>{if(play&&play.kraw){const c='Mouse'+e.button;play.kraw.add(c);play.kdown.add(c)}});
 addEventListener('pointerup',e=>{if(play&&play.kraw){const c='Mouse'+e.button;if(play.kraw.delete(c))play.kup.add(c)}});
@@ -9003,6 +9024,7 @@ function update(dt){
     if(p.deathPend){p.deathPend=false;heroDeathSend(m);if(!play||play.m!==m)return}
     mgrTick(m,dt);if(!play||play.m!==m)return;
     for(const u of (m.ui||[]).slice()){if(!u.scripts)continue;for(const inst of u.scripts.slice()){csRun(m,u,inst,'Update',dt,true);if(!play||play.m!==m)return}}
+    vsCall('tick',m,dt,true);
     return;
   }
   {const ta=Math.atan2(p.fy,p.fx);let da=ta-(p.fa==null?ta:p.fa);da=Math.atan2(Math.sin(da),Math.cos(da));p.fa=(p.fa==null?ta:p.fa)+da*Math.min(1,dt*12)}
@@ -9012,15 +9034,17 @@ function update(dt){
   mgrTick(m,dt);if(!play||play.m!==m)return;
   {const hero=startSpawn(m),ui=m.ui||[];
    for(const o of m.objs.slice().concat(ui.slice())){
-     if(!o.scripts||!o.scripts.length)continue;
+     if(!(o.scripts&&o.scripts.length)&&!(o.vs&&o.vs.length))continue;
      if(o.type==='spawn'&&o!==hero)continue;
      if(!m.objs.includes(o)&&!ui.includes(o))continue;
      if(!isUiEl(o)){
        if(!objOn(m,o))continue;
        if(p.started&&!p.started.has(o.id)){p.started.add(o.id);csRunMethods(m,o,['Awake','Start']);if(!play||play.m!==m)return}
      }
-     for(const inst of o.scripts.slice()){csRun(m,o,inst,'Update',dt,true);if(!play||play.m!==m)return}
+     for(const inst of (o.scripts||[]).slice()){csRun(m,o,inst,'Update',dt,true);if(!play||play.m!==m)return}
    }}
+  /* 비주얼 스크립트 업데이트 (매니저 · 오브젝트 · UI의 스크립트 머신 / 상태 머신) */
+  vsCall('tick',m,dt,false);if(!play||play.m!==m)return;
   if(p.dead||p.dialog)return;
   if(p.moved)p.walk+=dt;
   /* 트리거 박스 콜라이더 2D: 주인공이 들어오면 OnTriggerEnter2D, 나가면 OnTriggerExit2D */
@@ -9030,7 +9054,7 @@ function update(dt){
      if(inside===was)continue;const fn=inside?'OnTriggerEnter2D':'OnTriggerExit2D';
      if(inside)p.trig.add(o.id);else p.trig.delete(o.id);
      csRunMethods(m,o,[fn]);if(!play||play.m!==m)return;
-     if(hero&&hero.scripts&&hero.scripts.length){csRunMethods(m,hero,[fn]);if(!play||play.m!==m)return}
+     if(hero&&(hero.scripts&&hero.scripts.length||hero.vs&&hero.vs.length)){csRunMethods(m,hero,[fn]);if(!play||play.m!==m)return}
    }}
   if(p.dead){if(p.deathPend){p.deathPend=false;heroDeathSend(m)}return}
   /* 주인공이 오브젝트의 칸에 들어오면 OnHeroEnter(), 나가면 OnHeroExit() — 아이템·이벤트·포탈 스크립트가 받음
@@ -9040,8 +9064,8 @@ function update(dt){
    if(!p.here)p.here=now;
    else{
      const was=p.here;p.here=now;
-     for(const id of was)if(!now.has(id)){const o=m.objs.find(q=>q.id===id);if(o&&o.scripts){csRunMethods(m,o,['OnHeroExit']);if(!play||play.m!==m)return}}
-     for(const id of now)if(!was.has(id)){const o=m.objs.find(q=>q.id===id);if(o&&o.scripts){csRunMethods(m,o,['OnHeroEnter']);if(!play||play.m!==m)return}}
+     for(const id of was)if(!now.has(id)){const o=m.objs.find(q=>q.id===id);if(o&&(o.scripts||o.vs)){csRunMethods(m,o,['OnHeroExit']);if(!play||play.m!==m)return}}
+     for(const id of now)if(!was.has(id)){const o=m.objs.find(q=>q.id===id);if(o&&(o.scripts||o.vs)){csRunMethods(m,o,['OnHeroEnter']);if(!play||play.m!==m)return}}
    }}
   /* 몬스터: 맞았을 때 깜빡임만 엔진이 처리 (움직임·공격·쓰러짐은 MonsterAI 스크립트) */
   p.mons.forEach(q=>{if(q.flash>0)q.flash-=dt});
@@ -9143,6 +9167,7 @@ function loop(t){
   drawPlay();if(GV.view==='scene'||GV.split)need();
   if(t-(play.insT||0)>150){play.insT=t;liveInsp()}
   try{anLive(t)}catch(e){}
+  vsCall('onPlayFrame');
   playRaf=requestAnimationFrame(loop);
 }
 
@@ -9291,8 +9316,8 @@ new ResizeObserver(()=>{if(gvDevice().k==='free'&&GV.view==='scene'&&getUi())try
 const SETK='thaniya.settings.v1';
 const HOME_URL='https://thaniya.co.kr/';
 const LOGO_URI='data:image/png;base64,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';
-const ST_DEF={btn:100,tone:'gray',edOpen:'float',edFs:13,ko:false,acKo:true,acCase:true,sceneBg:'#9a9ca3',fxSpark:false,fxCombo:false,fxSound:false};
-let setv={btn:100,tone:'gray',toneV:2,edOpen:'float',edFs:13,ko:false,acKo:true,acCase:true,sceneBg:'#9a9ca3',fxSpark:false,fxCombo:false,fxSound:false,kb:{},tpl:{}};
+const ST_DEF={btn:100,tone:'gray',edOpen:'float',edFs:13,ko:false,acKo:true,acCase:true,sceneBg:'#9a9ca3',fxSpark:false,fxCombo:false,fxSound:false,vsMagnet:true,vsFx:true};
+let setv={btn:100,tone:'gray',toneV:2,edOpen:'float',edFs:13,ko:false,acKo:true,acCase:true,sceneBg:'#9a9ca3',fxSpark:false,fxCombo:false,fxSound:false,vsMagnet:true,vsFx:true,kb:{},tpl:{}};
 try{const v=JSON.parse(localStorage.getItem(SETK+'.y'));if(v&&typeof v==='object'){
   if(+v.btn>=40&&+v.btn<=160)setv.btn=+v.btn;
   /* 버튼 색 기본값이 회색으로 바뀜 (toneV 2): 그 전에 저장된 설정도 한 번 회색으로 맞춤 */
@@ -9301,6 +9326,7 @@ try{const v=JSON.parse(localStorage.getItem(SETK+'.y'));if(v&&typeof v==='object
   if(+v.edFs>=10&&+v.edFs<=24)setv.edFs=Math.round(+v.edFs);
   setv.ko=!!v.ko;setv.acKo=v.acKo!==false;setv.acCase=v.acCase!==false;
   setv.fxSpark=!!v.fxSpark;setv.fxCombo=!!v.fxCombo;setv.fxSound=!!v.fxSound;
+  setv.vsMagnet=v.vsMagnet!==false;setv.vsFx=v.vsFx!==false;
   if(/^#[0-9a-f]{6}$/i.test(v.sceneBg))setv.sceneBg=v.sceneBg.toLowerCase();
   if(v.kb&&typeof v.kb==='object')Object.keys(v.kb).forEach(k=>{if(Array.isArray(v.kb[k]))setv.kb[k]=v.kb[k].filter(x=>typeof x==='string'&&x)});
   if(v.tpl&&typeof v.tpl==='object')['go','ui'].forEach(k=>{if(typeof v.tpl[k]==='string')setv.tpl[k]=v.tpl[k]});
@@ -9468,6 +9494,11 @@ function stBuild(){
         `<label class="chk"><input type="checkbox" id="stAcKo">한글 자판으로 친 영어를 고쳐서 추천</label>`,'한영 한/영 오타 자판 korean keyboard ime 보정 자동완성')}
       ${stItem('acCase','스크립트 편집기','대소문자 자동 보정','editor.autoCase','<code>.</code> 이나 <code>(</code> 를 치는 순간, 바로 앞 단어가 대소문자만 틀린 이름이면 고칩니다. 예: <code>debug.log(</code> → <code>Debug.Log(</code>. 직접 만든 변수처럼 똑같은 이름이 있으면 바꾸지 않습니다.',
         `<label class="chk"><input type="checkbox" id="stAcCase">대소문자 자동 보정</label>`,'대문자 소문자 case 보정 자동 auto correct')}
+      <h3 class="stsub">비주얼 스크립트</h3>
+      ${stItem('vsMagnet','비주얼 스크립트','선 연결 자석','visualScript.magnet','노드 포트에서 선을 끌어 다른 포트 가까이(화면에서 약 34px) 가져가면 선 끝이 자석처럼 착 붙습니다. 실제 연결은 마우스 버튼을 뗄 때 이루어집니다. 끄면 포트 위에 정확히 놓아야 이어집니다.',
+        `<label class="chk"><input type="checkbox" id="stVsMagnet">가까운 포트에 선 끝을 착 붙이기</label>`,'비주얼 스크립트 visual scripting 노드 node 선 연결 wire snap magnet 자석 스냅')}
+      ${stItem('vsFx','비주얼 스크립트','연결 효과','visualScript.connectEffect','노드를 잇거나 상태 전환을 만들 때 선이 반짝이고 받는 포트에서 동그란 물결이 퍼집니다. 「동작 줄이기」를 켠 기기에서는 나오지 않습니다.',
+        `<label class="chk"><input type="checkbox" id="stVsFx">연결할 때 반짝이는 효과</label>`,'비주얼 스크립트 visual scripting 연결 효과 effect 반짝 애니메이션 animation')}
   </section>
   <section class="stgrp stpage" data-sec="effects"><h2 data-anc="effects">입력 효과</h2>
     <p class="lead">스크립트를 칠 때 게임처럼 반응하는 재미 효과입니다. 엔진과 학습 화면의 코드 편집기에 함께 적용되고, 기본은 모두 꺼져 있습니다.</p>
@@ -9525,6 +9556,7 @@ function stBuild(){
   $('#stAcKo').addEventListener('change',e=>{setv.acKo=e.target.checked;saveSettings();stSync()});
   $('#stAcCase').addEventListener('change',e=>{setv.acCase=e.target.checked;saveSettings();stSync()});
   [['stFxSpark','fxSpark'],['stFxCombo','fxCombo'],['stFxSound','fxSound']].forEach(([id,k])=>$('#'+id).addEventListener('change',e=>{setv[k]=e.target.checked;saveSettings();stSync();if(setv[k])toast('스크립트 편집기에서 키를 쳐 보세요')}));
+  [['stVsMagnet','vsMagnet'],['stVsFx','vsFx']].forEach(([id,k])=>$('#'+id).addEventListener('change',e=>{setv[k]=e.target.checked;saveSettings();stSync()}));
   $('#stKo').addEventListener('change',e=>{setv.ko=e.target.checked;saveSettings();stSync();koApply();toast(setv.ko?'한글 스크립트를 켰습니다 (실험)':'한글 스크립트를 껐습니다')});
   $('#stEdFs').addEventListener('change',e=>{setv.edFs=clamp(Math.round(+e.target.value)||13,10,24);applySettings();saveSettings();stSync()});
   /* 템플릿 편집 칸 */
@@ -9565,6 +9597,7 @@ function stSync(){
   const ak=$('#stAcKo');if(ak){ak.checked=setv.acKo!==false;ak.disabled=!!setv.ko}
   const acs=$('#stAcCase');if(acs)acs.checked=setv.acCase!==false;
   [['stFxSpark','fxSpark'],['stFxCombo','fxCombo'],['stFxSound','fxSound']].forEach(([id,k])=>{const x=$('#'+id);if(x)x.checked=!!setv[k]});
+  [['stVsMagnet','vsMagnet'],['stVsFx','vsFx']].forEach(([id,k])=>{const x=$('#'+id);if(x)x.checked=setv[k]!==false});
   const fs=$('#stEdFs');if(fs&&document.activeElement!==fs)fs.value=setv.edFs;
   $$('textarea[data-tpl]',stCont).forEach(ta=>{const v=tplText(ta.dataset.tpl);if(ta.value!==v)ta.value=v;ta._paint()});
   stMarks();
@@ -9751,7 +9784,7 @@ stCont.addEventListener('click',e=>{
     closeSettings();newScript(null);return}
   if(e.target.closest('#stResetAll')){
     openModal('모든 설정 초기화','<p style="margin:0">화면·편집기·단축키·스크립트 템플릿 설정을 모두 기본값으로 되돌립니다. 프로젝트 데이터는 바뀌지 않습니다.</p>',[{t:'취소'},{t:'초기화',cls:'danger',fn:()=>{
-      setv={btn:ST_DEF.btn,tone:ST_DEF.tone,edOpen:ST_DEF.edOpen,edFs:ST_DEF.edFs,ko:false,acKo:true,acCase:true,sceneBg:ST_DEF.sceneBg,fxSpark:false,fxCombo:false,fxSound:false,kb:{},tpl:{}};if(window.TTheme)TTheme.set('dark');koApply();applySettings();saveSettings();sceneBgRefresh();kbRebuild();refreshKbHints();kbRows();stSync();toast('모든 설정을 기본값으로 되돌렸습니다')}}]);
+      setv={btn:ST_DEF.btn,tone:ST_DEF.tone,edOpen:ST_DEF.edOpen,edFs:ST_DEF.edFs,ko:false,acKo:true,acCase:true,sceneBg:ST_DEF.sceneBg,fxSpark:false,fxCombo:false,fxSound:false,vsMagnet:true,vsFx:true,kb:{},tpl:{}};if(window.TTheme)TTheme.set('dark');koApply();applySettings();saveSettings();sceneBgRefresh();kbRebuild();refreshKbHints();kbRows();stSync();toast('모든 설정을 기본값으로 되돌렸습니다')}}]);
   }
 });
 stCont.addEventListener('dblclick',e=>{const tr=e.target.closest('#kbBody tr');if(tr&&!e.target.closest('button'))kbRecord(tr.dataset.kb,'replace')});
@@ -10121,10 +10154,17 @@ if(window.TI18N)TI18N.onChange(()=>{
 const ANX=ANIM_EDITOR(__n=>{eval(__n);return eval('()=>('+__n+')')},(__n,__v)=>{eval(__n+'=__v')});
 /* UI 빌더가 준비되기 전(TDZ)에도 계층 구조·인스펙터가 그려질 수 있어 안전하게 부름 */
 function uibCall(fn,arg,def){try{return UIB[fn](arg)}catch(e){return def}}
+/* 비주얼 스크립트가 준비되기 전(TDZ)에도 안전하게 부름 */
+function vsCall(fn,...a){try{return VS[fn](...a)}catch(e){if(!(e instanceof ReferenceError))console.error(e);return undefined}}
 /* UI 빌더 (ui-builder.js): 「UI 화면 만들기」 창 · 플레이 중 UI 화면 · 스크립트 UIScreen */
 const UIB=UI_BUILDER(__n=>{eval(__n);return eval('()=>('+__n+')')},(__n,__v)=>{eval(__n+'=__v')});
 $('#bUib').addEventListener('click',()=>UIB.open());
 $('#bSed').addEventListener('click',()=>openScriptHub());
+/* 비주얼 스크립트 (visual-script.js): 「C# | 비주얼 스크립트」의 오른쪽 · 스크립트 머신 / 상태 머신 컴포넌트 · 플레이 중 이벤트 흐름 */
+const VS=VISUAL_SCRIPT(__n=>{eval(__n);return eval('()=>('+__n+')')},(__n,__v)=>{eval(__n+'=__v')});
+$('#bVs').addEventListener('click',()=>VS.open());
+$('#vsX').addEventListener('click',e=>{e.stopPropagation();VS.close()});
+$('#vsX').addEventListener('pointerdown',e=>e.stopPropagation());
 $('#uibX').addEventListener('click',e=>{e.stopPropagation();UIB.close()});
 $('#uibX').addEventListener('pointerdown',e=>e.stopPropagation());
 /* UI 빌더 창 머리: 축소(접기) · 전체화면 — 학습 창과 같은 단추 */
@@ -10462,7 +10502,8 @@ function mgrNorm(p){
   if(!Array.isArray(p.mgrs))p.mgrs=[];
   p.mgrs=p.mgrs.filter(o=>o&&typeof o==='object').map(o=>({id:String(o.id||uid()),name:String(o.name||'매니저').slice(0,40),type:'empty',x:0,y:0,mgr:true,
     props:(()=>{const q=o.props&&typeof o.props==='object'?o.props:{},r={};if(q.audio&&typeof q.audio==='object')r.audio=Object.assign(AUD_DEF(),q.audio);if(q.memo!=null)r.memo=String(q.memo);return r})(),
-    scripts:Array.isArray(o.scripts)?o.scripts.filter(x=>x&&x.sid).map(x=>({id:x.id||uid(),sid:x.sid,vals:x.vals&&typeof x.vals==='object'?x.vals:{}})):[]}));
+    scripts:Array.isArray(o.scripts)?o.scripts.filter(x=>x&&x.sid).map(x=>({id:x.id||uid(),sid:x.sid,vals:x.vals&&typeof x.vals==='object'?x.vals:{}})):[],
+    ...(Array.isArray(o.vs)&&o.vs.length?{vs:o.vs.filter(x=>x&&x.gid).map(x=>({id:x.id||uid(),gid:String(x.gid),vals:x.vals&&typeof x.vals==='object'?x.vals:{}}))}:{})}));
   /* 처음 한 번: 기본 BGM 매니저 (BgmManager 스크립트 + 「타니아의 아침」 반복 재생) */
   if(!p.mgrInit){
     let s=(p.scripts||[]).find(x=>x.name===BGM_SCRIPT);
@@ -10555,9 +10596,9 @@ $('#insp').addEventListener('input',e=>{if(e.target.dataset.mgr==='name'){const 
 function mgrTick(m,dt){
   const p=play;if(!p||!p.mgrs)return;if(!p.mgrStarted)p.mgrStarted=new Set();
   for(const o of p.mgrs.slice()){
-    if(!o.scripts||!o.scripts.length)continue;
+    if(!(o.scripts&&o.scripts.length)&&!(o.vs&&o.vs.length))continue;
     if(!p.mgrStarted.has(o.id)){p.mgrStarted.add(o.id);csRunMethods(m,o,['Awake','Start']);if(!play||play.m!==m)return}
-    for(const inst of o.scripts.slice()){csRun(m,o,inst,'Update',dt,true);if(!play||play.m!==m)return}
+    for(const inst of (o.scripts||[]).slice()){csRun(m,o,inst,'Update',dt,true);if(!play||play.m!==m)return}
   }
 }
 /* ---- 정적 클래스 Sound: 배경 음악(play.music · 씬이 바뀌어도 이어짐) · 효과음 ---- */

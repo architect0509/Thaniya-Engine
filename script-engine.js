@@ -42,6 +42,7 @@ const CSHOST={
   uiGroupH:null,       /* (m, 그룹 id) → UI 그룹 프록시 (public UIGroup 필드) */
   sound:null,          /* ('get', 이름) 또는 ('call', 이름, 인자) — 정적 클래스 Sound (배경 음악 · 효과음) */
   uiScreen:null,       /* (메서드 이름, 인자) — 정적 클래스 UIScreen (UI 빌더로 만든 화면 열기·닫기 · 요소 글자·값) */
+  vscript:null,        /* ('get'|'call', 이름, 인자, csCur) — 정적 클래스 VisualScript (비주얼 스크립트 머신과 이벤트 · 변수 · 상태 주고받기) */
   /* 호스트 함수 등록 (getter 도 그대로 복사) */
   use(h){Object.defineProperties(this,Object.getOwnPropertyDescriptors(h));return this}
 };
@@ -81,7 +82,7 @@ const KO_KW={공개:'public',비공개:'private',보호:'protected',내부:'inte
 const KO_TY={정수:'int',실수:'float',배실수:'double',논리:'bool',문자열:'string',벡터2:'Vector2',벡터3:'Vector3',색:'Color',쿼터니언:'Quaternion',
   게임오브젝트:'GameObject',변환:'Transform',트랜스폼:'Transform',행동스크립트:'MonoBehaviour',주인공:'Hero',애니메이터:'Animator',오디오소스:'AudioSource',사운드:'Sound',입력:'Input',시간:'Time',수학:'Mathf',
   디버그:'Debug',무작위:'Random',랜덤:'Random',키코드:'KeyCode',카메라:'Camera',빛:'Light',몬스터:'Monster',엔피시:'Npc',아이템:'Item',포탈:'Portal',
-  이벤트트리거:'EventTrigger',스프라이트렌더러:'SpriteRenderer',UI그룹:'UIGroup',UI화면:'UIScreen',텍스트:'Text',버튼:'Button',이미지:'Image',
+  이벤트트리거:'EventTrigger',스프라이트렌더러:'SpriteRenderer',UI그룹:'UIGroup',UI화면:'UIScreen',비주얼스크립트:'VisualScript',텍스트:'Text',버튼:'Button',이미지:'Image',
   씬관리자:'SceneManager',애플리케이션:'Application',유니티엔진:'UnityEngine'};
 const KO_SELF={내변환:'transform',내오브젝트:'gameObject',이오브젝트:'gameObject'};
 const KO_CALL={컴포넌트가져오기:'GetComponent',출력:'print',파괴:'Destroy',깨어날때:'Awake',시작:'Start',업데이트:'Update',매프레임:'Update',
@@ -119,6 +120,7 @@ const KO_OWN={
   UIGroup:{찾기:'Find'},
   UIScreen:{보이기:'Show',열기:'Show',숨기기:'Hide',닫기:'Hide',전환:'Toggle',열려있나:'IsOpen',글자바꾸기:'SetText',글자읽기:'GetText',값읽기:'GetValue',값바꾸기:'SetValue'},
   SceneManager:{씬불러오기:'LoadScene'},
+  VisualScript:{이벤트보내기:'Trigger',모두에게보내기:'TriggerAll',대상에게보내기:'TriggerOn',변수읽기:'GetVariable',변수바꾸기:'SetVariable',상태바꾸기:'SetState',현재상태:'CurrentState'},
   Application:{종료:'Quit'},
   Quaternion:{오일러:'Euler',회전없음:'identity'}
 };
@@ -720,7 +722,9 @@ const CS_STAT={
   Sound:csH('Sound',n=>csHook('sound','Sound.'+n)('get',n),(n,a)=>csHook('sound','Sound.'+n+'()')('call',n,a)),
   UIGroup:csH('UIGroup',null,(n,a)=>{if(n==='Find'){const m=csCur&&csCur.m;return m?csHook('uiGroupFind','UIGroup.Find()')(m,csFmt(a[0])):null}throw csUnsup('UIGroup.'+n+'()')}),
   /* UI 빌더 화면: UIScreen.Show("설정 창") · SetText("HUD", "점수", "점수 10") · GetValue("설정 창", "음량") */
-  UIScreen:csH('UIScreen',null,(n,a)=>csHook('uiScreen','UIScreen.'+n+'()')(n,a.map(v=>typeof v==='number'||typeof v==='boolean'?v:csFmt(v))))
+  UIScreen:csH('UIScreen',null,(n,a)=>csHook('uiScreen','UIScreen.'+n+'()')(n,a.map(v=>typeof v==='number'||typeof v==='boolean'?v:csFmt(v)))),
+  /* 비주얼 스크립트: VisualScript.Trigger("문 열기") · SetVariable("점수", 10) · CurrentState */
+  VisualScript:csH('VisualScript',n=>csHook('vscript','VisualScript.'+n)('get',n,[],csCur),(n,a)=>csHook('vscript','VisualScript.'+n+'()')('call',n,a.map(v=>v==null||typeof v==='number'||typeof v==='boolean'?v:csFmt(v)),csCur))
 };
 /* 연결 함수 꺼내기: 화면이 넘기지 않았으면 「아직 실행할 수 없습니다」 */
 function csHook(k,label){const f=CSHOST[k];if(typeof f!=='function')throw csUnsup(label);return f}

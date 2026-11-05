@@ -102,9 +102,10 @@ CS_API.Hero=[_P('position','Vector2'),_P('facing','Vector2'),_P('facingAngle','f
 CS_API['Hero:static']=[_P('main','Hero')];
 CS_API['Sound:static']=[_F('PlayMusic','void','string name, float volume'),_F('StopMusic','void'),_F('PauseMusic','void'),_F('ResumeMusic','void'),_F('SetMusicVolume','void','float volume'),_F('PlayEffect','void','string name, float volume'),_P('isMusicPlaying','bool'),_P('musicVolume','float'),_P('currentMusic','string')];
 CS_API['UIScreen:static']=[_F('Show','void','string screen'),_F('Hide','void','string screen'),_F('Toggle','void','string screen'),_F('HideAll','void'),_F('IsOpen','bool','string screen'),_F('SetText','void','string screen, string element, string text'),_F('GetText','string','string screen, string element'),_F('GetValue','object','string screen, string element'),_F('SetValue','void','string screen, string element, object value'),_F('SetVisible','void','string screen, string element, bool visible'),_F('SetColor','void','string screen, string element, string color')];
+CS_API['VisualScript:static']=[_F('Trigger','void','string eventName, object arg'),_F('TriggerAll','void','string eventName, object arg'),_F('TriggerOn','void','string objectName, string eventName, object arg'),_F('GetVariable','object','string name'),_F('SetVariable','void','string name, object value'),_F('SetState','void','string stateName'),_P('CurrentState','string')];
 CS_API['Random:static']=[_F('Range','float','float min, float max'),_P('value','float')];
 CS_API.Camera.unshift(_P('smoothFollow','bool'),_P('smoothTime','float'));
-const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','AudioSource','Camera','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen'];
+const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','AudioSource','Camera','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen','VisualScript'];
 const AC_COMPS=['Hero','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','SpriteRenderer','Rigidbody2D','Collider2D','Animator','AudioSource','Camera','Transform'];
 const AC_EV=[['Awake','void Awake()\n{\n    |\n}'],['Start','void Start()\n{\n    |\n}'],['Update','void Update()\n{\n    |\n}'],['FixedUpdate','void FixedUpdate()\n{\n    |\n}'],['LateUpdate','void LateUpdate()\n{\n    |\n}'],['OnEnable','void OnEnable()\n{\n    |\n}'],['OnDisable','void OnDisable()\n{\n    |\n}'],['OnDestroy','void OnDestroy()\n{\n    |\n}'],['OnTriggerEnter2D','void OnTriggerEnter2D(Collider2D other)\n{\n    |\n}'],['OnTriggerExit2D','void OnTriggerExit2D(Collider2D other)\n{\n    |\n}'],['OnCollisionEnter2D','void OnCollisionEnter2D(Collision2D collision)\n{\n    |\n}'],['OnHeroEnter','void OnHeroEnter()\n{\n    |\n}'],['OnHeroExit','void OnHeroExit()\n{\n    |\n}'],['OnInteract','void OnInteract()\n{\n    |\n}'],['OnHit','void OnHit()\n{\n    |\n}'],['OnHeroDeath','void OnHeroDeath()\n{\n    |\n}']];
 const AC_SN=[['if','if (|)\n{\n}'],['else','else\n{\n    |\n}'],['for','for (int i = 0; i < |; i++)\n{\n}'],['foreach','foreach (var item in |)\n{\n}'],['while','while (|)\n{\n}'],['switch','switch (|)\n{\n    case 0:\n        break;\n}']];
@@ -476,6 +477,14 @@ const AC_DOC={
 'Animator.Play':['지정한 애니메이션 상태를 재생합니다.','anim.Play("Walk");'],
 'Animator.speed':['애니메이션 재생 속도입니다.','anim.speed = 2f;'],
 'AudioSource':['오디오 소스 컴포넌트입니다. 인스펙터에서 고른 오디오 클립(음악·효과음)을 재생합니다.','AudioSource audioSource = GetComponent<AudioSource>();\naudioSource.Play();'],
+'VisualScript':['이 오브젝트에 붙은 비주얼 스크립트(스크립트 머신 · 상태 머신)와 이벤트 · 변수 · 상태를 주고받는 정적 클래스입니다.','VisualScript.Trigger("문 열기");\nVisualScript.SetVariable("점수", score);'],
+'VisualScript.Trigger':['내 오브젝트의 비주얼 스크립트에 커스텀 이벤트를 보냅니다 (「커스텀 이벤트 받기」 노드 · 상태 전환 「이벤트를 받으면」이 받음).','VisualScript.Trigger("말걸기");'],
+'VisualScript.TriggerAll':['씬의 모든 비주얼 스크립트에 커스텀 이벤트를 보냅니다.','VisualScript.TriggerAll("게임 시작");'],
+'VisualScript.TriggerOn':['이름으로 찾은 오브젝트의 비주얼 스크립트에 커스텀 이벤트를 보냅니다.','VisualScript.TriggerOn("문", "열기");'],
+'VisualScript.GetVariable':['오브젝트 변수(없으면 씬 · 앱 변수)를 읽습니다.','int hp = VisualScript.GetVariable("체력");'],
+'VisualScript.SetVariable':['오브젝트 변수를 바꿉니다. 비주얼 스크립트의 「변수 가져오기 (오브젝트)」가 같은 값을 읽어요.','VisualScript.SetVariable("체력", 3);'],
+'VisualScript.SetState':['내 상태 머신을 그 이름의 상태로 바꿉니다.','VisualScript.SetState("공격");'],
+'VisualScript.CurrentState':['내 상태 머신의 지금 상태 이름입니다.','if (VisualScript.CurrentState == "대기") { }'],
 'UIScreen':['씬의 UI 그룹(UI 빌더로 만든 그룹 포함)을 이름으로 열고 닫고, 그 안 요소의 글자·값을 다루는 정적 클래스입니다.','UIScreen.Show("설정 창");\nUIScreen.SetText("게임 HUD", "점수", "점수 " + score);'],
 'UIScreen.Show':['UI 화면을 보이게 합니다 (가장 앞에 놓임).','UIScreen.Show("설정 창");'],
 'UIScreen.Hide':['UI 화면을 숨깁니다.','UIScreen.Hide("설정 창");'],
