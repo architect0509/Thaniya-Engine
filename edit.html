@@ -1698,7 +1698,7 @@ body.popbody .pcol{display:none}
 </div>
 
 <script src="script-engine.js?v=20261104u"></script>
-<script src="script-editor.js?v=20261104y"></script>
+<script src="script-editor.js?v=20261105a"></script>
 <script src="anim-editor.js?v=20261102a"></script>
 <script src="ui-builder.js?v=20261105d"></script>
 <script>
@@ -5889,6 +5889,7 @@ function renderEditor(){
     const k=e.key,a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
     const ins=(txt,s0,e0,cur)=>{ta.setRangeText(txt,s0,e0,'end');if(cur!=null)ta.setSelectionRange(cur,cur);ta.dispatchEvent(new Event('input'))};
     if((e.ctrlKey||e.metaKey)&&(k.toLowerCase()==='s'||e.code==='KeyS')){e.preventDefault();e.stopPropagation();save();return}
+    if(typeof edPairs==='function'&&edPairs(e,ta)){try{acHide()}catch(_){}return}
     /* Ctrl+Enter: 문장 중간이어도 줄 끝에서 Enter를 친 것처럼 (들여쓰기 · { 뒤 한 칸 더) */
     if((e.ctrlKey||e.metaKey)&&!e.altKey&&!e.shiftKey&&!e.isComposing&&(k==='Enter'||e.code==='NumpadEnter')){
       e.preventDefault();e.stopImmediatePropagation();try{acHide()}catch(_){}

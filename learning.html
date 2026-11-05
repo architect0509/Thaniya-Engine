@@ -1285,7 +1285,7 @@ html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.
 </div>
 
 <script src="script-engine.js?v=20261104u"></script>
-<script src="script-editor.js?v=20261104y"></script>
+<script src="script-editor.js?v=20261105a"></script>
 <script src="anim-editor.js?v=20261102a"></script>
 <script src="ui-builder.js?v=20261105d"></script>
 <script src="learn-preview.js?v=20261105b"></script>
@@ -3010,10 +3010,12 @@ function snDrawUi(c,ox,oy,gw,gh){
   if(!SN_UI.length&&!(PLAY&&PLAY.msg))return;
   c.save();c.beginPath();c.rect(ox,oy,gw,gh);c.clip();
   SN_UI.forEach(u=>{
-    if(u.hidden&&(PLAY||SN.sel!=='U:'+u.id))return;
+    if(u.hidden&&PLAY)return;
     const r=uiRect(u,gw,gh),x=ox+r.x,y=oy+r.y,fs=Math.max(6,(+u.size||16)*r.k);
-    if(u.hidden)c.globalAlpha=.35;
-    if(u.type==='panel'){snRR(c,x,y,r.w,r.h,Math.min(12*r.k,r.h/2));c.fillStyle=u.bg||'rgba(0,0,0,.6)';c.fill();if(u.border){c.strokeStyle=u.border;c.lineWidth=Math.max(1,2*r.k);c.stroke()}c.globalAlpha=1;return}
+    if(u.hidden)c.globalAlpha=SN.sel==='U:'+u.id||(SN.sel==='G:'+u.grp)?.7:.42;
+    if(u.type==='panel'){snRR(c,x,y,r.w,r.h,Math.min(12*r.k,r.h/2));c.fillStyle=u.bg||'rgba(0,0,0,.6)';c.fill();if(u.border){c.strokeStyle=u.border;c.lineWidth=Math.max(1,2*r.k);if(u.hidden)c.setLineDash([6*r.k,4*r.k]);c.stroke();c.setLineDash([])}
+      if(u.hidden){c.globalAlpha=1;const t=_t('숨김 · 플레이하면 스크립트가 열어요'),f=Math.max(8,10*r.k);c.font='600 '+f+'px "IBM Plex Sans KR","Malgun Gothic",system-ui,sans-serif';const tw=c.measureText(t).width+f*1.4;snRR(c,x+r.w-tw-6*r.k,y-f*1.9,tw,f*1.6,f*.8);c.fillStyle='rgba(20,20,26,.88)';c.fill();c.fillStyle='#f6cd2a';c.textAlign='center';c.textBaseline='middle';c.fillText(t,x+r.w-tw/2-6*r.k,y-f*1.1)}
+      c.globalAlpha=1;return}
     if(u.type==='button'){snRR(c,x,y,r.w,r.h,Math.min(8*r.k,r.h/2));c.fillStyle=PLAY&&PLAY.down===u.id?'rgba(233,189,12,.92)':'rgba(22,22,28,.86)';c.fill();c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=1;c.stroke()}
     c.font='600 '+fs+'px "IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif';c.textBaseline='middle';
     c.fillStyle=u.type==='button'&&PLAY&&PLAY.down===u.id?'#1a1400':(u.color||'#ffffff');
@@ -3417,7 +3419,9 @@ function renderHier(){
   if(open)h+=list.map(o=>{const K=KUI[o.kind],on=o.id===SN.sel;
     return`<div class="tr${on?' on':''}" style="--d:${D};${o.active===false?'opacity:.45':''}" data-id="${o.id}" draggable="true" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${K.c}">${ico(K.ic)}</span><span class="tl"><span data-i18n-skip>${esc(o.name)}</span>${o.kind==='camera'?'<span class="wbadge">시작 카메라</span>':''}</span><span class="ts">${o.kind==='camera'?'':o.x+','+o.y}</span></div>`}).join('');
   if(open&&((tk&&pr.ui)||SN_UI.length)){const U=SN_UI.filter(u=>!q||u.name.toLowerCase().includes(q));h+=fold('folder','UI (캔버스)',U.length);
-    h+=U.map(u=>row('U:'+u.id,u.type==='button'?'uibtn':'uitext','#e9bd0c','<span data-i18n-skip>'+esc(u.name)+'</span>'+(u.grp?' <small style="opacity:.6">· '+esc(u.grp)+'</small>':''),u.hidden?_t('숨김'):(ANC_N[u.anchor]||''),!!u.hidden,true)).join('')}
+    const urow=u=>row('U:'+u.id,u.type==='button'?'uibtn':u.type==='panel'?'cube':'uitext','#e9bd0c','<span data-i18n-skip>'+esc(u.name)+'</span>',u.hidden?_t('숨김'):(ANC_N[u.anchor]||''),!!u.hidden,true),seenG=new Set();
+    h+=U.map(u=>{if(!u.grp)return urow(u);if(seenG.has(u.grp))return'';seenG.add(u.grp);const mem=U.filter(q=>q.grp===u.grp),hid=mem.every(q=>q.hidden),on=SN.sel==='G:'+u.grp;
+      return`<div class="tr${on?' on':''}" style="--d:2" data-id="G:${esc(u.grp)}" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:#e9bd0c">${ico('folder')}</span><span class="tl"><b data-i18n-skip>${esc(u.grp)}</b> <small style="opacity:.6">${esc(_t('UI 그룹'))}</small></span><span class="ts">${hid?esc(_t('숨김')):''} ${mem.length}</span></div>`+mem.map(q=>urow(q).replace('style="--d:2;','style="--d:3;')).join('')}).join('')}
   $('#hier').innerHTML=h;
   tkPing();
 }
@@ -3513,7 +3517,8 @@ function renderInspUi(id){
 function renderInsp(){
   if(STON){stInsp();return}
   if(SMON){smInsp();return}
-  if(SN.sel&&SN.sel[1]===':'){if(SN.sel[0]==='L'){renderInspTm(SN.sel.slice(2));return}if(SN.sel[0]==='U'){renderInspUi(SN.sel.slice(2));return}}
+  if(SN.sel&&SN.sel[1]===':'){if(SN.sel[0]==='L'){renderInspTm(SN.sel.slice(2));return}if(SN.sel[0]==='U'){renderInspUi(SN.sel.slice(2));return}if(SN.sel[0]==='G'){const g=SN.sel.slice(2),mem=SN_UI.filter(u=>u.grp===g),hid=mem.every(u=>u.hidden);
+    $('#insp').innerHTML=`<div class="ihead"><span class="ibadge" style="background:#e9bd0c;color:#1a1400">${ico('folder')}</span><b style="flex:1" data-i18n-skip>${esc(g)}</b><span class="tag">${esc(_t('UI 그룹'))}</span></div><div style="padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:12.5px;line-height:1.6"><div>${esc(_t('요소'))} ${mem.length}${esc(_t('개'))} · ${hid?esc(_t('지금 숨김')):esc(_t('지금 보임'))}</div><div style="color:var(--mute)">${esc(_t('게임이 시작될 때는 숨어 있다가 스크립트가 UIScreen.Show로 열어요. 씬 · 게임 뷰에서는 편집할 수 있게 흐리게 보여 줘요.'))}</div><code style="align-self:flex-start">UIGroup.Find("${esc(g)}")</code><div style="color:var(--mute)">${mem.map(u=>esc(u.name)).join(' · ')}</div></div>`;return}}
   const o=SN_OBJS.find(x=>x.id===SN.sel);
   if(!o){$('#insp').innerHTML='<p class="note" style="padding:12px">계층 구조나 씬 뷰에서 오브젝트를 고르세요.</p>';return}
   const K=KUI[o.kind];
@@ -4520,7 +4525,7 @@ ta.addEventListener('scroll',syncEd);
 ta.addEventListener('keydown',e=>{
   if((e.code==='KeyP'&&(e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.altKey)){e.preventDefault();run();return}
   if(lineKeys(e,ta))return;
-  if(autoQuote(e,ta))return;
+  if(autoQuote(e,ta))return;if(typeof edPairs==='function'&&edPairs(e,ta))return;
   const a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
   if(e.key==='Tab'&&!e.ctrlKey&&!e.altKey){
     e.preventDefault();
@@ -4858,7 +4863,7 @@ function svOpen(){
   ta.addEventListener('keydown',e=>{
     if((e.code==='KeyP'&&(e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.altKey)){e.preventDefault();svShowOut(svRun(ta.value));return}
     if(lineKeys(e,ta))return;
-    if(autoQuote(e,ta))return;
+    if(autoQuote(e,ta))return;if(typeof edPairs==='function'&&edPairs(e,ta))return;
     const a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
     if(e.key==='Tab'&&!e.ctrlKey&&!e.altKey){
       e.preventDefault();

@@ -774,6 +774,33 @@ function csedFx(ta,e){
   if(S.fxSpark){fxSparks(ta,del,pow);fxShake(ta,del?pow*.4:pow)}
   if(S.fxSound)fxSound(ta,del?'del':(it==='insertLineBreak'||e.data===' '||e.data==='\n')?'big':'key');
 }
+/* ---- 괄호 자동 닫기: ( [ { 를 치면 짝 ) ] } 를 함께 넣고 커서는 가운데 ----
+   · 선택한 글이 있으면 괄호로 감쌈 · 바로 뒤가 같은 닫는 괄호면 새로 넣지 않고 건너뜀
+   · 빈 짝 사이에서 Backspace → 둘 다 지움 · { } 사이에서 Enter → 세 줄로 펼치고 안쪽 들여쓰기
+   설정 › 스크립트 편집기의 autoPair가 false면 끔 (공용: 엔진 · 학습 화면) */
+const ED_PAIR={'(':')','[':']','{':'}'},ED_CLOSE={')':'(',']':'[','}':'{'};
+function edPairs(e,ta){
+  if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing||e.keyCode===229)return false;
+  try{if(csedSet().autoPair===false)return false}catch(_){}
+  const k=e.key,a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
+  const done=(txt,s0,e0,c0,c1,typed)=>{e.preventDefault();ta.setRangeText(txt,s0,e0,'end');ta.setSelectionRange(c0,c1==null?c0:c1);let ev;try{ev=typed?new InputEvent('input',{bubbles:true,inputType:'insertText',data:typed}):null}catch(_){ev=null}ta.dispatchEvent(ev||new Event('input',{bubbles:true}));return true};
+  /* 문자열 · 주석 안에서는 하지 않음 (그 줄에서 커서 앞의 따옴표가 홀수개이거나 // 뒤) */
+  const ls=v.lastIndexOf('\n',a-1)+1,before=v.slice(ls,a);
+  const inStr=((before.replace(/\\"/g,'').match(/"/g)||[]).length%2===1)||/\/\//.test(before.replace(/"[^"]*"/g,''));
+  if(ED_PAIR[k]){
+    if(a!==b)return done(k+v.slice(a,b)+ED_PAIR[k],a,b,a+1,b+1);
+    if(inStr)return false;
+    const nx=v[a]||'';if(nx&&!/[\s)\]};,]/.test(nx))return false;
+    return done(k+ED_PAIR[k],a,b,a+1,null,k);
+  }
+  if(ED_CLOSE[k]&&a===b&&v[a]===k){e.preventDefault();ta.setSelectionRange(a+1,a+1);return true}
+  if(k==='Backspace'&&a===b&&a>0&&ED_PAIR[v[a-1]]&&v[a]===ED_PAIR[v[a-1]])return done('',a-1,a+1,a-1);
+  if((k==='Enter'||e.code==='NumpadEnter')&&!e.shiftKey&&a===b&&v[a-1]==='{'&&v[a]==='}'){
+    const ind=/^[ \t]*/.exec(v.slice(ls,a))[0];
+    return done('\n'+ind+'    \n'+ind,a,b,a+1+ind.length+4);
+  }
+  return false;
+}
 function acHook(ta){
   ta.addEventListener('keydown',e=>{
     if(e.ctrlKey&&!e.altKey&&!e.metaKey&&e.code==='Space'){e.preventDefault();e.stopImmediatePropagation();acUpdate(ta,true);return}
