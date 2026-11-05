@@ -825,6 +825,23 @@ html[data-theme="light"] .pv-fig .shot{box-shadow:0 18px 40px -20px rgba(20,24,4
 .pv-fab button:hover{border-color:var(--y)}
 .pv-fab .pv-up{opacity:0;transform:translateY(8px);pointer-events:none}
 .pv-fab .pv-up.show{opacity:1;transform:none;pointer-events:auto}
+.pv-rec{margin-top:48px}
+.pv-rec h2{margin:0 0 4px;font-size:23px}
+.pv-rec>p{margin:0 0 16px;color:var(--mut);font-size:14px}
+.pv-recs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pv-rc{display:flex;flex-direction:column;gap:7px;padding:15px 16px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--tx);text-decoration:none;transition:transform .15s,border-color .15s}
+.pv-rc:hover{transform:translateY(-2px);border-color:var(--y)}
+.pv-rc:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+.pv-rc .rt{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut)}
+.pv-rc .rt .chip{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:999px;background:rgba(246,205,42,.16);box-shadow:inset 0 0 0 1px rgba(246,205,42,.3);color:var(--y);font-size:11.5px;font-weight:600}
+html[data-theme="light"] .pv-rc .rt .chip{color:#8a6a00}
+.pv-rc b{font-size:15.5px;line-height:1.4}
+.pv-rc .rl{font-size:12.5px;line-height:1.6;color:var(--mut);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pv-rc .rf{margin-top:auto;padding-top:4px;display:flex;align-items:center;gap:8px;font-size:11.5px}
+.pv-rc .why{color:var(--y);font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-theme="light"] .pv-rc .why{color:#8a6a00}
+.pv-rc .st{margin-left:auto;color:var(--mut);white-space:nowrap}.pv-rc .st.ok{color:var(--ok)}
+@media (max-width:720px){.pv-recs{grid-template-columns:1fr}}
 .pv-end .pv-list{display:flex;justify-content:center;margin-top:20px}
 .pv-end .pv-list button{height:38px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--tx);font-size:13.5px;font-weight:600}
 .pv-end .pv-list button:hover{border-color:var(--y)}
@@ -4829,6 +4846,17 @@ if(window.TI18N)TI18N.add({"마치지 않은 문제는 저장되지 않습니다
 let PV_L=null;
 function pvFirst(L){const i=L.problems.findIndex(p=>!st.done[p.id]);return i<0?0:i}
 function pvStart(L){L=L||PV_L;if(!L)return;st.curs[L.no]=pvFirst(L);save();location.hash=L.hash}
+/* 추천 레슨: 같은 난이도 +3, 키워드(낱말) 겹침 +2씩, 번호가 가까울수록 조금 더 */
+function pvRecs(L){
+  const tok=x=>new Set(x.kw.flatMap(k=>k.replace(/[()·]/g,' ').split(/\s+/)).filter(w=>w.length>1&&!/^(만들기|바꾸기|활용)$/.test(w)));
+  const me=tok(L);
+  const rs=LESSONS.filter(x=>x!==L).map(x=>{const sh=[...tok(x)].filter(w=>me.has(w)),lv=x.lv===L.lv;return{x,sh,lv,sc:(lv?3:0)+sh.length*2-Math.abs(x.no-L.no)*.1}}).sort((a,b)=>b.sc-a.sc).slice(0,3);
+  if(!rs.length)return'';
+  return`<section class="pv-rec"><h2>${esc(_t('추천 레슨'))}</h2><p>${esc(_t('같은 난이도이거나 키워드가 겹치는 레슨이다.'))}</p><div class="pv-recs">${rs.map(({x,sh,lv})=>{
+    const n=x.problems.filter(p=>st.done[p.id]).length,t=x.problems.length;
+    const why=[lv?_t('같은 난이도'):'',...sh.map(w=>'#'+w)].filter(Boolean);if(!why.length)why.push(x.no===L.no+1?_t('다음 레슨'):x.no===L.no-1?_t('이전 레슨'):_t('이어서 배우기'));
+    return`<a class="pv-rc" href="#about-${x.hash}"><div class="rt">${lvChip(x)}<span>${esc(_t('레슨 {n}',{n:x.no}))}</span></div><b>${esc(x.title)}</b><span class="rl">${esc(x.lead)}</span><div class="rf">${why.length?`<span class="why">${esc(why.join(' · '))}</span>`:''}<span class="st${n===t?' ok':''}">${n===t?'✓ '+esc(_t('완료')):n?esc(_t('{n} / {t} 문제',{n,t})):esc(_t('시작 전'))}</span></div></a>`}).join('')}</div></section>`;
+}
 function pvRender(L){
   PV_L=L;const D=(window.PV_DATA||{})[L.hash]||{intro:L.lead,s:[],terms:[]};
   const n=L.problems.filter(p=>st.done[p.id]).length,t=L.problems.length,all=n===t,fi=pvFirst(L);
@@ -4847,14 +4875,13 @@ function pvRender(L){
     <nav class="pv-toc" aria-label="${esc(_t('이 레슨에서 푸는 문제'))}"><h2>${esc(_t('이 레슨에서 푸는 문제'))}</h2><ol>${L.problems.map((p,i)=>`<li class="${st.done[p.id]?'done':''}${!all&&i===fi?' next':''}">${esc(p.title)}</li>`).join('')}</ol></nav>
     ${(D.s||[]).map((x,i)=>`<section class="pv-sec"><h2><span class="n">${String(i+1).padStart(2,'0')}</span><span>${esc(x.h)}</span></h2>${paras(x.p)}${x.img?fig(x.img,x.cap):''}${x.code?code(x.code,x.ct,x.long):''}${x.tip?`<p class="pv-tip">${x.tip}</p>`:''}</section>`).join('')}
     ${D.terms&&D.terms.length?`<section class="pv-terms"><h2>${esc(_t('용어'))}</h2><p>${esc(_t('이 레슨에서 처음 나오거나 자주 쓰는 말이다.'))}</p><dl>${D.terms.map(([k,d])=>`<div><dt>${esc(k)}</dt><dd>${esc(d)}</dd></div>`).join('')}</dl></section>`:''}
-    <div class="pv-end">${cta}<div class="pv-nav">${prev?`<a href="#about-${prev.hash}">← ${esc(prev.title)}</a>`:'<span></span>'}${next?`<a href="#about-${next.hash}">${esc(next.title)} →</a>`:'<span></span>'}</div><div class="pv-list"><button type="button" data-list>☰ ${esc(_t('목록으로 돌아가기'))}</button></div></div>`;
+    <div class="pv-end">${cta}${pvRecs(L)}</div>`;
   $('#pvSides').innerHTML=(prev?`<a class="pv-side prev" href="#about-${prev.hash}" title="${esc(_t('이전 레슨'))} · ${esc(prev.title)}"><span class="ar" aria-hidden="true">←</span><small>${esc(_t('이전 레슨'))}</small><b>${esc(prev.title)}</b></a>`:'')+(next?`<a class="pv-side next" href="#about-${next.hash}" title="${esc(_t('다음 레슨'))} · ${esc(next.title)}"><span class="ar" aria-hidden="true">→</span><small>${esc(_t('다음 레슨'))}</small><b>${esc(next.title)}</b></a>`:'');
   pvUpSync();
   window.scrollTo(0,0);
 }
 $('#pvArt').addEventListener('click',e=>{
   if(e.target.closest('[data-start]')){pvStart();return}
-  if(e.target.closest('[data-list]')){location.hash='';return}
   const z=e.target.closest('[data-zoom]');if(z){const d=$('#pvZoom');d.innerHTML=`<img src="${z.dataset.zoom}" alt="">`;d.showModal();return}
   const cp=e.target.closest('[data-cp]');if(cp){const txt=cp.closest('.pv-code').querySelector('pre').dataset.src,done=()=>{cp.textContent=_t('복사됨');setTimeout(()=>{cp.textContent=_t('복사')},1200)};
     const fb=()=>{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove();done()};
