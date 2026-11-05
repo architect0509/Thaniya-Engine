@@ -216,6 +216,7 @@ body.scrubxy,body.scrubxy *{cursor:move!important}
 .tbtn.playbtn{background:var(--sel);color:var(--sel-fg);border-color:transparent;font-weight:600;padding:0 16px}
 .tbtn.playbtn:hover{filter:brightness(1.12)}
 .tbtn.uibbtn{margin-left:8px;height:30px}
+.tbtn.sedbtn{margin-left:6px}
 .tbtn.save.dirty::after{content:"";position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--warn)}
 .btn{background:var(--btn);border:1px solid var(--line2);border-radius:4px;height:24px;padding:0 10px;white-space:nowrap}
 .btn:hover:not(:disabled){background:var(--btn-h)}
@@ -760,6 +761,22 @@ body{background:radial-gradient(1100px 600px at 12% -10%,rgba(233,189,12,.20),tr
 .ptab .ic,.ptabbtn.on .ticon{color:var(--accent)}
 .ntabs button{border-radius:999px;border:0!important}.ntabs button.on{background:rgba(233,189,12,.18);color:var(--accent)}
 .tr{height:28px;border-radius:10px;margin:1px 6px}
+/* 계층 구조 포커스 모드: 포커스된 그룹 위 막대 (포커스 해제) */
+#hier.hfocus{padding-top:2px}
+.hfbar{display:flex;align-items:center;gap:8px;margin:4px 6px 6px;padding:6px 6px 6px 10px;border-radius:10px;border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);background:color-mix(in srgb,var(--accent) 11%,transparent);position:sticky;top:0;z-index:2;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);animation:hfIn .18s ease-out}
+@keyframes hfIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.hfic{display:inline-flex;color:var(--accent);flex:none}
+.hft{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.hft b{font-size:calc(11.5px * var(--hz,1));font-weight:700;color:var(--fg)}
+.hft small{font-size:calc(10.5px * var(--hz,1));color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hfx{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px 0 8px;border-radius:8px;border:0;background:var(--sel);color:var(--sel-fg);font-weight:600;font-size:12px;white-space:nowrap;flex:none;cursor:pointer}
+.hfx:hover{filter:brightness(1.1)}
+.hfx .ic{width:12px;height:12px}
+#hier.hfocus .tr[data-hfroot]{font-weight:600}
+#hier.hfocus .tr[data-hfroot]:not(.on) .ti{color:var(--accent)!important}
+.hfempty{padding:10px 12px 10px 40px;font-size:12px;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){.hfbar{animation:none}}
+
 .tr.on{box-shadow:0 2px 10px rgba(233,189,12,.3)}
 .btn,.tbtn,.ib,select,input[type=text],input[type=number],input:not([type]),textarea{border-radius:10px}
 .btn,.tbtn{border:1px solid var(--line2);background:var(--btn)}
@@ -853,6 +870,94 @@ textarea.code{width:100%;height:min(420px,56vh);font:12px/1.55 var(--f-mono);tab
 #edStat.ok{color:var(--ok)}#edStat.bad{color:var(--danger)}
 .sedempty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mute);padding:20px}
 .sedempty>div{display:flex;flex-direction:column;gap:8px;align-items:center;max-width:320px}.sedempty .ic{width:30px;height:30px;color:var(--accent)}.sedempty b{color:var(--fg);font-size:14px}
+/* 스크립트 편집하기: 「스크립트 선택」 버튼 · 계층 구조 모양 고르기 창 (.spk) */
+.sedpick{display:inline-flex;align-items:center;gap:7px;height:30px;margin-bottom:6px;padding:0 10px 0 9px;border:1px solid var(--line2);border-radius:9px;background:var(--btn);color:var(--fg);white-space:nowrap;flex:none;max-width:280px;cursor:pointer;transition:background .15s,border-color .15s}
+.sedpick:hover{background:var(--btn-h)}
+.sedpick.on{background:var(--sel);color:var(--sel-fg);border-color:transparent}
+.sedpick .ic{color:var(--accent);flex:none}.sedpick.on .ic{color:inherit}
+.sedpick .t{font-weight:600}
+.sedpick .sc{font-size:11.5px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;min-width:0;padding-left:7px;border-left:1px solid var(--line2)}
+.sedpick.on .sc{color:inherit;opacity:.75;border-left-color:currentColor}
+.sedpick .cv{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none;transition:transform .18s}
+.sedpick.on .cv{transform:rotate(180deg)}
+.sedsep{width:1px;height:20px;background:var(--line2);margin:0 2px 6px;flex:none}
+.spk{position:absolute;left:10px;top:48px;z-index:6;width:min(520px,calc(100% - 20px));max-height:calc(100% - 64px);display:flex;flex-direction:column;background:rgba(32,32,38,.94);-webkit-backdrop-filter:blur(24px) saturate(1.5);backdrop-filter:blur(24px) saturate(1.5);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;animation:spkIn .16s ease-out}
+@keyframes spkIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.spk.inline{position:relative;left:auto;top:auto;width:min(620px,100%);max-height:100%;animation:none;box-shadow:0 8px 28px rgba(0,0,0,.25);background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}
+.sedempty.pk{align-items:stretch;justify-content:center;padding:16px;min-height:0;overflow:hidden;text-align:left;color:var(--fg)}
+.sedempty.pk>.spk{margin:0 auto;max-width:none;align-items:stretch;gap:0;flex:0 1 auto}
+.sedempty.pk .ic{width:14px;height:14px;color:inherit}.sedempty.pk .spk-c .ic,.sedempty.pk .spk-sr .ic{width:13px;height:13px;color:var(--accent)}.sedempty.pk .spk-c.on .ic,.sedempty.pk .spk-sr.on .ic{color:inherit}.sedempty.pk .spk-add .ic{width:13px;height:13px}
+.spk-h{flex:none;padding:10px 10px 8px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.spk-tt{display:flex;gap:10px;align-items:center;padding:4px 4px 2px}
+.spk .spk-tt>.ic{width:26px;height:26px;color:var(--accent);flex:none}
+.spk-tt b{display:block;font-size:14px;color:var(--fg)}.spk-tt span{display:block;font-size:12px;color:var(--mute);margin-top:2px}
+.spk-tools{display:flex;gap:6px;align-items:center}
+.spk-q{flex:1;min-width:0;display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:9px;background:var(--field);border:1px solid var(--line2);color:var(--mute)}
+.spk-q:focus-within{border-color:var(--accent)}
+.spk-q input{flex:1;min-width:0;border:0;background:none;outline:0;color:var(--fg);font:inherit;font-size:12.5px;height:100%;padding:0}
+.spk-tg{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border-radius:9px;border:1px solid var(--line2);background:var(--btn);color:var(--mute);font-size:12px;white-space:nowrap;cursor:pointer}
+.spk-tg:hover{background:var(--btn-h);color:var(--fg)}
+.spk-tg.on{background:var(--sel);color:var(--sel-fg);border-color:transparent}
+.spk-tools .ib{width:30px;height:30px;border-radius:9px}
+.spk-b{flex:1;min-height:80px;overflow:auto;padding:6px;overscroll-behavior:contain}
+.spk-r{position:relative;display:flex;align-items:center;gap:6px;min-height:30px;padding:2px 6px 2px calc(4px + var(--d,0) * 16px);border-radius:8px;cursor:default;color:var(--fg)}
+.spk-r.own{cursor:pointer}
+.spk-r:hover{background:var(--hover)}
+.spk-r.fol .spk-n{font-weight:600}
+.spk-r.scn{min-height:34px}.spk-r.scn .spk-n{font-weight:700;font-size:13.5px}
+.spk-r.none>.spk-i,.spk-r.none>.spk-l{opacity:.42}
+.spk-r.none:hover>.spk-i,.spk-r.none:hover>.spk-l{opacity:.7}
+.spk-r.off .spk-n{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--mute) 60%,transparent)}
+.spk-r.cur{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.spk-r.cur::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:3px;background:var(--accent)}
+.spk-r.nudge{animation:spkNudge .35s}
+@keyframes spkNudge{25%{transform:translateX(3px)}50%{transform:translateX(-3px)}75%{transform:translateX(2px)}}
+.spk-f{width:16px;height:16px;flex:none;border:0;padding:0;background:none;color:var(--mute);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px}
+.spk-f:hover{background:var(--btn-h);color:var(--fg)}
+.spk-f::before{content:"";width:0;height:0;border-left:4.5px solid currentColor;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;transition:transform .15s}
+.spk-f.open::before{transform:rotate(90deg)}
+.spk-f.sp{cursor:default}.spk-f.sp::before{display:none}
+.spk-i{display:inline-flex;flex:none;color:var(--mute)}
+.spk-l{flex:1;min-width:0;display:flex;align-items:baseline;gap:7px;overflow:hidden}
+.spk-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.spk-sub{font-size:10.5px;color:var(--mute);white-space:nowrap;flex:none}
+.spk-tag{font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--btn);color:var(--mute);flex:none;align-self:center}
+.spk-tag.st{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--accent)}
+.spk-cs{display:inline-flex;align-items:center;gap:4px;flex:none;max-width:62%}
+.spk-c{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px 0 7px;border-radius:7px;border:1px solid color-mix(in srgb,var(--accent) 38%,var(--line2));background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--fg);font:500 11.5px var(--f-mono);white-space:nowrap;min-width:0;max-width:100%;position:relative;cursor:pointer}
+.spk-c>span{overflow:hidden;text-overflow:ellipsis}
+.spk-c .ic{width:13px;height:13px;color:var(--accent);flex:none}
+.spk-c:hover{background:color-mix(in srgb,var(--accent) 22%,transparent);border-color:var(--accent)}
+.spk-c.on{background:var(--sel);color:var(--sel-fg);border-color:transparent}.spk-c.on .ic{color:inherit}
+.spk-c.miss{border-style:dashed;border-color:var(--danger);background:none;color:var(--danger);cursor:default}.spk-c.miss .ic{color:inherit}
+.spk-od{position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--win)}
+.spk-more{height:24px;min-width:30px;padding:0 7px;border-radius:7px;border:1px solid var(--line2);background:var(--btn);color:var(--fg);font:600 11px var(--f-mono);cursor:pointer;flex:none}
+.spk-more:hover{background:var(--btn-h)}
+.spk-more.open{background:var(--sel);color:var(--sel-fg);border-color:transparent}
+.spk-none{font-size:10.5px;color:var(--mute);opacity:.6;flex:none;white-space:nowrap}
+.spk-cnt{font:600 11px var(--f-mono);color:var(--mute);flex:none;padding:0 4px}.spk-cnt small{font-weight:400;opacity:.7}
+.spk-add{width:22px;height:22px;flex:none;border:0;border-radius:6px;background:none;color:var(--mute);display:inline-flex;align-items:center;justify-content:center;opacity:0;cursor:pointer;padding:0}
+.spk-add .ic{width:13px;height:13px}
+.spk-r:hover .spk-add,.spk-add:focus-visible{opacity:1}
+.spk-add:hover{background:var(--btn-h);color:var(--fg)}
+.spk-list{margin:2px 6px 6px calc(24px + var(--d,0) * 16px);padding:4px;border-left:2px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:0 8px 8px 0;background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:2px;animation:spkIn .14s ease-out}
+.spk-sr{display:flex;align-items:center;gap:7px;height:26px;padding:0 8px;border:0;border-radius:6px;background:none;color:var(--fg);font:500 12px var(--f-mono);text-align:left;cursor:pointer;width:100%}
+.spk-sr:hover{background:var(--hover)}
+.spk-sr.on{background:var(--sel);color:var(--sel-fg)}.spk-sr.on .ic,.spk-sr.on .spk-k{color:inherit}
+.spk-sr .ic{width:13px;height:13px;color:var(--accent);flex:none}
+.spk-sr.miss{color:var(--danger);cursor:default}
+.spk-k{width:16px;font-size:10px;color:var(--mute);text-align:right;flex:none}
+.spk-sn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spk-tab,.spk-err{font:600 9.5px var(--f-body);padding:1px 6px;border-radius:999px;flex:none}
+.spk-tab{background:var(--btn);color:var(--mute)}
+.spk-err{background:color-mix(in srgb,var(--danger) 18%,transparent);color:var(--danger)}
+.spk-empty{padding:28px 10px;text-align:center;color:var(--mute);font-size:12.5px}
+.spk-ft{flex:none;display:flex;align-items:center;gap:8px;padding:7px 12px;border-top:1px solid var(--line);font-size:11px;color:var(--mute);background:rgba(255,255,255,.02)}
+.spk-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:6px;vertical-align:1px}
+@media (max-width:760px){.sedpick .sc{display:none}.sedpick{max-width:160px}.spk{left:6px;width:calc(100% - 12px)}.spk-tg span{display:none}}
+@media (max-width:900px){.tbtn.sedbtn{font-size:0;gap:0;padding:0 8px}.tbtn.sedbtn .ic{font-size:14px}}
+@media (prefers-reduced-motion:reduce){.spk,.spk-list,.spk-r.nudge{animation:none}.sedpick .cv,.spk-f::before{transition:none}}
+
 
 /* 프로젝트 창: Unity식 폴더 트리 + 큰 아이콘 */
 .btn>.ic{display:inline-block;vertical-align:-3px;margin:0 5px 0 -2px;width:13px;height:13px}
@@ -1502,6 +1607,7 @@ body.popbody .pcol{display:none}
   <div class="toolbar" id="toolbar">
     <div class="tgroup" id="layers" role="toolbar" aria-label="편집 레이어"></div>
     <button class="tbtn uibbtn" id="bUib" type="button" data-ic="ui" title="UI 화면 만들기 — UI 빌더 창을 엽니다 (버튼 · 텍스트 · 체크박스 · 슬라이더 · 입력 상자를 끌어다 놓아 화면을 만듭니다)">UI 화면 만들기</button>
+    <button class="tbtn uibbtn sedbtn" id="bSed" type="button" data-ic="script" title="스크립트 편집하기 — 스크립트 창을 열고, 현재 씬과 매니저의 스크립트를 계층 구조 그대로 골라 편집합니다">스크립트 편집하기</button>
     <span class="spacer"></span>
     <span class="playgrp"><button class="tbtn playbtn" id="bPlay" data-ic="play">플레이</button><button class="tbtn playopt" id="bPlayOpt" title="플레이 화면 옵션" aria-label="플레이 화면 옵션">▾</button></span>
     <span class="spacer"></span>
@@ -1700,7 +1806,7 @@ body.popbody .pcol{display:none}
 <script src="script-engine.js?v=20261104u"></script>
 <script src="script-editor.js?v=20261105a"></script>
 <script src="anim-editor.js?v=20261102a"></script>
-<script src="ui-builder.js?v=20261105d"></script>
+<script src="ui-builder.js?v=20261105e"></script>
 <script>
 (()=>{
 'use strict';
@@ -3900,10 +4006,17 @@ function makeGameOverUi(){
 const mkBlocks=(list,on)=>`<div class="mkgrid">${list.map(t=>`<button type="button" class="mkb${t.id===on?' on':''}" data-mk="${t.id}" style="--bc:${t.col}" title="${esc(t.title||t.label)}"><span class="mki">${ico(t.ic)}</span><span class="mkl">${esc(t.label)}</span></button>`).join('')}</div>`;
 const MK_ALL=()=>[...MK_GO_BASE(),...MK_GO_ROLE(),...MK_UI_EL(),...MK_UI_SET(),...MK_TM()];
 /* 계층 구조 우클릭: 타일맵 · 게임 오브젝트 · UI 만들기 (sid 씬을 먼저 고름) */
-function hierCreateMenu(sid){
+/* 만들기 블록 · only = 'tm' | 'go' | 'ui' | 'mgr' 이면 그 종류만 (폴더 · 항목 우클릭은 자기 종류만 보여 줌) */
+const MK_MGR=()=>[
+  {id:'mgr',label:'빈 매니저',ic:'mgr',col:'#9a8cff',title:'씬이 바뀌어도 남아 있는 빈 오브젝트 (스크립트만 붙임)',fn:mgrCreate},
+  {id:'mgrbgm',label:'BGM 매니저',ic:'sound',col:'#7c6cf0',title:'BgmManager 스크립트 + 오디오 소스(「타니아의 아침」 반복)',fn:mgrCreateBgm}];
+function hierCreateMenu(sid,only){
   const go=t=>Object.assign({},t,{fn:()=>{if(sid&&sid!==curId)selectScene(sid);t.fn()}});
-  return[{sec:'타일맵',tiles:MK_TM().map(go)},{sec:'게임 오브젝트',tiles:[...MK_GO_BASE(),...MK_GO_ROLE()].map(go)},{sec:'UI',tiles:[...MK_UI_EL(),...MK_UI_SET()].map(go)}];
+  const all=[['tm',{sec:'타일맵',tiles:MK_TM().map(go)}],['go',{sec:'게임 오브젝트',tiles:[...MK_GO_BASE(),...MK_GO_ROLE()].map(go)}],['ui',{sec:'UI',tiles:[...MK_UI_EL(),...MK_UI_SET()].map(go)}],['mgr',{sec:'매니저',tiles:MK_MGR()}]];
+  return all.filter(x=>!only||x[0]===only).map(x=>x[1]);
 }
+/* 포커스 모드면 그 폴더 종류만 */
+const hfOnly=()=>{const F=hFocus&&hFocusInfo();return F?({group:'go',uig:'ui'}[F.t]||F.t):undefined};
 function renderPal(){
   const box=$('#palBox'),m=cur();if(!m)return;
   const cbm=CB.on&&layerSel!=='obj'&&layerSel!=='ui'&&layerSel!=='col'&&!palScript&&tilesets().length;
@@ -4897,7 +5010,8 @@ $('#hier').addEventListener('wheel',e=>{if(!(e.ctrlKey||e.metaKey))return;e.prev
 const fold={}, foldKeys=new Set();let hierPick='scene';
 let hsel=new Set(),syncSel=null,anchorKey=null,visRows=[];
 let uiSel=new Set(),uiSelSync=null,uiAnchor=null,uiRows=[];
-const isOpen=(k,d)=>k in fold?fold[k]:d;
+let hForce=null;  /* 포커스 모드 중 억지로 펼칠 폴더 키 */
+const isOpen=(k,d)=>hForce&&hForce.has(k)?true:k in fold?fold[k]:d;
 function syncHsel(){if(syncSel!==sel){hsel=new Set(sel?[sel]:[]);syncSel=sel}}
 function setHsel(set,primary){hsel=set;sel=primary||null;syncSel=sel}
 function tr(o){
@@ -4928,10 +5042,70 @@ function focusInspector(){
   if(typeof mqN!=='undefined'&&mqN.matches){if(L.nActive!=='insp'){L.nActive='insp';saveLayout();renderLayout()}return}
   const r=rootOf('insp');if(L.active[r]!==undefined||groupMembers(r).length>1){if(activeOf(r)!=='insp'){L.active[r]='insp';saveLayout();renderLayout()}}
 }
+if(window.TI18N)TI18N.add({'포커스 모드':['Focus mode','フォーカスモード','聚焦模式'],'포커스 해제':['Exit focus','フォーカス解除','退出聚焦'],'포커스 모드로 작업':['Work in focus mode','フォーカスモードで作業','以聚焦模式编辑'],'포커스 해제 — 계층 구조 전체 보기':['Exit focus — show the whole Hierarchy','フォーカス解除 — ヒエラルキー全体を表示','退出聚焦 — 显示完整层级'],'비어 있습니다':['Empty','空です','为空'],'빈 매니저':['Empty Manager','空のマネージャー','空管理器'],'BGM 매니저':['BGM Manager','BGMマネージャー','BGM 管理器'],'씬이 바뀌어도 남아 있는 빈 오브젝트 (스크립트만 붙임)':['An empty object that survives scene changes (scripts only)','シーンが変わっても残る空のオブジェクト（スクリプトだけ付ける）','切换场景后仍保留的空对象（只挂脚本）'],'BgmManager 스크립트 + 오디오 소스(「타니아의 아침」 반복)':['BgmManager script + Audio Source (loops “Thaniya Morning”)','BgmManager スクリプト + オーディオソース（「タニアの朝」をループ）','BgmManager 脚本 + 音频源（循环播放“塔尼亚的早晨”）'],'더블클릭':['Double-click','ダブルクリック','双击']});
+/* ---- 계층 구조 포커스 모드: 폴더 하나만 맨 위로 꺼내 작업 (더블클릭 · 우클릭 「포커스 모드로 작업」) ----
+ *  hFocus = {t, id, s} · t = 'group'(오브젝트 그룹) | 'uig'(UI 그룹) | 'tm'(타일맵) | 'go'(게임 오브젝트) | 'ui'(UI) | 'mgr'(매니저)
+ *  평소처럼 계층 구조를 그린 뒤 포커스된 줄과 그 아래 줄만 남기고 깊이를 당김 → 클릭 · 선택 · 끌기 · 우클릭이 원래와 똑같이 동작
+ *  씬이 바뀌거나 폴더(그룹)가 사라지면 저절로 풀림(매니저는 프로젝트 소속이라 씬이 바뀌어도 유지) · 포커스된 폴더 위에 「포커스 해제」 막대 */
+let hFocus=null;
+const HF_NAME={group:'게임 오브젝트',uig:'UI',tm:'타일맵',go:'게임 오브젝트',ui:'UI',mgr:'매니저'};
+function hFocusInfo(){
+  if(!hFocus)return null;
+  const t=hFocus.t;
+  if(t==='mgr')return{t};
+  const m=P&&P.maps.find(x=>x.id===hFocus.s);
+  if(!m||m.id!==curId){hFocus=null;return null}
+  if(t==='group'||t==='uig'){const g=(t==='uig'?(m.uiGroups||[]):(m.groups||[])).find(x=>x.id===hFocus.id);if(!g){hFocus=null;return null}return{t,m,g}}
+  return{t,m};
+}
+const hfSel=f=>f.t==='group'?`.tr[data-t="group"][data-rk="${f.id}"]`:f.t==='uig'?`.tr[data-t="uig"][data-rk="${f.id}"]`:f.t==='tm'?`.tr[data-t="folder"][data-k="tm"][data-s="${f.s}"]`:f.t==='go'?`.tr[data-t="gofolder"][data-s="${f.s}"]`:f.t==='ui'?`.tr[data-t="uifolder"][data-s="${f.s}"]`:'.tr[data-t="mgrfolder"]';
+function hfKeys(f){
+  const k=new Set(['proj']);
+  if(f.t==='mgr')return k;
+  k.add('s:'+f.s);
+  if(f.t==='group')k.add('go:'+f.s);
+  else if(f.t==='uig')k.add('ui:'+f.s);
+  return k;
+}
+function setHFocus(t,sid,id){
+  if(t!=='mgr'&&sid&&sid!==curId)selectScene(sid);
+  hFocus={t,id:id||t,s:t==='mgr'?null:(sid||curId)};
+  {const s0=t==='mgr'?null:(sid||curId);fold[t==='group'?'g:'+id:t==='uig'?'ug:'+id:t==='mgr'?'mgr':({tm:'tm:',go:'go:',ui:'ui:'}[t]+s0)]=true}
+  if(t==='uig'){if(layerSel!=='ui')setLayer('ui');hierPick='layer';setHsel(new Set(),null);setUiSel(new Set([id]),null);uiAnchor=id}
+  else if(t==='group'){if(layerSel==='ui')setLayer('obj');hierPick='layer';setHsel(new Set([id]),null);anchorKey=id}
+  else if(t==='ui'){if(layerSel!=='ui')setLayer('ui');setHsel(new Set(),null);hierPick='layer';setUiSel(new Set(),null)}
+  else if(t==='go'){if(layerSel==='ui')setLayer('obj');setHsel(new Set(),null);hierPick='gofolder'}
+  else if(t==='tm'){if(layerSel==='ui')setLayer('l0');setHsel(new Set(),null);hierPick='tmfolder'}
+  else if(t==='mgr'){hierPick='mgrfolder';setHsel(new Set(),null)}
+  renderInsp();renderHier();need();
+  const b=$('#hier').closest('.pbody');if(b)b.scrollTop=0;
+}
+function clearHFocus(){if(!hFocus)return;const k=hFocus;hFocus=null;renderHier();requestAnimationFrame(()=>{const r=$('#hier '+hfSel(k));if(r)r.scrollIntoView({block:'nearest'})})}
+const hfIs=(t,sid,id)=>!!hFocus&&hFocus.t===t&&(t==='mgr'||hFocus.s===sid)&&(t!=='group'&&t!=='uig'||hFocus.id===id);
+const hFocusItem=(t,sid,id)=>hfIs(t,sid,id)?{label:'포커스 해제',ic:'collapse',col:'#e9bd0c',key:'더블클릭',fn:clearHFocus}:{label:'포커스 모드로 작업',ic:'expand',col:'#e9bd0c',key:'더블클릭',fn:()=>setHFocus(t,sid,id)};
+const hfToggle=(t,sid,id)=>{if(hfIs(t,sid,id))clearHFocus();else setHFocus(t,sid,id)};
+/* 평소 계층 구조를 그린 뒤 포커스된 폴더만 남김 */
+function applyHFocus(F,box,q){
+  const f=hFocus,root=box.querySelector(hfSel(f));
+  if(!root){box.classList.remove('hfocus');return false}
+  const dOf=el=>parseFloat(el.style.getPropertyValue('--d'))||0,d0=dOf(root),keep=[root];
+  for(let el=root.nextElementSibling;el;el=el.nextElementSibling){if(!el.classList.contains('tr')||dOf(el)<=d0)break;keep.push(el)}
+  [...box.children].forEach(el=>{if(!keep.includes(el))el.remove()});
+  keep.forEach(el=>el.style.setProperty('--d',dOf(el)-d0));
+  root.dataset.hfroot='1';
+  const ids=new Set(keep.map(el=>el.dataset.rk).filter(Boolean));
+  visRows=visRows.filter(v=>ids.has(v.rk));uiRows=uiRows.filter(v=>ids.has(v.rk));
+  const fb=root.querySelector('.fold');
+  if(keep.length===1&&(!fb||fb.classList.contains('open')||!fb.dataset.fold))root.insertAdjacentHTML('afterend',`<div class="hfempty">${q?esc(_t('검색 결과가 없습니다')):esc(_t('비어 있습니다'))}</div>`);
+  const where=F.t==='mgr'?`<span data-i18n-skip>${enm(P.name)}</span>`:`<span data-i18n-skip>${enm(F.m.name)}</span>`+(F.t==='group'||F.t==='uig'?` › ${esc(_t(HF_NAME[F.t]))}`:'');
+  box.insertAdjacentHTML('afterbegin',`<div class="hfbar" role="toolbar" aria-label="포커스 모드"><span class="hfic">${ico('search')}</span><span class="hft"><b>포커스 모드</b><small>${where}</small></span><button class="hfx" type="button" data-hfx title="포커스 해제 — 계층 구조 전체 보기">${ico('x')}<span>포커스 해제</span></button></div>`);
+  return true;
+}
 function renderHier(){
   syncHsel();syncUiSel();uiRows=[];
   const q=($('#hFilter').value||'').trim().toLowerCase(),box=$('#hier');
   foldKeys.clear();visRows=[];let h='';
+  const F=hFocusInfo();box.classList.toggle('hfocus',!!F);hForce=F?hfKeys(hFocus):null;
   const pk='proj';
   h+=tr({d:0,key:pk,foldable:true,open:isOpen(pk,true)||!!q,icon:ico('proj'),label:`<b>${enm(P.name)}</b>`,sub:P.maps.length+'씬',data:'data-t="proj"',acts:`<button class="ib" data-act="psettings" title="프로젝트 설정" aria-label="프로젝트 설정">${ico('gear')}</button>`});
   if(isOpen(pk,true)||q){
@@ -4988,7 +5162,8 @@ function renderHier(){
         acts:`<button class="ib" data-act="mgrdel" title="삭제" aria-label="삭제">${ico('x')}</button>`})});
     }
   }
-  box.innerHTML=h;
+  box.innerHTML=h;hForce=null;
+  if(F)applyHFocus(F,box,q);
   $('#projLabel').textContent=P.name+' — '+(cur()?cur().name:'');
 }
 function selectScene(id){if(curId!==id){switchMap(id)}}
@@ -4997,6 +5172,7 @@ let hLast={k:null,t:0};
 function hDouble(k){const now=performance.now(),d=hLast.k===k&&now-hLast.t<450;hLast=d?{k:null,t:0}:{k,t:now};return d}
 $('#hier').addEventListener('click',e=>{
   if(e.target.closest('input.rn'))return;
+  if(e.target.closest('[data-hfx]')){clearHFocus();return}
   const fb=e.target.closest('[data-fold]');
   if(fb){const k=fb.dataset.fold;fold[k]=!fb.classList.contains('open');renderHier();return}
   const r=e.target.closest('.tr');if(!r)return;
@@ -5006,6 +5182,11 @@ $('#hier').addEventListener('click',e=>{
   if(act==='mgrlearn'){learnIntro('lesson-8');return}
   if(act==='mgradd'){mgrCreate();return}
   if(act==='mgrdel'){mgrDelete(rk);return}
+  /* 그룹(폴더) 더블클릭 = 포커스 모드 켜기/끄기 (다시 그려진 줄에서는 dblclick 이벤트가 오지 않아 클릭 두 번으로 판단) */
+  if(!act&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){
+    const ft=t==='group'||t==='uig'?t:t==='folder'&&r.dataset.k==='tm'?'tm':t==='gofolder'?'go':t==='mgrfolder'?'mgr':null;
+    if(ft&&hDouble('hf:'+ft+':'+(rk||sid||''))){hfToggle(ft,sid,rk);return}
+  }
   if(t==='mgrfolder'){mgrPick(null);return}
   if(t==='mgr'){mgrPick(rk);return}
   if(act==='sdup'){duplicateScene(sid);return}
@@ -5015,7 +5196,7 @@ $('#hier').addEventListener('click',e=>{
   if(t==='folder'&&r.dataset.k==='tm'){selectScene(sid);setHsel(new Set(),null);if(layerSel==='ui')setLayer('l0');if(wasUi)fitView();hierPick='tmfolder';renderInsp();renderHier();focusInspector();palFront();return}
   if(t==='uifolder'){selectScene(sid);setHsel(new Set(),null);if(layerSel!=='ui')setLayer('ui');hierPick='layer';setUiSel(new Set(),null);renderInsp();renderHier();renderPal();need();focusInspector();
     /* 더블클릭: UI 캔버스 전체가 보이도록 맞춤 (패널 배치가 바뀐 뒤 한 번 더) */
-    if(hDouble('uifolder:'+sid)){fitUiCanvas();requestAnimationFrame(fitUiCanvas)}
+    if(hDouble('uifolder:'+sid)){fitUiCanvas();requestAnimationFrame(fitUiCanvas);hfToggle('ui',sid)}
     return}
   if(t==='uiel'||t==='uig'){
     const same=sid===curId,mod=e.ctrlKey||e.metaKey;
@@ -5057,15 +5238,16 @@ $('#hier').addEventListener('dblclick',e=>{
   const t=r.dataset.t;
   if(t==='uifolder'){const sid=r.dataset.s;if(sid&&sid!==curId)selectScene(sid);if(layerSel!=='ui')setLayer('ui');setHsel(new Set(),null);fitUiCanvas();renderHier();return}
   if(t==='obj'){const o=getSel();if(o){cam.z=Math.max(cam.z,1.4);focusObj(o);need()}}
-  else if(t==='group'||t==='scene'||t==='uiel'||t==='uig'){startRename(r.dataset.rk)}
+  else if(t==='group'||t==='uig'){/* 클릭 처리에서 함 (hDouble) */}
+  else if(t==='scene'||t==='uiel'){startRename(r.dataset.rk)}
   else if(t==='layer'&&r.dataset.id!=='col'){const m=cur(),q=m.lm[lIdx(r.dataset.id)];if(q)askName('타일맵 이름',q.name,v=>{q.name=v;commit();renderLayerBar();renderHier();renderStatus()})}
 });
 $('#hFilter').oninput=renderHier;
 $('#hCollapse').onclick=()=>{foldKeys.forEach(k=>{if(k&&k!=='proj')fold[k]=false});P.maps.forEach(m=>fold['s:'+m.id]=false);renderHier()};
 $('#hExpand').onclick=()=>{foldKeys.forEach(k=>{if(k)fold[k]=true});P.maps.forEach(m=>{fold['s:'+m.id]=true;fold['tm:'+m.id]=true;fold['go:'+m.id]=true;(m.groups||[]).forEach(g=>fold['g:'+g.id]=true)});fold.proj=true;renderHier()};
-$('#hAdd').onclick=e=>showMenu(e.currentTarget,hierCreateMenu(curId));
+$('#hAdd').onclick=e=>showMenu(e.currentTarget,hierCreateMenu(curId,hfOnly()));
 /* 목록 아래 빈 곳 우클릭도 만들기 메뉴 (목록이 패널 끝까지 차지 않음) */
-$('#hier').parentElement.addEventListener('contextmenu',e=>{if(e.defaultPrevented||e.target.closest('#hier,.ptool'))return;e.preventDefault();showMenuAt(e.clientX,e.clientY,[...hierCreateMenu(curId),{sep:1},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste},{label:'새 씬',fn:addScene}])});
+$('#hier').parentElement.addEventListener('contextmenu',e=>{if(e.defaultPrevented||e.target.closest('#hier,.ptool'))return;e.preventDefault();if(hFocus&&hFocusInfo()){showMenuAt(e.clientX,e.clientY,[{label:'포커스 해제',ic:'collapse',col:'#e9bd0c',fn:clearHFocus},{sep:1},...hierCreateMenu(curId,hfOnly())]);return}showMenuAt(e.clientX,e.clientY,[...hierCreateMenu(curId),{sep:1},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste},{label:'새 씬',fn:addScene}])});
 function switchMap(id){curId=id;sel=null;selUi=null;uiSel=new Set();uiSelSync=null;syncSel=null;hsel=new Set();pickActiveForMap();resetHistory();renderAll();fitView()}
 function addScene(){
   const n=P.maps.length+1;
@@ -5148,34 +5330,36 @@ function selMenu(){
 $('#hier').addEventListener('contextmenu',e=>{
   e.preventDefault();
   const r=e.target.closest('.tr');
-  const X=e.clientX,Y=e.clientY,mkMore=sid=>({label:'만들기…',ic:'plus',kind:'gen',fn:()=>showMenuAt(X,Y,hierCreateMenu(sid))});
-  if(r&&r.dataset.k==='tm'){const s0=r.dataset.s||curId;if(s0!==curId)selectScene(s0);showMenuAt(X,Y,hierCreateMenu(s0));return}
+  const X=e.clientX,Y=e.clientY,mkMore=(sid,only)=>({label:'만들기…',ic:'plus',kind:'gen',fn:()=>showMenuAt(X,Y,hierCreateMenu(sid,only))});
+  if(r&&r.dataset.k==='tm'){const s0=r.dataset.s||curId;if(s0!==curId)selectScene(s0);showMenuAt(X,Y,[hFocusItem('tm',s0),{sep:1},...hierCreateMenu(s0,'tm')]);return}
+  if(r&&r.dataset.t==='mgrfolder'){showMenuAt(X,Y,[hFocusItem('mgr'),{sep:1},...hierCreateMenu(null,'mgr'),{sep:1},{label:'매니저란?',fn:mgrGuide}]);return}
+  if(!r&&hFocus){showMenuAt(X,Y,[{label:'포커스 해제',ic:'collapse',col:'#e9bd0c',fn:clearHFocus},{sep:1},...hierCreateMenu(curId,hfOnly())]);return}
   if(!r||r.dataset.t==='folder'){showMenuAt(X,Y,[...hierCreateMenu(curId),{sep:1},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste},{label:'새 씬',fn:addScene}]);return}
   const t=r.dataset.t,sid=r.dataset.s,rk=r.dataset.rk;
   if(t==='proj'){showMenuAt(X,Y,[...hierCreateMenu(curId),{sep:1},{label:'새 씬',fn:addScene},{label:'프로젝트 설정…',fn:openProjectSettings}]);return}
   if(t==='uiel'||t==='uifolder'){
     if(sid!==curId)selectScene(sid);if(layerSel!=='ui')setLayer('ui');
-    if(t==='uiel'){syncUiSel();if(!uiSel.has(rk)){setUiSel(new Set([rk]),rk);uiAnchor=rk}hierPick='layer';renderInsp();renderHier();need();showMenuAt(X,Y,[...uiSelMenu(),{sep:1},mkMore(sid)])}
-    else showMenuAt(X,Y,[...hierCreateMenu(sid),{sep:1},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste}]);
+    if(t==='uiel'){syncUiSel();if(!uiSel.has(rk)){setUiSel(new Set([rk]),rk);uiAnchor=rk}hierPick='layer';renderInsp();renderHier();need();showMenuAt(X,Y,[...uiSelMenu(),{sep:1},mkMore(sid,'ui')])}
+    else showMenuAt(X,Y,[hFocusItem('ui',sid),{sep:1},...hierCreateMenu(sid,'ui'),{sep:1},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste}]);
     return;
   }
   if(t==='uig'){
     if(sid!==curId)selectScene(sid);if(layerSel!=='ui')setLayer('ui');setHsel(new Set(),null);syncUiSel();
-    if(!uiSel.has(rk)){setUiSel(new Set([rk]),null);uiAnchor=rk}hierPick='layer';renderInsp();renderHier();need();showMenuAt(X,Y,[...uiSelMenu(),{sep:1},mkMore(sid)]);
+    if(!uiSel.has(rk)){setUiSel(new Set([rk]),null);uiAnchor=rk}hierPick='layer';renderInsp();renderHier();need();showMenuAt(X,Y,[hFocusItem('uig',sid,rk),{sep:1},...uiSelMenu(),{sep:1},mkMore(sid,'ui')]);
     return;
   }
   if(sid&&sid!==curId&&t!=='obj'&&t!=='group')selectScene(sid);
   if(t==='obj'||t==='group'){
     if(sid!==curId)selectScene(sid);
     if(!hsel.has(rk)){setHsel(new Set([rk]),t==='obj'?rk:null);anchorKey=rk;if(t==='obj'&&layerSel!=='obj')setLayer('obj');renderInsp();renderHier();need()}
-    showMenuAt(X,Y,[...selMenu(),{sep:1},mkMore(sid)]);return;
+    showMenuAt(X,Y,[...(t==='group'?[hFocusItem('group',sid,rk),{sep:1}]:[]),...selMenu(),{sep:1},mkMore(sid,'go')]);return;
   }
   if(t==='scene'){
     setHsel(new Set(),null);hierPick='scene';renderInsp();renderHier();
     showMenuAt(e.clientX,e.clientY,[{label:'이름 바꾸기',key:kb('edit.rename'),fn:()=>startRename('scene:'+sid)},{label:'씬 복제',fn:()=>duplicateScene(sid)},{label:'복사',key:kb('edit.copy'),fn:hierCopy},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste},{label:'시작 씬으로 지정',disabled:P.start===sid,fn:()=>{P.start=sid;markDirty();renderHier();renderInsp()}},{sep:1},mkMore(sid),{sep:1},{label:'씬 삭제',fn:()=>deleteScene(sid)}]);return;
   }
-  if(t==='gofolder'){if(sid&&sid!==curId)selectScene(sid);showMenuAt(X,Y,[...hierCreateMenu(sid),{sep:1},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste}]);return}
-  if(t==='layer'){if(r.dataset.id==='col'){showMenuAt(X,Y,hierCreateMenu(sid));return}selectScene(sid);setHsel(new Set(),null);setLayer(r.dataset.id);renderInsp();showMenuAt(X,Y,[...tmMenu(lIdx(r.dataset.id)),{sep:1},mkMore(sid)]);return}
+  if(t==='gofolder'){if(sid&&sid!==curId)selectScene(sid);showMenuAt(X,Y,[hFocusItem('go',sid),{sep:1},...hierCreateMenu(sid,'go'),{sep:1},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste}]);return}
+  if(t==='layer'){if(r.dataset.id==='col'){showMenuAt(X,Y,hierCreateMenu(sid,'tm'));return}selectScene(sid);setHsel(new Set(),null);setLayer(r.dataset.id);renderInsp();showMenuAt(X,Y,[...tmMenu(lIdx(r.dataset.id)),{sep:1},mkMore(sid,'tm')]);return}
 });
 /* 드래그로 순서·그룹 이동 */
 let dnd=null;
@@ -5850,13 +6034,13 @@ function renderEditor(){
   ed.open=ed.open.filter(id=>scriptOf(id));if(!scriptOf(ed.cur))ed.cur=ed.open[0]||null;
   const floating=!!L.float.script;
   const tabs=ed.open.map(id=>{const s=scriptOf(id);return`<button class="sedtab${id===ed.cur?' on':''}" data-sid="${id}">${ico('script')}<span>${enm(s.name)}.cs</span>${edDirty(id)?'<i class="dot" title="저장되지 않음"></i>':''}<span class="x" data-close="${id}" title="닫기">✕</span></button>`}).join('');
-  if(!ed.cur){box.innerHTML=`<div class="sedbar"><div class="sedtabs"></div><span class="spacer"></span></div><div class="sedempty"><div>${ico('script')}<b>열린 스크립트가 없습니다</b><span>프로젝트 패널의 스크립트를 클릭하거나, 인스펙터의 “스크립트 추가”로 만들어 보세요.</span></div></div>`;return}
+  if(!ed.cur){if(spkDocOff){spkDocOff();spkDocOff=null}const st0=box.querySelector('#pkB');const sc0=st0?st0.scrollTop:0;delete box.dataset.sid;box.innerHTML=`<div class="sedbar"><div class="sedtabs"></div><span class="spacer"></span></div><div class="sedempty pk">${spkHtml(true)}</div>`;const nb=box.querySelector('#pkB');if(nb)nb.scrollTop=sc0;return}
   const s=scriptOf(ed.cur),code=ed.cur in ed.draft?ed.draft[ed.cur]:s.code;ed.draft[ed.cur]=code;
   /* 같은 스크립트를 다시 그릴 때는 스크롤·커서 위치를 그대로 유지 (저장·실행 취소 후 맨 위로 튀지 않도록) */
   const ota=box.querySelector('#edTa'),keep=ota&&box.dataset.sid===ed.cur?{st:ota.scrollTop,sl:ota.scrollLeft,a:ota.selectionStart,b:ota.selectionEnd,f:ota.ownerDocument.activeElement===ota}:null;
   box.dataset.sid=ed.cur;
   const popped=POPPED.has('script');
-  box.innerHTML=`<div class="sedbar"><div class="sedtabs">${tabs}</div><span class="spacer"></span><span class="sedsaved" id="edSaved" aria-live="polite"></span>${popped?'':`<button class="btn sm" id="edDock">${floating?'패널로 축소':'큰 창으로 확대'}</button>`}${setv.ko?'<button class="btn sm" id="edKo" title="이 스크립트를 한글 코드 ↔ 영어(C#) 코드로 바꿉니다">한↔영</button>':''}<button class="btn sm pri" id="edSave">저장 <kbd>Ctrl S</kbd></button></div>
+  box.innerHTML=`<div class="sedbar">${spkBtn()}<div class="sedtabs">${tabs}</div><span class="spacer"></span><span class="sedsaved" id="edSaved" aria-live="polite"></span>${popped?'':`<button class="btn sm" id="edDock">${floating?'패널로 축소':'큰 창으로 확대'}</button>`}${setv.ko?'<button class="btn sm" id="edKo" title="이 스크립트를 한글 코드 ↔ 영어(C#) 코드로 바꿉니다">한↔영</button>':''}<button class="btn sm pri" id="edSave">저장 <kbd>Ctrl S</kbd></button></div>
   <div class="edwrap"><pre class="gut" id="edGut"></pre><div class="edcode"><pre class="hl" id="edHl" aria-hidden="true"></pre><textarea id="edTa" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea></div></div>
   <div class="sedfoot"><span id="edStat"></span><span class="spacer"></span><span id="edPos">줄 1, 열 1</span><span>Ctrl Space 자동완성</span><span>C# · UTF-8</span></div>`;
   const ta=box.querySelector('#edTa'),hl=box.querySelector('#edHl'),gut=box.querySelector('#edGut'),st=box.querySelector('#edStat'),pos=box.querySelector('#edPos');
@@ -5922,6 +6106,7 @@ function renderEditor(){
   });
   paint();where();
   if(keep){ta.scrollTop=keep.st;ta.scrollLeft=keep.sl;try{ta.setSelectionRange(keep.a,keep.b)}catch(err){}syncScroll();where();if(keep.f)ta.focus({preventScroll:true})}
+  if(spk.open)spkSetOpen(true,true);
 }
 /* 저장 확인: 편집기 전체가 초록색으로 한 번 반짝이고, 상단에 '저장됨'이 잠깐 표시됨 (화면 이동 없음) */
 let edFlashT=0;
@@ -5963,8 +6148,15 @@ SED_EL.addEventListener('click',e=>{
 function bigFloat(){const w=Math.max(320,Math.min(1280,innerWidth-64)),h=Math.max(260,Math.min(840,innerHeight-64));return{x:Math.max(0,Math.round((innerWidth-w)/2)),y:Math.max(24,Math.round((innerHeight-h)/2)),w,h}}
 /* 편집기가 닫혀(숨겨져) 있으면 기본으로 큰 창으로 엽니다 (설정 > 스크립트 편집기 > 열기 방식) */
 function openScriptEditor(s){
-  if(!ed.open.includes(s.id))ed.open.push(s.id);ed.cur=s.id;
+  if(!ed.open.includes(s.id))ed.open.push(s.id);ed.cur=s.id;spk.open=false;
   if(POPPED.has('script')){renderEditor();try{POPPED.get('script').win.focus()}catch(e){}setTimeout(()=>{const ta=SED_EL.querySelector('#edTa');if(ta)ta.focus()},60);return}
+  sedShow();
+  renderEditor();
+  setTimeout(()=>{const ta=SED_EL.querySelector('#edTa');if(ta)ta.focus()},60);
+}
+/* 스크립트 창을 보이게 (숨겨져 있으면 큰 창 · 탭 묶음이면 앞으로 · 접혀 있으면 펼침) */
+function sedShow(){
+  if(POPPED.has('script')){try{POPPED.get('script').win.focus()}catch(e){}return}
   const uncol=()=>{const r=rootOf('script');if([r,...kidsOf(r)].some(k=>L.collapsed[k])){[r,...kidsOf(r)].forEach(k=>{delete L.collapsed[k];panelEl[k].classList.remove('collapsed')});saveLayout()}};
   if(mqN.matches){L.hidden.script=false;L.nActive='script';saveLayout();renderLayout()}
   else if(L.hidden.script&&setv.edOpen!=='dock'){delete L.collapsed.script;movePanel('script','float',0,bigFloat(),true);raise('script')}
@@ -5973,9 +6165,168 @@ function openScriptEditor(s){
     const r=rootOf('script');if(L.tabs.script&&L.active[r]!=='script'){L.active[r]='script';saveLayout();renderLayout()}
     uncol();if(L.float[r])raise(r);
   }
-  renderEditor();
-  setTimeout(()=>{const ta=SED_EL.querySelector('#edTa');if(ta)ta.focus()},60);
 }
+
+if(window.TI18N)TI18N.add({
+'스크립트 편집하기':['Edit Scripts','スクリプト編集','编辑脚本'],
+'스크립트 편집하기 — 스크립트 창을 열고, 현재 씬과 매니저의 스크립트를 계층 구조 그대로 골라 편집합니다':['Edit Scripts — open the Script window and pick scripts from the current scene and managers, laid out like the Hierarchy','スクリプト編集 — スクリプトウィンドウを開き、現在のシーンとマネージャーのスクリプトをヒエラルキーそのままの形で選んで編集します','编辑脚本 — 打开脚本窗口，按层级结构选择当前场景和管理器中的脚本进行编辑'],
+'스크립트 선택':['Select Script','スクリプトを選択','选择脚本'],
+'현재 씬과 매니저의 스크립트 고르기':['Pick a script from the current scene and managers','現在のシーンとマネージャーのスクリプトを選ぶ','从当前场景和管理器中选择脚本'],
+'편집할 스크립트를 고르세요':['Pick a script to edit','編集するスクリプトを選んでください','请选择要编辑的脚本'],
+'현재 씬과 매니저의 스크립트를 계층 구조 그대로 보여 줍니다':['Scripts in the current scene and managers, shown just like the Hierarchy','現在のシーンとマネージャーのスクリプトをヒエラルキーそのままに表示します','按层级结构显示当前场景和管理器中的脚本'],
+'오브젝트 · 스크립트 이름 검색':['Search objects · scripts','オブジェクト・スクリプト名を検索','搜索对象 · 脚本名称'],
+'있는 것만':['With scripts','あるものだけ','仅有脚本'],
+'스크립트가 붙은 오브젝트만 보기':['Show only objects with scripts','スクリプトが付いたオブジェクトだけ表示','仅显示带脚本的对象'],
+'현재 씬':['Current scene','現在のシーン','当前场景'],
+'스크립트 없음':['No script','スクリプトなし','无脚本'],
+'열림':['Open','開いている','已打开'],
+'검색 결과가 없습니다':['No results','検索結果がありません','没有搜索结果'],
+'스크립트가 붙은 오브젝트가 없습니다':['No objects have scripts','スクリプトが付いたオブジェクトはありません','没有带脚本的对象'],
+'오브젝트 {o}개 중 {w}개에 스크립트':['{w} of {o} objects have scripts','{o} 個のオブジェクトのうち {w} 個にスクリプト','{o} 个对象中有 {w} 个带脚本'],
+'스크립트 {n}개':['{n} scripts','スクリプト {n} 個','{n} 个脚本'],
+'스크립트 {n}개 모두 보기':['Show all {n} scripts','スクリプト {n} 個をすべて表示','显示全部 {n} 个脚本'],
+'새 C# 스크립트를 만들어 「{name}」에 붙입니다':['Create a new C# script and attach it to “{name}”','新しい C# スクリプトを作って「{name}」に付けます','新建 C# 脚本并附加到“{name}”'],
+'{name}.cs 열기':['Open {name}.cs','{name}.cs を開く','打开 {name}.cs'],
+'새 스크립트 붙이기':['Attach new script','新しいスクリプトを付ける','附加新脚本']
+});
+/* ---- 스크립트 편집하기: 편집기 위쪽 「스크립트 선택」 — 현재 씬 · 매니저를 계층 구조 모양 그대로 보여 주는 고르기 창 ----
+ *  · 스크립트가 없는 오브젝트/UI 요소는 흐리게, 있으면 오른쪽에 「이름.cs」 + 2개 이상이면 「+n」(누르면 펼쳐져 전부 보임)
+ *  · 줄이나 「이름.cs」를 누르면 그 스크립트를 탭으로 엶 · 마우스를 올리면 ＋(새 스크립트 만들어 붙이기)
+ *  · 툴바 「스크립트 편집하기」(#bSed) = 편집기를 열고 이 고르기 창을 펼침 · 열린 스크립트가 없으면 빈 화면에 같은 목록이 그대로 나옴 */
+const spk={open:false,q:'',only:false,fold:{},exp:new Set()};
+const spkScene=()=>P&&P.maps.find(m=>m.id===curId);
+function spkTree(){
+  const m=spkScene();if(!m)return[];
+  const own=(kind,o,extra)=>Object.assign({kind,o,id:o.id,insts:(o.scripts||[]),kids:[]},extra);
+  const objNode=(o,n)=>{const nd=own('obj',o,{icon:o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':'cube'),color:(TYPES[o.type]||{}).color,label:o.name,sub:(TYPES[o.type]||{}).label||'',off:!objOn(m,o)});
+    if(n<30)nd.kids=m.objs.filter(k=>k.parent===o.id&&k!==o).map(k=>objNode(k,n+1));return nd};
+  const hasPar=o=>o.parent&&m.objs.some(z=>z.id===o.parent);
+  const groups=m.groups||[],gNodes=groups.map(g=>({kind:'folder',user:1,key:'g:'+g.id,icon:'folder',color:'var(--warn)',label:g.name,kids:m.objs.filter(o=>o.group===g.id&&!hasPar(o)).map(o=>objNode(o,0))}));
+  const loose=m.objs.filter(o=>(!o.group||!groups.some(g=>g.id===o.group))&&!hasPar(o)).map(o=>objNode(o,0));
+  const uiNode=u=>own('ui',u,{icon:UI_ICON[u.type]||'ui',color:UI_COLOR[u.type],label:u.name,sub:UI_NAMES[u.type]||'',off:u.visible===false});
+  const ul=m.ui||[],ugs=m.uiGroups||[];
+  const uNodes=ugs.map(g=>({kind:'folder',user:1,key:'ug:'+g.id,icon:'folder',color:'var(--warn)',label:g.name,kids:ul.filter(u=>u.group===g.id).map(uiNode)}))
+    .concat(ul.filter(u=>!u.group||!ugs.some(g=>g.id===u.group)).map(uiNode));
+  const mg=((P&&P.mgrs)||[]).map(o=>own('mgr',o,{icon:'mgr',color:'#9a8cff',label:o.name,sub:'매니저'}));
+  return[
+    {kind:'scene',key:'s',icon:'scene',label:m.name,start:P.start===m.id,kids:[
+      {kind:'folder',key:'go',icon:'folder',label:'게임 오브젝트',kids:gNodes.concat(loose)},
+      {kind:'folder',key:'ui',icon:'ui',label:'UI',kids:uNodes}]},
+    {kind:'folder',key:'mgr',icon:'mgr',color:'#9a8cff',label:'매니저',kids:mg}];
+}
+/* 검색 · 「스크립트 있는 것만」 거르기 → 자식이 하나라도 남으면 부모 폴더/오브젝트도 남김 */
+function spkFilter(nodes){
+  const q=spk.q.trim().toLowerCase();
+  const self=nd=>{if(!nd.o)return false;
+    const hit=!q||String(nd.label).toLowerCase().includes(q)||nd.insts.some(i=>{const s=scriptOf(i.sid);return s&&s.name.toLowerCase().includes(q)});
+    return hit&&(!spk.only||nd.insts.length>0)};
+  const walk=list=>list.map(nd=>{const kids=walk(nd.kids||[]);const keep=self(nd)||kids.length>0||(!nd.o&&!q&&!spk.only);return keep?Object.assign({},nd,{kids,dimSelf:nd.o&&!self(nd)}):null}).filter(Boolean);
+  return walk(nodes);
+}
+function spkCount(nodes){let o=0,w=0,sc=0;const walk=l=>l.forEach(nd=>{if(nd.o){o++;if(nd.insts.length){w++;sc+=nd.insts.length}}walk(nd.kids||[])});walk(nodes);return{o,w,sc}}
+function spkRows(nodes,d,q){
+  let h='';
+  nodes.forEach(nd=>{
+    const key=nd.key||('o:'+nd.id),kids=nd.kids||[],canFold=kids.length>0,open=q?true:(key in spk.fold?spk.fold[key]:true);
+    const insts=nd.insts||[],has=insts.length>0,exp=spk.exp.has(nd.id),hasCur=has&&insts.some(i=>i.sid===ed.cur);
+    const inner=spkCount(kids).sc;
+    let right='';
+    if(nd.o){
+      if(has){
+        const s0=scriptOf(insts[0].sid);
+        right=`<span class="spk-cs">${s0?`<button class="spk-c${s0.id===ed.cur?' on':''}" type="button" data-pks="${s0.id}" title="${esc(_t('{name}.cs 열기',{name:s0.name}))}">${ico('script')}<span data-i18n-skip>${enm(s0.name)}.cs</span>${ed.open.includes(s0.id)&&s0.id!==ed.cur?'<i class="spk-od" aria-hidden="true"></i>':''}</button>`:`<span class="spk-c miss">${ico('script')}<span>(Missing Script)</span></span>`}`+
+          (insts.length>1?`<button class="spk-more${exp?' open':''}" type="button" data-pkx="${nd.id}" aria-expanded="${exp}" title="${exp?'접기':esc(_t('스크립트 {n}개 모두 보기',{n:insts.length}))}">+${insts.length-1}</button>`:'')+`</span>`;
+      }else right=`<span class="spk-none">스크립트 없음</span>`;
+      right+=`<button class="spk-add" type="button" data-pka="${nd.kind}:${nd.id}" title="${esc(_t('새 C# 스크립트를 만들어 「{name}」에 붙입니다',{name:nd.label}))}" aria-label="새 스크립트 붙이기">${ico('plus')}</button>`;
+    }else{right=inner?`<span class="spk-cnt">${inner}<small> .cs</small></span>`:''}
+    const cls=['spk-r',nd.o?'own':'fol',nd.o&&!has?'none':'',hasCur?'cur':'',nd.off?'off':'',nd.kind==='scene'?'scn':''].filter(Boolean).join(' ');
+    h+=`<div class="${cls}" style="--d:${d}" data-pkr="${key}"${nd.o?` data-pko="${nd.id}" data-pkk="${nd.kind}"`:''}>`+
+      (canFold?`<button class="spk-f${open?' open':''}" type="button" data-pkf="${key}" aria-label="접기/펼치기"></button>`:'<span class="spk-f sp"></span>')+
+      `<span class="spk-i"${nd.color?` style="color:${nd.color}"`:''}>${ico(nd.icon)}</span><span class="spk-l"><span class="spk-n"${nd.o||nd.kind==="scene"||nd.user?" data-i18n-skip":""}>${nd.o||nd.kind==="scene"||nd.user?enm(nd.label):esc(nd.label)}</span>`+
+      (nd.kind==='scene'?`<span class="spk-tag">현재 씬</span>${nd.start?'<span class="spk-tag st">시작 씬</span>':''}`:'')+
+      (nd.o&&nd.sub?`<small class="spk-sub">${esc(nd.sub)}</small>`:'')+`</span>${right}</div>`;
+    if(nd.o&&has&&exp&&insts.length>1){
+      h+=`<div class="spk-list" style="--d:${d+1}">`+insts.map((i,k)=>{const s=scriptOf(i.sid);
+        return s?`<button class="spk-sr${s.id===ed.cur?' on':''}" type="button" data-pks="${s.id}"><span class="spk-k">${k+1}</span>${ico('script')}<span class="spk-sn" data-i18n-skip>${enm(s.name)}.cs</span>${ed.open.includes(s.id)?'<span class="spk-tab">열림</span>':''}${parseCS(s.code).errs.length?'<span class="spk-err">오류</span>':''}</button>`
+          :`<span class="spk-sr miss"><span class="spk-k">${k+1}</span>${ico('script')}<span class="spk-sn">(Missing Script)</span></span>`}).join('')+`</div>`;
+    }
+    if(canFold&&open)h+=spkRows(kids,d+1,q);
+  });
+  return h;
+}
+function spkBody(){
+  const all=spkTree(),c=spkCount(all),nodes=spkFilter(all),q=spk.q.trim();
+  const rows=spkRows(nodes,0,q);
+  return{html:rows||`<div class="spk-empty">${q?'검색 결과가 없습니다':'스크립트가 붙은 오브젝트가 없습니다'}</div>`,c};
+}
+function spkHtml(inline){
+  const b=spkBody();
+  return`<div class="spk${inline?' inline':''}" id="edPk" role="dialog" aria-label="스크립트 선택">
+  <div class="spk-h">${inline?`<div class="spk-tt">${ico('script')}<div><b>편집할 스크립트를 고르세요</b><span>현재 씬과 매니저의 스크립트를 계층 구조 그대로 보여 줍니다</span></div></div>`:''}
+    <div class="spk-tools"><label class="spk-q">${ico('search')}<input type="search" id="pkQ" placeholder="오브젝트 · 스크립트 이름 검색" value="${esc(spk.q)}" autocomplete="off" spellcheck="false"></label>
+    <button class="spk-tg${spk.only?' on':''}" type="button" id="pkOnly" aria-pressed="${spk.only}" title="스크립트가 붙은 오브젝트만 보기">${ico('script')}<span>있는 것만</span></button>
+    <button class="ib" type="button" id="pkExp" title="모두 펼치기" aria-label="모두 펼치기" >${ico('expand')}</button><button class="ib" type="button" id="pkCol" title="모두 접기" aria-label="모두 접기">${ico('collapse')}</button></div>
+  </div>
+  <div class="spk-b" id="pkB">${b.html}</div>
+  <div class="spk-ft" id="pkFt">${spkFoot(b.c)}</div></div>`;
+}
+const spkFoot=c=>`<span><i class="spk-dot"></i>${_t('오브젝트 {o}개 중 {w}개에 스크립트',{o:c.o,w:c.w})}</span><span class="spacer"></span><span>${_t('스크립트 {n}개',{n:c.sc})}</span>`;
+function spkPaint(){
+  const box=SED_EL&&SED_EL.querySelector('#sedBox'),pk=box&&box.querySelector('#edPk');if(!pk)return;
+  const b=spkBody(),bd=pk.querySelector('#pkB'),st=bd.scrollTop;bd.innerHTML=b.html;bd.scrollTop=st;pk.querySelector('#pkFt').innerHTML=spkFoot(b.c);
+  const t=pk.querySelector('#pkOnly');if(t){t.classList.toggle('on',spk.only);t.setAttribute('aria-pressed',spk.only)}
+}
+let spkDocOff=null;
+function spkSetOpen(v,again){
+  const was=!!(SED_EL&&SED_EL.querySelector('#edPk:not(.inline)'));spk.open=!!v;
+  if(spkDocOff){spkDocOff();spkDocOff=null}
+  const box=SED_EL&&SED_EL.querySelector('#sedBox');if(!box)return;
+  const old=box.querySelector('#edPk:not(.inline)');if(old)old.remove();
+  const btn=box.querySelector('#edPick');if(btn){btn.classList.toggle('on',spk.open);btn.setAttribute('aria-expanded',spk.open)}
+  if(!spk.open||!ed.cur)return;
+  box.insertAdjacentHTML('beforeend',spkHtml(false));
+  const pk=box.querySelector('#edPk');
+  const bar=box.querySelector('.sedbar');if(bar)pk.style.top=(bar.offsetTop+bar.offsetHeight+4)+'px';
+  const d=docOf(box),off=e=>{if(!e.target.closest||!e.target.closest('#edPk,#edPick'))spkSetOpen(false)};
+  d.addEventListener('pointerdown',off,true);spkDocOff=()=>d.removeEventListener('pointerdown',off,true);
+  if(!was||!again){setTimeout(()=>{const i=pk.querySelector('#pkQ');if(i&&!mqN.matches)i.focus({preventScroll:true})},0);
+  const cur=pk.querySelector('.spk-r.cur');if(cur)cur.scrollIntoView({block:'nearest'})}
+}
+function spkOwner(kind,id){const m=spkScene();if(kind==='mgr')return((P&&P.mgrs)||[]).find(o=>o.id===id);if(!m)return null;return kind==='ui'?(m.ui||[]).find(u=>u.id===id):m.objs.find(o=>o.id===id)}
+function spkOpenScript(sid){const s=scriptOf(sid);if(!s)return;spk.open=false;if(spkDocOff){spkDocOff();spkDocOff=null}openScriptEditor(s)}
+/* 고르기 창 안의 클릭 · 입력 (팝업 · 빈 화면 목록 둘 다) */
+SED_EL.addEventListener('click',e=>{
+  if(e.target.closest('#edPick')){e.stopPropagation();spkSetOpen(!spk.open);return}
+  const pk=e.target.closest('#edPk');if(!pk)return;
+  e.stopPropagation();
+  const t=e.target;
+  if(t.closest('#pkOnly')){spk.only=!spk.only;spkPaint();return}
+  if(t.closest('#pkExp')){spk.fold={};spkPaint();return}
+  if(t.closest('#pkCol')){const walk=l=>l.forEach(nd=>{if((nd.kids||[]).length&&nd.kind!=='scene'&&nd.key!=='mgr')spk.fold[nd.key||('o:'+nd.id)]=false;walk(nd.kids||[])});walk(spkTree());spk.exp.clear();spkPaint();return}
+  const f=t.closest('[data-pkf]');if(f){const k=f.dataset.pkf;spk.fold[k]=!f.classList.contains('open');spkPaint();return}
+  const a=t.closest('[data-pka]');if(a){const[kind,id]=a.dataset.pka.split(':');const o=spkOwner(kind,id);if(o){spkSetOpen(false);newScript(o)}return}
+  const x=t.closest('[data-pkx]');if(x){const id=x.dataset.pkx;if(spk.exp.has(id))spk.exp.delete(id);else spk.exp.add(id);spkPaint();return}
+  const s=t.closest('[data-pks]');if(s){spkOpenScript(s.dataset.pks);return}
+  const r=t.closest('.spk-r');if(!r)return;
+  if(r.dataset.pko){const row=r,id=row.dataset.pko,kind=row.dataset.pkk,o=spkOwner(kind,id),L0=(o&&o.scripts)||[];
+    if(L0.length===1)spkOpenScript(L0[0].sid);
+    else if(L0.length>1){if(spk.exp.has(id))spk.exp.delete(id);else spk.exp.add(id);spkPaint()}
+    else{row.classList.remove('nudge');void row.offsetWidth;row.classList.add('nudge')}
+    return}
+  const fb=r.querySelector('[data-pkf]');if(fb){spk.fold[fb.dataset.pkf]=!fb.classList.contains('open');spkPaint()}
+},true);
+SED_EL.addEventListener('input',e=>{if(e.target.id==='pkQ'){spk.q=e.target.value;spkPaint()}});
+SED_EL.addEventListener('keydown',e=>{
+  if(!e.target.closest||!e.target.closest('#edPk'))return;
+  if(e.key==='Escape'&&spk.open){e.preventDefault();e.stopPropagation();spkSetOpen(false);const ta=SED_EL.querySelector('#edTa');if(ta)ta.focus({preventScroll:true});return}
+  if(e.key==='Enter'&&e.target.id==='pkQ'){e.preventDefault();const f=SED_EL.querySelector('#edPk [data-pks]');if(f)spkOpenScript(f.dataset.pks)}
+});
+/* 툴바 「스크립트 편집하기」: 스크립트 창을 열고 고르기 창을 펼침 */
+function openScriptHub(){
+  sedShow();
+  spk.open=true;renderEditor();
+}
+const spkBtn=()=>{const m=spkScene();return`<button class="sedpick${spk.open?' on':''}" id="edPick" type="button" aria-haspopup="dialog" aria-expanded="${spk.open}" title="현재 씬과 매니저의 스크립트 고르기">${ico('hier')}<span class="t">스크립트 선택</span><span class="sc" data-i18n-skip>${m?enm(m.name):''}</span><svg class="cv" viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button><span class="sedsep" aria-hidden="true"></span>`};
 
 /* ---- 인스펙터: 스크립트 컴포넌트 ---- */
 /* 인스펙터에 표시 중인 스크립트 소유자: UI 레이어면 선택한 UI 요소, 아니면 게임 오브젝트 */
@@ -9773,6 +10124,7 @@ function uibCall(fn,arg,def){try{return UIB[fn](arg)}catch(e){return def}}
 /* UI 빌더 (ui-builder.js): 「UI 화면 만들기」 창 · 플레이 중 UI 화면 · 스크립트 UIScreen */
 const UIB=UI_BUILDER(__n=>{eval(__n);return eval('()=>('+__n+')')},(__n,__v)=>{eval(__n+'=__v')});
 $('#bUib').addEventListener('click',()=>UIB.open());
+$('#bSed').addEventListener('click',()=>openScriptHub());
 $('#uibX').addEventListener('click',e=>{e.stopPropagation();UIB.close()});
 $('#uibX').addEventListener('pointerdown',e=>e.stopPropagation());
 /* UI 빌더 창 머리: 축소(접기) · 전체화면 — 학습 창과 같은 단추 */
@@ -10160,6 +10512,13 @@ const mgrGuideOnce=()=>{let seen=false;try{seen=localStorage.getItem(MGR_GUIDE_K
 function mgrPick(id){
   if(id)selMgr=id;hierPick=id?'mgr':'mgrfolder';setHsel(new Set(),null);
   renderInsp();renderHier();focusInspector();mgrGuideOnce();
+}
+/* BGM 매니저 블록: 프로젝트의 BgmManager 스크립트(없으면 만듦) + 「타니아의 아침」 반복 오디오 소스 */
+function mgrCreateBgm(){
+  if(play){toast('플레이 중에는 매니저를 만들 수 없습니다');return}
+  let s=SC().find(x=>x.name===BGM_SCRIPT);
+  if(!s){s={id:uid(),name:BGM_SCRIPT,code:BGM_CODE};SC().push(s);try{compileScript(s,true)}catch(e){}renderScripts()}
+  const o=mgrNew(_t('BGM 매니저'),P);o.props.audio=BGM_AUDIO();o.scripts.push({id:uid(),sid:s.id,vals:{}});P.mgrs.push(o);markDirty();mgrPick(o.id);
 }
 function mgrCreate(){
   if(play){toast('플레이 중에는 매니저를 만들 수 없습니다');return}
