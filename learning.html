@@ -1391,7 +1391,7 @@ function gradeProblem(p,code){
     const pre=i?(t.why||_t('값을 바꿔 시험했더니({f}) ',{f:fieldDesc(t.f)}))+_t('결과가 달라요. '):'';
     if(r.fatal)return{first,pass:false,msg:_t('코드를 끝까지 실행하지 못했어요. 콘솔의 오류를 읽고 고쳐 보세요.')+(p.fatalHint&&r.out.some(l=>/NullReference/.test(l[1]))?' '+p.fatalHint:'')};
     const d=diffOut(t.out,r.out);
-    if(d)return{first,pass:false,msg:pre+d};
+    if(d)return{first,pass:false,msg:pre+d+(t.tip?' '+_t(t.tip):'')};
     const v=p.verify&&p.verify(sc,t.f||{},t,ui);
     if(v)return{first,pass:false,msg:pre+v};
   }
@@ -2687,11 +2687,11 @@ const L10_OPEN='        UIScreen.SetText(dialogUI.name, "이름", name);\n      
 const L10P=[
 {id:'d-find',scene:true,view:'pGame',sel:'chief',self:'chief',file:'NpcTalk.cs',title:'대화창 UI 그룹 찾기',
  setup:l10Scene,uiSetup:l10Ui,
- desc:'계층 구조 <b>UI (캔버스)</b>에 대화창이 숨겨져 있어요. <b>대화 상자 · 이름 · 대사 · 대화 안내</b> 네 요소가 <b>「대화창」 UI 그룹</b>으로 묶여 있고, 게임이 시작될 때는 보이지 않아요.<br><br>스크립트에서 UI 그룹을 다루려면 먼저 찾아서 변수에 담아요. <code>UIGroup.Find("대화창")</code>은 이름으로 그룹을 찾아 돌려주고, 없으면 <code>null</code>을 돌려줘요. 없는 그룹을 그대로 쓰면 오류가 나니까 <code>if (dialogUI == null)</code>로 먼저 확인해요.<br><br>엔진에서는 NPC를 추가할 때 대화창 UI를 만들면 NpcTalk의 <b>Dialog UI</b> 칸(<code>public UIGroup dialogUI;</code>)에 자동으로 연결돼요. 여기서는 같은 일을 코드로 해 봐요.',
- goal:'<code>Start()</code>에서 「대화창」 그룹을 찾아 <code>dialogUI</code>에 담고 <b>대화창 연결: 대화창</b> 을 출력하세요. 그룹이 없으면 경고로 <b>대화창 UI가 없어요</b> 를 출력하고 끝내요.',
- starter:L10_HEAD+'    private UIGroup dialogUI;\n    private Npc npc;\n\n    void Start()\n    {\n        npc = GetComponent<Npc>();\n        // UIGroup.Find로 「대화창」 그룹을 찾아 dialogUI에 담으세요\n    }\n}\n',
- tests:[{out:[['info','대화창 연결: 대화창']]},{noUi:true,why:'대화창 UI가 없는 씬에서 시험했더니 ',out:[['warn','대화창 UI가 없어요']]}],
- hint:'dialogUI = UIGroup.Find("대화창");\nif (dialogUI == null)\n{\n    Debug.LogWarning("대화창 UI가 없어요");\n    return;\n}\nDebug.Log("대화창 연결: " + dialogUI.name);'},
+ desc:'계층 구조 <b>UI (캔버스)</b>에 대화창이 숨겨져 있어요. <b>대화 상자 · 이름 · 대사 · 대화 안내</b> 네 요소가 <b>「대화창」 UI 그룹</b>으로 묶여 있고, 게임이 시작될 때는 보이지 않아요.<br><br>스크립트에서 UI 그룹을 다루려면 먼저 찾아서 변수에 담아요. <code>UIGroup.Find("대화창")</code>은 이름으로 그룹을 찾아 돌려주고, 없으면 <code>null</code>을 돌려줘요. 이 씬에는 대화창이 꼭 있으니 바로 써도 되지만, 실제 게임에서는 <code>if (dialogUI == null)</code>로 먼저 확인해 두면 더 안전해요.<br><br>엔진에서는 NPC를 추가할 때 대화창 UI를 만들면 NpcTalk의 <b>Dialog UI</b> 칸(<code>public UIGroup dialogUI;</code>)에 자동으로 연결돼요. 여기서는 같은 일을 코드로 해 봐요.',
+ goal:'<code>Start()</code>에서 「대화창」 그룹을 찾아 <code>dialogUI</code>에 담고 <b>대화창 연결: 대화창</b> 을 출력하세요. (그룹이 없을 때의 처리는 선택이에요. 넣어 두면 실제 게임에서 더 안전해요.)',
+ starter:L10_HEAD+'    private UIGroup dialogUI;\n    private Npc npc;\n\n    void Start()\n    {\n        npc = GetComponent<Npc>();\n        // ① UIGroup.Find로 「대화창」 그룹을 찾아 dialogUI에 담으세요\n        // ② 「대화창 연결: 」 + 그룹 이름(dialogUI.name)을 출력하세요\n    }\n}\n',
+ tests:[{out:[['info','대화창 연결: 대화창']]}],
+ hint:'dialogUI = UIGroup.Find("대화창");\nDebug.Log("대화창 연결: " + dialogUI.name);\n\n// (선택) 그룹이 없으면 null이에요. 이렇게 막아 두면 더 안전해요:\n// if (dialogUI == null) { Debug.LogWarning("대화창 UI가 없어요"); return; }'},
 {id:'d-open',scene:true,view:'pGame',sel:'chief',self:'chief',file:'NpcTalk.cs',title:'말을 걸면 대화창 열기',
  setup:l10Scene,uiSetup:l10Ui,expLabel:'기대 출력 (주인공이 한 번 말을 걺)',
  desc:'주인공이 NPC 옆에서 Space를 누르면 엔진이 NPC 스크립트의 <code>OnInteract()</code>를 불러요. 여기에 대화창을 여는 코드를 써요.<br><br><code>UIScreen.SetText("그룹", "요소", "글자")</code>는 그룹 안의 텍스트 요소 글자를 바꾸고, <code>UIScreen.Show("그룹")</code>은 그룹 전체를 보이게 해요. 그룹 이름은 <code>dialogUI.name</code>으로 꺼내 쓰면 그룹 이름이 바뀌어도 코드를 고칠 필요가 없어요. NPC 이름은 <code>name</code>, 대사는 Npc 컴포넌트의 <code>npc.text</code>예요 (인스펙터에서 바꿔 볼 수 있어요).',
@@ -3390,7 +3390,7 @@ function renderTop(){
 function renderBrief(){
   const p=P();
   $('#brief').innerHTML=`<h1>${esc(_t(p.task?'실습 {n}.':'문제 {n}.',{n:st.cur+1}))} ${esc(p.title)}</h1><p>${p.desc}</p><div class="goal">${p.goal}</div>
-  ${p.task?'':`<div class="exp"><div class="lbl">${esc(p.expLabel||'기대 출력')}</div><div class="conlist">${p.expNote&&!p.tests[0].out.length?`<div class="empty">${esc(p.expNote)}</div>`:conHTML(p.tests[0].out)}</div></div>`}
+  ${p.task?'':`<div class="exp"><div class="lbl">${esc(p.expLabel||'기대 출력')}</div><div class="conlist">${p.expNote&&!p.tests[0].out.length?`<div class="empty">${esc(p.expNote)}</div>`:conHTML(p.tests[0].out)}</div>${(p.expMore||[]).map(x=>`<div class="lbl" style="margin-top:8px">${esc(_t(x.l))}</div><div class="conlist">${conHTML(p.tests[x.i].out)}</div>`).join('')}</div>`}
   <button class="btn" type="button" id="hintBtn" aria-expanded="false">힌트 보기</button><pre class="hint" id="hint" hidden>${esc(p.hint)}</pre>`;
   $('#hintBtn').onclick=()=>{const h=$('#hint'),o=h.hidden;h.hidden=!o;$('#hintBtn').textContent=o?'힌트 숨기기':'힌트 보기';$('#hintBtn').setAttribute('aria-expanded',String(o))};
   try{locGoal(p)}catch(e){}
