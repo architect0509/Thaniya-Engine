@@ -1288,7 +1288,7 @@ html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.
 <script src="script-editor.js?v=20261104y"></script>
 <script src="anim-editor.js?v=20261102a"></script>
 <script src="ui-builder.js?v=20261105d"></script>
-<script src="learn-preview.js?v=20261105a"></script>
+<script src="learn-preview.js?v=20261105b"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
@@ -1296,7 +1296,7 @@ let OUT=[];
 function clog(type,msg){if(OUT.length<300)OUT.push([type,String(msg)]);if(SMRUN&&SMRUN.ev&&SMRUN.ev.length<80)SMRUN.ev.push([type==='info'?'':type,'💬 <span data-i18n-skip>'+esc(String(msg))+'</span>'])}
 let play=null;
 /* 레슨 5 입력 흉내: k = ['right','up','shift' …] → Input이 읽는 play 상태 (엔진과 같은 모양) */
-const FK_CODE={right:'ArrowRight',left:'ArrowLeft',up:'ArrowUp',down:'ArrowDown',shift:'ShiftLeft',space:'Space'};
+const FK_CODE={right:'ArrowRight',left:'ArrowLeft',up:'ArrowUp',down:'ArrowDown',shift:'ShiftLeft',space:'Space',esc:'Escape'};
 function frameInput(k,last,tm,frame,codes){
   const raw=new Set(codes||k.map(x=>FK_CODE[x]).filter(Boolean)),had=last?last.kraw:new Set();
   const has=a=>a.some(c=>raw.has(c));
@@ -1384,7 +1384,7 @@ function snTestScene(over,p){
 }
 function gradeProblem(p,code){
   const refs=p.scene?refsOf(p,code):{};
-  const runs=p.tests.map(t=>{const sc=p.scene?snTestScene(t.sc,p):null,ui=p.uiSetup?JSON.parse(JSON.stringify(p.uiSetup())):[],sm=p.sm?smCtx(p,t,false):null;return{t,sc:sc||sm,ui,r:runOnce(code,Object.assign({},refs,t.f),sc,{ui,clicks:t.click||0,self:p.hero?'hero':null,frames:t.frames,sm,selfObj:sm?sm.self:null,calls:t.calls})}});
+  const runs=p.tests.map(t=>{const sc=p.scene?snTestScene(t.sc,p):null,ui=p.uiSetup&&!t.noUi?JSON.parse(JSON.stringify(p.uiSetup())):[],sm=p.sm?smCtx(p,t,false):null;return{t,sc:sc||sm,ui,r:runOnce(code,Object.assign({},refs,t.f),sc,{ui,clicks:t.click||0,self:p.self||(p.hero?'hero':null),frames:t.frames,sm,selfObj:sm?sm.self:null,calls:t.calls})}});
   const first=runs[0].r;
   for(let i=0;i<runs.length;i++){
     const{t,sc,ui,r}=runs[i];
@@ -2666,6 +2666,75 @@ const L9P=[
  hint:'「다른 UI 그룹 열기」 목록에는 같은 씬의 UI 그룹 이름이 나와요.\n「이 그룹은 닫기」를 끄면 메인 화면 위에 게임 UI가 겹쳐 떠요.'}
 ];
 
+/* ===== 레슨 10: 대화창 UI 스크립트 (중급) =====
+   엔진의 NpcTalk.cs와 같은 흐름: 대화창 UI 그룹을 찾고(UIGroup) · UIScreen으로 글을 넣고 열고 닫기 · 말 걸기(OnInteract) · 거리로 닫기(Update)
+   UI 요소의 grp = 속한 UI 그룹 이름 · hidden = 숨김 (UIScreen.Show/Hide가 바꿈) */
+const L10={no:10,title:'대화창 UI 스크립트',clear:'통과했어요. 레슨 10 완료! NPC 스크립트가 대화창 UI 그룹을 찾아 이름과 대사를 넣고, 말을 걸 때마다 열고 닫고, 대사를 넘기고, 멀어지면 닫히게 만들었어요. 엔진에서 NPC를 추가할 때 만들어지는 NpcTalk.cs와 같은 구조예요.',
+ lead:'NPC에게 말을 걸면 화면 아래에 대화창이 뜨는 게임을 C# 스크립트로 만들어요. UI 그룹을 찾고, UIScreen으로 글자를 넣고 열고 닫으며, 여러 마디 대화와 멀어지면 닫히는 대화창까지 완성해요.'};
+const L10_CHIEF={id:'chief',name:'촌장',kind:'npc',x:5,y:4,text:'어서 오게, 젊은이!'};
+const l10Scene=()=>SN_INIT.filter(o=>o.id!=='quiz'&&o.id!=='slime').map(o=>o.id==='hero'?{...o,x:4,y:4}:{...o}).concat([{...L10_CHIEF}]);
+const l10Ui=()=>[
+  {id:'dBox',name:'대화 상자',type:'panel',grp:'대화창',hidden:true,anchor:'bc',x:0,y:-14,w:600,h:96,bg:'rgba(17,19,26,.92)',border:'#f6cd2a',msg:''},
+  {id:'dName',name:'이름',type:'text',grp:'대화창',hidden:true,anchor:'bl',x:40,y:-78,w:300,h:24,text:'이름',size:15,color:'#f6cd2a',msg:''},
+  {id:'dLine',name:'대사',type:'text',grp:'대화창',hidden:true,anchor:'bl',x:40,y:-44,w:560,h:30,text:'대사',size:15,color:'#ffffff',msg:''},
+  {id:'dHint',name:'대화 안내',type:'text',grp:'대화창',hidden:true,anchor:'br',x:-36,y:-22,w:220,h:16,text:'Space: 다음 ▶',size:11,color:'#9aa0ab',msg:''}];
+const l10Open=ui=>ui.filter(u=>u.grp==='대화창').every(u=>!u.hidden);
+const l10Closed=ui=>ui.filter(u=>u.grp==='대화창').every(u=>u.hidden);
+const l10T=(ui,id)=>{const u=ui.find(q=>q.id===id);return u?String(u.text):''};
+const L10_HEAD='using UnityEngine;\n\n// NPC 대화 스크립트 · 촌장 오브젝트에 붙어 있어요\n// 주인공이 촌장 옆에서 Space를 누르면 엔진이 OnInteract()를 불러 줘요\npublic class NpcTalk : MonoBehaviour\n{\n';
+const L10_FIND='        npc = GetComponent<Npc>();\n        dialogUI = UIGroup.Find("대화창");\n        if (dialogUI == null)\n        {\n            Debug.LogWarning("대화창 UI가 없어요");\n            return;\n        }\n        Debug.Log("대화창 연결: " + dialogUI.name);\n';
+const L10_OPEN='        UIScreen.SetText(dialogUI.name, "이름", name);\n        UIScreen.SetText(dialogUI.name, "대사", npc.text);\n        UIScreen.Show(dialogUI.name);\n';
+const L10P=[
+{id:'d-find',scene:true,view:'pGame',sel:'chief',self:'chief',file:'NpcTalk.cs',title:'대화창 UI 그룹 찾기',
+ setup:l10Scene,uiSetup:l10Ui,
+ desc:'계층 구조 <b>UI (캔버스)</b>에 대화창이 숨겨져 있어요. <b>대화 상자 · 이름 · 대사 · 대화 안내</b> 네 요소가 <b>「대화창」 UI 그룹</b>으로 묶여 있고, 게임이 시작될 때는 보이지 않아요.<br><br>스크립트에서 UI 그룹을 다루려면 먼저 찾아서 변수에 담아요. <code>UIGroup.Find("대화창")</code>은 이름으로 그룹을 찾아 돌려주고, 없으면 <code>null</code>을 돌려줘요. 없는 그룹을 그대로 쓰면 오류가 나니까 <code>if (dialogUI == null)</code>로 먼저 확인해요.<br><br>엔진에서는 NPC를 추가할 때 대화창 UI를 만들면 NpcTalk의 <b>Dialog UI</b> 칸(<code>public UIGroup dialogUI;</code>)에 자동으로 연결돼요. 여기서는 같은 일을 코드로 해 봐요.',
+ goal:'<code>Start()</code>에서 「대화창」 그룹을 찾아 <code>dialogUI</code>에 담고 <b>대화창 연결: 대화창</b> 을 출력하세요. 그룹이 없으면 경고로 <b>대화창 UI가 없어요</b> 를 출력하고 끝내요.',
+ starter:L10_HEAD+'    private UIGroup dialogUI;\n    private Npc npc;\n\n    void Start()\n    {\n        npc = GetComponent<Npc>();\n        // UIGroup.Find로 「대화창」 그룹을 찾아 dialogUI에 담으세요\n    }\n}\n',
+ tests:[{out:[['info','대화창 연결: 대화창']]},{noUi:true,why:'대화창 UI가 없는 씬에서 시험했더니 ',out:[['warn','대화창 UI가 없어요']]}],
+ hint:'dialogUI = UIGroup.Find("대화창");\nif (dialogUI == null)\n{\n    Debug.LogWarning("대화창 UI가 없어요");\n    return;\n}\nDebug.Log("대화창 연결: " + dialogUI.name);'},
+{id:'d-open',scene:true,view:'pGame',sel:'chief',self:'chief',file:'NpcTalk.cs',title:'말을 걸면 대화창 열기',
+ setup:l10Scene,uiSetup:l10Ui,expLabel:'기대 출력 (주인공이 한 번 말을 걺)',
+ desc:'주인공이 NPC 옆에서 Space를 누르면 엔진이 NPC 스크립트의 <code>OnInteract()</code>를 불러요. 여기에 대화창을 여는 코드를 써요.<br><br><code>UIScreen.SetText("그룹", "요소", "글자")</code>는 그룹 안의 텍스트 요소 글자를 바꾸고, <code>UIScreen.Show("그룹")</code>은 그룹 전체를 보이게 해요. 그룹 이름은 <code>dialogUI.name</code>으로 꺼내 쓰면 그룹 이름이 바뀌어도 코드를 고칠 필요가 없어요. NPC 이름은 <code>name</code>, 대사는 Npc 컴포넌트의 <code>npc.text</code>예요 (인스펙터에서 바꿔 볼 수 있어요).',
+ goal:'<code>OnInteract()</code>에서 「이름」에 NPC 이름을, 「대사」에 <code>npc.text</code>를 넣고 대화창을 연 뒤 <b>대화 시작: 촌장</b> 을 출력하세요. <b>실행</b>을 누르면 말을 건 것으로 채점하고, 게임 뷰에 대화창이 떠요.',
+ starter:L10_HEAD+'    private UIGroup dialogUI;\n    private Npc npc;\n\n    void Start()\n    {\n'+L10_FIND+'    }\n\n    void OnInteract()\n    {\n        // 이름 · 대사를 넣고 대화창을 여세요\n    }\n}\n',
+ tests:[{calls:['OnInteract'],out:[['info','대화창 연결: 대화창'],['info','대화 시작: 촌장']]},
+  {calls:['OnInteract'],sc:{chief:{name:'상인',text:'좋은 물건 있다네!'}},why:'NPC 이름을 「상인」, 대사를 「좋은 물건 있다네!」로 바꿔 시험했더니 ',out:[['info','대화창 연결: 대화창'],['info','대화 시작: 상인']]}],
+ verify:(sc,f,t,ui)=>{const c=snO(sc,'chief');if(!l10Open(ui))return _t('대화창이 열리지 않았어요. UIScreen.Show(dialogUI.name);을 불렀는지 확인하세요.');
+   if(l10T(ui,'dName')!==c.name)return _t('「이름」 글자가 「{want}」가 아니에요. (지금 「{got}」)',{want:c.name,got:l10T(ui,'dName')});
+   if(l10T(ui,'dLine')!==c.text)return _t('「대사」 글자가 「{want}」가 아니에요. (지금 「{got}」) npc.text를 넣었는지 확인하세요.',{want:c.text,got:l10T(ui,'dLine')});return''},
+ hint:'void OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "이름", name);\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n    Debug.Log("대화 시작: " + name);\n}'},
+{id:'d-toggle',scene:true,view:'pGame',sel:'chief',self:'chief',file:'NpcTalk.cs',title:'다시 말 걸면 닫기',
+ setup:l10Scene,uiSetup:l10Ui,expLabel:'기대 출력 (두 번 말을 걺)',
+ desc:'대화창을 열기만 하면 닫을 방법이 없어요. 대화 중인지 기억하는 <code>bool</code> 변수 <code>talking</code>을 두고, 이미 대화 중일 때 다시 말을 걸면 <code>UIScreen.Hide("그룹")</code>으로 닫아요.<br><br>닫는 코드는 다음 문제에서도 또 쓰니까 <code>void CloseDialog()</code> 메서드로 따로 만들어 두면 좋아요. 내가 만든 메서드는 <code>CloseDialog();</code>처럼 이름으로 불러요.',
+ goal:'대화 중이 아니면 대화창을 열고 <code>talking = true</code>, 대화 중이면 <code>CloseDialog()</code>로 닫고 <b>대화 끝</b> 을 출력하세요. 채점은 말을 두 번 · 세 번 걸어서 해요.',
+ starter:L10_HEAD+'    private UIGroup dialogUI;\n    private Npc npc;\n    private bool talking = false;\n\n    void Start()\n    {\n'+L10_FIND+'    }\n\n    void OnInteract()\n    {\n        // 대화 중이면 닫고, 아니면 여세요\n'+L10_OPEN+'        Debug.Log("대화 시작: " + name);\n    }\n\n    void CloseDialog()\n    {\n        // 대화창을 닫고 talking을 false로\n    }\n}\n',
+ tests:[{calls:['OnInteract','OnInteract'],open:false,out:[['info','대화창 연결: 대화창'],['info','대화 시작: 촌장'],['info','대화 끝']]},
+  {calls:['OnInteract','OnInteract','OnInteract'],open:true,why:'세 번 말을 걸어 시험했더니 ',out:[['info','대화창 연결: 대화창'],['info','대화 시작: 촌장'],['info','대화 끝'],['info','대화 시작: 촌장']]}],
+ verify:(sc,f,t,ui)=>t.open?(l10Open(ui)?'':_t('세 번째에는 대화창이 다시 열려야 해요. 닫을 때 talking을 false로 되돌렸는지 확인하세요.')):(l10Closed(ui)?'':_t('두 번째로 말을 걸었는데 대화창이 닫히지 않았어요. UIScreen.Hide(dialogUI.name);을 불렀는지 확인하세요.')),
+ hint:'void OnInteract()\n{\n    if (talking)\n    {\n        CloseDialog();\n        return;\n    }\n    UIScreen.SetText(dialogUI.name, "이름", name);\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n    talking = true;\n    Debug.Log("대화 시작: " + name);\n}\n\nvoid CloseDialog()\n{\n    UIScreen.Hide(dialogUI.name);\n    talking = false;\n    Debug.Log("대화 끝");\n}'},
+{id:'d-step',scene:true,view:'pGame',sel:'chief',self:'chief',file:'NpcTalk.cs',title:'두 마디 대화',
+ setup:l10Scene,uiSetup:l10Ui,expLabel:'기대 출력 (세 번 말을 걺)',
+ desc:'대사가 한 마디뿐이면 심심해요. 몇 번째 대사인지 세는 <code>int</code> 변수 <code>step</code>을 두고, 말을 걸 때마다 하나씩 늘려서 다음 대사를 보여 줘요. 대화창이 이미 열려 있을 때는 <code>UIScreen.SetText</code>로 「대사」 글자만 바꾸면 돼요.<br><br>두 번째 대사는 인스펙터에서 고칠 수 있게 <code>public string nextLine</code>으로 만들어요. 마지막 대사 다음에는 닫고, <code>step</code>을 0으로 되돌려 다음에 처음부터 다시 말하게 해요.',
+ goal:'첫 번째: 대화창을 열고 <code>npc.text</code>를, 두 번째: 「대사」를 <code>nextLine</code>으로 바꾸고, 세 번째: 닫으세요. 말을 걸 때마다 <b>대사 1</b> · <b>대사 2</b> · <b>대화 끝</b> 을 출력해요.',
+ starter:L10_HEAD+'    public string nextLine = "북쪽 숲에 슬라임이 나타났다네.";\n\n    private UIGroup dialogUI;\n    private Npc npc;\n    private int step = 0;\n\n    void Start()\n    {\n'+L10_FIND+'    }\n\n    void OnInteract()\n    {\n        step++;\n        // step이 1이면 열기 · 2이면 다음 대사 · 그 밖에는 닫기\n    }\n\n    void CloseDialog()\n    {\n        UIScreen.Hide(dialogUI.name);\n        step = 0;\n        Debug.Log("대화 끝");\n    }\n}\n',
+ tests:[{calls:['OnInteract'],st:1,out:[['info','대화창 연결: 대화창'],['info','대사 1']]},
+  {calls:['OnInteract','OnInteract'],st:2,why:'두 번 말을 걸어 시험했더니 ',out:[['info','대화창 연결: 대화창'],['info','대사 1'],['info','대사 2']]},
+  {calls:['OnInteract','OnInteract','OnInteract','OnInteract'],st:1,f:{nextLine:'조심해서 다녀오게.'},why:'nextLine을 바꾸고 네 번 말을 걸어 시험했더니 ',out:[['info','대화창 연결: 대화창'],['info','대사 1'],['info','대사 2'],['info','대화 끝'],['info','대사 1']]}],
+ verify:(sc,f,t,ui)=>{const c=snO(sc,'chief'),want=t.st===1?c.text:((f&&f.nextLine)||'북쪽 숲에 슬라임이 나타났다네.');if(!l10Open(ui))return _t('대화창이 열려 있어야 해요.');
+   return l10T(ui,'dLine')===want?'':_t('「대사」 글자가 「{want}」가 아니에요. (지금 「{got}」)',{want,got:l10T(ui,'dLine')})},
+ hint:'void OnInteract()\n{\n    step++;\n    if (step == 1)\n    {\n        UIScreen.SetText(dialogUI.name, "이름", name);\n        UIScreen.SetText(dialogUI.name, "대사", npc.text);\n        UIScreen.Show(dialogUI.name);\n        Debug.Log("대사 1");\n    }\n    else if (step == 2)\n    {\n        UIScreen.SetText(dialogUI.name, "대사", nextLine);\n        Debug.Log("대사 2");\n    }\n    else\n    {\n        CloseDialog();\n    }\n}'},
+{id:'d-far',scene:true,view:'pGame',sel:'chief',self:'chief',file:'NpcTalk.cs',title:'멀어지면 닫기',
+ setup:l10Scene,uiSetup:l10Ui,expLabel:'기대 출력 (말을 건 뒤 주인공이 멀리 있음)',
+ desc:'대화창을 연 채로 주인공이 걸어가 버리면 대화창이 계속 떠 있어요. 엔진의 NpcTalk.cs처럼 <code>Update()</code>에서 매 프레임 거리를 재서, 멀어지면 닫아요.<br><br><code>Hero.main.position</code>은 주인공 위치, <code>transform.position</code>은 이 NPC의 위치예요. <code>Vector2.Distance(a, b)</code>로 두 위치 사이 거리(칸)를 재요. 대화 중이 아닐 때는 할 일이 없으니 <code>return</code>으로 바로 끝내요. <b>Esc</b>를 눌러도 닫히게 <code>Input.GetKeyDown(KeyCode.Escape)</code>도 함께 확인해요.',
+ goal:'대화 중일 때 주인공이 <code>closeDistance</code>보다 멀거나 Esc를 누르면 <code>CloseDialog()</code>로 닫고 <b>대화창을 닫았어요</b> 를 출력하세요. 채점은 말을 건 뒤 한 프레임 동안 <code>Update()</code>를 불러서 해요.',
+ starter:L10_HEAD+'    public float closeDistance = 2.5f;\n\n    private UIGroup dialogUI;\n    private Npc npc;\n    private bool talking = false;\n\n    void Start()\n    {\n'+L10_FIND+'    }\n\n    void OnInteract()\n    {\n        if (talking)\n        {\n            CloseDialog();\n            return;\n        }\n'+L10_OPEN+'        talking = true;\n    }\n\n    void Update()\n    {\n        // 대화 중이 아니면 끝 · 멀어지거나 Esc면 닫기\n    }\n\n    void CloseDialog()\n    {\n        UIScreen.Hide(dialogUI.name);\n        talking = false;\n        Debug.Log("대화창을 닫았어요");\n    }\n}\n',
+ tests:[{calls:['OnInteract'],frames:[{k:[],n:1}],sc:{hero:{x:9,y:4}},open:false,why:'',out:[['info','대화창 연결: 대화창'],['info','대화창을 닫았어요']]},
+  {calls:['OnInteract'],frames:[{k:[],n:3}],open:true,why:'주인공이 바로 옆(1칸)에 있을 때 시험했더니 ',out:[['info','대화창 연결: 대화창']]},
+  {calls:['OnInteract'],frames:[{k:['esc'],n:1}],open:false,why:'옆에서 Esc를 눌러 시험했더니 ',out:[['info','대화창 연결: 대화창'],['info','대화창을 닫았어요']]},
+  {frames:[{k:[],n:2}],sc:{hero:{x:9,y:4}},open:false,why:'말을 걸지 않고 멀리 있을 때 시험했더니 ',out:[['info','대화창 연결: 대화창']]}],
+ verify:(sc,f,t,ui)=>t.open?(l10Open(ui)?'':_t('주인공이 가까이 있는데 대화창이 닫혔어요. 거리 비교(>)를 확인하세요.')):(l10Closed(ui)?'':_t('대화창이 닫혀 있어야 해요.')),
+ hint:'void Update()\n{\n    if (!talking)\n    {\n        return;\n    }\n    float d = Vector2.Distance(Hero.main.position, transform.position);\n    if (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))\n    {\n        CloseDialog();\n    }\n}'}
+];
 const LESSONS=[
   {...L2,problems:L2P,hash:'lesson-1',lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
   {...L1,problems:L1P,hash:'lesson-2',lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
@@ -2675,7 +2744,8 @@ const LESSONS=[
   {...L6,problems:L6P,hash:'lesson-6',lv:2,kw:['애니메이터', '애니메이션 클립', 'SetTrigger'],preview:'애니메이터 창   → 상태 · 전환 · 파라미터\n애니메이션 창 → 클립 · 키 · 샘플\n＋ 깡충 클립 → Any State ─Hop→ 깡충\nanimator.SetTrigger("Hop");'},
   {...L7,problems:L7P,hash:'lesson-7',lv:2,kw:['룰 타일', '애니메이션 타일', '타일 팔레트'],preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'},
   {...L8,problems:L8P,hash:'lesson-8',lv:3,kw:['씬 전환', '매니저', 'SceneManager'],preview:'계층 구조 → ＋ 새 씬 · ★ 시작 씬\n포탈     → 대상 씬 「숲」\n매니저   → BGM 매니저 · 게임 매니저\nSceneManager.LoadScene("숲");'},
-  {...L9,problems:L9P,hash:'lesson-9',lv:2,kw:['UI 빌더', 'UI 그룹', '버튼 동작'],preview:'요소     → 텍스트 · 버튼 끌어다 놓기\n저장     → 「메인 화면」 · 「게임 UI」\n게임 시작 → 다른 UI 그룹 열기 「게임 UI」\n          + 이 그룹은 닫기'}
+  {...L9,problems:L9P,hash:'lesson-9',lv:2,kw:['UI 빌더', 'UI 그룹', '버튼 동작'],preview:'요소     → 텍스트 · 버튼 끌어다 놓기\n저장     → 「메인 화면」 · 「게임 UI」\n게임 시작 → 다른 UI 그룹 열기 「게임 UI」\n          + 이 그룹은 닫기'},
+  {...L10,problems:L10P,hash:'lesson-10',lv:3,kw:['UIScreen','UIGroup','OnInteract'],preview:'dialogUI = UIGroup.Find("대화창");\n\nvoid OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n}'}
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
 const LVN=['','입문','초급','중급'];
@@ -2720,7 +2790,7 @@ const ancXY=a=>[a.includes('l')?0:a.includes('r')?1:.5,a[0]==='t'?0:a[0]==='b'?1
 function uiRect(u,gw,gh){const k=gw/UI_RW,RH=gh/k,[ax,ay]=ancXY(u.anchor);const L=ax*UI_RW+u.x-ax*u.w,T=ay*RH+u.y-ay*u.h;return{x:L*k,y:T*k,w:u.w*k,h:u.h*k,k,ax,ay}}
 function uiText(u){const h=SN_OBJS.find(o=>o.kind==='hero');return String(u.text==null?'':u.text).replace(/\{hp\}/g,h?h.hp:0)}
 const SN_KINDS={
-  camera:{c:'#8fb8ff',en:'Camera'},hero:{c:'#f6cd2a',en:'Hero'},monster:{c:'#5cc08a',en:'Monster'},
+  npc:{c:'#b69cff',en:'Npc'},camera:{c:'#8fb8ff',en:'Camera'},hero:{c:'#f6cd2a',en:'Hero'},monster:{c:'#5cc08a',en:'Monster'},
   light:{c:'#ff9f43',en:'Light'},script:{c:'#b69cff',en:'GameObject'},item:{c:'#e0559b',en:'Item'}
 };
 const SN_OBJS=[
@@ -2808,6 +2878,10 @@ function snSprite(c,o,cx,cy,ts,scene){
     c.fillStyle='#f6cd2a';c.strokeStyle='#8a6d00';c.beginPath();c.arc(0,0,r,0,Math.PI*2);c.fill();c.stroke();
     c.fillStyle='#1a1400';c.fillRect(-r*.5,-r*.25,r*.24,r*.5);c.fillRect(r*.26,-r*.25,r*.24,r*.5);
     if(o.face){const a=Math.atan2(o.face.y,o.face.x);c.save();c.rotate(a);c.fillStyle='#f6cd2a';c.strokeStyle='#8a6d00';c.beginPath();c.moveTo(r*1.55,0);c.lineTo(r*1.12,-r*.32);c.lineTo(r*1.12,r*.32);c.closePath();c.fill();c.stroke();c.restore()}
+  }else if(o.kind==='npc'){
+    c.fillStyle='#2a2430';c.fillRect(-r*.75,-r*.05,r*1.5,r*1.15);
+    c.fillStyle='#b69cff';c.strokeStyle='#6d4fc0';c.beginPath();c.arc(0,-r*.45,r*.62,0,7);c.fill();c.stroke();
+    c.fillStyle='#1b1430';c.fillRect(-r*.3,-r*.55,r*.16,r*.2);c.fillRect(r*.14,-r*.55,r*.16,r*.2);
   }else if(o.kind==='monster'){
     c.fillStyle='#5cc08a';c.strokeStyle='#2c7a52';
     c.beginPath();c.moveTo(-r*1.05,r*.7);c.quadraticCurveTo(-r*1.05,-r*1.05,0,-r*1.05);c.quadraticCurveTo(r*1.05,-r*1.05,r*1.05,r*.7);c.closePath();c.fill();c.stroke();
@@ -2912,7 +2986,7 @@ function snDrawGame(){
   c.fillStyle='#0d0d10';c.fillRect(0,0,w,h);
   c.save();c.beginPath();c.rect(ox,oy,ts*v.w,ts*v.h);c.clip();
   {const ix=Math.floor(v.x),iy=Math.floor(v.y);snTiles(c,ox-(v.x-ix)*ts,oy-(v.y-iy)*ts,ts,ix,iy,Math.min(SN_COLS,Math.ceil(v.x+v.w)),Math.min(SN_ROWS,Math.ceil(v.y+v.h)),false)}
-  SN_OBJS.filter(o=>['hero','monster','light','rock','crate','exit','item'].includes(o.kind)&&o.active!==false).forEach(o=>{
+  SN_OBJS.filter(o=>['hero','monster','light','rock','crate','exit','item','npc'].includes(o.kind)&&o.active!==false).forEach(o=>{
     const gx=ox+(o.x-v.x+.5)*ts,gy=oy+(o.y-v.y+.5)*ts;
     snSprite(c,o,gx,gy,ts,false);
     if(o.kind==='item'){c.font='600 '+Math.max(9,ts*.22)+'px ui-sans-serif,system-ui,sans-serif';c.textAlign='left';c.textBaseline='alphabetic';c.lineWidth=3;c.strokeStyle='rgba(0,0,0,.8)';c.strokeText('×'+o.qty,gx+ts*.18,gy+ts*.42);c.fillStyle='#fff';c.fillText('×'+o.qty,gx+ts*.18,gy+ts*.42)}
@@ -2923,7 +2997,7 @@ function snDrawGame(){
   const o2=ov.getContext('2d');o2.setTransform(d,0,0,d,0,0);o2.globalCompositeOperation='source-over';o2.clearRect(0,0,w,h);
   o2.fillStyle='rgba(5,8,18,.68)';o2.fillRect(0,0,w,h);o2.globalCompositeOperation='destination-out';
   const hole=(x,y,rad,a)=>{const px=ox+(x-v.x+.5)*ts,py=oy+(y-v.y+.5)*ts,R=rad*ts,g=o2.createRadialGradient(px,py,0,px,py,R);g.addColorStop(0,'rgba(0,0,0,'+a+')');g.addColorStop(1,'rgba(0,0,0,0)');o2.fillStyle=g;o2.fillRect(px-R,py-R,R*2,R*2)};
-  SN_OBJS.forEach(o=>{if(o.active===false)return;if(o.kind==='hero')hole(o.x,o.y,2.6,.9);if(o.kind==='exit')hole(o.x,o.y,1.3,.75);if(o.kind==='item')hole(o.x,o.y,.9,.6);if(o.kind==='light'&&o.enabled!==false)hole(o.x,o.y,o.radius*.55,Math.min(1,.35+o.intensity*.75))});
+  SN_OBJS.forEach(o=>{if(o.active===false)return;if(o.kind==='hero')hole(o.x,o.y,2.6,.9);if(o.kind==='exit')hole(o.x,o.y,1.3,.75);if(o.kind==='item')hole(o.x,o.y,.9,.6);if(o.kind==='npc')hole(o.x,o.y,1.2,.75);if(o.kind==='light'&&o.enabled!==false)hole(o.x,o.y,o.radius*.55,Math.min(1,.35+o.intensity*.75))});
   c.setTransform(1,0,0,1,0,0);c.drawImage(ov,0,0);c.setTransform(d,0,0,d,0,0);
   const t=SN_OBJS.find(o=>o.kind==='light');
   if(t&&t.enabled!==false&&t.active!==false){const px=ox+(t.x-v.x+.5)*ts,py=oy+(t.y-v.y+.5)*ts,R=t.radius*.55*ts,g=c.createRadialGradient(px,py,0,px,py,R);g.addColorStop(0,'rgba(255,170,70,'+(.28*t.intensity)+')');g.addColorStop(1,'rgba(255,170,70,0)');c.globalCompositeOperation='lighter';c.fillStyle=g;c.fillRect(px-R,py-R,R*2,R*2);c.globalCompositeOperation='source-over'}
@@ -2936,12 +3010,16 @@ function snDrawUi(c,ox,oy,gw,gh){
   if(!SN_UI.length&&!(PLAY&&PLAY.msg))return;
   c.save();c.beginPath();c.rect(ox,oy,gw,gh);c.clip();
   SN_UI.forEach(u=>{
+    if(u.hidden&&(PLAY||SN.sel!=='U:'+u.id))return;
     const r=uiRect(u,gw,gh),x=ox+r.x,y=oy+r.y,fs=Math.max(6,(+u.size||16)*r.k);
+    if(u.hidden)c.globalAlpha=.35;
+    if(u.type==='panel'){snRR(c,x,y,r.w,r.h,Math.min(12*r.k,r.h/2));c.fillStyle=u.bg||'rgba(0,0,0,.6)';c.fill();if(u.border){c.strokeStyle=u.border;c.lineWidth=Math.max(1,2*r.k);c.stroke()}c.globalAlpha=1;return}
     if(u.type==='button'){snRR(c,x,y,r.w,r.h,Math.min(8*r.k,r.h/2));c.fillStyle=PLAY&&PLAY.down===u.id?'rgba(233,189,12,.92)':'rgba(22,22,28,.86)';c.fill();c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=1;c.stroke()}
     c.font='600 '+fs+'px "IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif';c.textBaseline='middle';
     c.fillStyle=u.type==='button'&&PLAY&&PLAY.down===u.id?'#1a1400':(u.color||'#ffffff');
     if(u.type==='button'){c.textAlign='center';c.fillText(uiText(u),x+r.w/2,y+r.h/2)}
     else{c.textAlign=r.ax===0?'left':r.ax===1?'right':'center';c.shadowColor='rgba(0,0,0,.85)';c.shadowBlur=4;c.fillText(uiText(u),r.ax===0?x:r.ax===1?x+r.w:x+r.w/2,y+r.h/2);c.shadowBlur=0}
+    c.globalAlpha=1;
     if(!PLAY&&SN.sel==='U:'+u.id){
       c.save();c.setLineDash([4,3]);c.strokeStyle='#f6cd2a';c.lineWidth=1.5;c.strokeRect(x+.5,y+.5,r.w,r.h);c.restore();
       const px=ox+r.ax*gw,py=oy+r.ay*gh;c.fillStyle='#f6cd2a';c.beginPath();c.arc(px,py,5,0,7);c.fill();
@@ -3041,10 +3119,17 @@ function csGetComp(m,o,T){
     case'Light':case'Light2D':return o.kind==='light'?lightProxy(m,o):null;
     case'Hero':return o.kind==='hero'?heroProxy(m,o):null;
     case'Item':return o.kind==='item'?itemProxy(m,o):null;
+    case'Npc':case'NPC':return o.kind==='npc'?npcProxy(m,o):null;
     case'Animator':return o.props&&o.props.animator?ANX.animProxy(m,o):null;
     case'AudioSource':return o.props&&o.props.audio?smAudioProxy(m,o):null;
   }
   throw csUnsup('GetComponent<'+T+'>()');
+}
+function npcProxy(m,o){
+  return{__h:'Npc',__o:o,name:o.name,
+    get(n){if(n==='text')return String(o.text==null?'':o.text);if(n==='gameObject')return goProxy(m,o);if(n==='transform')return trProxy(m,o);if(n==='name')return o.name;throw csUnsup('Npc.'+n)},
+    set(n,v){if(n==='text'){o.text=csFmt(v);return}throw csUnsup('Npc.'+n+' 대입')},
+    call(n){throw csUnsup('Npc.'+n+'()')}};
 }
 function trProxy(m,o){
   if(o.kind==='camera')throw csUnsup('카메라의 Transform');
@@ -3195,8 +3280,26 @@ const CS_WORLD={
   loadScene:v=>{if(SMRUN){smLoad(v);return}throw new Error(_t('학습 씬은 하나뿐이라 다른 씬을 불러올 수 없어요'))},
   restartGame:()=>{if(SMRUN){smRestart();return}setTimeout(()=>{if(PLAY){playStop(true);playStart()}},0)},
   sceneInfo:()=>SMRUN?smInfo():({name:_t('학습 씬'),index:0}),
-  uiGroupFind:()=>null
+  /* 레슨 10: UI 요소의 grp(그룹 이름) · hidden(숨김) */
+  uiGroupFind:(m,nm)=>{const ui=(m&&m.ui)||SN_UI;return ui.some(u=>u.grp===nm)?l10GroupH(ui,nm):null},
+  uiScreen:(n,a)=>{const ui=(csCur&&csCur.m&&csCur.m.ui)||SN_UI,A=a||[];
+    if(n==='HideAll'){ui.forEach(u=>{if(u.grp)u.hidden=true});return null}
+    const g=String(A[0]),mem=ui.filter(u=>u.grp===g);
+    if(!mem.length)throw new Error(_t("UI 그룹 '{n}'을(를) 이 씬에서 찾을 수 없습니다",{n:g}));
+    if(n==='Show'||n==='Hide'){mem.forEach(u=>u.hidden=n==='Hide');return null}
+    if(n==='Toggle'){const op=mem.some(u=>!u.hidden);mem.forEach(u=>u.hidden=op);return null}
+    if(n==='IsOpen')return mem.some(u=>!u.hidden);
+    const el=mem.find(u=>u.name===String(A[1]));if(!el)throw new Error(_t("UI 그룹 '{s}'에 '{n}' 요소가 없습니다",{s:g,n:A[1]}));
+    if(n==='SetText'){el.text=A[2]==null?'':String(A[2]);return null}
+    if(n==='GetText'||n==='GetValue')return el.text==null?'':String(el.text);
+    if(n==='SetVisible'){el.hidden=!A[2];return null}
+    throw csUnsup('UIScreen.'+n+'()')}
 };
+function l10GroupH(ui,nm){const mem=()=>ui.filter(u=>u.grp===nm);
+  return{__h:'UIGroup',name:nm,
+    get(n){if(n==='name')return nm;if(n==='childCount')return mem().length;if(n==='activeSelf'||n==='visible')return mem().some(u=>!u.hidden);throw csUnsup('UIGroup.'+n)},
+    set(n,v){if(n==='visible'){mem().forEach(u=>u.hidden=!v);return}throw csUnsup('UIGroup.'+n+' 대입')},
+    call(n,a){if(n==='SetActive'){mem().forEach(u=>u.hidden=!a[0]);return null}throw csUnsup('UIGroup.'+n+'()')}}}
 CSHOST.use(CS_WORLD);
 CSHOST.use({clog,get play(){return play},objOn,isUiEl,startCamera,goProxy,trProxy,camProxy,csGetComp,csDestroy});
 
@@ -3295,7 +3398,7 @@ function renderBrief(){
 const KUI={
   camera:{ic:'cam',c:'#8b90a3',tag:'카메라'},hero:{ic:'user',c:'#3fae7d',tag:'주인공'},monster:{ic:'cube',c:'#22a99c',tag:'몬스터'},
   light:{ic:'cube',c:'#8b90a3',tag:'빈 게임 오브젝트'},script:{ic:'cube',c:'#8b90a3',tag:'빈 게임 오브젝트'},
-  rock:{ic:'rock',c:'#7d8496',tag:'바위'},item:{ic:'item',c:'#e0559b',tag:'아이템'},crate:{ic:'crate',c:'#b9793c',tag:'상자'},exit:{ic:'portal',c:'#3aaec4',tag:'출구'},empty:{ic:'cube',c:'#8b90a3',tag:'빈 게임 오브젝트'}
+  npc:{ic:'user',c:'#b69cff',tag:'NPC'},rock:{ic:'rock',c:'#7d8496',tag:'바위'},item:{ic:'item',c:'#e0559b',tag:'아이템'},crate:{ic:'crate',c:'#b9793c',tag:'상자'},exit:{ic:'portal',c:'#3aaec4',tag:'출구'},empty:{ic:'cube',c:'#8b90a3',tag:'빈 게임 오브젝트'}
 };
 let hOpen=true;
 function renderHier(){
@@ -3314,7 +3417,7 @@ function renderHier(){
   if(open)h+=list.map(o=>{const K=KUI[o.kind],on=o.id===SN.sel;
     return`<div class="tr${on?' on':''}" style="--d:${D};${o.active===false?'opacity:.45':''}" data-id="${o.id}" draggable="true" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${K.c}">${ico(K.ic)}</span><span class="tl"><span data-i18n-skip>${esc(o.name)}</span>${o.kind==='camera'?'<span class="wbadge">시작 카메라</span>':''}</span><span class="ts">${o.kind==='camera'?'':o.x+','+o.y}</span></div>`}).join('');
   if(open&&((tk&&pr.ui)||SN_UI.length)){const U=SN_UI.filter(u=>!q||u.name.toLowerCase().includes(q));h+=fold('folder','UI (캔버스)',U.length);
-    h+=U.map(u=>row('U:'+u.id,u.type==='button'?'uibtn':'uitext','#e9bd0c','<span data-i18n-skip>'+esc(u.name)+'</span>',ANC_N[u.anchor]||'',false,true)).join('')}
+    h+=U.map(u=>row('U:'+u.id,u.type==='button'?'uibtn':'uitext','#e9bd0c','<span data-i18n-skip>'+esc(u.name)+'</span>'+(u.grp?' <small style="opacity:.6">· '+esc(u.grp)+'</small>':''),u.hidden?_t('숨김'):(ANC_N[u.anchor]||''),!!u.hidden,true)).join('')}
   $('#hier').innerHTML=h;
   tkPing();
 }
@@ -3453,6 +3556,8 @@ function renderInsp(){
     fr('반경(칸)',numIn('R','data-p="radius"',o.radius,1,1,12,'반경'),'radius','빛이 닿는 거리(칸)입니다.')+
     fr('벽에 가림',chkIn('data-p="shadows"',o.shadows,'벽에 가림'),'shadows','체크하면 벽에 빛이 가려집니다.'));
   if(o.kind==='script'){const f=scriptFields();h+=comp('s','script',esc(prettyName(f.cls||'Quiz')),'스크립트',f.html)}
+  if(o.kind==='npc'){h+=comp('np','gear','대화','Npc',fr('대사',`<input type="text" data-ps="text" value="${esc(o.text||'')}" aria-label="대사">`,'text','주인공이 말을 걸면 보여 줄 대사예요. 스크립트에서는 GetComponent<Npc>().text 로 읽어요.'));
+    const pr=P();if(pr&&pr.self===o.id){const f=scriptFields();h+=comp('s','script',esc(prettyName(f.cls||'NpcTalk')),'스크립트',f.html)}}
   if(o.col)h+=comp('bc','rect','박스 콜라이더 2D','BoxCollider2D',
     fr('사용',chkIn('data-c="on"',o.col.on!==false,'콜라이더 사용'),'enabled','끄면 콜라이더가 없는 것처럼 지나갈 수 있어요.')+
     fr('트리거',chkIn('data-c="trigger"',!!o.col.trigger,'트리거 (isTrigger)'),'isTrigger','켜면 막지 않고 통과시키면서, 닿은 순간 OnTriggerEnter2D 신호를 보내요. 출구·함정·아이템 줍기에 써요.')+
@@ -3475,6 +3580,7 @@ $('#insp').addEventListener('input',e=>{
   if(t.dataset.c){o.col[t.dataset.c]=t.checked;snRedraw();return}
   if(t.dataset.pos){const v=+t.value;if(!isNaN(v)&&t.value!==''){o[t.dataset.pos]=clamp(v,1,t.dataset.pos==='x'?SN_COLS-2:SN_ROWS-2);snRedraw();const r=$(`#hier .tr[data-id="${o.id}"] .ts`);if(r)r.textContent=o.x+','+o.y}}
   else if(t.dataset.p){const k=t.dataset.p;o[k]=t.type==='checkbox'?t.checked:(t.value===''?o[k]:+t.value);snRedraw()}
+  else if(t.dataset.ps){SN_EDIT=null;o[t.dataset.ps]=t.value;snRedraw()}
   else if(t.dataset.sf){const p=P(),v=st.vals[p.id]||(st.vals[p.id]={});v[t.dataset.sf]=t.type==='checkbox'?t.checked:t.type==='number'?(t.value===''?0:+t.value):t.value;save();
     const fv=t.closest('.fv');if(fv&&!fv.querySelector('[data-rs]'))fv.insertAdjacentHTML('beforeend',`<button class="ib" type="button" data-rs="${esc(t.dataset.sf)}" title="되돌리기" aria-label="${esc(t.dataset.sf)} 되돌리기">↺</button>`)}
 });
@@ -4133,7 +4239,7 @@ function playStart(){
   const vb=$('.vtab[data-v="pGame"]');if(vb&&!vb.classList.contains('on'))vb.click();
   const b=$('#playBtn');b.classList.add('on');b.textContent='■ 정지';$('#pHint').hidden=false;
   setConsole([],false);plog('info','▶ 플레이 시작 · 방향키 또는 WASD로 주인공을 움직여요');TASK.ev.add('play');l6PlayStart();
-  if(!p.task){const code=ta.value,r=runOnce(code,overridesFrom(p,parseCS(code)),SN_OBJS,{ui:SN_UI,self:p.hero?'hero':null,keepAn:true});PLAY.cx=r.fatal?null:r.cx;r.out.forEach(l=>plog(l[0],l[1]));
+  if(!p.task){const code=ta.value,r=runOnce(code,overridesFrom(p,parseCS(code)),SN_OBJS,{ui:SN_UI,self:p.self||(p.hero?'hero':null),keepAn:true});PLAY.cx=r.fatal?null:r.cx;r.out.forEach(l=>plog(l[0],l[1]));
     if(p.hero){PLAY.hero=true;PLAY.ptm=0;PLAY.frame=0;PLAY.kin=null;PLAY.pend=[];PLAY.flushT=0;
       if(PLAY.cx&&!PLAY.cx.pr.r.methods.Update)plog('warn',_t('Update() 메서드가 없어서 주인공이 움직이지 않아요. 이번 레슨에서는 내 스크립트가 주인공을 움직여요.'));
       else if(PLAY.cx)plog('info',_t('내 HeroMovement 스크립트의 Update()가 매 프레임 실행돼요'))}
@@ -4318,7 +4424,7 @@ function run(){
   const p=P(),code=ta.value,res=parseCS(code);
   const g=gradeProblem(p,code);
   let vis;
-  if(p.scene){snRestore();SN_EDIT=snClone(SN_OBJS);SN_EDIT_UI=JSON.parse(JSON.stringify(SN_UI));vis=runOnce(code,overridesFrom(p,res),SN_OBJS,{ui:SN_UI,self:p.hero?'hero':null,frames:p.hero?p.tests[0].frames:null})}
+  if(p.scene){snRestore();SN_EDIT=snClone(SN_OBJS);SN_EDIT_UI=JSON.parse(JSON.stringify(SN_UI));vis=runOnce(code,overridesFrom(p,res),SN_OBJS,{ui:SN_UI,self:p.self||(p.hero?'hero':null),frames:p.hero?p.tests[0].frames:null,calls:p.self?p.tests[0].calls:null})}
   else if(p.sm){smAudOff();const t0=p.tests[0],sm=smCtx(p,t0,true);vis=runOnce(code,overridesFrom(p,res),null,{sm,selfObj:sm.self,calls:t0.calls});if(vis.fatal)sm.ev.push(['warn','✕ '+esc(_t('실행 중 오류'))]);SM.show=sm;smRender();renderInsp()}
   else vis=runOnce(code,overridesFrom(p,res));
   setConsole(vis.out,true);flash(!vis.fatal);
@@ -4789,7 +4895,7 @@ function svOpen(){
 })();
 
 /* ===================== 코드 복습: 레슨마다 쓰는 코드를 모아 보여 줍니다 ===================== */
-const RV_DATA={"lesson-1": {"note": "코드를 쓰지 않고 화면을 직접 만지는 레슨이에요. 아래는 나중에 코드와 이어질 말들이에요.", "items": [{"t": "콜라이더 (막는 칸)", "d": "타일맵에서 막을 칸을 칠하거나, 게임 오브젝트(바위)에 박스 콜라이더 2D 컴포넌트를 붙이면 주인공이 지나가지 못해요.", "c": "BoxCollider2D   // 바위에 붙이는 컴포넌트 이름"}, {"t": "UI 텍스트에 값 넣기", "d": "UI 텍스트 안의 {hp} 자리에 hp 값이 들어가요. 코드로 숫자를 바꾸면 화면 글도 함께 바뀝니다.", "c": "HP {hp}"}]}, "lesson-2": {"items": [{"t": "뼈대: Start()", "d": "게임이 시작될 때 한 번 실행되는 함수예요. 쓰고 싶은 코드를 중괄호 안에 넣어요.", "c": "using UnityEngine;\n\npublic class Quiz : MonoBehaviour\n{\n    void Start()\n    {\n        // 여기에 코드를 쓰세요\n    }\n}"}, {"t": "콘솔에 한 줄 출력", "d": "글자는 큰따옴표로 감싸고, 문장 끝에는 세미콜론(;)을 붙여요.", "c": "Debug.Log(\"Hello, Thaniya!\");"}, {"t": "변수 값을 글자와 이어 붙이기", "d": "+로 이어 붙이거나, 글자 앞에 $를 붙이고 {변수}를 넣어요.", "c": "public int hp = 100;\n\nDebug.Log(\"HP: \" + hp);\nDebug.Log($\"HP: {hp}\");"}, {"t": "계산 결과를 글자 안에 넣기", "d": "중괄호 안에 식을 넣으면 계산된 값이 들어가요.", "c": "Debug.Log($\"{a} + {b} = {a + b}\");"}, {"t": "반복문 for", "d": "같은 일을 여러 번 할 때 써요. i가 1, 2, 3, 4, 5로 바뀌며 중괄호 안이 다섯 번 실행돼요.", "c": "for (int i = 1; i <= 5; i++)\n{\n    Debug.Log(i);\n}"}, {"t": "경고와 오류", "d": "Log는 일반, LogWarning은 경고(노란색), LogError는 오류(빨간색)예요.", "c": "Debug.LogWarning(\"배터리가 얼마 남지 않았어요\");\nDebug.LogError(\"저장에 실패했어요\");"}]}, "lesson-3": {"items": [{"t": "내 컴포넌트 꺼내기", "d": "스크립트가 붙은 오브젝트의 컴포넌트는 GetComponent<타입>()으로 꺼내요.", "c": "Transform tr = GetComponent<Transform>();\nDebug.Log($\"위치: {tr.position.x}, {tr.position.y}\");"}, {"t": "다른 오브젝트 찾기", "d": "GameObject.Find(\"이름\")으로 찾고, 그 오브젝트에서 GetComponent로 컴포넌트를 꺼내요. 값을 바꾸려면 대입하세요.", "c": "GameObject torch = GameObject.Find(\"횃불\");\nLight light = torch.GetComponent<Light>();\nlight.intensity = 0.3f;\nDebug.Log(\"횃불 밝기: \" + light.intensity);"}, {"t": "끌어다 놓아 연결하기", "d": "public 칸을 만들면 인스펙터에서 오브젝트를 끌어다 놓아 연결할 수 있어요 (Find 대신).", "c": "public GameObject torch;   // Start() 위에 쓰고 인스펙터 칸에 끌어다 놓기"}, {"t": "컴포넌트 켜고 끄기", "d": "컴포넌트는 enabled로 켜고 꺼요. 오브젝트 전체는 SetActive(…)를 써요.", "c": "light.enabled = lightOn;\nDebug.Log(\"켜짐 여부: \" + light.enabled);"}, {"t": "오브젝트 옮기기", "d": "position에 새 위치를 대입하면 이동해요. Vector2.right는 오른쪽 한 칸 (1, 0)이에요.", "c": "slime.transform.position = hero.transform.position + Vector2.right;"}, {"t": "컴포넌트 함께 쓰기 · 메인 카메라", "d": "Camera.main으로 메인 카메라를 바로 가져와요. orthographicSize가 작을수록 화면이 확대돼요.", "c": "Hero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp = hero.hp / 2;\nCamera.main.orthographicSize = 2;"}]}, "lesson-4": {"items": [{"t": "public 변수 · 값 깎기", "d": "public 변수는 인스펙터에 칸이 생겨 값을 바꿀 수 있어요. -=는 빼서 다시 저장해요.", "c": "public int damage = 30;\n\nHero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp -= damage;\nDebug.Log(\"HP: \" + hero.hp);"}, {"t": "한도까지만 회복 (Mathf.Min)", "d": "두 값 중 작은 쪽을 골라요. if로 써도 같은 결과예요.", "c": "hero.hp = Mathf.Min(hero.hp + heal, limit);\n\n// if로 쓰면\nhero.hp += heal;\nif (hero.hp > limit)\n{\n    hero.hp = limit;\n}"}, {"t": "아이템 수량 바꾸기", "d": "포션의 Item 컴포넌트에서 qty를 줄이고, 그만큼 주인공 hp를 올려요.", "c": "Item potion = GameObject.Find(\"포션\").GetComponent<Item>();\npotion.qty -= 1;\nhero.hp += healAmount;\nDebug.Log($\"포션 {potion.qty}개 · HP {hero.hp}\");"}, {"t": "조건문 if · else", "d": "조건이 참일 때만 실행하고, 아니면 else 쪽을 실행해요.", "c": "if (potion.qty > 0)\n{\n    potion.qty -= 1;\n    hero.hp += healAmount;\n}\nelse\n{\n    Debug.LogWarning(\"포션이 없어요\");\n}"}, {"t": "거리 재기 · 오브젝트 끄기", "d": "Vector2.Distance로 두 위치 사이 거리를 재요. SetActive(false)는 오브젝트를 화면에서 치워요.", "c": "float d = Vector2.Distance(hero.transform.position, coin.transform.position);\nif (d <= reach)\n{\n    coins += coin.GetComponent<Item>().qty;\n    coin.SetActive(false);\n}"}, {"t": "UI 글자와 버튼 함수", "d": "public Text 칸에 UI 텍스트를 연결하고 .text에 대입해요. 버튼의 클릭에 연결할 함수는 public void로 만들어요.", "c": "public Text label;\n\nvoid Start()\n{\n    label.text = \"포션 \" + potion.qty + \"개\";\n}\n\npublic void OnClick()\n{\n    if (potion.qty > 0)\n    {\n        potion.qty -= 1;\n    }\n}"}]}, "lesson-5": {"items": [{"t": "Start()에서 Hero 컴포넌트 잡아 두기", "d": "private 변수에 한 번 담아 두면 Update에서 계속 쓸 수 있어요.", "c": "private Hero hero;\n\nvoid Start()\n{\n    hero = GetComponent<Hero>();\n}"}, {"t": "Update()와 입력 읽기", "d": "Update는 매 프레임 실행돼요. 방향키/WASD 입력은 왼쪽·위 -1, 오른쪽·아래 +1로 읽혀요.", "c": "void Update()\n{\n    float h = Input.GetAxisRaw(\"Horizontal\");\n    float v = Input.GetAxisRaw(\"Vertical\");\n}"}, {"t": "입력 방향으로 움직이기", "d": "방향 × 속도 × Time.deltaTime으로 프레임 속도와 상관없이 같은 속도로 움직여요.", "c": "Vector2 dir = new Vector2(h, v);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "멈춤과 바라보는 방향", "d": "입력이 없으면 return으로 Update를 일찍 끝내요. Face로 바라보는 방향을 정해요.", "c": "if (h == 0 && v == 0)\n    return;\n\nVector2 dir = new Vector2(h, v);\nhero.Face(dir);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "대각선 속도 맞추기", "d": "normalized는 방향의 길이를 1로 맞춰요. 대각선이 더 빠르게 느껴지는 걸 막아요.", "c": "if (normalizeDiagonal)\n    dir = dir.normalized;"}, {"t": "Shift로 달리기", "d": "GetKey는 누르고 있는 동안 true예요.", "c": "float s = speed;\nif (Input.GetKey(KeyCode.LeftShift))\n    s = s * runMultiplier;"}, {"t": "완성한 HeroMovement.cs 전체", "d": "엔진에서 주인공을 고르고 「스크립트 편집」으로 열면 똑같은 코드가 있어요.", "c": "@L5_FINAL", "long": true}]}, "lesson-6": {"note": "대부분 애니메이터·애니메이션 창을 다루는 레슨이에요. 코드는 마지막 문제의 한 가지만 나와요.", "items": [{"t": "애니메이터 꺼내기", "d": "GetComponent로 이 오브젝트의 Animator를 꺼내요.", "c": "Animator animator = GetComponent<Animator>();"}, {"t": "Space를 누른 순간 깡충 (SetTrigger)", "d": "스크립트는 애니메이터의 파라미터만 바꿔요. GetKeyDown은 누른 순간 한 번만 true라서 한 번만 뛰어요. (누르는 동안 계속 true인 GetKey를 쓰면 여러 번 뛰어요.)", "c": "if (animator != null)\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        animator.SetTrigger(\"Hop\");\n}"}]}, "lesson-7": {"note": "코드 없이 타일 팔레트와 인스펙터를 다루는 레슨이에요. 외워 둘 코드는 없고, 아래 순서만 기억하면 돼요.", "items": [{"t": "룰 타일 · 애니메이션 타일 만드는 순서", "d": "저장하기 전에는 아직 쓸 수 없어요 (엔진도 같아요).", "c": "타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    → 외딴 칸(섬) 규칙 추가\n물 4칸     → 애니메이션 타일 (8 fps)"}]}, "lesson-8": {"items": [{"t": "새 씬 · 시작 씬 · 포탈", "d": "씬은 계층 구조에서 위에서부터 0번 · 1번… 빌드 번호가 붙어요. ★ 시작 씬부터 플레이가 시작돼요.", "c": "계층 구조 → ＋ 새 씬 → 이름 「숲」\n인스펙터  → 시작 씬 ✓ (★)\n포탈      → 대상 씬 「숲」"}, {"t": "지금 씬 알아내기", "d": "using UnityEngine.SceneManagement; 를 맨 위에 써요. name은 씬 이름, buildIndex는 빌드 번호예요.", "c": "Scene s = SceneManager.GetActiveScene();\nDebug.Log(s.name + \" (\" + s.buildIndex + \"번)\");"}, {"t": "씬 불러오기", "d": "이름이나 번호로 불러와요. 지금 메서드가 끝난 다음에 씬이 바뀌어요.", "c": "SceneManager.LoadScene(\"숲\");\nSceneManager.LoadScene(1);"}, {"t": "BGM 매니저 (오디오 소스 반복 재생)", "d": "매니저는 씬이 바뀌어도 살아 있어서 음악이 끊기지 않아요. 오디오 소스가 없으면 null이니 먼저 확인해요.", "c": "AudioSource bgm = GetComponent<AudioSource>();\nif (bgm == null)\n    return;\nbgm.loop = true;\nbgm.Play();"}, {"t": "게임 매니저 · 목숨과 다시 시작", "d": "OnHeroDeath()는 주인공이 쓰러지면 엔진이 매니저에도 보내요. RestartGame()은 시작 씬부터 다시 하지만 매니저의 값은 남아요.", "c": "void OnHeroDeath()\n{\n    lives--;\n    SceneManager.RestartGame();\n}"}]}};
+const RV_DATA={"lesson-1": {"note": "코드를 쓰지 않고 화면을 직접 만지는 레슨이에요. 아래는 나중에 코드와 이어질 말들이에요.", "items": [{"t": "콜라이더 (막는 칸)", "d": "타일맵에서 막을 칸을 칠하거나, 게임 오브젝트(바위)에 박스 콜라이더 2D 컴포넌트를 붙이면 주인공이 지나가지 못해요.", "c": "BoxCollider2D   // 바위에 붙이는 컴포넌트 이름"}, {"t": "UI 텍스트에 값 넣기", "d": "UI 텍스트 안의 {hp} 자리에 hp 값이 들어가요. 코드로 숫자를 바꾸면 화면 글도 함께 바뀝니다.", "c": "HP {hp}"}]}, "lesson-2": {"items": [{"t": "뼈대: Start()", "d": "게임이 시작될 때 한 번 실행되는 함수예요. 쓰고 싶은 코드를 중괄호 안에 넣어요.", "c": "using UnityEngine;\n\npublic class Quiz : MonoBehaviour\n{\n    void Start()\n    {\n        // 여기에 코드를 쓰세요\n    }\n}"}, {"t": "콘솔에 한 줄 출력", "d": "글자는 큰따옴표로 감싸고, 문장 끝에는 세미콜론(;)을 붙여요.", "c": "Debug.Log(\"Hello, Thaniya!\");"}, {"t": "변수 값을 글자와 이어 붙이기", "d": "+로 이어 붙이거나, 글자 앞에 $를 붙이고 {변수}를 넣어요.", "c": "public int hp = 100;\n\nDebug.Log(\"HP: \" + hp);\nDebug.Log($\"HP: {hp}\");"}, {"t": "계산 결과를 글자 안에 넣기", "d": "중괄호 안에 식을 넣으면 계산된 값이 들어가요.", "c": "Debug.Log($\"{a} + {b} = {a + b}\");"}, {"t": "반복문 for", "d": "같은 일을 여러 번 할 때 써요. i가 1, 2, 3, 4, 5로 바뀌며 중괄호 안이 다섯 번 실행돼요.", "c": "for (int i = 1; i <= 5; i++)\n{\n    Debug.Log(i);\n}"}, {"t": "경고와 오류", "d": "Log는 일반, LogWarning은 경고(노란색), LogError는 오류(빨간색)예요.", "c": "Debug.LogWarning(\"배터리가 얼마 남지 않았어요\");\nDebug.LogError(\"저장에 실패했어요\");"}]}, "lesson-3": {"items": [{"t": "내 컴포넌트 꺼내기", "d": "스크립트가 붙은 오브젝트의 컴포넌트는 GetComponent<타입>()으로 꺼내요.", "c": "Transform tr = GetComponent<Transform>();\nDebug.Log($\"위치: {tr.position.x}, {tr.position.y}\");"}, {"t": "다른 오브젝트 찾기", "d": "GameObject.Find(\"이름\")으로 찾고, 그 오브젝트에서 GetComponent로 컴포넌트를 꺼내요. 값을 바꾸려면 대입하세요.", "c": "GameObject torch = GameObject.Find(\"횃불\");\nLight light = torch.GetComponent<Light>();\nlight.intensity = 0.3f;\nDebug.Log(\"횃불 밝기: \" + light.intensity);"}, {"t": "끌어다 놓아 연결하기", "d": "public 칸을 만들면 인스펙터에서 오브젝트를 끌어다 놓아 연결할 수 있어요 (Find 대신).", "c": "public GameObject torch;   // Start() 위에 쓰고 인스펙터 칸에 끌어다 놓기"}, {"t": "컴포넌트 켜고 끄기", "d": "컴포넌트는 enabled로 켜고 꺼요. 오브젝트 전체는 SetActive(…)를 써요.", "c": "light.enabled = lightOn;\nDebug.Log(\"켜짐 여부: \" + light.enabled);"}, {"t": "오브젝트 옮기기", "d": "position에 새 위치를 대입하면 이동해요. Vector2.right는 오른쪽 한 칸 (1, 0)이에요.", "c": "slime.transform.position = hero.transform.position + Vector2.right;"}, {"t": "컴포넌트 함께 쓰기 · 메인 카메라", "d": "Camera.main으로 메인 카메라를 바로 가져와요. orthographicSize가 작을수록 화면이 확대돼요.", "c": "Hero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp = hero.hp / 2;\nCamera.main.orthographicSize = 2;"}]}, "lesson-4": {"items": [{"t": "public 변수 · 값 깎기", "d": "public 변수는 인스펙터에 칸이 생겨 값을 바꿀 수 있어요. -=는 빼서 다시 저장해요.", "c": "public int damage = 30;\n\nHero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp -= damage;\nDebug.Log(\"HP: \" + hero.hp);"}, {"t": "한도까지만 회복 (Mathf.Min)", "d": "두 값 중 작은 쪽을 골라요. if로 써도 같은 결과예요.", "c": "hero.hp = Mathf.Min(hero.hp + heal, limit);\n\n// if로 쓰면\nhero.hp += heal;\nif (hero.hp > limit)\n{\n    hero.hp = limit;\n}"}, {"t": "아이템 수량 바꾸기", "d": "포션의 Item 컴포넌트에서 qty를 줄이고, 그만큼 주인공 hp를 올려요.", "c": "Item potion = GameObject.Find(\"포션\").GetComponent<Item>();\npotion.qty -= 1;\nhero.hp += healAmount;\nDebug.Log($\"포션 {potion.qty}개 · HP {hero.hp}\");"}, {"t": "조건문 if · else", "d": "조건이 참일 때만 실행하고, 아니면 else 쪽을 실행해요.", "c": "if (potion.qty > 0)\n{\n    potion.qty -= 1;\n    hero.hp += healAmount;\n}\nelse\n{\n    Debug.LogWarning(\"포션이 없어요\");\n}"}, {"t": "거리 재기 · 오브젝트 끄기", "d": "Vector2.Distance로 두 위치 사이 거리를 재요. SetActive(false)는 오브젝트를 화면에서 치워요.", "c": "float d = Vector2.Distance(hero.transform.position, coin.transform.position);\nif (d <= reach)\n{\n    coins += coin.GetComponent<Item>().qty;\n    coin.SetActive(false);\n}"}, {"t": "UI 글자와 버튼 함수", "d": "public Text 칸에 UI 텍스트를 연결하고 .text에 대입해요. 버튼의 클릭에 연결할 함수는 public void로 만들어요.", "c": "public Text label;\n\nvoid Start()\n{\n    label.text = \"포션 \" + potion.qty + \"개\";\n}\n\npublic void OnClick()\n{\n    if (potion.qty > 0)\n    {\n        potion.qty -= 1;\n    }\n}"}]}, "lesson-5": {"items": [{"t": "Start()에서 Hero 컴포넌트 잡아 두기", "d": "private 변수에 한 번 담아 두면 Update에서 계속 쓸 수 있어요.", "c": "private Hero hero;\n\nvoid Start()\n{\n    hero = GetComponent<Hero>();\n}"}, {"t": "Update()와 입력 읽기", "d": "Update는 매 프레임 실행돼요. 방향키/WASD 입력은 왼쪽·위 -1, 오른쪽·아래 +1로 읽혀요.", "c": "void Update()\n{\n    float h = Input.GetAxisRaw(\"Horizontal\");\n    float v = Input.GetAxisRaw(\"Vertical\");\n}"}, {"t": "입력 방향으로 움직이기", "d": "방향 × 속도 × Time.deltaTime으로 프레임 속도와 상관없이 같은 속도로 움직여요.", "c": "Vector2 dir = new Vector2(h, v);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "멈춤과 바라보는 방향", "d": "입력이 없으면 return으로 Update를 일찍 끝내요. Face로 바라보는 방향을 정해요.", "c": "if (h == 0 && v == 0)\n    return;\n\nVector2 dir = new Vector2(h, v);\nhero.Face(dir);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "대각선 속도 맞추기", "d": "normalized는 방향의 길이를 1로 맞춰요. 대각선이 더 빠르게 느껴지는 걸 막아요.", "c": "if (normalizeDiagonal)\n    dir = dir.normalized;"}, {"t": "Shift로 달리기", "d": "GetKey는 누르고 있는 동안 true예요.", "c": "float s = speed;\nif (Input.GetKey(KeyCode.LeftShift))\n    s = s * runMultiplier;"}, {"t": "완성한 HeroMovement.cs 전체", "d": "엔진에서 주인공을 고르고 「스크립트 편집」으로 열면 똑같은 코드가 있어요.", "c": "@L5_FINAL", "long": true}]}, "lesson-6": {"note": "대부분 애니메이터·애니메이션 창을 다루는 레슨이에요. 코드는 마지막 문제의 한 가지만 나와요.", "items": [{"t": "애니메이터 꺼내기", "d": "GetComponent로 이 오브젝트의 Animator를 꺼내요.", "c": "Animator animator = GetComponent<Animator>();"}, {"t": "Space를 누른 순간 깡충 (SetTrigger)", "d": "스크립트는 애니메이터의 파라미터만 바꿔요. GetKeyDown은 누른 순간 한 번만 true라서 한 번만 뛰어요. (누르는 동안 계속 true인 GetKey를 쓰면 여러 번 뛰어요.)", "c": "if (animator != null)\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        animator.SetTrigger(\"Hop\");\n}"}]}, "lesson-7": {"note": "코드 없이 타일 팔레트와 인스펙터를 다루는 레슨이에요. 외워 둘 코드는 없고, 아래 순서만 기억하면 돼요.", "items": [{"t": "룰 타일 · 애니메이션 타일 만드는 순서", "d": "저장하기 전에는 아직 쓸 수 없어요 (엔진도 같아요).", "c": "타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    → 외딴 칸(섬) 규칙 추가\n물 4칸     → 애니메이션 타일 (8 fps)"}]}, "lesson-10": {"items": [{"t": "UI 그룹 찾기", "d": "UIGroup.Find(\"이름\")으로 그룹을 찾아요. 없으면 null이니 먼저 확인해요. 엔진에서는 NpcTalk의 Dialog UI 칸에 자동으로 연결돼요.", "c": "dialogUI = UIGroup.Find(\"대화창\");\nif (dialogUI == null)\n{\n    Debug.LogWarning(\"대화창 UI가 없어요\");\n    return;\n}"}, {"t": "글자 넣고 열기 (OnInteract)", "d": "주인공이 말을 걸면 엔진이 OnInteract()를 불러요. SetText로 그룹 안 요소의 글자를 바꾸고 Show로 열어요.", "c": "void OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, \"이름\", name);\n    UIScreen.SetText(dialogUI.name, \"대사\", npc.text);\n    UIScreen.Show(dialogUI.name);\n}"}, {"t": "다시 말 걸면 닫기", "d": "bool 변수로 대화 중인지 기억하고, 닫는 코드는 내 메서드로 묶어요.", "c": "if (talking)\n{\n    CloseDialog();\n    return;\n}\n\nvoid CloseDialog()\n{\n    UIScreen.Hide(dialogUI.name);\n    talking = false;\n}"}, {"t": "멀어지면 닫기 (Update)", "d": "매 프레임 주인공과의 거리를 재서 멀어지거나 Esc를 누르면 닫아요.", "c": "float d = Vector2.Distance(Hero.main.position, transform.position);\nif (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))\n{\n    CloseDialog();\n}"}]}, "lesson-8": {"items": [{"t": "새 씬 · 시작 씬 · 포탈", "d": "씬은 계층 구조에서 위에서부터 0번 · 1번… 빌드 번호가 붙어요. ★ 시작 씬부터 플레이가 시작돼요.", "c": "계층 구조 → ＋ 새 씬 → 이름 「숲」\n인스펙터  → 시작 씬 ✓ (★)\n포탈      → 대상 씬 「숲」"}, {"t": "지금 씬 알아내기", "d": "using UnityEngine.SceneManagement; 를 맨 위에 써요. name은 씬 이름, buildIndex는 빌드 번호예요.", "c": "Scene s = SceneManager.GetActiveScene();\nDebug.Log(s.name + \" (\" + s.buildIndex + \"번)\");"}, {"t": "씬 불러오기", "d": "이름이나 번호로 불러와요. 지금 메서드가 끝난 다음에 씬이 바뀌어요.", "c": "SceneManager.LoadScene(\"숲\");\nSceneManager.LoadScene(1);"}, {"t": "BGM 매니저 (오디오 소스 반복 재생)", "d": "매니저는 씬이 바뀌어도 살아 있어서 음악이 끊기지 않아요. 오디오 소스가 없으면 null이니 먼저 확인해요.", "c": "AudioSource bgm = GetComponent<AudioSource>();\nif (bgm == null)\n    return;\nbgm.loop = true;\nbgm.Play();"}, {"t": "게임 매니저 · 목숨과 다시 시작", "d": "OnHeroDeath()는 주인공이 쓰러지면 엔진이 매니저에도 보내요. RestartGame()은 시작 씬부터 다시 하지만 매니저의 값은 남아요.", "c": "void OnHeroDeath()\n{\n    lives--;\n    SceneManager.RestartGame();\n}"}]}};
 const RV_OPEN=new Set();let RV_ON=false;try{RV_ON=localStorage.getItem('thaniya.rvon')==='1'}catch(e){}
 function rvCode(c){return c==='@L5_FINAL'?L5_FINAL:c}
 const rvLv=L=>`<span class="rv-lv"><span class="dots lv${L.lv}" aria-hidden="true"><i></i><i></i><i></i></span>${esc(lvName(L))}</span>`;

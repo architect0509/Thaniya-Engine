@@ -91,5 +91,15 @@ window.PV_DATA={
     {h:'코드로 하고 싶다면',p:'같은 일을 스크립트로도 할 수 있다. 버튼의 「누르면」에서 스크립트 메서드 실행을 고르고 아래처럼 그룹 이름으로 열고 닫는다.',code:'public void OnStart()\n{\n    UIScreen.Show("게임 UI");\n    UIScreen.Hide("메인 화면");\n}'}
   ],
   terms:[['UI 빌더','요소를 끌어다 놓아 UI 화면을 만드는 창이다.'],['UI 그룹','함께 열리고 닫히는 UI 요소 묶음이다. 씬의 UI 아래 폴더로 보인다.'],['요소','텍스트 · 버튼 · 이미지 · 진행 막대처럼 화면을 이루는 부품이다.'],['버튼 동작','버튼을 눌렀을 때 할 일이다. 스크립트 없이 고를 수 있다.'],['미리보기','플레이하지 않고 빌더 안에서 직접 눌러 보는 모드다.'],['HUD','게임 중 화면 가장자리에 늘 보이는 점수 · 체력 표시다.']]
+},
+'lesson-10':{
+  intro:'NPC에게 말을 걸면 화면 아래에 대화창이 뜨는 장면은 대부분의 RPG에 있다. 이 레슨에서는 대화창 UI를 C# 스크립트로 직접 다룬다. UI 그룹을 찾고, 그 안의 텍스트에 이름과 대사를 넣고, 말을 걸 때마다 열고 닫고, 대사를 넘기고, 주인공이 멀어지면 닫히게 만든다. 엔진에서 NPC를 추가할 때 생기는 NpcTalk.cs와 같은 구조다.',
+  s:[
+    {h:'대화창은 UI 그룹이다',p:['대화창은 대화 상자 · 이름 · 대사 · 대화 안내 네 요소를 묶은 「대화창」 UI 그룹이다. 게임이 시작될 때는 숨어 있다가, 스크립트가 필요할 때 연다.','스크립트는 먼저 그룹을 찾아 변수에 담는다. <code>UIGroup.Find</code>는 없으면 <code>null</code>을 돌려주므로 반드시 먼저 확인한다. 엔진에서는 NPC를 추가할 때 대화창 UI를 만들면 NpcTalk의 Dialog UI 칸에 자동으로 연결된다.'],img:'lesson-10-0',cap:'촌장 오브젝트에 NpcTalk 스크립트가 붙어 있고, UI (캔버스)에 숨겨진 대화창 그룹이 있다.',code:'private UIGroup dialogUI;\nprivate Npc npc;\n\nvoid Start()\n{\n    npc = GetComponent<Npc>();\n    dialogUI = UIGroup.Find("대화창");\n    if (dialogUI == null)\n    {\n        Debug.LogWarning("대화창 UI가 없어요");\n        return;\n    }\n}',ct:'NpcTalk.cs · Start'},
+    {h:'말을 걸면 글자를 넣고 연다',p:'주인공이 NPC 옆에서 Space를 누르면 엔진이 NPC 스크립트의 <code>OnInteract()</code>를 부른다. <code>UIScreen.SetText</code>로 그룹 안 텍스트의 글자를 바꾸고 <code>UIScreen.Show</code>로 그룹 전체를 보이게 한다. 그룹 이름은 <code>dialogUI.name</code>에서 꺼내 쓰므로 이름이 바뀌어도 코드를 고칠 필요가 없다.',code:'void OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "이름", name);\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n}',img:'lesson-10-1',cap:'실행하면 말을 건 것으로 채점되고, 게임 뷰 아래에 촌장의 대화창이 뜬다.'},
+    {h:'상태를 기억해 열고 닫는다',p:'대화 중인지는 <code>bool</code> 변수가, 몇 번째 대사인지는 <code>int</code> 변수가 기억한다. 이미 대화 중이면 닫고, 대사가 남았으면 「대사」 글자만 바꾼다. 닫는 코드는 여러 곳에서 쓰므로 <code>CloseDialog()</code> 메서드로 묶는다.',code:'void OnInteract()\n{\n    step++;\n    if (step == 1)\n    {\n        // 열기\n    }\n    else if (step == 2)\n    {\n        UIScreen.SetText(dialogUI.name, "대사", nextLine);\n    }\n    else\n    {\n        CloseDialog();\n    }\n}'},
+    {h:'멀어지면 저절로 닫힌다',p:'대화창을 연 채로 주인공이 떠나면 대화창이 남는다. <code>Update()</code>에서 매 프레임 주인공과의 거리를 재서 멀어지거나 Esc를 누르면 닫는다.',code:'void Update()\n{\n    if (!talking)\n        return;\n    float d = Vector2.Distance(Hero.main.position, transform.position);\n    if (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))\n        CloseDialog();\n}'}
+  ],
+  terms:[['UIGroup','함께 열리고 닫히는 UI 요소 묶음이다. UIGroup.Find("이름")으로 찾는다.'],['UIScreen','UI 그룹을 열고 닫고, 그 안 요소의 글자를 바꾸는 도구 모음이다.'],['OnInteract()','주인공이 가까이에서 말을 걸 때 엔진이 부르는 메서드다.'],['Npc 컴포넌트','NPC의 대사(text)를 담는 컴포넌트다.'],['null','아무것도 가리키지 않는 값이다. 찾지 못했을 때 돌아온다.'],['내 메서드','CloseDialog()처럼 직접 만들어 이름으로 부르는 메서드다.']]
 }
 };

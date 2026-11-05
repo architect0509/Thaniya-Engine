@@ -2825,7 +2825,7 @@ function sampleProject(){
 }
 function validProject(p){return p&&Array.isArray(p.maps)&&p.maps.length&&p.maps.every(m=>m&&m.id&&m.w>=0&&m.h>=0&&Array.isArray(m.l)&&m.l.length>=1&&m.l.every(a=>Array.isArray(a)&&a.length===m.w*m.h)&&Array.isArray(m.col)&&m.col.length===m.w*m.h&&Array.isArray(m.objs))}
 function normProject(p){p.nextN=p.nextN||0;if(p.uiDocs&&!Array.isArray(p.uiDocs))delete p.uiDocs;spNormP(p);if(!Array.isArray(p.scripts))p.scripts=[];p.scripts=p.scripts.filter(s=>s&&typeof s.name==='string'&&typeof s.code==='string').map(s=>({id:s.id||uid(),name:s.name,code:s.code}));
-  (p.maps||[]).forEach(m=>{if(!Array.isArray(m.objs))return;m.objs.forEach(o=>{if(o.scripts!==undefined){o.scripts=Array.isArray(o.scripts)?o.scripts.filter(x=>x&&x.sid).map(x=>({id:x.id||uid(),sid:x.sid,vals:x.vals&&typeof x.vals==='object'?x.vals:{}})):[];if(!o.scripts.length)delete o.scripts}});m.objs.forEach(o=>{if(o.type==='spawn'&&(!o.props||typeof o.props!=='object'))o.props={}});fixStart(m)});if(!Array.isArray(p.afolders))p.afolders=[];if(!p.afmap||typeof p.afmap!=='object')p.afmap={};if(!p.sfmap||typeof p.sfmap!=='object')p.sfmap={};p.playerSprite=p.playerSprite||'';p.maps.forEach(m=>{if(!Array.isArray(m.ui))m.ui=[];m.ui=m.ui.filter(u=>u&&typeof u==='object'&&UI_NAMES[u.type]).map(normUi);if(!Array.isArray(m.uiGroups))m.uiGroups=[];m.uiGroups=m.uiGroups.filter(g=>g&&g.id).map(g=>Object.assign({id:String(g.id),name:String(g.name||'UI 그룹').slice(0,30)},g.uib&&typeof g.uib==='object'?{uib:g.uib}:{}));m.ui.forEach(u=>{if(!m.uiGroups.some(g=>g.id===u.group))u.group=null});if(!m.uiCv||typeof m.uiCv!=='object')m.uiCv={};m.uiCv={w:clamp(+m.uiCv.w||640,64,4096),h:clamp(+m.uiCv.h||360,64,4096),mode:UI_SCALE[m.uiCv.mode]?m.uiCv.mode:'match',match:clamp(m.uiCv.match==null?1:+m.uiCv.match||0,0,1)};m.theme=typeof m.theme==='string'&&m.theme?m.theme:'기본';if(!Array.isArray(m.groups))m.groups=[];if(!m.objs.some(o=>o.type==='spawn')){let fx=1,fy=1;search:for(let y=1;y<30;y++)for(let x=1;x<30;x++)if(!m.objs.some(o=>o.x===x&&o.y===y)){fx=x;fy=y;break search}m.objs.push({id:uid(),type:'spawn',name:'주인공',x:fx,y:fy,props:{},group:null})}if(!Array.isArray(m.lm))m.lm=[];while(m.lm.length<m.l.length)m.lm.push({name:'타일맵 '+(m.lm.length+1),wall:false});m.lm.length=m.l.length;m.lm.forEach((q,i)=>{if(!q||typeof q!=='object')m.lm[i]=q={};q.name=String(q.name||'타일맵 '+(i+1)).slice(0,30);q.wall=!!q.wall});if(!m.dark||typeof m.dark!=='object')m.dark={};m.dark={on:!!m.dark.on,color:/^#[0-9a-f]{6}$/i.test(m.dark.color)?m.dark.color:'#05060d',level:clamp(+m.dark.level>=0?+m.dark.level:.88,0,1)};m.objs.forEach(o=>{if(o.props&&o.props.memo==='')delete o.props.memo;if(o.group&&!m.groups.some(g=>g.id===o.group))o.group=null;if(!o.group)o.group=null});normObjTree(m);m.bg=ownBg(m)?m.bg:'';m.ox=Number.isFinite(+m.ox)?Math.round(+m.ox):0;m.oy=Number.isFinite(+m.oy)?Math.round(+m.oy):0;tTrim(m)});if(!p.heroInit){p.maps.forEach(m=>m.objs.forEach(o=>{if(o.type==='spawn')giveHeroScript(o,p)}));p.heroInit=true}
+  (p.maps||[]).forEach(m=>{if(!Array.isArray(m.objs))return;m.objs.forEach(o=>{if(o.scripts!==undefined){o.scripts=Array.isArray(o.scripts)?o.scripts.filter(x=>x&&x.sid).map(x=>({id:x.id||uid(),sid:x.sid,vals:x.vals&&typeof x.vals==='object'?x.vals:{}})):[];if(!o.scripts.length)delete o.scripts}});m.objs.forEach(o=>{if(o.type==='spawn'&&(!o.props||typeof o.props!=='object'))o.props={}});fixStart(m)});if(!Array.isArray(p.afolders))p.afolders=[];if(!p.afmap||typeof p.afmap!=='object')p.afmap={};if(!p.sfmap||typeof p.sfmap!=='object')p.sfmap={};p.playerSprite=p.playerSprite||'';p.maps.forEach(m=>{if(!Array.isArray(m.ui))m.ui=[];m.ui=m.ui.filter(u=>u&&typeof u==='object'&&UI_NAMES[u.type]).map(normUi);if(!Array.isArray(m.uiGroups))m.uiGroups=[];m.uiGroups=m.uiGroups.filter(g=>g&&g.id).map(g=>Object.assign({id:String(g.id),name:String(g.name||'UI 그룹').slice(0,30)},g.uib&&typeof g.uib==='object'?{uib:g.uib}:{},g.dialog?{dialog:true}:{}));m.ui.forEach(u=>{if(!m.uiGroups.some(g=>g.id===u.group))u.group=null});if(!m.uiCv||typeof m.uiCv!=='object')m.uiCv={};m.uiCv={w:clamp(+m.uiCv.w||640,64,4096),h:clamp(+m.uiCv.h||360,64,4096),mode:UI_SCALE[m.uiCv.mode]?m.uiCv.mode:'match',match:clamp(m.uiCv.match==null?1:+m.uiCv.match||0,0,1)};m.theme=typeof m.theme==='string'&&m.theme?m.theme:'기본';if(!Array.isArray(m.groups))m.groups=[];if(!m.objs.some(o=>o.type==='spawn')){let fx=1,fy=1;search:for(let y=1;y<30;y++)for(let x=1;x<30;x++)if(!m.objs.some(o=>o.x===x&&o.y===y)){fx=x;fy=y;break search}m.objs.push({id:uid(),type:'spawn',name:'주인공',x:fx,y:fy,props:{},group:null})}if(!Array.isArray(m.lm))m.lm=[];while(m.lm.length<m.l.length)m.lm.push({name:'타일맵 '+(m.lm.length+1),wall:false});m.lm.length=m.l.length;m.lm.forEach((q,i)=>{if(!q||typeof q!=='object')m.lm[i]=q={};q.name=String(q.name||'타일맵 '+(i+1)).slice(0,30);q.wall=!!q.wall});if(!m.dark||typeof m.dark!=='object')m.dark={};m.dark={on:!!m.dark.on,color:/^#[0-9a-f]{6}$/i.test(m.dark.color)?m.dark.color:'#05060d',level:clamp(+m.dark.level>=0?+m.dark.level:.88,0,1)};m.objs.forEach(o=>{if(o.props&&o.props.memo==='')delete o.props.memo;if(o.group&&!m.groups.some(g=>g.id===o.group))o.group=null;if(!o.group)o.group=null});normObjTree(m);m.bg=ownBg(m)?m.bg:'';m.ox=Number.isFinite(+m.ox)?Math.round(+m.ox):0;m.oy=Number.isFinite(+m.oy)?Math.round(+m.oy):0;tTrim(m)});if(!p.heroInit){p.maps.forEach(m=>m.objs.forEach(o=>{if(o.type==='spawn')giveHeroScript(o,p)}));p.heroInit=true}
   if(!p.roleIds||typeof p.roleIds!=='object')p.roleIds={};
   if(!p.roleInit){p.maps.forEach(m=>{m.objs.forEach(o=>giveRoleScripts(o,p))});p.roleInit=true}
   anMigrate(p);mgrNorm(p);return p}
@@ -3417,7 +3417,7 @@ cv.addEventListener('pointerdown',e=>{
     if(tool==='brush'){
       /* 브러시: 이미 오브젝트가 있는 칸에도 위로 쌓아서 배치 */
       if(m.objs.length>=MAXOBJ){toast('게임 오브젝트는 씬당 '+MAXOBJ+'개까지 배치할 수 있습니다');return}
-      sel=addObj(m,objType,c.x,c.y).id;commit();renderInsp();need();
+      {const no=addObj(m,objType,c.x,c.y);sel=no.id;commit();renderInsp();need();if(no.type==='npc')npcDialogCheck(m,no)}
       if(stack.length)toast(`${stack.length+1}개가 겹쳐 있습니다 · 이동 도구(W)로 칸을 클릭하면 골라서 선택할 수 있어요`);
     }
     return;
@@ -5265,6 +5265,7 @@ function createObjectAtView(type){
   {const c=freeCellNear(m,cx,cy);if(!c)return;o=addObj(m,type,c.x,c.y)}
   sel=o.id;objType=type;if(layerSel!=='obj')setLayer('obj');
   commit();renderInsp();renderPal();need();toast(TYPES[type].label+'을(를) 만들었습니다');
+  if(type==='npc')npcDialogCheck(m,o);
 }
 function createLightObject(){
   const m=cur(),n0=m.objs.length;createObjectAtView('empty');
@@ -5330,6 +5331,7 @@ function addComponent(k){
     if(was!=='empty')toast(TYPES[was].label+' 컴포넌트를 '+TYPES[k].label+'(으)로 교체했습니다');
   }
   insFold.delete('c');insFold.delete('cm');if(o.mgr)markDirty();commit();renderInsp();renderHier();need();
+  if(k==='npc')npcDialogCheck(m,o);
 }
 function removeComponent(k){
   const o=inspObj();if(!o)return;
@@ -6932,19 +6934,63 @@ NpcTalk:`using UnityEngine;
 // NPC 대화 스크립트
 // NPC 컴포넌트를 추가하면 함께 붙습니다.
 // 주인공이 가까이에서 Space를 누르면 HeroCombat 스크립트의 hero.Interact()가 이 오브젝트의 OnInteract()를 부릅니다.
-// 대사는 NPC 컴포넌트(인스펙터)의 「대사」를 씁니다. 여러 줄 대화, 조건에 따라 다른 대사 등으로 바꿔 보세요.
+// 대사는 NPC 컴포넌트(인스펙터)의 「대사」를 씁니다.
+// 「Dialog UI」 칸에 연결한 UI 그룹(대화창)의 「이름」 · 「대사」 텍스트에 글을 넣고 엽니다.
+// 칸을 비워 두면 엔진 기본 대화창(Dialog.Show)을 씁니다.
 public class NpcTalk : MonoBehaviour
 {
+    [Header("대화창")]
+    [Tooltip("대사를 띄울 대화창 UI 그룹입니다. 그룹 안에 「이름」 · 「대사」 텍스트가 있어야 합니다")]
+    public UIGroup dialogUI;
+
+    [Tooltip("주인공이 이 거리(칸)보다 멀어지면 대화창을 닫습니다")]
+    public float closeDistance = 2.5f;
+
     private Npc npc;
+    private bool talking = false;
 
     void Start()
     {
         npc = GetComponent<Npc>();
     }
 
+    // 말을 걸면 대화창을 열고, 열려 있을 때 다시 말을 걸면 닫습니다
     void OnInteract()
     {
-        Dialog.Show(name, npc.text);
+        if (dialogUI == null)
+        {
+            Dialog.Show(name, npc.text);
+            return;
+        }
+        if (talking)
+        {
+            CloseDialog();
+            return;
+        }
+        UIScreen.SetText(dialogUI.name, "이름", name);
+        UIScreen.SetText(dialogUI.name, "대사", npc.text);
+        UIScreen.Show(dialogUI.name);
+        talking = true;
+    }
+
+    // 주인공이 멀어지거나 Esc를 누르면 닫습니다
+    void Update()
+    {
+        if (!talking)
+        {
+            return;
+        }
+        float d = Vector2.Distance(Hero.main.position, transform.position);
+        if (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseDialog();
+        }
+    }
+
+    void CloseDialog()
+    {
+        UIScreen.Hide(dialogUI.name);
+        talking = false;
     }
 }
 `,
@@ -7086,6 +7132,7 @@ const ROLE_TIP={
   EventMessage:'주인공이 이 칸에 들어오면(OnHeroEnter) 메시지를 보여 주는 C# 스크립트입니다.',
   PortalTeleport:'주인공이 이 칸에 들어오면(OnHeroEnter) 지정한 씬으로 이동시키는 C# 스크립트입니다.'
 };
+const NPCTALK_OLD="using UnityEngine;\n\n// NPC 대화 스크립트\n// NPC 컴포넌트를 추가하면 함께 붙습니다.\n// 주인공이 가까이에서 Space를 누르면 HeroCombat 스크립트의 hero.Interact()가 이 오브젝트의 OnInteract()를 부릅니다.\n// 대사는 NPC 컴포넌트(인스펙터)의 「대사」를 씁니다. 여러 줄 대화, 조건에 따라 다른 대사 등으로 바꿔 보세요.\npublic class NpcTalk : MonoBehaviour\n{\n    private Npc npc;\n\n    void Start()\n    {\n        npc = GetComponent<Npc>();\n    }\n\n    void OnInteract()\n    {\n        Dialog.Show(name, npc.text);\n    }\n}\n";
 const roleCodeDef=n=>{const c=ROLE_CODE[n]||'';return typeof setv!=='undefined'&&setv.ko?enToKo(c):c};
 function roleScript(name,p,create){
   p=p||P;if(!p)return null;if(!Array.isArray(p.scripts))p.scripts=[];if(!p.roleIds||typeof p.roleIds!=='object')p.roleIds={};
@@ -7114,6 +7161,50 @@ function ensureGameOverUi(m,p){
   const bt=mk({type:'button',name:_t('다시 시작 버튼'),anchor:'mc',x:0,y:52,w:150,h:40,props:{text:_t('다시 시작')}});
   bg.scripts=[{id:uid(),sid:so.id,vals:{groupName:g.name}}];
   const rb=roleScript('RestartButton',p,true);bt.scripts=[{id:uid(),sid:rb.id,vals:{}}];
+}
+/* ===== NPC 대화창 UI: NPC 컴포넌트를 붙일 때 씬에 대화창이 없으면 만들지 묻고, NpcTalk 스크립트의 dialogUI 칸에 자동 연결 ===== */
+const DLG_NO=new Set();   /* 이번 편집에서 「만들지 않기」를 고른 씬 (브러시로 여러 개 칠할 때 다시 묻지 않음) */
+function dlgGroup(m){const G=m.uiGroups||[];return G.find(g=>g.dialog)||G.find(g=>g.name===_t('대화창')||g.name==='대화창')||null}
+/* 예전 기본 NpcTalk(대화창 칸 없음)을 손대지 않았다면 새 기본 코드로 바꿈 · 고친 스크립트는 그대로 둠 */
+function npcTalkUpgrade(p){
+  const s=roleScript('NpcTalk',p);if(!s||/dialogUI/.test(s.code||''))return!!s;
+  const t=String(s.code||'').replace(/\r/g,'').trim(),o=NPCTALK_OLD.trim();
+  let same=t===o;if(!same){try{same=t===enToKo(NPCTALK_OLD).trim()}catch(e){}}
+  if(same){s.code=roleCodeDef('NpcTalk');return true}
+  return false;
+}
+function npcLinkDialog(m,o,g,force){
+  const s=roleScript('NpcTalk');if(!s||!o.scripts)return false;const inst=o.scripts.find(x=>x.sid===s.id);if(!inst)return false;
+  inst.vals=inst.vals||{};const v=inst.vals.dialogUI;
+  if(force||!v||!(typeof v==='string'&&v.startsWith('uig:')&&(m.uiGroups||[]).some(z=>'uig:'+z.id===v))){inst.vals.dialogUI='uig:'+g.id;return true}
+  return false;
+}
+function ensureDialogUi(m){
+  if(!Array.isArray(m.ui))m.ui=[];if(!Array.isArray(m.uiGroups))m.uiGroups=[];
+  const old=dlgGroup(m);if(old)return old;
+  const g={id:uid(),name:_t('대화창'),dialog:true};m.uiGroups.push(g);
+  const mk=o=>{const u=normUi(Object.assign({id:uid(),group:g.id},o));u.visible=false;m.ui.push(u);return u};
+  /* 화면 아래쪽 대화 상자 · 요소 이름(이름 · 대사)은 NpcTalk 스크립트가 UIScreen.SetText로 찾는 이름이라 번역하지 않음 */
+  mk({type:'panel',name:'대화 상자',anchor:'bs',l:24,r:24,h:104,y:-16,w:592,props:{bg:'#11131a',alpha:.9,radius:12,bw:2,border:'#f6cd2a'}});
+  mk({type:'text',name:'이름',anchor:'bl',x:44,y:-86,w:300,h:22,props:{text:_t('이름'),color:'#f6cd2a',size:14,align:'left',valign:'mid',bold:true}});
+  mk({type:'text',name:'대사',anchor:'bs',l:44,r:44,y:-36,h:44,props:{text:_t('대사가 여기에 표시됩니다'),color:'#ffffff',size:14,align:'left',valign:'top'}});
+  mk({type:'text',name:'대화 안내',anchor:'br',x:-40,y:-18,w:220,h:16,props:{text:_t('Space: 닫기 ▶'),color:'#9aa0ab',size:11,align:'right',valign:'mid'}});
+  return g;
+}
+function npcDialogCheck(m,o){
+  if(!P||!m||!o||o.type!=='npc')return;
+  npcTalkUpgrade(P);
+  const g=dlgGroup(m);
+  if(g){if(npcLinkDialog(m,o,g)){commit();markDirty();renderInsp()}return}
+  if(DLG_NO.has(m.id))return;
+  const body=`<p style="margin:0 0 8px">${esc(_t('이 씬에는 NPC 대사를 띄울 대화창 UI가 없습니다.'))}</p><p style="margin:0;color:var(--mute);font-size:12px;line-height:1.6">${esc(_t('생성하면 씬의 UI에 「대화창」 그룹(대화 상자 · 이름 · 대사)을 만들고, NPC의 NpcTalk 스크립트 「Dialog UI」 칸에 자동으로 연결합니다. 대화창은 C# 스크립트(NpcTalk.cs)의 UIScreen으로 열고 닫혀요.'))}</p>`;
+  openModal(_t('대화창 UI를 생성하시겠습니까?'),body,[
+    {t:_t('나중에'),fn:()=>{DLG_NO.add(m.id)}},
+    {t:_t('생성하기'),cls:'pri',fn:()=>{
+      const gg=ensureDialogUi(m);let n=0;m.objs.filter(q=>q.type==='npc').forEach(q=>{if(npcLinkDialog(m,q,gg))n++});
+      commit();markDirty();renderHier();renderInsp();renderScripts();need();
+      toast(_t('대화창 UI를 만들고 NPC {n}개에 연결했습니다',{n}));
+    }}]);
 }
 function heroMoveInst(o){
   const hs=heroScript(),L=o.scripts||[];
@@ -9583,8 +9674,8 @@ document.getElementById('bLearn').onclick=learnToggle;
    창 머리글의 「학습」 버튼: 그 창과 관련된 레슨으로 학습 창을 바로 열어 줍니다 (레슨이 둘 이상이면 고르기).
    상황별 안내: 주인공 스크립트를 만들었을 때 · 처음 Debug.Log가 콘솔에 찍힐 때 · 애니메이터/애니메이션 탭을 처음 열 때 (각각 한 번만).
    새 레슨을 만들면 LEARN_LESSONS(해시 → 제목)와 LEARN_PANEL(창 → 해시들)에 한 줄만 더하면 됩니다. */
-const LEARN_LESSONS={'lesson-1':'타일맵 · 게임 오브젝트 · UI','lesson-2':'콘솔 출력','lesson-3':'컴포넌트 활용','lesson-4':'변수 · 캐릭터 · 아이템 · UI','lesson-5':'주인공 스크립트 만들기','lesson-6':'애니메이션 다루기','lesson-7':'특수 타일 (룰 · 애니메이션)','lesson-8':'씬과 매니저','lesson-9':'UI 빌더로 화면 만들기'};
-const LEARN_PANEL={hier:['lesson-1','lesson-8'],insp:['lesson-3','lesson-4'],console:['lesson-2'],script:['lesson-2','lesson-5'],palette:['lesson-1','lesson-7'],animator:['lesson-6'],anim:['lesson-6'],uib:['lesson-9']};
+const LEARN_LESSONS={'lesson-1':'타일맵 · 게임 오브젝트 · UI','lesson-2':'콘솔 출력','lesson-3':'컴포넌트 활용','lesson-4':'변수 · 캐릭터 · 아이템 · UI','lesson-5':'주인공 스크립트 만들기','lesson-6':'애니메이션 다루기','lesson-7':'특수 타일 (룰 · 애니메이션)','lesson-8':'씬과 매니저','lesson-9':'UI 빌더로 화면 만들기','lesson-10':'대화창 UI 스크립트'};
+const LEARN_PANEL={hier:['lesson-1','lesson-8'],insp:['lesson-3','lesson-4'],console:['lesson-2'],script:['lesson-2','lesson-5','lesson-10'],palette:['lesson-1','lesson-7'],animator:['lesson-6'],anim:['lesson-6'],uib:['lesson-9']};
 const LEARN_NUDGES={
   console:{h:'lesson-2',t:'콘솔 출력 배우기',d:'Debug.Log로 콘솔에 값을 찍어 보는 방법을 연습해 볼까요?'},
   anim:{h:'lesson-6',t:'애니메이션 다루기 배우기',d:'애니메이터의 상태 · 전환과 애니메이션 클립을 직접 만져 보며 익혀요.'},
@@ -9601,7 +9692,8 @@ const LEARN_INFO={
   'lesson-6':{lv:2,s:'애니메이터 창에서 상태 · 전환 · 파라미터를, 애니메이션 창에서 클립 · 키를 다루고, 새 동작을 만들어 스크립트로 발동해요.',kw:['애니메이터','애니메이션 클립','SetTrigger'],steps:['애니메이터 창 둘러보기','플레이하며 상태 바뀌는 것 보기','클립 고치기 (애니메이션 창)','새 클립 만들기 (깡충)','상태와 전환 연결하기','스크립트로 깡충 (SetTrigger)']},
   'lesson-7':{lv:2,s:'룰 타일로 가장자리가 저절로 맞춰지는 지형을, 애니메이션 타일로 움직이는 물을 만들어요.',kw:['룰 타일','애니메이션 타일','타일 팔레트'],steps:['룰 타일 만들기','룰 타일 칠하기','규칙 추가하기 (섬)','애니메이션 타일 (물)']},
   'lesson-8':{lv:3,s:'게임을 여러 씬으로 나눠 포탈로 잇고 시작 씬을 정하고, 씬이 바뀌어도 살아 있는 매니저(BGM 매니저 · 게임 매니저)로 음악과 목숨을 이어 가요.',kw:['씬 전환','매니저','SceneManager'],steps:['새 씬 만들고 포탈로 잇기','시작 씬 바꾸기','BGM 매니저 · 이어지는 음악','게임 매니저 만들기','지금 씬 알아내기','다음 씬 불러오기','BGM 매니저 스크립트','게임 매니저 · 목숨과 다시 시작']},
-  'lesson-9':{lv:2,s:'UI 빌더로 메인 화면과 게임 UI를 끌어다 놓아 만들고, 씬의 UI 그룹으로 저장한 뒤, 「게임 시작」 버튼 하나로 화면을 바꿔요.',kw:['UI 빌더','UI 그룹','버튼 동작'],steps:['메인 화면 만들고 저장하기','게임 화면 만들고 저장하기','게임 시작을 누르면 화면 닫기','화면이 닫히면 게임 UI 띄우기']}
+  'lesson-9':{lv:2,s:'UI 빌더로 메인 화면과 게임 UI를 끌어다 놓아 만들고, 씬의 UI 그룹으로 저장한 뒤, 「게임 시작」 버튼 하나로 화면을 바꿔요.',kw:['UI 빌더','UI 그룹','버튼 동작'],steps:['메인 화면 만들고 저장하기','게임 화면 만들고 저장하기','게임 시작을 누르면 화면 닫기','화면이 닫히면 게임 UI 띄우기']},
+  'lesson-10':{lv:3,s:'NPC 스크립트(NpcTalk.cs)로 대화창 UI 그룹을 찾고, UIScreen으로 이름과 대사를 넣어 열고 닫고, 대사를 넘기고, 멀어지면 닫히게 만들어요.',kw:['UIScreen','UIGroup','OnInteract'],steps:['대화창 UI 그룹 찾기','말을 걸면 대화창 열기','다시 말 걸면 닫기','두 마디 대화','멀어지면 닫기']}
 };
 if(window.TI18N)TI18N.add({"씬과 매니저": ["Scenes and Managers", "シーンとマネージャー", "场景与管理器"], "게임을 여러 씬으로 나눠 포탈로 잇고 시작 씬을 정하고, 씬이 바뀌어도 살아 있는 매니저(BGM 매니저 · 게임 매니저)로 음악과 목숨을 이어 가요.": ["Split a game into scenes, connect them with portals, set the start scene, and keep music and lives going with managers (BGM manager, game manager) that survive scene changes.", "ゲームを複数のシーンに分けてポータルでつなぎ、開始シーンを決め、シーンが変わっても生き続けるマネージャー（BGMマネージャー・ゲームマネージャー）で音楽と残機を引き継ぎます。", "把游戏拆成多个场景并用传送门连接、设定起始场景，再用切换场景后依然存在的管理器（BGM 管理器 · 游戏管理器）延续音乐和生命数。"], "씬 전환": ["Scene switching", "シーン切り替え", "场景切换"], "새 씬 만들고 포탈로 잇기": ["Create a scene and link it with a portal", "新しいシーンを作ってポータルでつなぐ", "新建场景并用传送门连接"], "시작 씬 바꾸기": ["Change the start scene", "開始シーンを変える", "更换起始场景"], "BGM 매니저 · 이어지는 음악": ["BGM manager · continuous music", "BGMマネージャー・途切れない音楽", "BGM 管理器 · 连续的音乐"], "게임 매니저 만들기": ["Create a game manager", "ゲームマネージャーを作る", "创建游戏管理器"], "지금 씬 알아내기": ["Find the current scene", "現在のシーンを調べる", "获取当前场景"], "다음 씬 불러오기": ["Load the next scene", "次のシーンを読み込む", "加载下一个场景"], "BGM 매니저 스크립트": ["BGM manager script", "BGMマネージャーのスクリプト", "BGM 管理器脚本"], "게임 매니저 · 목숨과 다시 시작": ["Game manager · lives and restart", "ゲームマネージャー・残機とリスタート", "游戏管理器 · 生命数与重新开始"], "「씬과 매니저」 학습하기": ["Learn “Scenes and Managers”", "「シーンとマネージャー」を学ぶ", "学习“场景与管理器”"], "학습하기": ["Learn", "学ぶ", "学习"]});
 function learnIntro(h){
