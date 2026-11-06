@@ -93,7 +93,7 @@ const KO_MEM={위치:'position',지역위치:'localPosition',배율:'localScale'
   자식가져오기:'GetChild',찾기:'Find',자식수:'childCount',부모:'parent',게임오브젝트:'gameObject',변환:'transform',이름:'name',태그:'tag',
   활성:'activeSelf',활성화:'SetActive',태그비교:'CompareTag',컴포넌트가져오기:'GetComponent',켜짐:'enabled',
   바라보는방향:'facing',바라보는각도:'facingAngle',체력:'hp',최대체력:'maxHp',이동중:'isMoving',반지름:'radius',이동:'Move',바라보기:'Face',
-  이동가능:'CanMove',공격:'Attack',색:'color',밝기:'intensity',퍼짐각:'angle',방향:'dir',그림자:'shadows',화면크기:'orthographicSize',
+  이동가능:'CanMove',움직일수있음:'canMove',대사수:'lineCount',대사가져오기:'GetLine',대화하기:'Talk',공격:'Attack',색:'color',밝기:'intensity',퍼짐각:'angle',방향:'dir',그림자:'shadows',화면크기:'orthographicSize',
   맵밖가리기:'clampToMap',속도:'speed',감지범위:'range',수량:'qty',글자:'text',대사:'text',글자크기:'fontSize',투명도:'alpha',보임:'visible',
   값:'value',크기:'sizeDelta',길이:'magnitude',정규화:'normalized',정규화하기:'Normalize',글자수:'Length',대문자로:'ToUpper',
   소문자로:'ToLower',포함:'Contains',문자열로:'ToString',다듬기:'Trim',
@@ -676,8 +676,10 @@ const CS_STAT={
   Input:csH('Input',n=>{const p=csPlay();if(n==='anyKey')return!!(p&&p.kraw&&p.kraw.size);if(n==='anyKeyDown')return!!(p&&p.kdown&&p.kdown.size);throw csUnsup('Input.'+n)},(n,a)=>{
     const p=csPlay();if(!p)return 0;const kk=p.keys||{};
     if(n==='GetAxis'||n==='GetAxisRaw'){const ax=({가로:'Horizontal',세로:'Vertical'})[String(a[0])]||String(a[0]);
-      if(ax==='Horizontal')return(kk.right?1:0)-(kk.left?1:0);
-      if(ax==='Vertical')return(kk.down?1:0)-(kk.up?1:0);
+      /* 한 프레임 안에 눌렀다 뗀 아주 짧은 입력도 그 프레임에는 누른 것으로 (kdown) */
+      const dn=p.kdown||new Set(),on=(k,a,b)=>!!kk[k]||dn.has(a)||dn.has(b);
+      if(ax==='Horizontal')return(on('right','ArrowRight','KeyD')?1:0)-(on('left','ArrowLeft','KeyA')?1:0);
+      if(ax==='Vertical')return(on('down','ArrowDown','KeyS')?1:0)-(on('up','ArrowUp','KeyW')?1:0);
       throw new Error(`입력 축 '${ax}'이(가) 없습니다 (Horizontal, Vertical)`)}
     const set=suf=>suf==='Down'?p.kdown:suf==='Up'?p.kup:p.kraw;
     let m=/^GetKey(Down|Up)?$/.exec(n);if(m){const s=set(m[1]);return!!s&&s.has(csKeyArg(a[0]))}

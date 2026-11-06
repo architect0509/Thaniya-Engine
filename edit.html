@@ -540,6 +540,15 @@ input[type=checkbox]{accent-color:var(--sel)}
 /* 특수 타일 (룰 타일 · 애니메이션 타일) */
 .sptag{display:inline-flex;align-items:center;gap:4px;padding:1px 7px 1px 5px;border-radius:999px;font-size:10.5px;font-weight:600;line-height:18px;background:rgba(61,139,217,.16);color:#6fb0f0;white-space:nowrap}
 .sptag.anim{background:rgba(180,106,208,.16);color:#cf93e6}
+.sptag.rand{background:rgba(63,174,125,.16);color:#5fcf98}
+.spri-l{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.spri{display:flex;align-items:center;gap:8px;padding:4px 6px;border:1px solid var(--line2);border-radius:9px;background:rgba(255,255,255,.02)}
+.spri .spfn{width:14px;text-align:right}
+.sprw{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute);flex:1;min-width:0}
+.sprw input{width:56px}
+.sprp{font:600 11px var(--f-mono,monospace);color:var(--fg);min-width:34px;text-align:right}
+.spri-a{display:flex;align-items:center;gap:8px}
+.spri-a .btn{display:inline-flex;align-items:center;gap:5px}
 .sptag .ic{width:12px;height:12px}
 .sppal{display:flex;gap:10px;align-items:flex-start;margin-top:8px;flex-wrap:wrap}
 .sppal .sppi{flex:1;min-width:150px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
@@ -560,7 +569,7 @@ input[type=checkbox]{accent-color:var(--sel)}
 .sptile{display:flex;gap:12px;align-items:flex-start}
 .sptile .spsel{flex:none;max-width:128px;max-height:128px;border-radius:6px;image-rendering:pixelated;background:repeating-conic-gradient(rgba(128,128,140,.16) 0 25%,transparent 0 50%) 0 0/8px 8px,var(--canvas)}
 .sptile .kv{flex:1;min-width:0;margin:0}
-.spmk{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.spmk{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px}
 .spmk .btn{height:auto;min-height:48px;padding:8px 10px;display:flex;align-items:center;gap:8px;text-align:left;justify-content:flex-start}
 .spmk .btn span{display:flex;flex-direction:column;min-width:0;line-height:1.3}
 .spmk .btn small{font-size:10.5px;color:var(--mute);font-weight:400;white-space:normal}
@@ -583,6 +592,21 @@ input[type=checkbox]{accent-color:var(--sel)}
 .sprl{border:1px solid var(--line2);border-radius:10px;background:rgba(255,255,255,.02);overflow:hidden}
 .sprh{display:flex;align-items:center;gap:2px;padding:4px 6px 4px 10px;border-bottom:1px solid var(--line);font-size:12px}
 .sprh .spacer{flex:1}
+.sprh .spfold{width:20px;margin-left:-6px;font-size:13px}
+.spfbar{display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--mute)}
+.spfbar .spacer{flex:1}
+.spfbar .btn{height:22px;padding:0 8px;font-size:11px}
+.spfg{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px;padding:8px;border:1px dashed var(--line2);border-radius:10px;background:rgba(255,255,255,.015)}
+.spft{position:relative;aspect-ratio:1;min-width:0;padding:0;border:1px solid var(--line2);border-radius:7px;cursor:pointer;display:grid;place-items:center;overflow:hidden;background:repeating-conic-gradient(rgba(128,128,140,.16) 0 25%,transparent 0 50%) 0 0/6px 6px,var(--canvas)}
+.spft:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.spft canvas{width:72%;height:72%;image-rendering:pixelated}
+.spft .spempty{color:var(--mute);font-size:13px}
+.spft b{position:absolute;left:2px;top:1px;font:700 9.5px/1.2 var(--f-mono,monospace);color:#fff;text-shadow:0 0 2px #000,0 0 2px #000}
+.spfm{position:absolute;right:2px;bottom:2px;display:grid;grid-template-columns:repeat(3,4px);gap:1px;padding:1px;border-radius:2px;background:rgba(0,0,0,.55)}
+.spfm u{width:4px;height:4px;border-radius:1px;background:rgba(160,165,180,.35);text-decoration:none}
+.spfm u.c{background:#fff}.spfm u.s1{background:#58c27e}.spfm u.s2{background:#ef7480}
+.sprl.spflash{animation:spFlash .7s ease-out}
+@keyframes spFlash{from{box-shadow:0 0 0 2px var(--accent)}to{box-shadow:0 0 0 0 transparent}}
 .ib{width:24px;height:22px;display:grid;place-items:center;padding:0;border:0;border-radius:6px;background:none;color:var(--mute);cursor:pointer;font:inherit;font-size:12px}
 .ib:hover:not(:disabled){background:var(--hover);color:var(--fg)}
 .ib:disabled{opacity:.3;cursor:default}
@@ -613,10 +637,73 @@ input[type=checkbox]{accent-color:var(--sel)}
 .spfn{font:500 10px var(--m,monospace);color:var(--mute)}
 .spfb{display:flex}
 .spfb .ib{width:16px;height:18px;font-size:10px}
-.spk .spkbar{display:flex;gap:8px;align-items:center;margin-bottom:8px}
-.spk .spkbar select{flex:1;min-width:0;max-width:280px}
-.spk .spkwrap{max-height:min(60vh,520px);overflow:auto;border:1px solid var(--line2);border-radius:8px;padding:6px;background:var(--canvas)}
-.spk canvas{display:block;image-rendering:pixelated;cursor:crosshair;touch-action:none}
+.rsm-open{width:100%;height:30px;justify-content:center;gap:6px;display:inline-flex;align-items:center}
+.rsm-open .ic{width:14px;height:14px}
+.modal.rsmw{width:min(1180px,100%)}
+.rsm{--rc:44px;display:flex;gap:14px;align-items:flex-start;min-height:0}
+.rsm-src{flex:0 0 300px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0}
+.rsm-bar select{width:100%}
+.rsm-sheet{max-height:min(46vh,420px);overflow:auto;border:1px solid var(--line2);border-radius:8px;padding:4px;background:color-mix(in srgb,var(--canvas) 70%,#000)}
+.rsm-sheet canvas{display:block;image-rendering:pixelated;cursor:grab;touch-action:none}
+.rsm-src .hint{margin:0;font-size:11.5px}
+.rsm-used{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px;border-radius:2px;background:rgba(76,200,120,.45);border:1.5px solid #58c27e}
+.rsm-board{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.rsm-top{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute)}
+.rsm-top .spacer{flex:1}
+.rsm-opt{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--fg)}
+#rsmSecs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.rsm-sec{border:1px solid var(--line2);border-radius:10px;padding:8px 10px 10px;background:rgba(255,255,255,.02);min-width:0;overflow:auto}
+.rsm-sec h4{margin:0 0 8px;font-size:12.5px;display:flex;flex-direction:column;gap:2px}
+.rsm-sec h4 small{font-weight:400;font-size:11px;color:var(--mute)}
+.rsm-g{display:grid;gap:2px;width:max-content}
+.rsm-e{width:var(--rc);height:var(--rc)}
+.rsm-c{position:relative;width:var(--rc);height:var(--rc);padding:0;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line2));border-radius:6px;cursor:pointer;display:grid;place-items:center;overflow:hidden;background:repeating-conic-gradient(rgba(128,128,140,.14) 0 25%,transparent 0 50%) 0 0/8px 8px,var(--canvas)}
+.rsm-c.on{border:1px solid var(--line2)}
+.rsm-c canvas{width:100%;height:100%;image-rendering:pixelated}
+.rsm-c b{position:absolute;left:2px;top:1px;font:700 10px/1.2 var(--f-mono,monospace);color:#fff;text-shadow:0 0 2px #000,0 0 2px #000}
+.rsm-c .spfm{opacity:.85}
+.rsm-c.on .spfm{opacity:0}
+.rsm-c:hover .spfm,.rsm-c.hov .spfm{opacity:.9}
+.rsm-c.hov{border:2px solid var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent)}
+.rsm-pick .rsm-c{cursor:copy}
+.rsm-c.on{cursor:grab}
+.rsm-moving .rsm-c.src{opacity:.4}
+.rsm-src.trash .rsm-sheet{outline:2px dashed #ef7480;outline-offset:2px}
+.rsm-wide{grid-column:1/-1}
+.rsm-xs{display:flex;flex-wrap:wrap;gap:10px}
+.rsm-x{display:grid;grid-template-columns:14px var(--rc) 14px;grid-template-rows:14px var(--rc) 14px;gap:2px}
+.rsm-n{border-radius:3px}
+.rsm-n.n1{background:color-mix(in srgb,#58c27e 55%,var(--canvas))}
+.rsm-n.n2{border:1px dashed color-mix(in srgb,#ef7480 70%,transparent)}
+.rsm-n.n0{background:repeating-linear-gradient(45deg,rgba(150,150,165,.25) 0 2px,transparent 2px 4px)}
+.rsm-ghost{position:fixed;z-index:200001;width:40px;height:40px;margin:-20px 0 0 -20px;pointer-events:none;image-rendering:pixelated;border:2px solid var(--accent);border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+@media (max-width:760px){.rsm{flex-direction:column}.rsm-src{position:static;flex:none;width:100%}}
+.tpk{display:flex;flex-direction:column;min-width:0}
+.herok{display:inline-flex;gap:2px;padding:2px;border-radius:8px;background:var(--field);border:1px solid var(--line2)}
+.herok button{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border:0;border-radius:6px;background:none;color:var(--mute);cursor:pointer;font:inherit;font-size:12px}
+.herok button:hover{background:var(--btn-h);color:var(--fg)}
+.herok button.on{background:var(--sel);color:var(--sel-fg)}
+.herok svg{fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round}.herok svg .f{fill:currentColor;stroke:none}
+.npcls{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.npcl{display:flex;gap:5px;align-items:flex-start}
+.npcn{flex:none;width:16px;padding-top:6px;text-align:right;font:600 10.5px var(--f-mono,monospace);color:var(--mute)}
+.npcl textarea{flex:1;min-width:0;min-height:44px;resize:vertical}
+.npcb{display:flex;flex-direction:column;gap:1px;flex:none}
+.npcb .ib{width:20px;height:16px;font-size:10px;border-radius:4px}
+.npcb .ib:hover:not(:disabled){background:var(--btn-h);color:var(--fg)}
+.npcb .ib:disabled{opacity:.3;cursor:default}
+.npcadd{align-self:flex-start;margin-left:21px}
+.npclbl{display:inline-flex;gap:2px;padding:2px;border-radius:8px;background:var(--field);border:1px solid var(--line2)}
+.npclbl button{width:28px;height:24px;display:grid;place-items:center;padding:0;border:0;border-radius:6px;background:none;color:var(--mute);cursor:pointer}
+.npclbl button:hover{background:var(--btn-h);color:var(--fg)}
+.npclbl button.on{background:var(--sel);color:var(--sel-fg)}
+.npclbl svg rect{fill:none;stroke:currentColor;stroke-width:1.3}
+.npclbl svg rect.f{fill:currentColor;stroke:none}
+.tpk .spkbar{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.tpk .spkbar select{flex:1;min-width:0;max-width:320px}
+.tpk .spkwrap{min-height:min(46vh,340px);max-height:min(62vh,560px);overflow:auto;border:1px solid var(--line2);border-radius:8px;padding:8px;background:var(--canvas);display:flex}
+.tpk .spkwrap>canvas{margin:auto}
+.tpk canvas{display:block;image-rendering:pixelated;cursor:crosshair;touch-action:none}
 /* 선택 창 크기 고정 (항목 수와 무관) */
 .modal.tpfix{width:min(860px,100%);height:min(620px,88vh);max-height:none}
 .modal.tpfix .body{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
@@ -1808,8 +1895,8 @@ body.popbody .pcol{display:none}
   <button id="padA">행동</button>
 </div>
 
-<script src="script-engine.js?v=20261106a"></script>
-<script src="script-editor.js?v=20261106a"></script>
+<script src="script-engine.js?v=20261106p"></script>
+<script src="script-editor.js?v=20261106n"></script>
 <script src="anim-editor.js?v=20261102a"></script>
 <script src="ui-builder.js?v=20261106a"></script>
 <script src="visual-script.js?v=20261106i"></script>
@@ -2017,7 +2104,8 @@ const ICON=(()=>{
     valignM:s('<path d="M2 2.5h12M2 13.5h12" opacity=".35"/><path d="M5 6.8h6M5 9.3h6"/>'),
     valignB:s('<path d="M2 2.5h12" opacity=".35"/><path d="M5 8h6M5 10.5h6"/><path d="M2 13.5h12" stroke-width="1.8"/>'),
     font:s('<path d="M3 13.5L7 2.5h2l4 11M4.6 9.5h6.8"/>'),
-    heartx:s('<path d="M8 13.3S2.3 10 2.3 6.1A2.9 2.9 0 018 4.6a2.9 2.9 0 015.7 1.5C13.7 10 8 13.3 8 13.3z"/><path d="M6.5 6.7l3 3M9.5 6.7l-3 3"/>')
+    heartx:s('<path d="M8 13.3S2.3 10 2.3 6.1A2.9 2.9 0 018 4.6a2.9 2.9 0 015.7 1.5C13.7 10 8 13.3 8 13.3z"/><path d="M6.5 6.7l3 3M9.5 6.7l-3 3"/>'),
+    dice:s('<rect x="2.5" y="2.5" width="11" height="11" rx="2.4"/><circle cx="5.6" cy="5.6" r="1" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/><circle cx="10.4" cy="10.4" r="1" fill="currentColor" stroke="none"/>')
   };
 })();
 function ico(n){return ICON[n]||''}
@@ -2064,6 +2152,8 @@ const SP_TF={fixed:[[0,0,0]],rot:[[0,0,0],[1,0,0],[2,0,0],[3,0,0]],mx:[[0,0,0],[
 let spIdx=new Map(),spIdxSrc=null,spIdxLen=-1,spAnimSeen=false;
 /* spAct: 팔레트에서 고른 특수 타일 id · spDrafts: 인스펙터에서 고치는 중인 사본(id 또는 'new' → 저장 전까지 씬에는 반영 안 됨) · spEditKey: 인스펙터가 보여 주는 사본 · spLive: 움직이는 미리보기 캔버스 */
 let spAct=null,spEditKey=null,spLive=[];const spDrafts=new Map();
+/* 룰 타일 인스펙터: 접은 규칙 (화면 상태 · 저장하지 않음 · 규칙 객체 기준이라 순서를 바꿔도 유지) */
+const spFold=new WeakSet();
 const spList=()=>P&&Array.isArray(P.stiles)?P.stiles:[];
 function spReindex(){const L=spList();spIdx=new Map(L.map(s=>[s.sn,s]));spIdxSrc=L;spIdxLen=L.length}
 function spByN(n){if(n<SP_BASE)return null;const L=spList();if(spIdxSrc!==L||spIdxLen!==L.length)spReindex();return spIdx.get(n-SP_BASE)||null}
@@ -2078,6 +2168,14 @@ function spFrame(list,fps,t,off){const n=list.length;if(!n)return 0;if(n>1)spAni
 function spResolve(s,get,x,y,t,me){
   if(!s)return null;if(me==null)me=spV(s);
   if(s.kind==='anim'){const fr=(s.frames||[]).filter(v=>v>0);if(!fr.length)return null;return{v:spFrame(fr,s.fps,t,s.rand?(spHash(x,y)%97)/7:0),r:0,fx:0,fy:0}}
+  /* 랜덤 타일 (유니티 Random Tile · 가중치): 칸 위치로 정해지는 무작위라 다시 그려도 같은 모양 · seed를 바꾸면 다시 섞임 */
+  if(s.kind==='rand'){
+    const it=(s.items||[]).filter(q=>q&&q.v>0);if(!it.length)return null;
+    const sd=(s.seed|0),tot=it.reduce((a,q)=>a+Math.max(1,q.w|0),0);let r=spHash(x+sd*7919,y-sd*104729)%tot,v=it[0].v;
+    for(const q of it){const w=Math.max(1,q.w|0);if(r<w){v=q.v;break}r-=w}
+    const vs=SP_TF[s.tf]||SP_TF.fixed,tr=vs[spHash(y+sd*31+977,x-sd*17+313)%vs.length];
+    return{v,r:tr[0],fx:tr[1],fy:tr[2]};
+  }
   const rules=s.rules||[];
   for(let ri=0;ri<rules.length;ri++){
     const R=rules[ri],nb=R.nb||[],vs=SP_TF[R.tf]||SP_TF.fixed;
@@ -2101,9 +2199,10 @@ function drawTileX(g,v,X,Y,W,H,tr){
 /* 프로젝트를 읽을 때 정리 */
 function spNormP(p){
   const ok=v=>Number.isFinite(+v)&&+v>0?Math.floor(+v):0,arr=a=>Array.isArray(a)?a.map(ok).filter(Boolean).slice(0,64):[];
-  p.stiles=(Array.isArray(p.stiles)?p.stiles:[]).filter(s=>s&&typeof s.id==='string'&&Number.isInteger(s.sn)&&s.sn>=0&&s.sn<SP_MAX&&(s.kind==='rule'||s.kind==='anim')).map(s=>{
+  p.stiles=(Array.isArray(p.stiles)?p.stiles:[]).filter(s=>s&&typeof s.id==='string'&&Number.isInteger(s.sn)&&s.sn>=0&&s.sn<SP_MAX&&(s.kind==='rule'||s.kind==='anim'||s.kind==='rand')).map(s=>{
     const o={id:s.id,sn:s.sn,kind:s.kind,name:String(s.name||'특수 타일').slice(0,30),solid:!!s.solid};
     if(s.kind==='anim'){o.frames=arr(s.frames);o.fps=clamp(+s.fps||6,.1,60);o.rand=!!s.rand}
+    else if(s.kind==='rand'){o.items=(Array.isArray(s.items)?s.items:[]).map(q=>({v:ok(q&&q.v),w:clamp(Math.round(+(q&&q.w)||1),1,100)})).filter(q=>q.v).slice(0,64);o.tf=SP_TF[s.tf]?s.tf:'fixed';o.seed=Math.round(+s.seed||0)}
     else{o.def=ok(s.def);o.rules=(Array.isArray(s.rules)?s.rules:[]).slice(0,64).map(R=>({nb:Array.from({length:8},(_,k)=>{const q=R&&Array.isArray(R.nb)?+R.nb[k]:0;return q===1||q===2?q:0}),out:['single','random','anim'].includes(R&&R.out)?R.out:'single',tiles:arr(R&&R.tiles),fps:clamp(+(R&&R.fps)||6,.1,60),tf:SP_TF[R&&R.tf]?R.tf:'fixed'}))}
     return o;
   });
@@ -2288,8 +2387,8 @@ function objArt0(g,type,x,y,t,props){
   }
   g.restore();
 }
-function label(g,text,cx,y){
-  g.save();g.font='500 9px "IBM Plex Sans KR",sans-serif';g.textAlign='center';g.textBaseline='alphabetic';
+function label(g,text,cx,y,align){
+  g.save();g.font='500 9px "IBM Plex Sans KR",sans-serif';g.textAlign=align||'center';g.textBaseline='alphabetic';
   g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.8)';g.strokeText(text,cx,y);g.fillStyle='#f3f4f8';g.fillText(text,cx,y);g.restore();
 }
 
@@ -2942,6 +3041,13 @@ function normProject(p){p.nextN=p.nextN||0;if(p.uiDocs&&!Array.isArray(p.uiDocs)
   (p.maps||[]).forEach(m=>{if(!Array.isArray(m.objs))return;m.objs.forEach(o=>{if(o.scripts!==undefined){o.scripts=Array.isArray(o.scripts)?o.scripts.filter(x=>x&&x.sid).map(x=>({id:x.id||uid(),sid:x.sid,vals:x.vals&&typeof x.vals==='object'?x.vals:{}})):[];if(!o.scripts.length)delete o.scripts}});m.objs.forEach(o=>{if(o.type==='spawn'&&(!o.props||typeof o.props!=='object'))o.props={}});fixStart(m)});if(!Array.isArray(p.afolders))p.afolders=[];if(!p.afmap||typeof p.afmap!=='object')p.afmap={};if(!p.sfmap||typeof p.sfmap!=='object')p.sfmap={};p.playerSprite=p.playerSprite||'';p.maps.forEach(m=>{if(!Array.isArray(m.ui))m.ui=[];m.ui=m.ui.filter(u=>u&&typeof u==='object'&&UI_NAMES[u.type]).map(normUi);if(!Array.isArray(m.uiGroups))m.uiGroups=[];m.uiGroups=m.uiGroups.filter(g=>g&&g.id).map(g=>Object.assign({id:String(g.id),name:String(g.name||'UI 그룹').slice(0,30)},g.uib&&typeof g.uib==='object'?{uib:g.uib}:{},g.dialog?{dialog:true}:{}));m.ui.forEach(u=>{if(!m.uiGroups.some(g=>g.id===u.group))u.group=null});if(!m.uiCv||typeof m.uiCv!=='object')m.uiCv={};m.uiCv={w:clamp(+m.uiCv.w||640,64,4096),h:clamp(+m.uiCv.h||360,64,4096),mode:UI_SCALE[m.uiCv.mode]?m.uiCv.mode:'match',match:clamp(m.uiCv.match==null?1:+m.uiCv.match||0,0,1)};m.theme=typeof m.theme==='string'&&m.theme?m.theme:'기본';if(!Array.isArray(m.groups))m.groups=[];if(!m.objs.some(o=>o.type==='spawn')){let fx=1,fy=1;search:for(let y=1;y<30;y++)for(let x=1;x<30;x++)if(!m.objs.some(o=>o.x===x&&o.y===y)){fx=x;fy=y;break search}m.objs.push({id:uid(),type:'spawn',name:'주인공',x:fx,y:fy,props:{},group:null})}if(!Array.isArray(m.lm))m.lm=[];while(m.lm.length<m.l.length)m.lm.push({name:'타일맵 '+(m.lm.length+1),wall:false});m.lm.length=m.l.length;m.lm.forEach((q,i)=>{if(!q||typeof q!=='object')m.lm[i]=q={};q.name=String(q.name||'타일맵 '+(i+1)).slice(0,30);q.wall=!!q.wall});if(!m.dark||typeof m.dark!=='object')m.dark={};m.dark={on:!!m.dark.on,color:/^#[0-9a-f]{6}$/i.test(m.dark.color)?m.dark.color:'#05060d',level:clamp(+m.dark.level>=0?+m.dark.level:.88,0,1)};m.objs.forEach(o=>{if(o.props&&o.props.memo==='')delete o.props.memo;if(o.group&&!m.groups.some(g=>g.id===o.group))o.group=null;if(!o.group)o.group=null});normObjTree(m);m.bg=ownBg(m)?m.bg:'';m.ox=Number.isFinite(+m.ox)?Math.round(+m.ox):0;m.oy=Number.isFinite(+m.oy)?Math.round(+m.oy):0;tTrim(m)});if(!p.heroInit){p.maps.forEach(m=>m.objs.forEach(o=>{if(o.type==='spawn')giveHeroScript(o,p)}));p.heroInit=true}
   if(!p.roleIds||typeof p.roleIds!=='object')p.roleIds={};
   if(!p.roleInit){p.maps.forEach(m=>{m.objs.forEach(o=>giveRoleScripts(o,p))});p.roleInit=true}
+  try{npcTalkUpgrade(p)}catch(e){}
+  /* 한 번만: 고치지 않은 기본 픽셀형(HeroMovement)이 붙은 주인공은 새 기본인 타일형으로 (직접 고친 스크립트는 그대로) */
+  if(!p.heroTileInit){try{const fr=heroScriptK('free',p,false);
+    if(fr&&heroCodeIsDef('free',fr.code))(p.maps||[]).forEach(m=>(m.objs||[]).forEach(o=>{if(o.type==='spawn'&&(o.scripts||[]).some(x=>x.sid===fr.id))giveHeroScript(o,p,'tile')}));
+    p.heroTileInit=true}catch(e){}}
+  /* 고치지 않은 첫 타일형 코드 → 새 코드 (한글 변환본은 한글로) */
+  try{const ts=heroScriptK('tile',p,false);if(ts){const t=String(ts.code||'').replace(/\r\n/g,'\n');if(t===HERO_TILE_V1)ts.code=HERO_TILE_CODE;else if(t===enToKo(HERO_TILE_V1))ts.code=enToKo(HERO_TILE_CODE)}}catch(e){}
   anMigrate(p);mgrNorm(p);return p}
 function load(){
   try{const s=localStorage.getItem(KEY);if(s){const p=JSON.parse(s);if(validProject(p))return normProject(p)}}catch(e){}
@@ -3246,6 +3352,18 @@ function artBox(o){
   const r=sr.r,s=Math.min(TS/r.w,2*TS/r.h),w=r.w*s,h=r.h*s,px=r.px==null?.5:r.px,py=r.py==null?1:r.py;
   const ax=TS/2+(px-.5)*TS,ay=TS/2+(py-.5)*TS;return{x:ax-px*w,y:ay-py*h,w,h};
 }
+/* 이름표 자리: 그림 사각형(크기 반영 · 아래 가운데 기준)의 가장자리에 붙임 · NPC는 props.lbl(위 · 왼쪽 · 오른쪽 · 아래 · 가운데) */
+function objLabelAt(o,X,Y){
+  const b=artBox(o),sx=+o.props.sx||1,sy=+o.props.sy||1;
+  const x1=X+TS/2+(b.x-TS/2)*sx,x2=X+TS/2+(b.x+b.w-TS/2)*sx,y1=Y+TS+(b.y-TS)*sy,y2=Y+TS+(b.y+b.h-TS)*sy;
+  const l=Math.min(x1,x2),r=Math.max(x1,x2),t=Math.min(y1,y2),bt=Math.max(y1,y2),cx=(l+r)/2,cy=(t+bt)/2;
+  switch(o.type==='npc'&&o.props.lbl||'top'){
+    case'left':return{x:l-3,y:cy+3,a:'right'};case'right':return{x:r+3,y:cy+3,a:'left'};
+    case'bottom':return{x:cx,y:bt+9,a:'center'};case'center':return{x:cx,y:cy+3,a:'center'};
+    default:return{x:cx,y:t-2,a:'center'};
+  }
+}
+function objLabel(g,o,X,Y,text){const q=objLabelAt(o,X,Y);label(g,text,q.x,q.y,q.a)}
 /* 사각형 도구의 월드 사각형 (크기는 아래 가운데 기준으로 커짐 · 회전은 무시) */
 function gzRect(o){
   const b=artBox(o),sx=+o.props.sx||1,sy=+o.props.sy||1,X=o.x*TS,Y=o.y*TS;
@@ -3409,7 +3527,7 @@ function render(){
     if(!shown(o))return;
     const q=pos(o);if(q.x<x0-1||q.x>x1+1||q.y<y0-1||q.y>y1+1)return;
     const sk=PL?null:stkC.get(Math.round(o.x)+','+Math.round(o.y));
-    if(cam.z>=.6&&objOn(m,o)){if(!sk||sk.length<2)label(g,o.name,q.x*TS+TS/2,q.y*TS-2);else if(sk[sk.length-1]===o)label(g,_t('{name} 외 {n}',{name:o.name,n:sk.length-1}),q.x*TS+TS/2,q.y*TS-2)}
+    if(cam.z>=.6&&objOn(m,o)){if(!sk||sk.length<2)objLabel(g,o,q.x*TS,q.y*TS,o.name);else if(sk[sk.length-1]===o)objLabel(g,o,q.x*TS,q.y*TS,_t('{name} 외 {n}',{name:o.name,n:sk.length-1}))}
     if(stk&&stk.list[stk.i]===o&&!isSel(o)){g.save();g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=1.5/cam.z;g.setLineDash([3/cam.z,2/cam.z]);g.strokeRect(q.x*TS+1,q.y*TS+1,TS-2,TS-2);g.restore()}
     if(isSel(o)){g.save();g.strokeStyle=css('--accent');g.lineWidth=2/cam.z;if(!objOn(m,o))g.setLineDash([4/cam.z,3/cam.z]);g.strokeRect(q.x*TS+1,q.y*TS+1,TS-2,TS-2);g.setLineDash([]);g.fillStyle='rgba(90,162,240,.16)';g.fillRect(q.x*TS+1,q.y*TS+1,TS-2,TS-2);
       const lt=o.props.light;if(lt){const cx=(q.x+.5)*TS,cy=(q.y+.5)*TS,R=lt.radius*TS,an=clamp(lt.angle,5,360)*Math.PI/180,di=(lt.dir||0)*Math.PI/180;g.setLineDash([5/cam.z,4/cam.z]);g.strokeStyle=lt.color||'#ffd88a';g.lineWidth=1.5/cam.z;g.beginPath();if(an>=Math.PI*2-.01)g.arc(cx,cy,R,0,7);else{g.moveTo(cx,cy);g.arc(cx,cy,R,di-an/2,di+an/2);g.closePath()}g.stroke()}
@@ -4072,7 +4190,7 @@ function openTilePicker(){
   const draw=()=>{
     const q=($('#tpQ').value||'').trim().toLowerCase();let h='';
     {const sps=spList().filter(s=>!q||s.name.toLowerCase().includes(q)||spKindName(s.kind).includes(q));
-      h+=`<div class="tpsec">${esc(_t('특수 타일'))}<span class="tpsub">${esc(_t('룰 타일 · 애니메이션 타일'))} · ${sps.length}</span></div><div class="tpgrid tpspgrid">`+sps.map(s=>`<button type="button" class="tpi sp${s.id===spAct?' on':''}" data-tps="${s.id}" title="${esc(s.name)}"><canvas width="176" height="176" data-tpsp="${s.id}"></canvas><span class="tn" data-i18n-skip>${esc(s.name)}</span><small><span class="sptag ${s.kind}">${esc(_t(s.kind==='rule'?'룰':'애니'))}</span>${s.kind==='rule'?esc(_t('규칙 {n}개',{n:s.rules.length})):esc(_t('프레임 {n}개',{n:s.frames.length}))}</small></button>`).join('')+
+      h+=`<div class="tpsec">${esc(_t('특수 타일'))}<span class="tpsub">${esc(_t('룰 · 애니메이션 · 랜덤 타일'))} · ${sps.length}</span></div><div class="tpgrid tpspgrid">`+sps.map(s=>`<button type="button" class="tpi sp${s.id===spAct?' on':''}" data-tps="${s.id}" title="${esc(s.name)}"><canvas width="176" height="176" data-tpsp="${s.id}"></canvas><span class="tn" data-i18n-skip>${esc(s.name)}</span><small><span class="sptag ${s.kind}">${esc(_t(s.kind==='rule'?'룰':s.kind==='rand'?'랜덤':'애니'))}</span>${s.kind==='rule'?esc(_t('규칙 {n}개',{n:s.rules.length})):s.kind==='rand'?esc(_t('타일 {n}개',{n:(s.items||[]).length})):esc(_t('프레임 {n}개',{n:s.frames.length}))}</small></button>`).join('')+
         (q?'':`<button type="button" class="tpi tpnew" data-tpnew="rule">${ico('grid')}<b>${esc(_t('새 룰 타일'))}</b><small>${esc(_t('인스펙터에서 만들기'))}</small></button><button type="button" class="tpi tpnew" data-tpnew="anim">${ico('anim')}<b>${esc(_t('새 애니메이션 타일'))}</b><small>${esc(_t('인스펙터에서 만들기'))}</small></button>`)+'</div>';}
     themes.forEach(th=>{
       const it=ts.filter(t=>t.theme===th&&(!q||t.name.toLowerCase().includes(q)));if(!it.length)return;
@@ -4097,13 +4215,15 @@ function openTilePicker(){
    · 타일 선택 창 맨 위 「특수 타일」 구역에 저장한 룰 · 애니메이션 타일이 따로 보임 */
 if(window.TI18N)TI18N.add({"특수 타일": ["Special Tiles", "特殊タイル", "特殊图块"], "룰 타일": ["Rule Tile", "ルールタイル", "规则图块"], "애니메이션 타일": ["Animated Tile", "アニメーションタイル", "动画图块"], "룰 타일 · 애니메이션 타일": ["Rule · Animated Tiles", "ルール・アニメーションタイル", "规则 · 动画图块"], "룰": ["Rule", "ルール", "规则"], "애니": ["Anim", "アニメ", "动画"], "새 룰 타일": ["New Rule Tile", "新しいルールタイル", "新建规则图块"], "새 애니메이션 타일": ["New Animated Tile", "新しいアニメーションタイル", "新建动画图块"], "인스펙터에서 만들기": ["Create in Inspector", "インスペクターで作成", "在检查器中创建"], "인스펙터에서 편집": ["Edit in Inspector", "インスペクターで編集", "在检查器中编辑"], "일반 타일로": ["Back to normal tiles", "通常タイルに戻る", "返回普通图块"], "규칙 {n}개": ["{n} rules", "ルール {n} 個", "{n} 条规则"], "프레임 {n}개": ["{n} frames", "フレーム {n} 枚", "{n} 帧"], "프레임 {n}개 · {fps} fps": ["{n} frames · {fps} fps", "フレーム {n} 枚 · {fps} fps", "{n} 帧 · {fps} fps"], "특수 {n}": ["special {n}", "特殊 {n}", "特殊 {n}"], "규칙 {n}": ["Rule {n}", "ルール {n}", "规则 {n}"], "씬에 칠하면 이웃한 같은 타일에 맞춰 모양이 저절로 바뀝니다.": ["When painted, its look changes to match neighboring tiles of the same kind.", "塗ると、隣の同じタイルに合わせて見た目が自動で変わります。", "绘制后会根据相邻的同类图块自动改变外观。"], "씬에 칠한 칸이 프레임을 넘기며 움직입니다.": ["Painted cells cycle through frames.", "塗ったマスがフレームを切り替えて動きます。", "绘制的格子会逐帧播放动画。"], "번호": ["Index", "番号", "编号"], "충돌": ["Collision", "衝突", "碰撞"], "꺼짐": ["Off", "オフ", "关"], "타일 팔레트에서 고른 타일입니다. 팔레트에서 끌어 여러 칸을 고를 수 있어요.": ["The tile chosen in the Tile Palette. Drag in the palette to select several cells.", "タイルパレットで選んだタイルです。パレットでドラッグすると複数マスを選べます。", "在图块调色板中选中的图块。在调色板中拖动可选择多个格子。"], "특수 타일 만들기": ["Create Special Tile", "特殊タイルを作成", "创建特殊图块"], "고른 타일로 유니티의 룰 타일 · 애니메이션 타일을 만듭니다. 저장하면 타일 선택 창의 「특수 타일」에 들어가요.": ["Make a Unity-style Rule Tile or Animated Tile from the selected tiles. Saved ones appear under “Special Tiles” in the tile picker.", "選んだタイルからUnityのようなルールタイル・アニメーションタイルを作ります。保存するとタイル選択ウィンドウの「特殊タイル」に入ります。", "用所选图块制作 Unity 风格的规则图块或动画图块。保存后会出现在图块选择窗口的“特殊图块”中。"], "3×3 가장자리 규칙 자동": ["Auto 3×3 edge rules", "3×3 の端ルールを自動作成", "自动生成 3×3 边缘规则"], "고른 칸 중 무작위": ["Random among selection", "選んだマスからランダム", "在所选格子中随机"], "이웃에 맞춰 모양이 바뀜": ["Changes with neighbors", "隣に合わせて変化", "随相邻格子变化"], "고른 {n}칸이 프레임": ["{n} selected cells become frames", "選んだ {n} マスがフレームに", "所选 {n} 格作为帧"], "프레임을 넘기며 움직임": ["Cycles through frames", "フレームを切り替えて動く", "逐帧播放"], "팔레트에서 3×3칸(모서리 · 가장자리 · 가운데)을 고르고 룰 타일을 만들면 규칙이 자동으로 채워져요.": ["Select a 3×3 block (corners · edges · center) in the palette before creating a Rule Tile and the rules are filled in for you.", "パレットで 3×3 マス（角・端・中央）を選んでからルールタイルを作ると、ルールが自動で入ります。", "先在调色板中选择 3×3 格（角 · 边 · 中心）再创建规则图块，规则会自动填好。"], "타일 팔레트에서 타일을 고르세요.": ["Pick a tile in the Tile Palette.", "タイルパレットでタイルを選んでください。", "请在图块调色板中选择图块。"], "이어서 편집": ["Continue editing", "編集を続ける", "继续编辑"], "새 특수 타일 · 아직 저장 안 됨": ["New special tile · not saved yet", "新しい特殊タイル · 未保存", "新特殊图块 · 尚未保存"], "저장하지 않은 변경이 있어요": ["Unsaved changes", "未保存の変更があります", "有未保存的更改"], "저장됨 · 씬에 반영됨": ["Saved · applied to scenes", "保存済み · シーンに反映", "已保存 · 已应用到场景"], "칸을 눌러 칠하거나 지우며 규칙을 시험해 보세요. 저장하기 전에도 여기에서 바로 보여요.": ["Click cells to paint or erase and test the rules. Changes show here even before saving.", "マスを押して塗ったり消したりしてルールを試せます。保存前でもここにすぐ表示されます。", "点击格子绘制或擦除来测试规则。保存前也会在此立即显示。"], "칸마다 같은 애니메이션이 재생됩니다. 「무작위 시작」을 켜면 칸마다 어긋나요.": ["Every cell plays the same animation. Turn on “Random start” to offset each cell.", "各マスで同じアニメーションが再生されます。「ランダム開始」をオンにするとマスごとにずれます。", "每个格子播放相同的动画。开启“随机开始”可让各格错开。"], "기본 타일": ["Default Tile", "デフォルトタイル", "默认图块"], "어떤 규칙에도 맞지 않을 때 그리는 타일입니다.": ["Drawn when no rule matches.", "どのルールにも合わないときに描くタイルです。", "没有规则匹配时绘制的图块。"], "켜면 이 타일을 칠한 칸은 지나갈 수 없습니다.": ["When on, cells painted with this tile block movement.", "オンにすると、このタイルを塗ったマスは通れません。", "开启后，绘制了此图块的格子无法通过。"], "규칙이 없으면 항상 기본 타일을 그립니다.": ["With no rules, the default tile is always drawn.", "ルールがなければ常にデフォルトタイルを描きます。", "没有规则时始终绘制默认图块。"], "규칙 추가": ["Add Rule", "ルールを追加", "添加规则"], "출력": ["Output", "出力", "输出"], "변형": ["Transform", "変形", "变换"], "하나": ["Single", "単一", "单个"], "무작위": ["Random", "ランダム", "随机"], "고정": ["Fixed", "固定", "固定"], "좌우 반전": ["Mirror X", "左右反転", "水平镜像"], "상하 반전": ["Mirror Y", "上下反転", "垂直镜像"], "좌우 · 상하 반전": ["Mirror XY", "左右・上下反転", "水平 · 垂直镜像"], "상관없음": ["Don't care", "指定なし", "任意"], "같은 타일": ["This tile", "同じタイル", "相同图块"], "다른 타일": ["Not this tile", "違うタイル", "不同图块"], "이웃 칸 조건": ["Neighbor conditions", "隣のマスの条件", "相邻格子条件"], "빼기": ["Remove", "外す", "移除"], "타일 추가": ["Add tiles", "タイルを追加", "添加图块"], "프레임 추가": ["Add frames", "フレームを追加", "添加帧"], "프레임 고르기": ["Choose frames", "フレームを選ぶ", "选择帧"], "기본 타일 고르기": ["Choose default tile", "デフォルトタイルを選ぶ", "选择默认图块"], "타일 고르기": ["Choose tile", "タイルを選ぶ", "选择图块"], "유니티의 Rule Tile처럼, 이웃한 칸에 같은 타일이 있는지에 따라 그릴 타일을 고릅니다.": ["Like Unity’s Rule Tile, chooses what to draw based on whether neighbors are the same tile.", "UnityのRule Tileのように、隣に同じタイルがあるかで描くタイルを選びます。", "与 Unity 的 Rule Tile 一样，根据相邻格子是否为同一图块来决定绘制内容。"], "유니티의 Animated Tile처럼, 칠한 칸이 정해진 속도로 프레임을 넘깁니다.": ["Like Unity’s Animated Tile, painted cells cycle frames at a set speed.", "UnityのAnimated Tileのように、塗ったマスが決まった速さでフレームを切り替えます。", "与 Unity 的 Animated Tile 一样，绘制的格子按设定速度切换帧。"], "무작위 시작": ["Random start", "ランダム開始", "随机开始"], "초당 넘기는 프레임 수입니다.": ["Frames per second.", "1 秒あたりのフレーム数です。", "每秒帧数。"], "켜면 칸마다 시작 프레임이 달라 자연스럽게 보입니다.": ["When on, each cell starts on a different frame for a natural look.", "オンにするとマスごとに開始フレームが変わり、自然に見えます。", "开启后每个格子的起始帧不同，看起来更自然。"], "＋로 타일셋에서 여러 칸을 끌어 한 번에 프레임으로 넣을 수 있어요. 칸을 누르면 그 프레임을 바꿉니다.": ["Use ＋ to drag several cells from a tileset and add them as frames at once. Click a frame to replace it.", "＋ でタイルセットから複数マスをドラッグしてまとめてフレームにできます。フレームを押すと差し替えます。", "用 ＋ 从图块集中拖选多个格子一次添加为帧。点击某帧可替换。"], "끌어서 여러 칸을 한 번에 고를 수 있어요 (왼쪽 위부터 차례로 들어가요). 더블클릭하면 바로 고릅니다.": ["Drag to pick several cells at once (added from the top-left). Double-click to choose immediately.", "ドラッグで複数マスをまとめて選べます（左上から順に入ります）。ダブルクリックですぐ決定。", "拖动可一次选择多个格子（从左上开始依次添加）。双击可直接选定。"], "칸을 눌러 고르세요. 더블클릭하면 바로 고릅니다.": ["Click a cell to choose. Double-click to choose immediately.", "マスを押して選んでください。ダブルクリックですぐ決定。", "点击格子选择。双击可直接选定。"], "고르기": ["Choose", "選ぶ", "选择"], "{n}칸 고름": ["{n} cells", "{n} マス選択", "已选 {n} 格"], "칸을 골라 주세요": ["Choose a cell", "マスを選んでください", "请选择格子"], "특수 타일 삭제": ["Delete special tile", "特殊タイルを削除", "删除特殊图块"], "씬에 칠한 {n}칸도 함께 지워집니다.": ["{n} painted cells will also be erased.", "シーンに塗った {n} マスも一緒に消えます。", "场景中已绘制的 {n} 格也会被清除。"], "「{name}」 특수 타일을 저장했어요 · 타일 선택 창의 「특수 타일」에 있어요": ["Saved special tile “{name}” · find it under “Special Tiles” in the tile picker", "特殊タイル「{name}」を保存しました · タイル選択ウィンドウの「特殊タイル」にあります", "已保存特殊图块“{name}” · 可在图块选择窗口的“特殊图块”中找到"], "「{name}」 특수 타일을 지웠어요": ["Deleted special tile “{name}”", "特殊タイル「{name}」を削除しました", "已删除特殊图块“{name}”"], "프레임을 하나 이상 넣어 주세요": ["Add at least one frame", "フレームを 1 つ以上入れてください", "请至少添加一帧"], "기본 타일을 골라 주세요": ["Choose a default tile", "デフォルトタイルを選んでください", "请选择默认图块"], "{name} 룰 타일": ["{name} Rule Tile", "{name} ルールタイル", "{name} 规则图块"], "{name} 애니메이션": ["{name} Animation", "{name} アニメーション", "{name} 动画"], "타일 고르기 ": ["Choose tile", "タイルを選ぶ", "选择图块"], "없는 타일": ["Missing tile", "存在しないタイル", "缺失的图块"], "이 특수 타일을 지웁니다": ["Delete this special tile", "この特殊タイルを削除します", "删除此特殊图块"], "「{name}」을(를) 지울까요?":["Delete “{name}”?","「{name}」を削除しますか？","要删除“{name}”吗？"],"특수 타일 이름": ["Special tile name", "特殊タイル名", "特殊图块名称"]});
 const SP_ARW=['↖','↑','↗','←','→','↙','↓','↘'];
-const SP_PAT_T=[[1,1,1],[1,1,1],[1,1,1]],SP_PAT_A=[[1,1,1,1],[1,1,1,1],[1,1,1,1]],SP_PAT_1=[[1]];
+const SP_PAT_T=[[1,1,1],[1,1,1],[1,1,1]],SP_PAT_A=[[1,1,1,1],[1,1,1,1],[1,1,1,1]],SP_PAT_1=[[1]],SP_PAT_R=Array.from({length:5},()=>[1,1,1,1,1,1,1]);
 let spPat=['.........','.####..#.','.####..#.','.####..#.','.......#.','.###.....','.........'].map(r=>[...r].map(c=>c==='#'?1:0));
-const spKindName=k=>k==='rule'?'룰 타일':'애니메이션 타일';
+const spKindName=k=>k==='rule'?'룰 타일':k==='rand'?'랜덤 타일':'애니메이션 타일';
+const spKindIco=k=>k==='rule'?'grid':k==='rand'?'dice':'anim',spKindCol=k=>k==='rule'?'#3d8bd9':k==='rand'?'#3fae7d':'#b46ad0';
+const spPatOf=k=>k==='rule'?spPat:k==='rand'?SP_PAT_R:SP_PAT_A;
 function spDraw(cv,s,mode,t,pat){
   if(!cv||!s)return;
   const g=cv.getContext('2d'),W=cv.width,H=cv.height;g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,W,H);g.imageSmoothingEnabled=false;
-  pat=mode==='one'?(s.kind==='rule'?SP_PAT_T:SP_PAT_1):pat||(s.kind==='rule'?spPat:SP_PAT_A);
+  pat=mode==='one'?(s.kind==='rule'?SP_PAT_T:SP_PAT_1):pat||spPatOf(s.kind);
   const rows=pat.length,cols=pat[0].length,c=Math.max(2,Math.floor(Math.min(W/cols,H/rows))),ox=Math.floor((W-cols*c)/2),oy=Math.floor((H-rows*c)/2);
   cv._lay={c,ox,oy,rows,cols};
   if(mode!=='one'){g.fillStyle=css('--canvas')||'#1b1b20';g.fillRect(ox,oy,cols*c,rows*c)}
@@ -4145,12 +4265,12 @@ function renderSpPal(box,s){
   const isR=s.kind==='rule';
   box.innerHTML=`<div class="row" style="display:flex;gap:6px"><button type="button" class="tpbtn" data-tpick aria-label="타일 선택" title="타일 선택"><canvas width="64" height="64" data-spcur></canvas><span class="tpn"><b data-i18n-skip>${esc(s.name)}</b><small>특수 타일 · ${spKindName(s.kind)}</small></span><svg class="tpc" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
   <button type="button" class="btn cbopen" data-cb="open" title="여러 타일을 무한한 격자에 늘어놓고 겹쳐 하나의 타일셋으로 저장합니다">${ico('grid')}타일 합치기</button></div>
-  <div class="sppal"><canvas class="spprev" id="spPalCv" width="288" height="224"></canvas><div class="sppi"><span class="sptag ${s.kind}">${ico(isR?'grid':'anim')}${spKindName(s.kind)}</span>
-  <p class="hint">${isR?'씬에 칠하면 이웃한 같은 타일에 맞춰 모양이 저절로 바뀝니다.':'씬에 칠한 칸이 프레임을 넘기며 움직입니다.'}</p>
+  <div class="sppal"><canvas class="spprev" id="spPalCv" width="288" height="224"></canvas><div class="sppi"><span class="sptag ${s.kind}">${ico(spKindIco(s.kind))}${spKindName(s.kind)}</span>
+  <p class="hint">${isR?'씬에 칠하면 이웃한 같은 타일에 맞춰 모양이 저절로 바뀝니다.':s.kind==='rand'?'씬에 칠한 칸마다 넣어 둔 타일 중 하나가 무작위로 골라집니다.':'씬에 칠한 칸이 프레임을 넘기며 움직입니다.'}</p>
   <div class="spbtns"><button type="button" class="btn sm pri" data-spedit>${ico('pencil')}인스펙터에서 편집</button><button type="button" class="btn sm" data-spback>일반 타일로</button></div></div></div>
-  <div class="tinfo">${isR?_t('규칙 {n}개',{n:(s.rules||[]).length}):_t('프레임 {n}개 · {fps} fps',{n:(s.frames||[]).length,fps:s.fps})} · 충돌 ${s.solid?'켜짐':'꺼짐'}</div>`;
+  <div class="tinfo">${isR?_t('규칙 {n}개',{n:(s.rules||[]).length}):s.kind==='rand'?_t('타일 {n}개',{n:(s.items||[]).length}):_t('프레임 {n}개 · {fps} fps',{n:(s.frames||[]).length,fps:s.fps})} · 충돌 ${s.solid?'켜짐':'꺼짐'}</div>`;
   spDraw($('[data-spcur]',box),s,'one',0);
-  spLiveReg($('#spPalCv',box),()=>spOf(s.id),isR?'sample':'anim');
+  spLiveReg($('#spPalCv',box),()=>spOf(s.id),isR?'sample':'anim',isR?undefined:spPatOf(s.kind));
 }
 /* 타일 고르기 창 (인스펙터의 칸 · 프레임 · 기본 타일) → 고른 타일 값 배열 · 취소면 null */
 function spPickCells(title,multi,initV){
@@ -4161,27 +4281,172 @@ function spPickCells(title,multi,initV){
     let done=false;const mo=new MutationObserver(()=>{if($('#modal').hidden)fin(null)});
     const fin=v=>{if(done)return;done=true;mo.disconnect();res(v)};
     const cells=()=>{if(!sel)return[];const out=[];for(let y=0;y<sel.rh;y++)for(let x=0;x<sel.cw;x++){const i=(sel.r0+y)*a.cols+sel.c0+x;if(sel.cw*sel.rh>1&&tileEmpty(a,i))continue;out.push(encode(a.n,i))}return out};
-    openModal(title,`<div class="spk"><div class="spkbar"><select id="spkTs" aria-label="타일셋">${ts.map(t=>`<option value="${t.n}"${t.n===a.n?' selected':''} data-i18n-skip>${esc(t.name)}</option>`).join('')}</select><span class="hint" id="spkInfo"></span></div><div class="spkwrap"><canvas id="spkCv"></canvas></div><p class="hint" style="margin:6px 0 0">${multi?'끌어서 여러 칸을 한 번에 고를 수 있어요 (왼쪽 위부터 차례로 들어가요). 더블클릭하면 바로 고릅니다.':'칸을 눌러 고르세요. 더블클릭하면 바로 고릅니다.'}</p></div>`,
+    openModal(title,`<div class="tpk"><div class="spkbar"><select id="spkTs" aria-label="타일셋">${ts.map(t=>`<option value="${t.n}"${t.n===a.n?' selected':''} data-i18n-skip>${esc(t.name)}</option>`).join('')}</select><span class="hint" id="spkInfo"></span></div><div class="spkwrap"><canvas id="spkCv"></canvas></div><p class="hint" style="margin:6px 0 0">${multi?'끌어서 여러 칸을 한 번에 고를 수 있어요 (왼쪽 위부터 차례로 들어가요). 더블클릭하면 바로 고릅니다.':'칸을 눌러 고르세요. 더블클릭하면 바로 고릅니다.'}</p></div>`,
       [{t:'취소'},{t:'고르기',cls:'pri',fn:()=>{const c=cells();if(!c.length){toast('칸을 골라 주세요');return false}fin(c)}}]);
     mo.observe($('#modal'),{attributes:true,attributeFilter:['hidden']});
     const mm=$('#modal .modal');if(mm)mm.classList.add('wide');
     const cv=$('#spkCv');let D=32,drag=null;
-    const draw=()=>{const wr=$('#mBody .spkwrap'),w=wr?wr.clientWidth:480;D=clamp(Math.floor((w-16)/a.cols),12,48);drawSheet(cv,a,D,sel);const n=cells().length;$('#spkInfo').textContent=n?_t('{n}칸 고름',{n}):''};
+    const draw=()=>{const wr=$('#mBody .spkwrap'),w=wr?wr.clientWidth:480;D=clamp(Math.min(Math.floor((w-20)/a.cols),a.rows<=3?Math.floor(220/a.rows):64),12,64);drawSheet(cv,a,D,sel);const n=cells().length;$('#spkInfo').textContent=n?_t('{n}칸 고름',{n}):''};
     const at=e=>{const r=cv.getBoundingClientRect();return[clamp(Math.floor((e.clientX-r.left)/D),0,a.cols-1),clamp(Math.floor((e.clientY-r.top)/D),0,a.rows-1)]};
     cv.addEventListener('pointerdown',e=>{if(e.button)return;const[x,y]=at(e);drag={x,y};try{cv.setPointerCapture(e.pointerId)}catch(_){}sel={n:a.n,c0:x,r0:y,cw:1,rh:1};draw()});
-    cv.addEventListener('pointermove',e=>{if(!drag||!multi)return;const[x,y]=at(e);sel={n:a.n,c0:Math.min(drag.x,x),r0:Math.min(drag.y,y),cw:Math.min(16,Math.abs(x-drag.x)+1),rh:Math.min(16,Math.abs(y-drag.y)+1)};draw()});
+    const mv=e=>{if(!drag||!multi)return;drag.e={clientX:e.clientX,clientY:e.clientY};const[x,y]=at(e);sel={n:a.n,c0:Math.min(drag.x,x),r0:Math.min(drag.y,y),cw:Math.min(16,Math.abs(x-drag.x)+1),rh:Math.min(16,Math.abs(y-drag.y)+1)};draw()};
+    cv.addEventListener('pointermove',mv);
+    { const wr=$('#mBody .spkwrap');if(wr)wr.addEventListener('scroll',()=>{if(drag&&drag.e)mv(drag.e)}) }
     cv.addEventListener('pointerup',()=>{drag=null});
     cv.addEventListener('dblclick',()=>{const c=cells();if(c.length){fin(c);closeModal()}});
     $('#spkTs').onchange=e=>{a=byN.get(+e.target.value);sel=null;draw()};
     draw();requestAnimationFrame(draw);
   });
 }
+if(window.TI18N)TI18N.add({
+'스마트 규칙 지정':['Smart rule setup','スマートルール設定','智能规则设置'],
+'타일을 모양판에 퍼즐처럼 끌어다 놓으면 규칙이 저절로 만들어져요.':['Drag tiles onto the shape board like a puzzle and the rules are made for you.','タイルを形ボードにパズルのようにドラッグすると、ルールが自動で作られます。','像拼图一样把图块拖到形状板上，规则就会自动生成。'],
+'기본 블록':['Basic block','基本ブロック','基本方块'],'바깥 모서리 · 가장자리 · 가운데':['Outer corners · edges · center','外側の角・端・中央','外角 · 边 · 中心'],
+'안쪽 모서리':['Inner corners','内側の角','内角'],'넓은 땅에 구멍이 났을 때 안쪽으로 꺾이는 곳':['Where a large area bends inward around a hole','広い地面に穴があいたとき内側に曲がる所','大片区域中有洞时向内弯折的位置'],
+'외톨이 · 한 줄 길':['Single · 1-wide paths','ひとつだけ・1列の道','单格 · 单行路径'],'한 칸짜리 섬 · 가로 길 · 세로 길의 끝과 가운데':['A one-cell island, and the ends and middles of horizontal and vertical paths','1マスの島・横の道・縦の道の端と中央','单格小岛 · 横向和纵向路径的两端与中间'],
+'길 모퉁이':['Path corners','道の曲がり角','路径拐角'],'한 줄 길이 꺾이는 곳':['Where a 1-wide path turns','1列の道が曲がる所','单行路径转弯处'],
+'갈림길':['Junctions','分かれ道','岔路'],'한 줄 길이 만나는 곳 (T자 · 십자)':['Where 1-wide paths meet (T · cross)','1列の道が出会う所（T字・十字）','单行路径交汇处（T 字 · 十字）'],
+'들쭉날쭉 가장자리':['Jagged edges','ギザギザの端','参差边缘'],'가장자리와 안쪽 모서리가 겹치는 곳 · 계단 모양':['Where edges meet inner corners · staircase shapes','端と内側の角が重なる所・階段の形','边缘与内角重叠处 · 阶梯形'],
+'이 자리에 타일을 끌어다 놓으세요 · Shift로 놓으면 섞어 쓸 타일로 더해요 · 우클릭으로 비우기':['Drop a tile here · hold Shift to add a random variant · right-click to clear','ここにタイルをドロップ · Shiftで混ぜて使うタイルとして追加 · 右クリックで空にする','把图块拖到这里 · 按住 Shift 添加为随机变体 · 右键清空'],
+'{n} / {t}종 채움':['{n} / {t} filled','{n} / {t} 種類 埋めた','已填 {n} / {t} 种'],
+'타일을 오른쪽 모양판의 알맞은 자리로 끌어다 놓으세요. 눌러서 집은 뒤 자리를 눌러도 돼요.':['Drag tiles to the matching spots on the shape board. You can also click a tile, then click a spot.','タイルを右の形ボードの合う場所へドラッグしてください。押して選んでから場所を押してもOKです。','把图块拖到右侧形状板的对应位置。也可以先点选图块再点位置。'],
+'같은 조건의 자리는 함께 채워져요. 비워 둔 자리는 기본 타일(가운데 자리)로 그려집니다.':['Spots with the same condition fill together. Empty spots draw the default tile (the center spot).','同じ条件の場所は一緒に埋まります。空いた場所はデフォルトタイル（中央の場所）で描かれます。','条件相同的位置会一起填充。空着的位置会用默认图块（中心位置）绘制。'],
+'초록색 타일은 이미 모양판에 쓴 타일이에요. 다른 자리에 다시 써도 돼요.':['Green tiles are already on the board. You can still reuse them in other spots.','緑のタイルはすでに形ボードで使ったタイルです。ほかの場所にもう一度使えます。','绿色图块已经用在形状板上了，仍可在其他位置重复使用。'],
+'모양판에 놓은 타일은 끌어서 다른 자리로 옮길 수 있어요 (Shift = 복사). 이 타일 모음으로 끌어 오거나 우클릭하면 지워져요.':['Tiles on the board can be dragged to another spot (Shift = copy). Drag one back here or right-click it to remove it.','形ボードに置いたタイルはドラッグで別の場所へ移せます（Shift = コピー）。このタイル一覧へ戻すか右クリックで消せます。','形状板上的图块可拖到其他位置（Shift = 复制）。拖回这里或右键即可删除。'],
+'더 많은 조합':['More combinations','その他の組み合わせ','更多组合'],'가장자리 · 모서리 · 길에 안쪽 모서리가 섞인 경우 (모두 채우면 47가지 전부)':['Edges, corners and paths mixed with inner corners (fill them all for the full 47)','端・角・道に内側の角が混ざる場合（すべて埋めると47種類すべて）','边、角和路径混有内角的情况（全部填满即为完整的 47 种）'],
+'지금 규칙에 덧붙이기':['Add to current rules','今のルールに追加','追加到当前规则'],'모두 비우기':['Clear all','すべて空にする','全部清空'],'규칙 만들기':['Create rules','ルールを作る','生成规则'],
+'모양판에 타일을 하나 이상 놓아 주세요':['Place at least one tile on the board','形ボードにタイルを1つ以上置いてください','请在形状板上至少放一个图块'],
+'규칙 {n}개를 만들었어요 · 「저장」을 눌러야 씬에 반영돼요':['Created {n} rules · press “Save” to apply them to scenes','ルールを {n} 個作りました · 「保存」でシーンに反映されます','已生成 {n} 条规则 · 点击“保存”后才会应用到场景']
+});
+/* ===================== 룰 타일 스마트 규칙 지정 =====================
+   퍼즐 맞추듯: 왼쪽 타일셋에서 타일을 끌어 오른쪽 「모양판」의 칸에 놓으면, 그 칸의 위치(이웃이 같은 땅인지)로 규칙이 저절로 생깁니다.
+   모양판의 칸마다 이웃 조건(mask)이 정해져 있고, 같은 조건의 칸은 함께 채워집니다.
+   대각선 이웃은 그 옆 두 방향이 모두 같은 땅일 때만 따집니다 (유니티 47 블롭 방식 · 일반 규칙이 되도록) */
+const RSM_SECS=[
+  {t:'기본 블록',d:'바깥 모서리 · 가장자리 · 가운데',m:['###','###','###']},
+  {t:'안쪽 모서리',d:'넓은 땅에 구멍이 났을 때 안쪽으로 꺾이는 곳',m:['#####','#####','##.##','#####','#####']},
+  {t:'외톨이 · 한 줄 길',d:'한 칸짜리 섬 · 가로 길 · 세로 길의 끝과 가운데',m:['#.###.#','......#','......#']},
+  {t:'길 모퉁이',d:'한 줄 길이 꺾이는 곳',m:['###','#.#','###']},
+  {t:'갈림길',d:'한 줄 길이 만나는 곳 (T자 · 십자)',m:[]},
+  {t:'들쭉날쭉 가장자리',d:'가장자리와 안쪽 모서리가 겹치는 곳 · 계단 모양',m:['##....','###...','####..','.####.','..####','...###']}
+];
+/* 갈림길 모양은 조각을 이어 붙여 만듦 (조각 사이는 한 칸 띄움) */
+RSM_SECS[4].m=(()=>{const P=[['###','.#.'],['.#.','###'],['#.','##','#.'],['.#','##','.#'],['.#.','###','.#.']],H=3,rows=Array.from({length:H},()=>'');
+  P.forEach((pc,i)=>{const w=pc[0].length;for(let y=0;y<H;y++)rows[y]+=(i?'.':'')+(pc[y]||'.'.repeat(w))});return rows})();
+function rsmMask(m,x,y){
+  const at=(i,j)=>j>=0&&j<m.length&&i>=0&&i<m[j].length&&m[j][i]==='#';
+  const o=SP_NB.map(([dx,dy])=>at(x+dx,y+dy)?1:2);
+  [[0,1,3],[2,1,4],[5,3,6],[7,4,6]].forEach(([dg,a,b])=>{if(!(o[a]===1&&o[b]===1))o[dg]=0});
+  return o.join('');
+}
+const RSM_FULL='11111111';
+/* 47가지 전부 (상하좌우 16가지 × 쓸모 있는 대각선) */
+const RSM_ALL=(()=>{const out=[];for(let b=0;b<16;b++){const o=[0,b&1?1:2,0,b&2?1:2,b&4?1:2,0,b&8?1:2,0],dg=[[0,1,3],[2,1,4],[5,3,6],[7,4,6]].filter(([d,x,y])=>o[x]===1&&o[y]===1).map(q=>q[0]);
+  for(let m=0;m<1<<dg.length;m++){const q=o.slice();dg.forEach((d,i)=>q[d]=m>>i&1?2:1);out.push(q.join(''))}}return out})();
+let rsmAbort=null;
+function rsmOpen(T){
+  /* 창 본문(#mBody)은 다시 쓰이므로, 이전에 연 창의 처리기를 떼어 냄 (안 그러면 예전 판이 새 판을 덮어씀) */
+  if(rsmAbort)rsmAbort.abort();const AC=new AbortController(),sig={signal:AC.signal};rsmAbort=AC;
+  const d=T.d,ts=tilesets();if(!ts.length){toast('타일셋이 없습니다. 프로젝트 패널에서 PNG를 먼저 가져오세요');return}
+  /* 칸 조건별 타일: 지금 규칙에서 미리 채움 */
+  const map=new Map(),keys=new Set();RSM_SECS.forEach(S=>S.m.forEach((r,y)=>[...r].forEach((c,x)=>{if(c==='#')keys.add(rsmMask(S.m,x,y))})));
+  /* 모양판에 없는 나머지 조합: 칸 하나 + 둘레 3×3 그림으로 */
+  const extra=RSM_ALL.filter(k=>!keys.has(k));extra.forEach(k=>keys.add(k));
+  (d.rules||[]).forEach(R=>{const k=(R.nb||[]).join('');if(keys.has(k)&&!map.has(k)&&R.tiles&&R.tiles.length)map.set(k,R.tiles.filter(v=>v>0).slice())});
+  if(!map.has(RSM_FULL)&&d.def>0)map.set(RSM_FULL,[d.def]);
+  const v0=d.def>0&&!spIsV(d.def)?d.def:(map.values().next().value||[])[0];
+  let a=v0&&byN.get(decode(v0).n);if(!a||a.kind!=='tile')a=byN.get(activeN);if(!a||a.kind!=='tile')a=ts[0];
+  let picked=0,D=32;
+  const slotH=k=>{const L=map.get(k)||[];return`<button type="button" class="rsm-c${L.length?' on':''}" data-k="${k}" title="${esc(_t('이 자리에 타일을 끌어다 놓으세요 · Shift로 놓으면 섞어 쓸 타일로 더해요 · 우클릭으로 비우기'))}">${L.length?`<canvas width="32" height="32" data-tv="${L[0]}"></canvas>${L.length>1?`<b>${L.length}</b>`:''}`:''}<i class="spfm">${[0,1,2,3,-1,4,5,6,7].map(q=>`<u class="${q<0?'c':'s'+k[q]}"></u>`).join('')}</i></button>`};
+  const secHtml=()=>RSM_SECS.map(S=>{const W=Math.max(...S.m.map(r=>r.length));
+    return`<section class="rsm-sec"><h4>${esc(_t(S.t))}<small>${esc(_t(S.d))}</small></h4><div class="rsm-g" style="grid-template-columns:repeat(${W},var(--rc))">`+
+      S.m.map((r,y)=>[...r.padEnd(W,'.')].map((c,x)=>{if(c!=='#')return'<span class="rsm-e"></span>';const k=rsmMask(S.m,x,y),L=map.get(k)||[];
+        return slotH(k)}).join('')).join('')+`</div></section>`}).join('')+
+    (extra.length?`<section class="rsm-sec rsm-wide"><h4>${esc(_t('더 많은 조합'))}<small>${esc(_t('가장자리 · 모서리 · 길에 안쪽 모서리가 섞인 경우 (모두 채우면 47가지 전부)'))}</small></h4><div class="rsm-xs">`+
+      extra.map(k=>`<div class="rsm-x">${[0,1,2,3,-1,4,5,6,7].map(q=>q<0?slotH(k):`<span class="rsm-n n${k[q]}"></span>`).join('')}</div>`).join('')+`</div></section>`:'');
+  const count=()=>{const n=[...keys].filter(k=>(map.get(k)||[]).length).length;return _t('{n} / {t}종 채움',{n,t:keys.size})};
+  openModal(_t('스마트 규칙 지정'),`<div class="rsm">
+    <div class="rsm-src"><div class="rsm-bar"><select id="rsmTs" aria-label="타일셋">${ts.map(t=>`<option value="${t.n}"${t.n===a.n?' selected':''} data-i18n-skip>${esc(t.name)}</option>`).join('')}</select></div>
+      <div class="rsm-sheet"><canvas id="rsmCv"></canvas></div>
+      <p class="hint">${esc(_t('타일을 오른쪽 모양판의 알맞은 자리로 끌어다 놓으세요. 눌러서 집은 뒤 자리를 눌러도 돼요.'))}</p>
+      <p class="hint">${esc(_t('같은 조건의 자리는 함께 채워져요. 비워 둔 자리는 기본 타일(가운데 자리)로 그려집니다.'))}</p>
+      <p class="hint">${esc(_t('모양판에 놓은 타일은 끌어서 다른 자리로 옮길 수 있어요 (Shift = 복사). 이 타일 모음으로 끌어 오거나 우클릭하면 지워져요.'))}</p>
+      <p class="hint"><span class="rsm-used"></span>${esc(_t('초록색 타일은 이미 모양판에 쓴 타일이에요. 다른 자리에 다시 써도 돼요.'))}</p></div>
+    <div class="rsm-board"><div class="rsm-top"><span id="rsmCnt"></span><span class="spacer"></span><label class="rsm-opt"><input type="checkbox" id="rsmKeep"> ${esc(_t('지금 규칙에 덧붙이기'))}</label><button type="button" class="btn sm" id="rsmClr">${esc(_t('모두 비우기'))}</button></div><div id="rsmSecs">${secHtml()}</div></div></div>`,
+    [{t:'취소'},{t:_t('규칙 만들기'),cls:'pri',fn:()=>rsmApply(T,map,$('#rsmKeep').checked)}]);
+  const mm=$('#modal .modal');if(mm)mm.classList.add('wide','rsmw');
+  {const mo=new MutationObserver(()=>{if($('#modal').hidden){AC.abort();mo.disconnect()}});mo.observe($('#modal'),{attributes:true,attributeFilter:['hidden']});AC.signal.addEventListener('abort',()=>mo.disconnect())}
+  const body=$('#mBody'),cv=$('#rsmCv');
+  /* 타일마다 틈(G)을 두고 테두리를 그려 한 칸씩 또렷하게 · D = 칸 간격(타일 + 틈) */
+  const G=4,redraw=()=>{const wr=$('.rsm-sheet',body);D=clamp(Math.floor(((wr?wr.clientWidth:280)-12-G)/a.cols),18,52);
+    const T=D-G;cv.width=a.cols*D+G;cv.height=a.rows*D+G;const g=cv.getContext('2d');g.imageSmoothingEnabled=false;g.clearRect(0,0,cv.width,cv.height);
+    const pi=picked&&decode(picked).n===a.n?decode(picked).i:-1,line=css('--line2')||'rgba(140,140,160,.45)';
+    /* 모양판에 이미 쓴 타일: 살짝 초록 + 체크 표시 (다시 써도 됨) */
+    const used=new Set();map.forEach(L=>L.forEach(v=>{if(v>0&&decode(v).n===a.n)used.add(decode(v).i)}));
+    for(let r=0;r<a.rows;r++)for(let k=0;k<a.cols;k++){const i=r*a.cols+k,x=G+k*D,y=G+r*D,emp=tileEmpty(a,i);
+      g.fillStyle='rgba(0,0,0,.28)';g.fillRect(x,y,T,T);
+      if(!emp){const sw=Math.min(a.tw,a.w-k*a.tw),sh=Math.min(a.th,a.h-r*a.th);if(sw>0&&sh>0)g.drawImage(a.img,k*a.tw,r*a.th,sw,sh,x,y,sw*T/a.tw,sh*T/a.th)}
+      const u=used.has(i);
+      if(u){g.fillStyle='rgba(76,200,120,.32)';g.fillRect(x,y,T,T);const q=Math.max(9,Math.round(T*.32));g.fillStyle='#3fae7d';g.beginPath();g.arc(x+T-q/2-1,y+q/2+1,q/2,0,7);g.fill();
+        g.strokeStyle='#fff';g.lineWidth=Math.max(1.3,q/7);g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(x+T-q*.78-1,y+q*.52+1);g.lineTo(x+T-q*.55-1,y+q*.74+1);g.lineTo(x+T-q*.2-1,y+q*.3+1);g.stroke()}
+      g.lineWidth=u?1.5:1;g.strokeStyle=emp?'rgba(140,140,160,.18)':u?'#58c27e':line;g.strokeRect(x-.5,y-.5,T+1,T+1);
+      if(i===pi){g.lineWidth=2.5;g.strokeStyle=css('--accent')||'#f6cd2a';g.strokeRect(x-1.5,y-1.5,T+3,T+3)}}};
+  const board=()=>{redraw();$('#rsmSecs',body).innerHTML=secHtml();spDrawSlots($('#rsmSecs',body));$('#rsmCnt',body).textContent=count();body.classList.toggle('rsm-pick',!!picked)};
+  const put=(k,v,add)=>{if(!k||!(v>0))return;let L=map.get(k)||[];if(add){if(!L.includes(v))L=L.concat(v).slice(0,16)}else L=[v];map.set(k,L);board()};
+  const at=e=>{const r=cv.getBoundingClientRect(),k=cv.width/Math.max(1,r.width);const x=Math.floor(((e.clientX-r.left)*k-G/2)/D),y=Math.floor(((e.clientY-r.top)*k-G/2)/D);if(x<0||y<0||x>=a.cols||y>=a.rows)return-1;return y*a.cols+x};
+  let drag=null,ghost=null,hov=null;
+  const slotAt=e=>{const el=document.elementFromPoint(e.clientX,e.clientY);return el&&el.closest?el.closest('.rsm-c'):null};
+  const hover=k=>{if(hov===k)return;hov=k;body.querySelectorAll('.rsm-c').forEach(c=>c.classList.toggle('hov',!!k&&c.dataset.k===k))};
+  cv.addEventListener('pointerdown',e=>{if(e.button)return;const i=at(e);if(i<0||tileEmpty(a,i))return;e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch(_){}drag={v:encode(a.n,i),x:e.clientX,y:e.clientY,moved:false}});
+  cv.addEventListener('pointermove',e=>{if(!drag)return;
+    if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>4){drag.moved=true;ghost=document.createElement('canvas');ghost.width=ghost.height=40;ghost.className='rsm-ghost';const g=ghost.getContext('2d');g.imageSmoothingEnabled=false;drawTileV(g,drag.v,0,0,40,40);(body.ownerDocument||document).body.append(ghost)}
+    if(ghost){ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';const c=slotAt(e);hover(c?c.dataset.k:null)}});
+  const end=e=>{if(!drag)return;const dd=drag;drag=null;if(ghost){ghost.remove();ghost=null}hover(null);
+    if(dd.moved){const c=e&&e.type==='pointerup'?slotAt(e):null;if(c)put(c.dataset.k,dd.v,e.shiftKey)}
+    else{picked=picked===dd.v?0:dd.v;redraw();board()}};
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  /* 모양판에 놓인 타일 끌어 옮기기: 다른 자리에 놓으면 옮김(Shift = 복사) · 왼쪽 타일 모음에 놓으면 지움 · 우클릭으로 지움 */
+  let sdrag=null,eatClick=false;
+  body.addEventListener('pointerdown',e=>{if(e.button)return;const c=e.target.closest('.rsm-c.on');if(!c)return;const L=map.get(c.dataset.k);if(!L||!L.length)return;e.preventDefault();
+    sdrag={k:c.dataset.k,L:L.slice(),x:e.clientX,y:e.clientY,moved:false}},sig);
+  const sMove=e=>{if(!sdrag)return;
+    if(!sdrag.moved&&Math.hypot(e.clientX-sdrag.x,e.clientY-sdrag.y)>4){sdrag.moved=true;ghost=document.createElement('canvas');ghost.width=ghost.height=40;ghost.className='rsm-ghost';const g=ghost.getContext('2d');g.imageSmoothingEnabled=false;drawTileV(g,sdrag.L[0],0,0,40,40);(body.ownerDocument||document).body.append(ghost);body.classList.add('rsm-moving');body.querySelectorAll('.rsm-c').forEach(c=>c.classList.toggle('src',c.dataset.k===sdrag.k))}
+    if(sdrag.moved&&ghost){ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';const c=slotAt(e);hover(c&&c.dataset.k!==sdrag.k?c.dataset.k:null);const src=$('.rsm-src',body),r=src&&src.getBoundingClientRect();if(src)src.classList.toggle('trash',!!r&&e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)}};
+  const sEnd=e=>{if(!sdrag)return;const dd=sdrag;sdrag=null;if(ghost){ghost.remove();ghost=null}hover(null);body.classList.remove('rsm-moving');const src=$('.rsm-src',body);if(src)src.classList.remove('trash');
+    if(!dd.moved)return;eatClick=true;setTimeout(()=>{eatClick=false},0);
+    if(e.type!=='pointerup'){board();return}
+    const r=src&&src.getBoundingClientRect();if(r&&e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){map.delete(dd.k);board();return}
+    const c=slotAt(e);if(!c||c.dataset.k===dd.k){board();return}
+    map.set(c.dataset.k,dd.L.slice());if(!e.shiftKey)map.delete(dd.k);board()};
+  const DOC=body.ownerDocument||document;DOC.addEventListener('pointermove',sMove,sig);DOC.addEventListener('pointerup',sEnd,sig);DOC.addEventListener('pointercancel',sEnd,sig);
+  body.addEventListener('click',e=>{if(eatClick)return;const c=e.target.closest('.rsm-c');if(c&&picked){put(c.dataset.k,picked,e.shiftKey);return}
+    if(e.target.id==='rsmClr'){map.clear();board()}},sig);
+  body.addEventListener('contextmenu',e=>{const c=e.target.closest('.rsm-c');if(!c)return;e.preventDefault();map.delete(c.dataset.k);board()},sig);
+  body.addEventListener('pointerover',e=>{const c=e.target.closest&&e.target.closest('.rsm-c');if(!drag&&!sdrag)hover(c?c.dataset.k:null)},sig);
+  $('#rsmTs',body).onchange=e=>{a=byN.get(+e.target.value);redraw()};
+  board();redraw();requestAnimationFrame(redraw);
+}
+/* 모양판 → 규칙: 조건이 많은(구체적인) 규칙을 위로 · 가운데 자리의 첫 타일이 기본 타일 */
+function rsmApply(T,map,append){
+  const d=T.d,gen=[];
+  map.forEach((L,k)=>{L=L.filter(v=>v>0);if(!L.length)return;gen.push({nb:k.split('').map(Number),out:L.length>1?'random':'single',tiles:L.slice(0,64),fps:6,tf:'fixed'})});
+  if(!gen.length){toast(_t('모양판에 타일을 하나 이상 놓아 주세요'));return false}
+  const nz=R=>R.nb.filter(q=>q).length;gen.sort((x,y)=>nz(y)-nz(x));
+  const full=map.get(RSM_FULL);if(full&&full.length)d.def=full[0];
+  /* 가운데 자리가 한 장이면 기본 타일로 충분 → 규칙에서 뺌 (여러 장이면 섞어 쓰는 규칙으로 남김) */
+  const rules=gen.filter(R=>!(R.nb.join('')===RSM_FULL&&R.tiles.length===1));
+  if(append){const keyOf=R=>R.nb.join('');rules.forEach(R=>{const i=d.rules.findIndex(x=>keyOf(x)===keyOf(R));if(i>=0)d.rules[i]=R;else d.rules.push(R)})}
+  else d.rules=rules;
+  d.rules=d.rules.slice(0,64);
+  renderInsp();toast(_t('규칙 {n}개를 만들었어요 · 「저장」을 눌러야 씬에 반영돼요',{n:rules.length}));
+}
 /* 새 특수 타일 사본: 팔레트에서 고른 칸으로 채움 (3×3이면 룰 타일 가장자리 규칙 자동) */
 function spNewDraft(kind){
   const a=stamp&&!stamp.sp&&byN.get(stamp.n),cells=[];
   if(a)for(let y=0;y<stamp.rh;y++)for(let x=0;x<stamp.cw;x++){const i=(stamp.r0+y)*a.cols+stamp.c0+x;if(stamp.cw*stamp.rh>1&&tileEmpty(a,i))continue;cells.push({v:encode(a.n,i),x,y,i})}
   const nm=a?a.name:_t('새'),solid=!!(a&&cells.length&&a.solidSet.has(cells[0].i));let d;
-  if(kind==='anim')d={kind:'anim',name:_t('{name} 애니메이션',{name:nm}).slice(0,30),solid,frames:cells.map(c=>c.v).slice(0,64),fps:6,rand:false};
+  if(kind==='rand')d={kind:'rand',name:_t('{name} 랜덤',{name:nm}).slice(0,30),solid,items:cells.map(c=>({v:c.v,w:1})).slice(0,64),tf:'fixed',seed:0};
+  else if(kind==='anim')d={kind:'anim',name:_t('{name} 애니메이션',{name:nm}).slice(0,30),solid,frames:cells.map(c=>c.v).slice(0,64),fps:6,rand:false};
   else{
     d={kind:'rule',name:_t('{name} 룰 타일',{name:nm}).slice(0,30),solid,def:cells.length?cells[0].v:0,rules:[]};
     if(a&&stamp.cw===3&&stamp.rh===3&&cells.length===9){
@@ -4207,7 +4472,7 @@ function spInsp(box){
   if(T){box.innerHTML='<div id="spIns">'+spInspSp(T)+'</div>'}
   else box.innerHTML='<div id="spIns">'+spInspTile()+'</div>';
   const W=$('#spIns',box);spDrawSlots(W);
-  if(T){spLiveReg($('#spPrev',W),()=>spDrafts.get(T.key)||T.d,T.d.kind==='rule'?'edit':'anim',T.d.kind==='rule'?spPat:SP_PAT_A)}
+  if(T){spLiveReg($('#spPrev',W),()=>spDrafts.get(T.key)||T.d,T.d.kind==='rule'?'edit':'anim',spPatOf(T.d.kind))}
   else{const cv=$('#spSelCv',W),a=stamp&&!stamp.sp&&byN.get(stamp.n);if(cv&&a){const k=Math.max(1,Math.floor(128/Math.max(stamp.cw,stamp.rh)/8))*8,g=cv.getContext('2d');cv.width=stamp.cw*k;cv.height=stamp.rh*k;g.imageSmoothingEnabled=false;
     for(let y=0;y<stamp.rh;y++)for(let x=0;x<stamp.cw;x++)drawTileV(g,encode(a.n,(stamp.r0+y)*a.cols+stamp.c0+x),x*k,y*k,k,k)}}
   spBind(W,T);
@@ -4219,33 +4484,46 @@ function spInspTile(){
   const idx=stamp.r0*a.cols+stamp.c0,n=stamp.cw*stamp.rh,multi=n>1,three=stamp.cw===3&&stamp.rh===3;
   return`<div class="ihead"><span class="ibadge" style="background:var(--accent)">${ico('tilemap')}</span><b style="font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" data-i18n-skip>${esc(a.name)} ${multi?stamp.cw+'×'+stamp.rh:'#'+idx}</b><span class="tag">타일</span></div>`+note+
     comp('tile','tilemap','타일'+compEn('Tile'),`<div class="sptile"><canvas id="spSelCv" class="spsel"></canvas><dl class="kv"><dt>타일셋</dt><dd data-i18n-skip>${esc(a.name)}</dd><dt>위치</dt><dd>${stamp.c0}, ${stamp.r0}</dd><dt>크기</dt><dd>${stamp.cw}×${stamp.rh}</dd><dt>번호</dt><dd>#${idx}</dd><dt>충돌</dt><dd>${a.solidSet.has(idx)?'켜짐':'꺼짐'}</dd></dl></div>`,'타일 팔레트에서 고른 타일입니다. 팔레트에서 끌어 여러 칸을 고를 수 있어요.')+
-    comp('spmk','grid','특수 타일 만들기'+compEn('Rule · Animated Tile'),`<p class="hint" style="margin:0 0 8px">고른 타일로 유니티의 룰 타일 · 애니메이션 타일을 만듭니다. 저장하면 타일 선택 창의 「특수 타일」에 들어가요.</p>
+    comp('spmk','grid','특수 타일 만들기'+compEn('Rule · Animated · Random Tile'),`<p class="hint" style="margin:0 0 8px">고른 타일로 유니티의 룰 타일 · 애니메이션 타일 · 랜덤 타일을 만듭니다. 저장하면 타일 선택 창의 「특수 타일」에 들어가요.</p>
       <div class="spmk"><button type="button" class="btn" data-sa="mk-rule">${ico('grid')}<span><b>룰 타일</b><small>${three?'3×3 가장자리 규칙 자동':multi?'고른 칸 중 무작위':'이웃에 맞춰 모양이 바뀜'}</small></span></button>
-      <button type="button" class="btn" data-sa="mk-anim">${ico('anim')}<span><b>애니메이션 타일</b><small>${multi?_t('고른 {n}칸이 프레임',{n}):'프레임을 넘기며 움직임'}</small></span></button></div>
+      <button type="button" class="btn" data-sa="mk-anim">${ico('anim')}<span><b>애니메이션 타일</b><small>${multi?_t('고른 {n}칸이 프레임',{n}):'프레임을 넘기며 움직임'}</small></span></button>
+      <button type="button" class="btn" data-sa="mk-rand">${ico('dice')}<span><b>랜덤 타일</b><small>${multi?_t('고른 {n}칸을 섞어 칠함',{n}):'칸마다 무작위로 골라 칠함'}</small></span></button></div>
       <p class="hint" style="margin:8px 0 0">팔레트에서 3×3칸(모서리 · 가장자리 · 가운데)을 고르고 룰 타일을 만들면 규칙이 자동으로 채워져요.</p>`);
 }
 function spInspSp(T){
   const d=T.d,isR=d.kind==='rule',dirty=spDirty(T),isNew=T.key==='new';
   const sel=(f,ri,opts,val)=>`<select data-sf="${f}" data-ri="${ri}">${opts.map(o=>`<option value="${o[0]}"${o[0]===val?' selected':''}>${o[1]}</option>`).join('')}</select>`;
-  let h=`<div class="ihead"><span class="ibadge" style="background:${isR?'#3d8bd9':'#b46ad0'}">${ico(isR?'grid':'anim')}</span><input type="text" class="iname" id="spName" maxlength="30" value="${esc(d.name)}" aria-label="특수 타일 이름" data-i18n-skip><span class="tag">${spKindName(d.kind)}</span></div>
+  let h=`<div class="ihead"><span class="ibadge" style="background:${spKindCol(d.kind)}">${ico(spKindIco(d.kind))}</span><input type="text" class="iname" id="spName" maxlength="30" value="${esc(d.name)}" aria-label="특수 타일 이름" data-i18n-skip><span class="tag">${spKindName(d.kind)}</span></div>
   <div class="spbar${dirty?' dirty':''}"><span class="spst">${isNew?'새 특수 타일 · 아직 저장 안 됨':dirty?'저장하지 않은 변경이 있어요':'저장됨'}</span>
   <button type="button" class="btn sm pri" data-sa="save"${dirty?'':' disabled'}>${ico('save')}저장</button>
   ${isNew?'<button type="button" class="btn sm" data-sa="discard">버리기</button>':`<button type="button" class="btn sm" data-sa="revert"${dirty?'':' disabled'}>되돌리기</button><button type="button" class="btn sm danger" data-sa="del" title="이 특수 타일을 지웁니다" aria-label="삭제">${ico('trash')}</button>`}</div>`;
-  h+=comp('spv','scene','미리보기'+compEn('Preview'),`<canvas id="spPrev" class="spprev${isR?' edit':''}" width="288" height="224"></canvas><p class="hint" style="margin:6px 0 0">${isR?'칸을 눌러 칠하거나 지우며 규칙을 시험해 보세요. 저장하기 전에도 여기에서 바로 보여요.':'칸마다 같은 애니메이션이 재생됩니다. 「무작위 시작」을 켜면 칸마다 어긋나요.'}</p>`);
+  h+=comp('spv','scene','미리보기'+compEn('Preview'),`<canvas id="spPrev" class="spprev${isR?' edit':''}" width="288" height="224"></canvas><p class="hint" style="margin:6px 0 0">${isR?'칸을 눌러 칠하거나 지우며 규칙을 시험해 보세요. 저장하기 전에도 여기에서 바로 보여요.':d.kind==='rand'?'넓게 칠했을 때의 모습입니다. 가중치가 클수록 자주 나오고, 「다시 섞기」를 누르면 배치가 바뀌어요.':'칸마다 같은 애니메이션이 재생됩니다. 「무작위 시작」을 켜면 칸마다 어긋나요.'}</p>`);
   const solidRow=fr('충돌',`<input type="checkbox" data-sf="solid"${d.solid?' checked':''}>`,false,'collider','켜면 이 타일을 칠한 칸은 지나갈 수 없습니다.');
   if(isR){
+    const nF=d.rules.filter(R=>spFold.has(R)).length;
+    /* 접은 규칙: 목록 맨 위 그리드에 썸네일만 (출력 타일 + 규칙 번호 + 이웃 조건 미니맵) · 누르면 펼침 */
+    const foldBar=d.rules.length?`<div class="spfbar"><span>${_t('규칙 {n}개',{n:d.rules.length})}${nF?` · ${_t('접힘 {n}',{n:nF})}`:''}</span><span class="spacer"></span><button type="button" class="btn sm" data-sa="rfoldall"${nF<d.rules.length?'':' disabled'}>${_t('모두 접기')}</button><button type="button" class="btn sm" data-sa="runfoldall"${nF?'':' disabled'}>${_t('모두 펼치기')}</button></div>`:'';
+    const foldGrid=nF?`<div class="spfg" role="list" aria-label="${esc(_t('접은 규칙'))}">`+d.rules.map((R,i)=>!spFold.has(R)?'':`<button type="button" role="listitem" class="spft" data-sa="runfold" data-ri="${i}" title="${esc(_t('규칙 {n}',{n:i+1})+' · '+_t('펼치기'))}">${R.tiles[0]>0?`<canvas width="32" height="32" data-tv="${R.tiles[0]}"></canvas>`:'<span class="spempty">∅</span>'}<b>${i+1}</b><i class="spfm">${[0,1,2,3,-1,4,5,6,7].map(k=>`<u class="${k<0?'c':'s'+R.nb[k]}"></u>`).join('')}</i></button>`).join('')+`</div>`:'';
     const rules=d.rules.map((R,i)=>{
+      if(spFold.has(R))return'';
       const grid=`<div class="spnb" role="group" aria-label="이웃 칸 조건">`+[0,1,2,3,-1,4,5,6,7].map(k=>k<0?`<span class="spc">${R.tiles[0]>0?`<canvas width="32" height="32" data-tv="${R.tiles[0]}"></canvas>`:''}</span>`:`<button type="button" class="spn s${R.nb[k]}" data-sa="nb" data-ri="${i}" data-k="${k}" title="${['상관없음','같은 타일','다른 타일'][R.nb[k]]}">${R.nb[k]===1?SP_ARW[k]:R.nb[k]===2?'✕':''}</button>`).join('')+'</div>';
       const tl=R.out==='single'?spSlot(R.tiles[0]||0,'rtile',`data-ri="${i}" data-ti="0"`):R.tiles.map((v,ti)=>`<span class="spsw">${spSlot(v,'rtile',`data-ri="${i}" data-ti="${ti}"`)}<button type="button" class="spx" data-sa="rtdel" data-ri="${i}" data-ti="${ti}" aria-label="빼기">✕</button></span>`).join('')+`<button type="button" class="spslot spadd" data-sa="rtadd" data-ri="${i}" title="타일 추가">＋</button>`;
-      return`<div class="sprl"><div class="sprh"><b>${_t('규칙 {n}',{n:i+1})}</b><span class="spacer"></span><button type="button" class="ib" data-sa="rup" data-ri="${i}"${i?'':' disabled'} title="위로">↑</button><button type="button" class="ib" data-sa="rdn" data-ri="${i}"${i<d.rules.length-1?'':' disabled'} title="아래로">↓</button><button type="button" class="ib" data-sa="rdup" data-ri="${i}" title="복제">${ico('copy')}</button><button type="button" class="ib" data-sa="rdel" data-ri="${i}" title="삭제">${ico('x')}</button></div>
+      return`<div class="sprl"><div class="sprh"><button type="button" class="ib spfold" data-sa="rfold" data-ri="${i}" title="${esc(_t('접기'))}" aria-label="${esc(_t('접기'))}" aria-expanded="true">▾</button><b>${_t('규칙 {n}',{n:i+1})}</b><span class="spacer"></span><button type="button" class="ib" data-sa="rup" data-ri="${i}"${i?'':' disabled'} title="위로">↑</button><button type="button" class="ib" data-sa="rdn" data-ri="${i}"${i<d.rules.length-1?'':' disabled'} title="아래로">↓</button><button type="button" class="ib" data-sa="rdup" data-ri="${i}" title="복제">${ico('copy')}</button><button type="button" class="ib" data-sa="rdel" data-ri="${i}" title="삭제">${ico('x')}</button></div>
         <div class="sprb">${grid}<div class="sprc"><label class="spf"><span>출력</span>${sel('out',i,[['single','하나'],['random','무작위'],['anim','애니메이션']],R.out)}</label>
         <label class="spf"><span>변형</span>${sel('tf',i,[['fixed','고정'],['rot','회전'],['mx','좌우 반전'],['my','상하 반전'],['mxy','좌우 · 상하 반전']],R.tf)}</label>
         ${R.out==='anim'?`<label class="spf"><span>속도</span><input type="number" data-sf="fps" data-ri="${i}" min="0.1" max="60" step="0.5" value="${R.fps}"><small>fps</small></label>`:''}
         <div class="sptl">${tl}</div></div></div></div>`;
     }).join('');
-    h+=comp('spr','grid','룰 타일'+compEn('Rule Tile'),fr('기본 타일',spSlot(d.def,'def'),false,'defaultSprite','어떤 규칙에도 맞지 않을 때 그리는 타일입니다.')+solidRow+
-      `<div class="sprules">${rules||'<p class="hint" style="margin:6px 0 0">규칙이 없으면 항상 기본 타일을 그립니다.</p>'}</div><button type="button" class="btn spaddr" data-sa="radd">${ico('plus')}규칙 추가</button>
+    h+=comp('spr','grid','룰 타일'+compEn('Rule Tile'),`<button type="button" class="btn pri rsm-open" data-sa="rsmart">${ico('grid')}${esc(_t('스마트 규칙 지정'))}</button><p class="hint" style="margin:4px 0 8px">${esc(_t('타일을 모양판에 퍼즐처럼 끌어다 놓으면 규칙이 저절로 만들어져요.'))}</p>`+fr('기본 타일',spSlot(d.def,'def'),false,'defaultSprite','어떤 규칙에도 맞지 않을 때 그리는 타일입니다.')+solidRow+
+      `<div class="sprules">${d.rules.length?foldBar+foldGrid+rules:'<p class="hint" style="margin:6px 0 0">규칙이 없으면 항상 기본 타일을 그립니다.</p>'}</div><button type="button" class="btn spaddr" data-sa="radd">${ico('plus')}규칙 추가</button>
       <p class="hint" style="margin:8px 0 0">이웃 칸을 누를 때마다 상관없음 → <b class="spg">↑ 같은 타일</b> → <b class="spr">✕ 다른 타일</b>로 바뀝니다 (우클릭은 거꾸로). 위쪽 규칙부터 먼저 맞춰 보고, 「회전 · 반전」은 돌리거나 뒤집은 모양도 같은 규칙으로 봅니다.</p>`,'유니티의 Rule Tile처럼, 이웃한 칸에 같은 타일이 있는지에 따라 그릴 타일을 고릅니다.');
+  }else if(d.kind==='rand'){
+    const tot=d.items.reduce((a,q)=>a+Math.max(1,q.w|0),0)||1;
+    h+=comp('spn','dice','랜덤 타일'+compEn('Random Tile'),
+      fr('무작위 변형',`<select data-sf="tf">${[['fixed','고정'],['rot','회전'],['mx','좌우 반전'],['my','상하 반전'],['mxy','좌우 · 상하 반전']].map(o=>`<option value="${o[0]}"${o[0]===d.tf?' selected':''}>${o[1]}</option>`).join('')}</select>`,false,'randomTransform','칸마다 고른 타일을 무작위로 돌리거나 뒤집어 더 자연스럽게 섞습니다.')+solidRow+
+      `<div class="spri-l">${d.items.map((q,ti)=>`<div class="spri"><span class="spfn">${ti+1}</span>${spSlot(q.v,'ritem',`data-ti="${ti}"`)}<label class="sprw" title="${esc(_t('가중치 · 클수록 자주 나와요'))}"><span>${esc(_t('가중치'))}</span><input type="number" data-sf="w" data-ti="${ti}" min="1" max="100" step="1" value="${q.w}"></label><span class="sprp">${Math.round(Math.max(1,q.w|0)/tot*100)}%</span><button type="button" class="ib" data-sa="ridel" data-ti="${ti}" title="빼기" aria-label="빼기">✕</button></div>`).join('')}
+        <div class="spri-a"><button type="button" class="spslot spadd" data-sa="riadd" title="타일 추가">＋</button><button type="button" class="btn sm" data-sa="rshuf"${d.items.length>1||d.tf!=='fixed'?'':' disabled'}>${ico('dice')}${esc(_t('다시 섞기'))}</button></div></div>
+      <p class="hint" style="margin:8px 0 0">＋로 타일셋에서 여러 칸을 끌어 한 번에 넣을 수 있어요. 칸을 누르면 그 타일을 바꿉니다. 같은 칸은 언제 그려도 같은 타일이 나와요.</p>`,'유니티의 Random Tile처럼, 칠한 칸마다 넣어 둔 타일 중 하나를 가중치에 따라 무작위로 고릅니다.');
   }else{
     h+=comp('spa','anim','애니메이션 타일'+compEn('Animated Tile'),fr('속도',`<input type="number" data-sf="fps" min="0.1" max="60" step="0.5" value="${d.fps}" style="width:72px"><small style="color:var(--mute);margin-left:6px">fps</small>`,false,'speed','초당 넘기는 프레임 수입니다.')+
       fr('무작위 시작',`<input type="checkbox" data-sf="rand"${d.rand?' checked':''}>`,false,'randomStart','켜면 칸마다 시작 프레임이 달라 자연스럽게 보입니다.')+solidRow+
@@ -4260,6 +4538,7 @@ function spBind(W,T){
     const act=b.dataset.sa,ri=+b.dataset.ri,ti=+b.dataset.ti;
     if(act==='mk-rule'){spNewDraft('rule');return}
     if(act==='mk-anim'){spNewDraft('anim');return}
+    if(act==='mk-rand'){spNewDraft('rand');return}
     if(act==='resume'){spEditKey='new';renderInsp();return}
     if(act==='discard'){spDrafts.delete('new');spEditKey=spAct||null;renderInsp();return}
     if(!T)return;const d=T.d,R=d.rules&&d.rules[ri];
@@ -4276,15 +4555,24 @@ function spBind(W,T){
       case'rdn':if(ri<d.rules.length-1){const x=d.rules[ri];d.rules[ri]=d.rules[ri+1];d.rules[ri+1]=x}break;
       case'rdup':if(d.rules.length<64)d.rules.splice(ri+1,0,JSON.parse(JSON.stringify(R)));break;
       case'rdel':d.rules.splice(ri,1);break;
+      case'rsmart':rsmOpen(T);return;
+      case'rfold':if(R)spFold.add(R);renderInsp();return;
+      case'runfold':if(R)spFold.delete(R);renderInsp();{const el=$$('#spIns .sprl .sprh [data-sa="rfold"]').find(x=>+x.dataset.ri===ri);if(el){el.closest('.sprl').scrollIntoView({block:'nearest'});el.closest('.sprl').classList.add('spflash')}}return;
+      case'rfoldall':d.rules.forEach(x=>spFold.add(x));renderInsp();return;
+      case'runfoldall':d.rules.forEach(x=>spFold.delete(x));renderInsp();return;
       case'radd':if(d.rules.length<64)d.rules.push({nb:[0,0,0,0,0,0,0,0],out:'single',tiles:d.def>0?[d.def]:[],fps:6,tf:'fixed'});break;
       case'frame':{const c=await spPickCells(_t('프레임 고르기'),true,d.frames[ti]);if(!c)return;d.frames.splice(ti,1,...c);break}
       case'fadd':{const c=await spPickCells(_t('프레임 추가'),true,d.frames[d.frames.length-1]||0);if(!c)return;d.frames.push(...c);break}
       case'fl':if(ti>0){const x=d.frames[ti];d.frames[ti]=d.frames[ti-1];d.frames[ti-1]=x}break;
       case'fr':if(ti<d.frames.length-1){const x=d.frames[ti];d.frames[ti]=d.frames[ti+1];d.frames[ti+1]=x}break;
       case'fdel':d.frames.splice(ti,1);break;
+      case'ritem':{const c=await spPickCells(_t('타일 고르기'),true,d.items[ti]&&d.items[ti].v);if(!c)return;d.items.splice(ti,1,...c.map((v,k)=>({v,w:k?1:(d.items[ti]?d.items[ti].w:1)})));break}
+      case'riadd':{const L=d.items[d.items.length-1];const c=await spPickCells(_t('타일 추가'),true,L?L.v:0);if(!c)return;d.items.push(...c.map(v=>({v,w:1})));break}
+      case'ridel':d.items.splice(ti,1);break;
+      case'rshuf':d.seed=((d.seed|0)+1)%100000;break;
       default:return;
     }
-    if(d.frames)d.frames=d.frames.slice(0,64);if(R&&R.tiles)R.tiles=R.tiles.slice(0,64);
+    if(d.frames)d.frames=d.frames.slice(0,64);if(d.items)d.items=d.items.slice(0,64);if(R&&R.tiles)R.tiles=R.tiles.slice(0,64);
     renderInsp();
   });
   W.addEventListener('contextmenu',e=>{const b=e.target.closest('[data-sa="nb"]');if(!b||!T)return;e.preventDefault();const R=T.d.rules[+b.dataset.ri],k=+b.dataset.k;R.nb[k]=(R.nb[k]+2)%3;renderInsp()});
@@ -4298,6 +4586,8 @@ function spBind(W,T){
     else if(f==='fps'){const v=clamp(+t.value||6,.1,60);if(R)R.fps=v;else d.fps=v}
     else if(f==='out'&&R){R.out=t.value;if(R.out==='single')R.tiles=R.tiles.slice(0,1)}
     else if(f==='tf'&&R)R.tf=t.value;
+    else if(f==='tf'&&d.kind==='rand')d.tf=SP_TF[t.value]?t.value:'fixed';
+    else if(f==='w'&&d.items){const q=d.items[+t.dataset.ti];if(q)q.w=clamp(Math.round(+t.value||1),1,100)}
     renderInsp();
   });
   W.addEventListener('input',e=>{if(e.target.id!=='spName')return;d.name=e.target.value.slice(0,30);const bar=$('.spbar',W),dr=spDirty(T);if(bar){bar.classList.toggle('dirty',dr);const sv=$('[data-sa="save"]',bar);if(sv)sv.disabled=!dr;const rv=$('[data-sa="revert"]',bar);if(rv)rv.disabled=!dr}});
@@ -4310,6 +4600,7 @@ function spSave(key){
   const d=spDrafts.get(key);if(!d)return;
   d.name=(d.name||'').trim()||_t('특수 타일');
   if(d.kind==='anim'&&!d.frames.length){toast('프레임을 하나 이상 넣어 주세요');return}
+  if(d.kind==='rand'&&!d.items.length){toast('타일을 하나 이상 넣어 주세요');return}
   if(d.kind==='rule'&&!(d.def>0)&&!d.rules.some(R=>R.tiles.length)){toast('기본 타일을 골라 주세요');return}
   if(!Array.isArray(P.stiles))P.stiles=[];
   let id;
@@ -4356,22 +4647,39 @@ $('#palBox').addEventListener('click',e=>{
   const cm=e.target.closest('[data-cm]');if(cm){colMode=cm.dataset.cm;if(tool==='erase'||tool==='hand')setTool('brush');renderPal()}
 });
 let sheetDrag=null;
+/* 끌기 중 스크롤(휠 · 가장자리 자동 스크롤)해도 선택 영역이 계속 늘어나도록: 마지막 포인터 위치를 기억하고 매번 캔버스 위치를 새로 잰다 */
+const palScroller=c=>{for(let el=c.parentElement;el&&el!==document.body;el=el.parentElement){const cs=getComputedStyle(el);if(/(auto|scroll)/.test(cs.overflowY+cs.overflowX)&&(el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1))return el}return null};
+function sheetDragUpd(){
+  if(!sheetDrag)return;const{c,a,sx,sy,mx,my}=sheetDrag;if(!c.isConnected){sheetDrag=null;return}
+  const r=c.getBoundingClientRect(),cx=clamp(Math.floor((mx-r.left)/palE),0,a.cols-1),cy=clamp(Math.floor((my-r.top)/palE),0,a.rows-1);
+  const ns={n:a.n,c0:Math.min(sx,cx),r0:Math.min(sy,cy),cw:Math.abs(cx-sx)+1,rh:Math.abs(cy-sy)+1};
+  if(ns.cw*ns.rh>256){ns.cw=Math.min(ns.cw,16);ns.rh=Math.min(ns.rh,16)}
+  if(stamp&&stamp.n===ns.n&&stamp.c0===ns.c0&&stamp.r0===ns.r0&&stamp.cw===ns.cw&&stamp.rh===ns.rh&&!stamp.sp)return;
+  stamp=ns;drawSheet(c,a,palE,stamp);updPalInfo(a);need();
+}
+function sheetAutoScroll(){
+  if(!sheetDrag)return;const d=sheetDrag,sc=d.sc;
+  if(sc&&sc.isConnected){const r=sc.getBoundingClientRect(),E=28,sp=v=>Math.ceil(Math.min(1,v/E)*14);let dx=0,dy=0;
+    if(d.my<r.top+E)dy=-sp(r.top+E-d.my);else if(d.my>r.bottom-E)dy=sp(d.my-(r.bottom-E));
+    if(d.mx<r.left+E)dx=-sp(r.left+E-d.mx);else if(d.mx>r.right-E)dx=sp(d.mx-(r.right-E));
+    if(dx||dy){sc.scrollLeft+=dx;sc.scrollTop+=dy;sheetDragUpd()}}
+  d.raf=requestAnimationFrame(sheetAutoScroll);
+}
 $('#palBox').addEventListener('pointerdown',e=>{
   if(e.target.id!=='pCv'||e.button!==0)return;
   const a=byN.get(activeN);if(!a)return;
   const c=e.target,r=c.getBoundingClientRect(),cx=clamp(Math.floor((e.clientX-r.left)/palE),0,a.cols-1),cy=clamp(Math.floor((e.clientY-r.top)/palE),0,a.rows-1);
-  c.setPointerCapture(e.pointerId);sheetDrag={c,a,sx:cx,sy:cy,r};
+  c.setPointerCapture(e.pointerId);sheetDrag={c,a,sx:cx,sy:cy,mx:e.clientX,my:e.clientY,sc:palScroller(c),raf:0};
   spAct=null;spEditKey=null;stamp={n:a.n,c0:cx,r0:cy,cw:1,rh:1};if(tool==='erase'||tool==='hand'||tool==='pick'||tool==='select')setTool('brush');
   drawSheet(c,a,palE,stamp);updPalInfo(a);need();
+  sheetDrag.raf=requestAnimationFrame(sheetAutoScroll);
 });
 $('#palBox').addEventListener('pointermove',e=>{
-  if(!sheetDrag)return;const{c,a,sx,sy,r}=sheetDrag;
-  const cx=clamp(Math.floor((e.clientX-r.left)/palE),0,a.cols-1),cy=clamp(Math.floor((e.clientY-r.top)/palE),0,a.rows-1);
-  stamp={n:a.n,c0:Math.min(sx,cx),r0:Math.min(sy,cy),cw:Math.abs(cx-sx)+1,rh:Math.abs(cy-sy)+1};
-  if(stamp.cw*stamp.rh>256){stamp.cw=Math.min(stamp.cw,16);stamp.rh=Math.min(stamp.rh,16)}
-  drawSheet(c,a,palE,stamp);updPalInfo(a);need();
+  if(!sheetDrag)return;sheetDrag.mx=e.clientX;sheetDrag.my=e.clientY;sheetDragUpd();
 });
-['pointerup','pointercancel'].forEach(t=>$('#palBox').addEventListener(t,()=>{if(sheetDrag){sheetDrag=null;tileInspShow(false)}}));
+/* 휠로 스크롤하면 scroll 이벤트(버블링 안 함)를 캡처로 받아 선택을 다시 계산 */
+document.addEventListener('scroll',()=>{if(sheetDrag)sheetDragUpd()},true);
+['pointerup','pointercancel'].forEach(t=>$('#palBox').addEventListener(t,()=>{if(sheetDrag){cancelAnimationFrame(sheetDrag.raf);sheetDrag=null;tileInspShow(false)}}));
 /* ===================== 타일 합치기 =====================
    유니티 타일 팔레트처럼: 타일 팔레트 창이 「무한한 격자」로 바뀌고, 왼쪽 타일셋에서 고른 타일(여러 칸 가능)을 늘어놓거나 겹쳐 칠한 뒤
    「프로젝트에 저장」하면 배치한 영역 전체가 하나의 새 타일셋(PNG 에셋)이 됩니다. 저장한 타일셋은 타일 팔레트에서 바로 여러 칸으로 칠할 수 있습니다.
@@ -5629,10 +5937,11 @@ function renderInsp0(){
     '게임 오브젝트의 위치·방향·그리는 순서·크기를 정합니다. 부모와 그룹은 계층 구조에서 끌어다 놓아 정합니다 (자식은 항상 부모를 따라 움직입니다).');
   h+=comp('renderer','tilemap','스프라이트 렌더러'+compEn('SpriteRenderer'),fr('스프라이트',sprSel('data-p="sprite"',p.sprite,'없음 (기본 표시)'),false,'sprite','게임 오브젝트에 표시할 이미지입니다. 프로젝트 패널의 스프라이트나 나눈 조각을 이 칸으로 끌어다 놓아도 바로 적용됩니다.'),'게임 오브젝트의 모습을 정합니다. 지정하지 않으면 기본 아이콘으로 표시됩니다.');
   if(o.type==='event')h+=comp('c','gear','이벤트 트리거'+compEn('EventTrigger'),fr('메시지',`<textarea data-p="text">${esc(p.text)}</textarea>`,1,'text','주인공이 이 칸에 닿으면 표시되는 메시지입니다.')+fr('한 번만 실행',`<input type="checkbox" data-p="once"${p.once?' checked':''}>`,false,'once','체크하면 한 번 발동한 뒤에는 다시 발동하지 않습니다.')+roleRow(o),'메시지와 「한 번만 실행」 값을 담는 컴포넌트입니다. 주인공이 이 칸에 들어오면 붙어 있는 EventMessage 스크립트가 메시지를 보여 줍니다.');
-  if(o.type==='npc')h+=comp('c','gear','대화'+compEn('Npc'),fr('대사',`<textarea data-p="text">${esc(p.text)}</textarea>`,1,'text','주인공이 말을 걸면 표시되는 대사입니다.')+roleRow(o),'대사를 담는 NPC 컴포넌트입니다. 주인공이 말을 걸면(HeroCombat의 hero.Interact) 붙어 있는 NpcTalk 스크립트가 대화창을 엽니다. NPC는 주인공의 이동을 막습니다.');
+  if(o.type==='npc')h+=comp('c','gear','대화'+compEn('Npc'),fr('대사',npcLinesHtml(p),1,'lines','주인공이 말을 걸면 위에서부터 차례로 표시되는 대사 목록입니다. 대화창에서 화면을 클릭(또는 Space)하면 다음 대사로 넘어가고, 마지막 대사 뒤에는 닫힙니다.')+fr('이름표 위치',npcLblHtml(p),false,'labelAlign','NPC 이름표를 그림의 어느 쪽에 붙일지 정합니다. 크기를 키우면 그림 가장자리를 따라 함께 움직입니다.')+roleRow(o),'대사 목록을 담는 NPC 컴포넌트입니다. 주인공이 말을 걸면(HeroCombat의 hero.Interact) 붙어 있는 NpcTalk 스크립트가 대화창을 열고, 대화하는 동안 주인공은 움직이지 않습니다. NPC는 주인공의 이동을 막습니다.');
   if(o.type==='spawn'){
-    const mi=heroMoveInst(o),ms=mi&&scriptOf(mi.sid),hs=heroScript(),changed=ms&&hs&&ms.id===hs.id&&ms.code!==HERO_CODE&&ms.code!==enToKo(HERO_CODE);
+    const mi=heroMoveInst(o),ms=mi&&scriptOf(mi.sid),hk=heroKindOf(ms),changed=ms&&hk&&!heroCodeIsDef(hk,ms.code);
     h+=comp('c','user','주인공'+compEn('Hero'),
+      fr('이동 방식',`<div class="herok" role="radiogroup">${[['tile','타일형','grid'],['free','픽셀형','move']].map(([k,l])=>`<button type="button" role="radio" aria-checked="${hk===k}" class="${hk===k?'on':''}" data-herok="${k}" title="${esc(_t(HERO_KINDS[k].label)+' · '+HERO_KINDS[k].name+'.cs')}">${k==='tile'?'<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="1.5"/><path d="M6 1.5v13M10 1.5v13M1.5 6h13M1.5 10h13"/></svg>':'<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 12c3-1 3-7 6-8s4 5 6 4"/><circle cx="2.5" cy="12" r="1.3" class="f"/></svg>'}<span>${esc(_t(l))}</span></button>`).join('')}</div>`,false,'movement','타일형: 칸 가운데에서 옆 칸으로 한 칸씩 걷습니다 (기본 · HeroTileMovement). 픽셀형: 칸에 묶이지 않고 부드럽게 움직입니다 (HeroMovement). 누르면 이동 스크립트가 교체됩니다.')+
       fr('이동 스크립트',ms?`<span style="display:inline-flex;align-items:center;gap:5px;flex:1;min-width:0;color:var(--accent)">${ico('script')}<b style="color:var(--fg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${enm(ms.name)}.cs</b></span><button class="btn sm pri" data-editsc="${ms.id}">스크립트 편집</button>`:`<button class="btn sm pri" id="iHeroScript" style="flex:1">기본 이동 스크립트 붙이기</button>`,false,'movement','주인공을 움직이는 C# 스크립트입니다. 방향키/WASD 입력, 속도, 대각선 처리, 달리기 등 이동 로직이 모두 이 스크립트에 있어 “스크립트 편집”으로 직접 고칠 수 있습니다. 스크립트를 떼면 주인공이 움직이지 않습니다.')+
       (changed?`<div style="display:flex;justify-content:flex-end;margin-top:4px"><button class="btn sm" id="iHeroReset">기본 코드로 되돌리기</button></div>`:'')+
       roleRow(o)+
@@ -5675,6 +5984,68 @@ function renderInsp0(){
   h+='<div class="irow"><div class="addsplit"><button class="btn pri" id="iAddComp">컴포넌트 추가</button><span class="bar" aria-hidden="true"></span><button class="btn pri" id="iAddScript">스크립트 추가</button></div></div>';
   box.innerHTML=h;
 }
+if(window.TI18N)TI18N.add({
+'주인공 이동 (타일형)':['Hero Movement (tile)','主人公移動（タイル型）','主角移动（格子型）'],'주인공 이동 (픽셀형)':['Hero Movement (pixel)','主人公移動（ピクセル型）','主角移动（像素型）'],
+'주인공 이동':['Hero movement','主人公移動','主角移动'],'하나만 · 고르면 지금 이동 스크립트와 교체돼요':['One only · choosing replaces the current movement script','1つだけ · 選ぶと今の移動スクリプトと入れ替わります','仅一个 · 选择后会替换当前移动脚本'],
+'이동 방식':['Movement','移動方式','移动方式'],'타일형':['Tile','タイル型','格子型'],'픽셀형':['Pixel','ピクセル型','像素型'],
+'타일형: 칸 가운데에서 옆 칸으로 한 칸씩 걷습니다 (기본 · HeroTileMovement). 픽셀형: 칸에 묶이지 않고 부드럽게 움직입니다 (HeroMovement). 누르면 이동 스크립트가 교체됩니다.':['Tile: walks one cell at a time, center to center (default · HeroTileMovement). Pixel: moves freely and smoothly, not bound to cells (HeroMovement). Clicking swaps the movement script.','タイル型：マスの中央から隣のマスへ1マスずつ歩きます（デフォルト · HeroTileMovement）。ピクセル型：マスに縛られず滑らかに動きます（HeroMovement）。押すと移動スクリプトが入れ替わります。','格子型：从格子中心一格一格走到相邻格子（默认 · HeroTileMovement）。像素型：不受格子限制，平滑移动（HeroMovement）。点击即可替换移动脚本。'],
+'이미 {n} 스크립트가 붙어 있습니다':['{n} is already attached','{n} スクリプトはすでに付いています','已附加 {n} 脚本'],'{n}(으)로 교체했습니다 · {f}.cs':['Switched to {n} · {f}.cs','{n} に入れ替えました · {f}.cs','已替换为 {n} · {f}.cs'],
+'랜덤 타일':['Random Tile','ランダムタイル','随机图块'],'랜덤':['Random','ランダム','随机'],'룰 · 애니메이션 · 랜덤 타일':['Rule · Animated · Random Tiles','ルール・アニメーション・ランダムタイル','规则 · 动画 · 随机图块'],'타일 {n}개':['{n} tiles','タイル {n} 個','{n} 个图块'],
+'고른 {n}칸을 섞어 칠함':['Mixes the {n} selected cells','選んだ {n} マスを混ぜて塗る','混合所选 {n} 格绘制'],'칸마다 무작위로 골라 칠함':['Picks randomly per cell','マスごとにランダムに選んで塗る','每格随机选择绘制'],
+'씬에 칠한 칸마다 넣어 둔 타일 중 하나가 무작위로 골라집니다.':['Each painted cell picks one of the tiles at random.','塗ったマスごとに、入れておいたタイルの1つがランダムに選ばれます。','每个绘制的格子会随机选用其中一个图块。'],
+'무작위 변형':['Random transform','ランダム変形','随机变换'],'칸마다 고른 타일을 무작위로 돌리거나 뒤집어 더 자연스럽게 섞습니다.':['Randomly rotates or flips the chosen tile per cell for a more natural mix.','マスごとに選ばれたタイルをランダムに回転・反転して、より自然に混ぜます。','按格随机旋转或翻转所选图块，混合更自然。'],
+'가중치':['Weight','重み','权重'],'가중치 · 클수록 자주 나와요':['Weight · higher appears more often','重み · 大きいほどよく出ます','权重 · 越大越常出现'],'다시 섞기':['Reshuffle','混ぜ直す','重新打乱'],
+'넓게 칠했을 때의 모습입니다. 가중치가 클수록 자주 나오고, 「다시 섞기」를 누르면 배치가 바뀌어요.':['How it looks painted over an area. Higher weights appear more often; “Reshuffle” changes the layout.','広く塗ったときの見た目です。重みが大きいほどよく出て、「混ぜ直す」で配置が変わります。','大面积绘制时的效果。权重越大越常出现，点击“重新打乱”可改变排列。'],
+'＋로 타일셋에서 여러 칸을 끌어 한 번에 넣을 수 있어요. 칸을 누르면 그 타일을 바꿉니다. 같은 칸은 언제 그려도 같은 타일이 나와요.':['Use ＋ to drag several cells from a tileset at once. Click a slot to replace its tile. The same cell always draws the same tile.','＋ でタイルセットから複数マスをドラッグしてまとめて入れられます。マスを押すとそのタイルを差し替えます。同じマスはいつ描いても同じタイルになります。','用 ＋ 从图块集中拖选多个格子一次添加。点击格子可替换图块。同一格子每次绘制都是相同图块。'],
+'유니티의 Random Tile처럼, 칠한 칸마다 넣어 둔 타일 중 하나를 가중치에 따라 무작위로 고릅니다.':['Like Unity’s Random Tile, each painted cell picks one of the tiles at random, by weight.','UnityのRandom Tileのように、塗ったマスごとに重みに応じてタイルの1つをランダムに選びます。','与 Unity 的 Random Tile 一样，每个绘制的格子按权重随机选用一个图块。'],
+'타일을 하나 이상 넣어 주세요':['Add at least one tile','タイルを 1 つ以上入れてください','请至少添加一个图块'],'{name} 랜덤':['{name} Random','{name} ランダム','{name} 随机'],
+'고른 타일로 유니티의 룰 타일 · 애니메이션 타일 · 랜덤 타일을 만듭니다. 저장하면 타일 선택 창의 「특수 타일」에 들어가요.':['Make a Unity-style Rule, Animated or Random Tile from the selected tiles. Saved ones appear under “Special Tiles” in the tile picker.','選んだタイルからUnityのようなルール・アニメーション・ランダムタイルを作ります。保存するとタイル選択ウィンドウの「特殊タイル」に入ります。','用所选图块制作 Unity 风格的规则、动画或随机图块。保存后会出现在图块选择窗口的“特殊图块”中。'],
+'규칙 {n}개':['{n} rules','ルール {n} 個','{n} 条规则'],'접힘 {n}':['{n} folded','{n} 個折りたたみ','已折叠 {n}'],'모두 접기':['Fold all','すべて折りたたむ','全部折叠'],'모두 펼치기':['Unfold all','すべて展開','全部展开'],'접은 규칙':['Folded rules','折りたたんだルール','已折叠的规则'],'접기':['Fold','折りたたむ','折叠'],'펼치기':['Unfold','展開','展开'],
+'대사 추가':['Add line','セリフを追加','添加台词'],'위로':['Move up','上へ','上移'],'아래로':['Move down','下へ','下移'],'대사 지우기':['Delete line','セリフを削除','删除台词'],
+'이름표 위치':['Name label','名前ラベル位置','名称标签位置'],'위':['Top','上','上'],'왼쪽':['Left','左','左'],'오른쪽':['Right','右','右'],'아래':['Bottom','下','下'],'가운데':['Center','中央','居中'],
+'클릭: 다음 ▶':['Click: next ▶','クリック: 次へ ▶','点击: 下一句 ▶'],'클릭: 닫기':['Click: close','クリック: 閉じる','点击: 关闭'],
+'주인공이 말을 걸면 위에서부터 차례로 표시되는 대사 목록입니다. 대화창에서 화면을 클릭(또는 Space)하면 다음 대사로 넘어가고, 마지막 대사 뒤에는 닫힙니다.':['Lines shown in order from the top when the hero talks. Click the screen (or press Space) to go to the next line; the dialog closes after the last one.','主人公が話しかけると上から順に表示されるセリフのリストです。画面をクリック（またはSpace）で次のセリフへ進み、最後のセリフの後に閉じます。','主角搭话时从上到下依次显示的台词列表。点击画面（或按 Space）进入下一句，最后一句之后关闭。'],
+'NPC 이름표를 그림의 어느 쪽에 붙일지 정합니다. 크기를 키우면 그림 가장자리를 따라 함께 움직입니다.':['Which side of the sprite the NPC name label sits on. It follows the sprite edge when you scale the NPC.','NPCの名前ラベルを絵のどちら側に付けるかを決めます。サイズを大きくすると絵の端に合わせて一緒に動きます。','设置 NPC 名称标签贴在图像的哪一侧。放大 NPC 时会随图像边缘一起移动。'],
+'대사 목록을 담는 NPC 컴포넌트입니다. 주인공이 말을 걸면(HeroCombat의 hero.Interact) 붙어 있는 NpcTalk 스크립트가 대화창을 열고, 대화하는 동안 주인공은 움직이지 않습니다. NPC는 주인공의 이동을 막습니다.':['The NPC component that holds a list of lines. When the hero talks (hero.Interact in HeroCombat), the attached NpcTalk script opens the dialog, and the hero cannot move while talking. NPCs block the hero\'s movement.','セリフのリストを持つNPCコンポーネントです。主人公が話しかけると（HeroCombatのhero.Interact）付いているNpcTalkスクリプトが会話ウィンドウを開き、会話中は主人公が動けません。NPCは主人公の移動を妨げます。','保存台词列表的 NPC 组件。主角搭话时（HeroCombat 的 hero.Interact），附加的 NpcTalk 脚本会打开对话框，对话期间主角无法移动。NPC 会阻挡主角移动。']
+});
+/* ===== NPC 컴포넌트: 대사 목록 · 이름표 위치 ===== */
+const NPC_LBL=[['top','위'],['left','왼쪽'],['right','오른쪽'],['bottom','아래'],['center','가운데']];
+const NPC_LBL_IC={
+  top:'<rect x="5" y="6.5" width="6" height="7" rx="1"/><rect x="3.5" y="2" width="9" height="2.4" rx="1" class="f"/>',
+  bottom:'<rect x="5" y="2.5" width="6" height="7" rx="1"/><rect x="3.5" y="11.6" width="9" height="2.4" rx="1" class="f"/>',
+  left:'<rect x="8" y="4.5" width="6" height="7" rx="1"/><rect x="1" y="6.8" width="5.5" height="2.4" rx="1" class="f"/>',
+  right:'<rect x="2" y="4.5" width="6" height="7" rx="1"/><rect x="9.5" y="6.8" width="5.5" height="2.4" rx="1" class="f"/>',
+  center:'<rect x="4" y="3.5" width="8" height="9" rx="1"/><rect x="5.2" y="6.8" width="5.6" height="2.4" rx="1" class="f"/>'};
+function npcLinesHtml(p){
+  const L=npcLines(p),n=L.length;
+  return`<div class="npcls">`+L.map((t,i)=>`<div class="npcl"><span class="npcn">${i+1}</span><textarea data-npcl="${i}" rows="2" data-i18n-skip>${esc(t)}</textarea><span class="npcb">`+
+    `<button type="button" class="ib" data-npca="up" data-i="${i}" title="${esc(_t('위로'))}"${i?'':' disabled'}>↑</button>`+
+    `<button type="button" class="ib" data-npca="down" data-i="${i}" title="${esc(_t('아래로'))}"${i<n-1?'':' disabled'}>↓</button>`+
+    `<button type="button" class="ib" data-npca="del" data-i="${i}" title="${esc(_t('대사 지우기'))}">✕</button></span></div>`).join('')+
+    `<button type="button" class="btn sm npcadd" data-npca="add">＋ ${esc(_t('대사 추가'))}</button></div>`;
+}
+function npcLblHtml(p){
+  const cur0=p.lbl||'top';
+  return`<div class="npclbl" role="radiogroup">`+NPC_LBL.map(([k,l])=>`<button type="button" role="radio" aria-checked="${cur0===k}" class="${cur0===k?'on':''}" data-npclbl="${k}" title="${esc(_t(l))}" aria-label="${esc(_t(l))}"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">${NPC_LBL_IC[k]}</svg></button>`).join('')+`</div>`;
+}
+$('#insp').addEventListener('input',e=>{
+  const t=e.target;if(!t.dataset||t.dataset.npcl==null)return;
+  const o=inspObj();if(!o||o.type!=='npc')return;const L=npcLines(o.props),i=+t.dataset.npcl;if(!(i>=0&&i<L.length))return;
+  L[i]=t.value;o.props.lines=L;o.props.text=L[0];need();
+});
+$('#insp').addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('[data-npca],[data-npclbl]');if(!b)return;
+  const o=inspObj();if(!o||o.type!=='npc')return;const p=o.props;
+  if(b.dataset.npclbl){const v=b.dataset.npclbl;if(v==='top')delete p.lbl;else p.lbl=v;commit();renderInsp();need();return}
+  const L=npcLines(p),a=b.dataset.npca,i=+b.dataset.i;let focus=-1;
+  if(a==='add'){L.push('');focus=L.length-1}
+  else if(a==='del'){if(L.length>1)L.splice(i,1);else L[0]='';focus=Math.min(i,L.length-1)}
+  else if(a==='up'&&i>0){[L[i-1],L[i]]=[L[i],L[i-1]];focus=i-1}
+  else if(a==='down'&&i<L.length-1){[L[i+1],L[i]]=[L[i],L[i+1]];focus=i+1}
+  else return;
+  p.lines=L;p.text=L[0];commit();renderInsp();need();
+  if(focus>=0){const ta=$('#insp textarea[data-npcl="'+focus+'"]');if(ta){ta.focus();if(a==='add')ta.setSelectionRange(0,0)}}
+});
 $('#insp').addEventListener('input',e=>{
   const t=e.target,k=t.dataset.p,m=cur();
   if(t.dataset.s==='name'){m.name=t.value;renderHier();return}
@@ -5747,6 +6118,9 @@ $('#insp').addEventListener('click',e=>{
       {sep:1},
       {head:'역할 컴포넌트',sub:'오브젝트당 하나만 · 새로 고르면 지금 역할과 교체돼요',kind:'role'},
       ...R.map(c=>({label:c[1],ic:c[2],kind:'role',col:TYPES[c[0]].color,checked:o.type===c[0],fn:()=>addComponent(c[0])}))];
+    if(o.type==='spawn'){const mi=heroMoveInst(o),hk=heroKindOf(mi&&scriptOf(mi.sid));
+      items.push({sep:1},{head:'주인공 이동',sub:'하나만 · 고르면 지금 이동 스크립트와 교체돼요',kind:'role'},
+        ...['tile','free'].map(k=>({label:HERO_KINDS[k].label,ic:'user',kind:'role',col:TYPES.spawn.color,checked:hk===k,fn:()=>heroSwapKind(o,k)})))}
     showMenu(e.target,items,false,{search:'컴포넌트 검색'});return}
   const rmb=e.target.closest('[data-rm]');if(rmb){removeComponent(rmb.dataset.rm);return}
   if(id==='iRotReset'||e.target.closest('#iRotReset')){const o=getSel();if(o){delete o.props.rot;commit();renderInsp();need()}return}
@@ -5754,7 +6128,8 @@ $('#insp').addEventListener('click',e=>{
   const aup=e.target.closest('[data-aup]');if(aup){audPreview(aup.dataset.aup);return}
   const rsb=e.target.closest('[data-rolesc]');if(rsb){const o=getSel();if(o){giveRoleScript(o,rsb.dataset.rolesc);commit();markDirty();renderInsp();renderScripts();toast(rsb.dataset.rolesc+'.cs 를 붙였습니다')}return}
   if(id==='iHeroScript'){const o=getSel();if(o){giveHeroScript(o);commit();markDirty();renderInsp();renderScripts();toast('기본 이동 스크립트를 붙였습니다')}return}
-  if(id==='iHeroReset'){const hs=heroScript();if(hs)openModal('기본 코드로 되돌리기',`<p style="margin:0"><b>${enm(hs.name)}.cs</b>의 내용을 기본 이동 코드로 바꿉니다. 고친 내용은 사라집니다.</p>`,[{t:'취소'},{t:'되돌리기',cls:'danger',fn:()=>{hs.code=heroCodeDef();delete ed.draft[hs.id];markDirty();compileScript(hs,true);renderScripts();renderEditor();renderInsp();toast('기본 이동 코드로 되돌렸습니다')}}]);return}
+  const hkb=e.target.closest('[data-herok]');if(hkb){const o=getSel();if(o&&o.type==='spawn')heroSwapKind(o,hkb.dataset.herok);return}
+  if(id==='iHeroReset'){const o0=getSel(),mi0=o0&&heroMoveInst(o0),hs=mi0&&scriptOf(mi0.sid),hk0=heroKindOf(hs);if(hs&&hk0)openModal('기본 코드로 되돌리기',`<p style="margin:0"><b>${enm(hs.name)}.cs</b>의 내용을 기본 이동 코드로 바꿉니다. 고친 내용은 사라집니다.</p>`,[{t:'취소'},{t:'되돌리기',cls:'danger',fn:()=>{hs.code=heroKindCode(hk0);delete ed.draft[hs.id];markDirty();compileScript(hs,true);renderScripts();renderEditor();renderInsp();toast('기본 이동 코드로 되돌렸습니다')}}]);return}
   if(id==='iScaleReset'||e.target.closest('#iScaleReset')){const o=getSel();if(o){delete o.props.sx;delete o.props.sy;commit();renderInsp();need()}return}
   if(id==='iUngroup'){dissolveGroups((cur().groups||[]).filter(g=>hsel.has(g.id)).map(g=>g.id));return}
   const ch=e.target.closest('.chead');if(ch){const c=ch.closest('.comp'),closed=c.classList.toggle('closed'),key=c.dataset.comp;if(closed)insFold.add(key);else insFold.delete(key)}
@@ -6760,6 +7135,7 @@ function heroProxy(m,o){
       case'isMoving':return!!p.moved;
       case'isDead':return!!p.dead;case'isInvincible':return p.hit>0;case'invincibleTime':return p.invT==null?.8:p.invT;
       case'radius':return(p.hr==null?9:p.hr)/TS;
+      case'canMove':return!heroLocked(m);
       case'gameObject':return goProxy(m,o);case'transform':return trProxy(m,o);case'name':return o.name;
     }throw csUnsup('Hero.'+n)},
     set(n,v){switch(n){
@@ -6768,18 +7144,19 @@ function heroProxy(m,o){
       case'hp':p.hp=clamp(Math.round(csN(v)),0,100);if(p.hp<=0)heroDie();return;
       case'invincibleTime':p.invT=clamp(csN(v),0,10);return;
       case'radius':p.hr=clamp(csN(v),.05,.49)*TS;return;
+      case'canMove':p.heroLock=!v;return;
     }throw csUnsup('Hero.'+n+' 대입')},
     call(n,a){
       if(n==='Move'){
         const d=csVArg(a),dx=d.x*TS,dy=d.y*TS,r=p.hr==null?9:p.hr;let mv=false;
-        if(p.dead)return false;
+        if(p.dead||heroLocked(m))return false;
         if(dx&&standable(p.px+dx,p.py,r)){p.px+=dx;mv=true}
         if(dy&&standable(p.px,p.py+dy,r)){p.py+=dy;mv=true}
         if(mv)p.moved=true;return mv;
       }
-      if(n==='Face'){const d=csVArg(a);heroFace(p,d.x,d.y);return null}
+      if(n==='Face'){if(heroLocked(m))return null;const d=csVArg(a);heroFace(p,d.x,d.y);return null}
       if(n==='CanMove'){const d=csVArg(a),r=p.hr==null?9:p.hr;return standable(p.px+d.x*TS,p.py+d.y*TS,r)}
-      if(n==='Attack'){if(!a.length){action();return 0}return heroSwing(m,Math.round(csN(a[0])),a.length>1?clamp(csN(a[1]),0,10):.7)}
+      if(n==='Attack'){if(heroLocked(m))return 0;if(!a.length){action();return 0}return heroSwing(m,Math.round(csN(a[0])),a.length>1?clamp(csN(a[1]),0,10):.7)}
       if(n==='Interact')return p.dead?false:heroInteract(m,a.length?csN(a[0]):1.4);
       if(n==='TakeDamage')return heroTakeDamage(a.length?csN(a[0]):1);
       if(n==='Heal'){p.hp=clamp(p.hp+Math.round(a.length?csN(a[0]):1),0,100);return p.hp}
@@ -6800,6 +7177,8 @@ function portalGo(o){
   if(q.map&&P.maps.some(x=>x.id===q.map)){const pp=play;setTimeout(()=>{if(play===pp)enter(q.map,q.tx,q.ty)},0);return true}
   play.msg=_t('이 포탈은 대상 씬이 지정되지 않았습니다');play.msgT=2;return false;
 }
+/* NPC 대사 목록: props.lines(여러 대사) · 예전 프로젝트는 props.text 한 줄 */
+function npcLines(p){const L=p&&Array.isArray(p.lines)?p.lines.map(x=>String(x==null?'':x)):null;return L&&L.length?L:[String(p&&p.text!=null?p.text:'')]}
 function roleProxy(m,o,T){
   const type=ROLE_T[T];
   const pr=()=>{if(o.type!==type)throw new Error(`MissingComponentException: ${o.name}에는 ${T} 컴포넌트가 없습니다`);return o.props};
@@ -6811,7 +7190,9 @@ function roleProxy(m,o,T){
         if(n==='hp')return z?z.hp:+p.hp||3;if(n==='maxHp')return +p.hp||3;if(n==='speed')return +p.speed||55;if(n==='range')return +p.range||5;
         if(n==='position'){if(z)return CsV(z.x/TS-.5,z.y/TS-.5);const t=objTileF(m,o);return CsV(t.x,t.y)}
         if(n==='isDead')return!!(z&&z.dead);}
-      if((type==='npc'||type==='event')&&n==='text')return String(p.text||'');
+      if(type==='npc'&&n==='text')return npcLines(p)[0];
+      if(type==='npc'&&n==='lineCount')return npcLines(p).length;
+      if(type==='event'&&n==='text')return String(p.text||'');
       if(type==='event'&&n==='once')return!!p.once;
       if(type==='item'&&n==='qty')return p.qty==null?1:+p.qty;
       if(type==='portal'){if(n==='tx'||n==='ty')return +p[n]||0;if(n==='targetScene'){const t=P.maps.find(x=>x.id===p.map);return t?t.name:''}}
@@ -6823,7 +7204,8 @@ function roleProxy(m,o,T){
         if(n==='hp'){const h=Math.round(csN(v));if(z){z.hp=h}else p.hp=clamp(h,1,99);return}
         if(n==='speed'){p.speed=clamp(csN(v),0,1000);return}if(n==='range'){p.range=clamp(csN(v),0,100);return}
         if(n==='position'){const c=csVArg([v]);setObjTile(m,o,c.x,c.y);return}}
-      if((type==='npc'||type==='event')&&n==='text'){p.text=csFmt(v);return}
+      if(type==='npc'&&n==='text'){p.text=csFmt(v);if(Array.isArray(p.lines)&&p.lines.length)p.lines[0]=p.text;return}
+      if(type==='event'&&n==='text'){p.text=csFmt(v);return}
       if(type==='event'&&n==='once'){p.once=!!v;return}
       if(type==='item'&&n==='qty'){p.qty=Math.max(0,Math.round(csN(v)));return}
       if(type==='portal'){if(n==='tx'||n==='ty'){p[n]=Math.round(csN(v));return}
@@ -6839,7 +7221,8 @@ function roleProxy(m,o,T){
         if(n==='TakeDamage'){monHurt(z,a.length?Math.round(csN(a[0])):1,0,0);return z.hp}
         if(n==='Die'){monDie(z);return null}
       }
-      if(type==='npc'&&n==='Talk'){say(o.name,p.text);return null}
+      if(type==='npc'&&n==='Talk'){const L=npcLines(p);say(o.name,L[0],L.slice(1));return null}
+      if(type==='npc'&&n==='GetLine'){const L=npcLines(p),i=Math.round(csN(a[0]));return i>=0&&i<L.length?L[i]:''}
       if(type==='portal'&&n==='Teleport')return portalGo(o);
       throw csUnsup(T+'.'+n+'()');
     }};
@@ -7064,6 +7447,78 @@ public class HeroMovement : MonoBehaviour
 `;
 const HERO_CODE=`using UnityEngine;
 
+// 주인공 이동 스크립트 (픽셀형)
+// 칸에 묶이지 않고 픽셀 단위로 부드럽게 움직입니다. 방향키/WASD 입력으로 주인공을 움직입니다.
+// 기본 이동은 「주인공 이동 (타일형)」(HeroTileMovement)이고, 컴포넌트 추가에서 이 스크립트로 바꿀 수 있습니다.
+// 이 코드를 고쳐 이동 방식(속도, 대각선, 달리기 등)을 마음대로 바꿀 수 있습니다.
+// 걷기·대기 그림은 애니메이터 컴포넌트가 정합니다. 이 스크립트는 애니메이터 파라미터
+// IsMoving(걷는 중인지)과 Dir(0 아래 · 1 위 · 2 왼쪽 · 3 오른쪽)만 바꿔 줍니다.
+// 좌표: 오른쪽이 +x, 아래쪽이 +y 입니다 (단위: 칸).
+public class HeroMovement : MonoBehaviour
+{
+    [Header("이동")]
+    [Tooltip("1초에 이동하는 칸 수입니다")]
+    public float speed = 4f;
+
+    [Tooltip("켜면 대각선으로 움직일 때도 같은 속도로 움직입니다")]
+    public bool normalizeDiagonal = true;
+
+    [Header("달리기")]
+    [Tooltip("Shift를 누르고 있는 동안 곱해지는 속도 배율입니다")]
+    [Range(1, 3)]
+    public float runMultiplier = 1.6f;
+
+    private Hero hero;
+    private Animator animator;
+
+    void Start()
+    {
+        hero = GetComponent<Hero>();
+        animator = GetComponent<Animator>();     // 애니메이터 컴포넌트 (없으면 null)
+    }
+
+    void Update()
+    {
+        // 왼쪽 -1 · 오른쪽 +1 / 위 -1 · 아래 +1
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        bool moving = h != 0 || v != 0;
+
+        // 애니메이터 창의 상태(대기_아래, 걷기_오른쪽 …)가 이 두 파라미터로 바뀝니다
+        if (animator != null)
+        {
+            animator.SetBool("IsMoving", moving);
+            if (moving)
+                animator.SetInteger("Dir", DirIndex(h, v));
+        }
+
+        if (!moving)
+            return;
+
+        Vector2 dir = new Vector2(h, v);
+        if (normalizeDiagonal)
+            dir = dir.normalized;
+
+        float s = speed;
+        if (Input.GetKey(KeyCode.LeftShift))
+            s = s * runMultiplier;
+
+        hero.Face(dir);                          // 바라보는 방향 (공격·손전등 방향에 쓰임)
+        hero.Move(dir * s * Time.deltaTime);     // 벽에 막히면 막히지 않은 쪽으로 미끄러지듯 이동
+    }
+
+    // 입력 방향 → 애니메이터 Dir 값 (가로 입력이 더 크면 왼쪽·오른쪽, 아니면 위·아래)
+    int DirIndex(float h, float v)
+    {
+        if (Mathf.Abs(h) > Mathf.Abs(v))
+            return h < 0 ? 2 : 3;
+        return v < 0 ? 1 : 0;
+    }
+}
+`;
+/* 직전 기본 코드 (설명 주석만 다름 · 고치지 않은 것으로 봄) */
+const HERO_CODE_V2=`using UnityEngine;
+
 // 주인공 이동 스크립트
 // 주인공 컴포넌트를 추가하면 함께 붙습니다. 방향키/WASD 입력으로 주인공을 움직입니다.
 // 이 코드를 고쳐 이동 방식(속도, 대각선, 달리기 등)을 마음대로 바꿀 수 있습니다.
@@ -7132,22 +7587,303 @@ public class HeroMovement : MonoBehaviour
     }
 }
 `;
-function heroScript(p,create){
+/* 주인공 이동 (타일형) · 기본 */
+const HERO_TILE_CODE=`using UnityEngine;
+
+// 주인공 이동 스크립트 (타일형)
+// 주인공 컴포넌트를 추가하면 기본으로 붙습니다. 방향키/WASD를 누르면 칸 가운데에서 옆 칸 가운데로 한 칸씩 걸어갑니다 (좀비고처럼).
+// 짧게 누르면 딱 한 칸, holdDelay(초)보다 오래 누르고 있으면 멈추지 않고 칸 단위로 이어서 걷습니다.
+// 대각선 없이 상하좌우로만 움직입니다.
+// 막힌 칸(벽 · NPC · 박스 콜라이더)으로는 가지 않고 그쪽을 바라보기만 합니다.
+// 칸에 묶이지 않고 픽셀 단위로 부드럽게 움직이려면 컴포넌트 추가에서 「주인공 이동 (픽셀형)」으로 바꾸세요.
+// 걷기·대기 그림은 애니메이터 컴포넌트가 정합니다. 이 스크립트는 애니메이터 파라미터
+// IsMoving(걷는 중인지)과 Dir(0 아래 · 1 위 · 2 왼쪽 · 3 오른쪽)만 바꿔 줍니다.
+// 좌표: 오른쪽이 +x, 아래쪽이 +y 입니다 (단위: 칸 · 정수 좌표가 칸 가운데).
+public class HeroTileMovement : MonoBehaviour
+{
+    [Header("이동")]
+    [Tooltip("1초에 이동하는 칸 수입니다")]
+    public float speed = 5f;
+
+    [Tooltip("이 시간(초)보다 오래 누르고 있으면 계속 걷습니다. 그보다 짧게 누르면 한 칸만 갑니다")]
+    [Range(0, 1)]
+    public float holdDelay = 0.3f;
+
+    [Header("달리기")]
+    [Tooltip("Shift를 누르고 있는 동안 곱해지는 속도 배율입니다")]
+    [Range(1, 3)]
+    public float runMultiplier = 1.6f;
+
+    private Hero hero;
+    private Animator animator;
+    private bool stepping = false;     // 한 칸을 걷는 중인지
+    private Vector2 target;            // 이번 걸음의 도착 칸
+    private Vector2 dir;               // 마지막으로 걸은 방향
+    private float lastH = 0f;          // 지난 프레임의 입력
+    private float lastV = 0f;
+    private float holdTime = 0f;       // 같은 방향을 누르고 있는 시간
+    private bool queued = false;       // 걷는 도중 새로 누른 입력 (도착하면 그 방향으로 한 칸 더)
+    private float queuedH = 0f;
+    private float queuedV = 0f;
+
+    void Start()
+    {
+        hero = GetComponent<Hero>();
+        animator = GetComponent<Animator>();     // 애니메이터 컴포넌트 (없으면 null)
+        hero.position = Snap(hero.position);     // 칸 가운데에서 시작
+    }
+
+    void Update()
+    {
+        // 왼쪽 -1 · 오른쪽 +1 / 위 -1 · 아래 +1
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        // 두 방향을 함께 누르면 지금 걷던 축을 그대로 (대각선 없음)
+        if (h != 0 && v != 0)
+        {
+            if (dir.x != 0)
+                v = 0;
+            else
+                h = 0;
+        }
+        bool pressing = h != 0 || v != 0;
+        bool fresh = pressing && (h != lastH || v != lastV);   // 방금 눌렀거나 방향을 바꿈
+        lastH = h;
+        lastV = v;
+        if (fresh)
+            holdTime = 0f;
+        if (pressing)
+            holdTime += Time.deltaTime;
+        else
+            holdTime = 0f;
+
+        if (!stepping)
+        {
+            // 새로 누르면 한 칸 · 오래 누르고 있으면 계속
+            if (fresh || (pressing && holdTime >= holdDelay))
+                StartStep(h, v);
+        }
+        else if (fresh)
+        {
+            queued = true;
+            queuedH = h;
+            queuedV = v;
+        }
+
+        if (stepping)
+        {
+            float s = speed;
+            if (Input.GetKey(KeyCode.LeftShift))
+                s = s * runMultiplier;
+
+            Vector2 next = Vector2.MoveTowards(hero.position, target, s * Time.deltaTime);
+            if (!hero.Move(next - hero.position))
+            {
+                // 걷는 도중 길이 막히면(몬스터가 끼어듦 등) 가까운 칸 가운데로 돌아갑니다
+                target = Snap(hero.position);
+            }
+            if (Vector2.Distance(hero.position, target) < 0.01f)
+            {
+                hero.position = target;          // 칸 가운데에 딱 맞춤
+                stepping = false;
+                // 걷는 도중 다시 눌렀거나 오래 누르고 있으면 멈추지 않고 다음 칸으로
+                if (queued)
+                    StartStep(queuedH, queuedV);
+                else if (pressing && holdTime >= holdDelay)
+                    StartStep(h, v);
+                queued = false;
+            }
+        }
+
+        // 애니메이터 창의 상태(대기_아래, 걷기_오른쪽 …)가 이 파라미터로 바뀝니다
+        if (animator != null)
+            animator.SetBool("IsMoving", stepping);
+    }
+
+    // 옆 칸으로 한 걸음을 시작합니다 (막혀 있으면 바라보기만)
+    void StartStep(float h, float v)
+    {
+        dir = new Vector2(h, v);
+        hero.Face(dir);                          // 바라보는 방향 (공격·손전등 방향에 쓰임)
+        if (animator != null)
+            animator.SetInteger("Dir", DirIndex(h, v));
+
+        if (!hero.canMove)                       // 대화 중에는 움직이지 않음
+            return;
+        if (!hero.CanMove(dir))                  // 막힌 칸이면 바라보기만
+            return;
+
+        target = Snap(hero.position) + dir;
+        stepping = true;
+    }
+
+    // 가장 가까운 칸 가운데 좌표
+    Vector2 Snap(Vector2 p)
+    {
+        return new Vector2(Mathf.Round(p.x), Mathf.Round(p.y));
+    }
+
+    // 입력 방향 → 애니메이터 Dir 값
+    int DirIndex(float h, float v)
+    {
+        if (Mathf.Abs(h) > Mathf.Abs(v))
+            return h < 0 ? 2 : 3;
+        return v < 0 ? 1 : 0;
+    }
+}
+`;
+/* 첫 타일형 코드 (짧게 눌러도 두 칸 가던 것) · 고치지 않았으면 새 코드로 바꿈 */
+const HERO_TILE_V1=`using UnityEngine;
+
+// 주인공 이동 스크립트 (타일형)
+// 주인공 컴포넌트를 추가하면 기본으로 붙습니다. 방향키/WASD를 누르면 칸 가운데에서 옆 칸 가운데로 한 칸씩 걸어갑니다 (좀비고처럼).
+// 누르고 있으면 멈추지 않고 칸 단위로 이어서 걷고, 대각선 없이 상하좌우로만 움직입니다.
+// 막힌 칸(벽 · NPC · 박스 콜라이더)으로는 가지 않고 그쪽을 바라보기만 합니다.
+// 칸에 묶이지 않고 픽셀 단위로 부드럽게 움직이려면 컴포넌트 추가에서 「주인공 이동 (픽셀형)」으로 바꾸세요.
+// 걷기·대기 그림은 애니메이터 컴포넌트가 정합니다. 이 스크립트는 애니메이터 파라미터
+// IsMoving(걷는 중인지)과 Dir(0 아래 · 1 위 · 2 왼쪽 · 3 오른쪽)만 바꿔 줍니다.
+// 좌표: 오른쪽이 +x, 아래쪽이 +y 입니다 (단위: 칸 · 정수 좌표가 칸 가운데).
+public class HeroTileMovement : MonoBehaviour
+{
+    [Header("이동")]
+    [Tooltip("1초에 이동하는 칸 수입니다")]
+    public float speed = 5f;
+
+    [Header("달리기")]
+    [Tooltip("Shift를 누르고 있는 동안 곱해지는 속도 배율입니다")]
+    [Range(1, 3)]
+    public float runMultiplier = 1.6f;
+
+    private Hero hero;
+    private Animator animator;
+    private bool stepping = false;     // 한 칸을 걷는 중인지
+    private Vector2 target;            // 이번 걸음의 도착 칸
+    private Vector2 dir;               // 마지막으로 누른 방향
+
+    void Start()
+    {
+        hero = GetComponent<Hero>();
+        animator = GetComponent<Animator>();     // 애니메이터 컴포넌트 (없으면 null)
+        hero.position = Snap(hero.position);     // 칸 가운데에서 시작
+    }
+
+    void Update()
+    {
+        if (!stepping)
+        {
+            TryStep();
+        }
+
+        if (stepping)
+        {
+            float s = speed;
+            if (Input.GetKey(KeyCode.LeftShift))
+                s = s * runMultiplier;
+
+            Vector2 next = Vector2.MoveTowards(hero.position, target, s * Time.deltaTime);
+            if (!hero.Move(next - hero.position))
+            {
+                // 걷는 도중 길이 막히면(몬스터가 끼어듦 등) 가까운 칸 가운데로 돌아갑니다
+                target = Snap(hero.position);
+            }
+            if (Vector2.Distance(hero.position, target) < 0.01f)
+            {
+                hero.position = target;          // 칸 가운데에 딱 맞춤
+                stepping = false;
+                TryStep();                       // 키를 누르고 있으면 멈추지 않고 다음 칸으로
+            }
+        }
+
+        // 애니메이터 창의 상태(대기_아래, 걷기_오른쪽 …)가 이 파라미터로 바뀝니다
+        if (animator != null)
+            animator.SetBool("IsMoving", stepping);
+    }
+
+    // 방향키가 눌려 있으면 옆 칸으로 한 걸음을 시작합니다
+    void TryStep()
+    {
+        // 왼쪽 -1 · 오른쪽 +1 / 위 -1 · 아래 +1
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        // 두 방향을 함께 누르면 지금 걷던 축을 그대로 (대각선 없음)
+        if (h != 0 && v != 0)
+        {
+            if (dir.x != 0)
+                v = 0;
+            else
+                h = 0;
+        }
+        if (h == 0 && v == 0)
+            return;
+
+        dir = new Vector2(h, v);
+        hero.Face(dir);                          // 바라보는 방향 (공격·손전등 방향에 쓰임)
+        if (animator != null)
+            animator.SetInteger("Dir", DirIndex(h, v));
+
+        if (!hero.canMove)                       // 대화 중에는 움직이지 않음
+            return;
+        if (!hero.CanMove(dir))                  // 막힌 칸이면 바라보기만
+            return;
+
+        target = Snap(hero.position) + dir;
+        stepping = true;
+    }
+
+    // 가장 가까운 칸 가운데 좌표
+    Vector2 Snap(Vector2 p)
+    {
+        return new Vector2(Mathf.Round(p.x), Mathf.Round(p.y));
+    }
+
+    // 입력 방향 → 애니메이터 Dir 값
+    int DirIndex(float h, float v)
+    {
+        if (Mathf.Abs(h) > Mathf.Abs(v))
+            return h < 0 ? 2 : 3;
+        return v < 0 ? 1 : 0;
+    }
+}
+`;
+/* 주인공 이동 스크립트 두 가지: tile(타일형 · 기본) / free(픽셀형) — p.heroScripts={tile:id, free:id} · p.heroScript는 예전 저장 호환(픽셀형) */
+const HERO_KINDS={tile:{name:'HeroTileMovement',label:'주인공 이동 (타일형)',codes:()=>[HERO_TILE_CODE,HERO_TILE_V1]},free:{name:HERO_SCRIPT,label:'주인공 이동 (픽셀형)',codes:()=>[HERO_CODE,HERO_CODE_V2]}};
+const heroKindCode=k=>{const c=HERO_KINDS[k].codes()[0];return typeof setv!=='undefined'&&setv.ko?enToKo(c):c};
+function heroScriptK(kind,p,create){
   p=p||P;if(!p)return null;if(!Array.isArray(p.scripts))p.scripts=[];
-  let s=p.heroScript&&p.scripts.find(x=>x.id===p.heroScript);
-  if(!s)s=p.scripts.find(x=>x.name===HERO_SCRIPT);
-  if(!s&&create){s={id:uid(),name:HERO_SCRIPT,code:heroCodeDef()};p.scripts.push(s)}
-  if(s)p.heroScript=s.id;
+  if(!p.heroScripts||typeof p.heroScripts!=='object')p.heroScripts={};
+  const K=HERO_KINDS[kind],idOf=kind==='free'?(p.heroScripts.free||p.heroScript):p.heroScripts[kind];
+  let s=idOf&&p.scripts.find(x=>x.id===idOf);
+  if(!s)s=p.scripts.find(x=>x.name===K.name);
+  if(!s&&create){s={id:uid(),name:K.name,code:heroKindCode(kind)};p.scripts.push(s)}
+  if(s){p.heroScripts[kind]=s.id;if(kind==='free')p.heroScript=s.id}
   return s||null;
 }
-function giveHeroScript(o,p){
-  const s=heroScript(p,true);if(!s)return null;
+/* 예전 이름: 픽셀형(HeroMovement) */
+function heroScript(p,create){return heroScriptK('free',p,create)}
+/* 스크립트 → 주인공 이동 종류 (tile · free · null) */
+function heroKindOf(s,p){if(!s)return null;for(const k in HERO_KINDS){const h=heroScriptK(k,p,false);if(h&&h.id===s.id)return k}return null}
+/* 고치지 않은 기본 코드인지 (한글 스크립트 변환본 포함) */
+function heroCodeIsDef(kind,code){const t=String(code||'').replace(/\r\n/g,'\n');return HERO_KINDS[kind].codes().some(c=>{if(t===c)return true;try{return t===enToKo(c)}catch(e){return false}})}
+/* 주인공에 이동 스크립트 붙이기 · 다른 종류의 이동 스크립트는 떼어 냄 (교체) */
+function giveHeroScript(o,p,kind){
+  kind=kind||'tile';const s=heroScriptK(kind,p,true);if(!s)return null;
+  for(const k in HERO_KINDS){if(k===kind)continue;const h=heroScriptK(k,p,false);if(h&&o.scripts)o.scripts=o.scripts.filter(x=>x.sid!==h.id)}
   if(!(o.scripts||[]).some(x=>x.sid===s.id))(o.scripts||(o.scripts=[])).unshift({id:uid(),sid:s.id,vals:{}});
   return s;
 }
+/* 컴포넌트 추가 · 인스펙터 「이동 방식」: 타일형 ↔ 픽셀형 교체 */
+function heroSwapKind(o,kind){
+  const cur0=heroKindOf((()=>{const mi=heroMoveInst(o);return mi&&scriptOf(mi.sid)})());
+  if(cur0===kind){toast(_t('이미 {n} 스크립트가 붙어 있습니다',{n:_t(HERO_KINDS[kind].label)}));return}
+  giveHeroScript(o,undefined,kind);commit();markDirty();renderInsp();renderScripts();need();
+  toast(_t('{n}(으)로 교체했습니다 · {f}.cs',{n:_t(HERO_KINDS[kind].label),f:HERO_KINDS[kind].name}));
+}
 function dropHeroScript(o){
-  const s=heroScript();if(!s||!o.scripts)return;
-  o.scripts=o.scripts.filter(x=>x.sid!==s.id);if(!o.scripts.length)delete o.scripts;
+  if(!o.scripts)return;
+  for(const k in HERO_KINDS){const h=heroScriptK(k,undefined,false);if(h)o.scripts=o.scripts.filter(x=>x.sid!==h.id)}
+  if(!o.scripts.length)delete o.scripts;
 }
 /* 역할 컴포넌트 기본 동작 스크립트 — 엔진에 숨겨져 있던 동작을 전부 C# 스크립트로 꺼냈습니다.
    컴포넌트(몬스터·NPC·아이템·포탈·이벤트 트리거·주인공)를 붙이면 함께 붙고, 마음대로 고치거나 떼어 낼 수 있습니다. */
@@ -7296,63 +8032,80 @@ NpcTalk:`using UnityEngine;
 // NPC 대화 스크립트
 // NPC 컴포넌트를 추가하면 함께 붙습니다.
 // 주인공이 가까이에서 Space를 누르면 HeroCombat 스크립트의 hero.Interact()가 이 오브젝트의 OnInteract()를 부릅니다.
-// 대사는 NPC 컴포넌트(인스펙터)의 「대사」를 씁니다.
-// 「Dialog UI」 칸에 연결한 UI 그룹(대화창)의 「이름」 · 「대사」 텍스트에 글을 넣고 엽니다.
-// 칸을 비워 두면 엔진 기본 대화창(Dialog.Show)을 씁니다.
+// 대사는 NPC 컴포넌트(인스펙터)의 「대사」 목록을 차례로 씁니다 (npc.lineCount · npc.GetLine(번호)).
+// 대화창이 열려 있는 동안 화면을 클릭하거나 Space를 누르면 다음 대사로 넘어가고, 마지막 대사 뒤에는 닫힙니다.
+// 대화하는 동안 주인공은 움직이지 않습니다 (Hero.main.canMove).
+// 「Dialog UI」 칸을 비워 두면 엔진 기본 대화창(npc.Talk())을 씁니다.
 public class NpcTalk : MonoBehaviour
 {
     [Header("대화창")]
     [Tooltip("대사를 띄울 대화창 UI 그룹입니다. 그룹 안에 「이름」 · 「대사」 텍스트가 있어야 합니다")]
     public UIGroup dialogUI;
 
-    [Tooltip("주인공이 이 거리(칸)보다 멀어지면 대화창을 닫습니다")]
-    public float closeDistance = 2.5f;
-
     private Npc npc;
     private bool talking = false;
+    private int line = 0;
 
     void Start()
     {
         npc = GetComponent<Npc>();
     }
 
-    // 말을 걸면 대화창을 열고, 열려 있을 때 다시 말을 걸면 닫습니다
+    // 말을 걸면 첫 대사로 대화창을 엽니다. 열려 있을 때 다시 말을 걸면 다음 대사로 넘어갑니다
     void OnInteract()
     {
         if (dialogUI == null)
         {
-            Dialog.Show(name, npc.text);
+            npc.Talk();
             return;
         }
         if (talking)
         {
-            CloseDialog();
+            NextLine();
             return;
         }
-        UIScreen.SetText(dialogUI.name, "이름", name);
-        UIScreen.SetText(dialogUI.name, "대사", npc.text);
-        UIScreen.Show(dialogUI.name);
+        line = 0;
         talking = true;
+        Hero.main.canMove = false;
+        UIScreen.SetText(dialogUI.name, "이름", name);
+        ShowLine();
+        UIScreen.Show(dialogUI.name);
     }
 
-    // 주인공이 멀어지거나 Esc를 누르면 닫습니다
+    // 대화창이 열려 있는 동안 화면을 클릭하면 다음 대사로 넘어갑니다
     void Update()
     {
         if (!talking)
         {
             return;
         }
-        float d = Vector2.Distance(Hero.main.position, transform.position);
-        if (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetMouseButtonDown(0))
+        {
+            NextLine();
+        }
+    }
+
+    void ShowLine()
+    {
+        UIScreen.SetText(dialogUI.name, "대사", npc.GetLine(line));
+    }
+
+    void NextLine()
+    {
+        line = line + 1;
+        if (line >= npc.lineCount)
         {
             CloseDialog();
+            return;
         }
+        ShowLine();
     }
 
     void CloseDialog()
     {
         UIScreen.Hide(dialogUI.name);
         talking = false;
+        Hero.main.canMove = true;
     }
 }
 `,
@@ -7495,6 +8248,7 @@ const ROLE_TIP={
   PortalTeleport:'주인공이 이 칸에 들어오면(OnHeroEnter) 지정한 씬으로 이동시키는 C# 스크립트입니다.'
 };
 const NPCTALK_OLD="using UnityEngine;\n\n// NPC 대화 스크립트\n// NPC 컴포넌트를 추가하면 함께 붙습니다.\n// 주인공이 가까이에서 Space를 누르면 HeroCombat 스크립트의 hero.Interact()가 이 오브젝트의 OnInteract()를 부릅니다.\n// 대사는 NPC 컴포넌트(인스펙터)의 「대사」를 씁니다. 여러 줄 대화, 조건에 따라 다른 대사 등으로 바꿔 보세요.\npublic class NpcTalk : MonoBehaviour\n{\n    private Npc npc;\n\n    void Start()\n    {\n        npc = GetComponent<Npc>();\n    }\n\n    void OnInteract()\n    {\n        Dialog.Show(name, npc.text);\n    }\n}\n";
+const NPCTALK_V2="using UnityEngine;\n\n// NPC 대화 스크립트\n// NPC 컴포넌트를 추가하면 함께 붙습니다.\n// 주인공이 가까이에서 Space를 누르면 HeroCombat 스크립트의 hero.Interact()가 이 오브젝트의 OnInteract()를 부릅니다.\n// 대사는 NPC 컴포넌트(인스펙터)의 「대사」를 씁니다.\n// 「Dialog UI」 칸에 연결한 UI 그룹(대화창)의 「이름」 · 「대사」 텍스트에 글을 넣고 엽니다.\n// 칸을 비워 두면 엔진 기본 대화창(Dialog.Show)을 씁니다.\npublic class NpcTalk : MonoBehaviour\n{\n    [Header(\"대화창\")]\n    [Tooltip(\"대사를 띄울 대화창 UI 그룹입니다. 그룹 안에 「이름」 · 「대사」 텍스트가 있어야 합니다\")]\n    public UIGroup dialogUI;\n\n    [Tooltip(\"주인공이 이 거리(칸)보다 멀어지면 대화창을 닫습니다\")]\n    public float closeDistance = 2.5f;\n\n    private Npc npc;\n    private bool talking = false;\n\n    void Start()\n    {\n        npc = GetComponent<Npc>();\n    }\n\n    // 말을 걸면 대화창을 열고, 열려 있을 때 다시 말을 걸면 닫습니다\n    void OnInteract()\n    {\n        if (dialogUI == null)\n        {\n            Dialog.Show(name, npc.text);\n            return;\n        }\n        if (talking)\n        {\n            CloseDialog();\n            return;\n        }\n        UIScreen.SetText(dialogUI.name, \"이름\", name);\n        UIScreen.SetText(dialogUI.name, \"대사\", npc.text);\n        UIScreen.Show(dialogUI.name);\n        talking = true;\n    }\n\n    // 주인공이 멀어지거나 Esc를 누르면 닫습니다\n    void Update()\n    {\n        if (!talking)\n        {\n            return;\n        }\n        float d = Vector2.Distance(Hero.main.position, transform.position);\n        if (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))\n        {\n            CloseDialog();\n        }\n    }\n\n    void CloseDialog()\n    {\n        UIScreen.Hide(dialogUI.name);\n        talking = false;\n    }\n}\n";
 const roleCodeDef=n=>{const c=ROLE_CODE[n]||'';return typeof setv!=='undefined'&&setv.ko?enToKo(c):c};
 function roleScript(name,p,create){
   p=p||P;if(!p)return null;if(!Array.isArray(p.scripts))p.scripts=[];if(!p.roleIds||typeof p.roleIds!=='object')p.roleIds={};
@@ -7529,11 +8283,17 @@ const DLG_NO=new Set();   /* 이번 편집에서 「만들지 않기」를 고�
 function dlgGroup(m){const G=m.uiGroups||[];return G.find(g=>g.dialog)||G.find(g=>g.name===_t('대화창')||g.name==='대화창')||null}
 /* 예전 기본 NpcTalk(대화창 칸 없음)을 손대지 않았다면 새 기본 코드로 바꿈 · 고친 스크립트는 그대로 둠 */
 function npcTalkUpgrade(p){
-  const s=roleScript('NpcTalk',p);if(!s||/dialogUI/.test(s.code||''))return!!s;
-  const t=String(s.code||'').replace(/\r/g,'').trim(),o=NPCTALK_OLD.trim();
-  let same=t===o;if(!same){try{same=t===enToKo(NPCTALK_OLD).trim()}catch(e){}}
+  npcHintUpgrade(p);
+  const s=roleScript('NpcTalk',p);if(!s||/GetLine|대사가져오기/.test(s.code||''))return!!s;
+  const t=String(s.code||'').replace(/\r/g,'').trim();
+  let same=false;for(const src of[NPCTALK_OLD,NPCTALK_V2]){if(t===src.trim())same=true;else{try{if(t===enToKo(src).trim())same=true}catch(e){}}if(same)break}
   if(same){s.code=roleCodeDef('NpcTalk');return true}
   return false;
+}
+/* 예전 대화창의 안내 문구(「Space: 닫기 ▶」)를 손대지 않았다면 「클릭: 다음 ▶」으로 */
+function npcHintUpgrade(p){
+  const olds=new Set(['Space: 닫기 ▶',_t('Space: 닫기 ▶')]);
+  (p.maps||[]).forEach(m=>{const g=dlgGroup(m);if(!g)return;(m.ui||[]).forEach(u=>{if(u.group===g.id&&u.name==='대화 안내'&&u.props&&olds.has(u.props.text))u.props.text=_t('클릭: 다음 ▶')})});
 }
 function npcLinkDialog(m,o,g,force){
   const s=roleScript('NpcTalk');if(!s||!o.scripts)return false;const inst=o.scripts.find(x=>x.sid===s.id);if(!inst)return false;
@@ -7550,7 +8310,7 @@ function ensureDialogUi(m){
   mk({type:'panel',name:'대화 상자',anchor:'bs',l:24,r:24,h:104,y:-16,w:592,props:{bg:'#11131a',alpha:.9,radius:12,bw:2,border:'#f6cd2a'}});
   mk({type:'text',name:'이름',anchor:'bl',x:44,y:-86,w:300,h:22,props:{text:_t('이름'),color:'#f6cd2a',size:14,align:'left',valign:'mid',bold:true}});
   mk({type:'text',name:'대사',anchor:'bs',l:44,r:44,y:-36,h:44,props:{text:_t('대사가 여기에 표시됩니다'),color:'#ffffff',size:14,align:'left',valign:'top'}});
-  mk({type:'text',name:'대화 안내',anchor:'br',x:-40,y:-18,w:220,h:16,props:{text:_t('Space: 닫기 ▶'),color:'#9aa0ab',size:11,align:'right',valign:'mid'}});
+  mk({type:'text',name:'대화 안내',anchor:'br',x:-40,y:-18,w:220,h:16,props:{text:_t('클릭: 다음 ▶'),color:'#9aa0ab',size:11,align:'right',valign:'mid'}});
   return g;
 }
 function npcDialogCheck(m,o){
@@ -7569,8 +8329,8 @@ function npcDialogCheck(m,o){
     }}]);
 }
 function heroMoveInst(o){
-  const hs=heroScript(),L=o.scripts||[];
-  return L.find(x=>hs&&x.sid===hs.id)||L.find(x=>{const s=scriptOf(x.sid);return s&&parseCS(s.code).methods.Update})||null;
+  const L=o.scripts||[],ids=Object.keys(HERO_KINDS).map(k=>heroScriptK(k,undefined,false)).filter(Boolean).map(s=>s.id);
+  return L.find(x=>ids.includes(x.sid))||L.find(x=>{const s=scriptOf(x.sid);return s&&parseCS(s.code).methods.Update})||null;
 }
 /* 소유자(게임 오브젝트 또는 UI 요소)에 붙은 스크립트의 지정한 메서드들을 실행 */
 function csRunMethods(m,o,fns){
@@ -7613,7 +8373,7 @@ function openModal(title,body,buttons){
   (buttons&&buttons.length?buttons:[{t:'닫기'}]).forEach(b=>{const x=document.createElement('button');x.className='btn '+(b.cls||'');x.style.height='26px';x.textContent=b.t;x.onclick=()=>{if(!b.fn||b.fn()!==false)closeModal()};f.append(x)});
   $('#modal').hidden=false;const first=$('#mBody input,#mBody textarea,#mBody select');if(first)first.focus();
 }
-function closeModal(){$('#modal').hidden=true;$('#modal .modal').classList.remove('wide','tpfix')}
+function closeModal(){$('#modal').hidden=true;$('#modal .modal').classList.remove('wide','tpfix','rsmw')}
 $('#modal').addEventListener('pointerdown',e=>{if(e.target.id==='modal')closeModal()});
 const field=(l,h)=>`<label class="f"><span>${l}</span>${h}</label>`;
 function openProjectSettings(){
@@ -7626,7 +8386,7 @@ function openSceneSettings(){
   renderInsp();renderHier();need();
 }
 function exportData(withImg){
-  return{format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:P.name,start:P.start,playerSprite:P.playerSprite,nextN:P.nextN,scripts:P.scripts,heroScript:P.heroScript,heroInit:true,roleIds:P.roleIds,roleInit:true,sfmap:P.sfmap,anim:anData(),animInit:true,animV2:true,mgrs:P.mgrs,mgrInit:true,mgrV2:!!P.mgrV2,vgraphs:P.vgraphs||[],stiles:P.stiles||[],stN:P.stN||0,audio:audios.map(a=>Object.assign({id:a.id,name:a.name,size:a.size,dur:a.dur,mime:a.mime},withImg?{data:a.src}:{})),fonts:fonts.map(a=>Object.assign({id:a.id,name:a.name,size:a.size},withImg?{data:a.src}:{})),
+  return{format:'dungeon-map-maker',version:2,tileSize:TS,tilesPerSheetMax:PER,name:P.name,start:P.start,playerSprite:P.playerSprite,nextN:P.nextN,scripts:P.scripts,heroScript:P.heroScript,heroScripts:P.heroScripts,heroTileInit:P.heroTileInit,heroInit:true,roleIds:P.roleIds,roleInit:true,sfmap:P.sfmap,anim:anData(),animInit:true,animV2:true,mgrs:P.mgrs,mgrInit:true,mgrV2:!!P.mgrV2,vgraphs:P.vgraphs||[],stiles:P.stiles||[],stN:P.stN||0,audio:audios.map(a=>Object.assign({id:a.id,name:a.name,size:a.size,dur:a.dur,mime:a.mime},withImg?{data:a.src}:{})),fonts:fonts.map(a=>Object.assign({id:a.id,name:a.name,size:a.size},withImg?{data:a.src}:{})),
     assets:assets.map(a=>{const r={id:a.id,n:a.n,name:a.name,kind:a.kind,tileW:a.tw,tileH:a.th,cols:a.cols,rows:a.rows,theme:a.theme,solid:a.solid,spriteMode:a.mode||'single',sprites:(a.slices||[]).map(q=>({id:q.id,name:q.name,x:q.x,y:q.y,w:q.w,h:q.h,pivotX:q.px,pivotY:q.py}))};if(withImg)r.image=a.src;return r}),maps:P.maps};
 }
 function doExport(){
@@ -7648,7 +8408,7 @@ function doImport(){
       const p=JSON.parse($('#imTxt').value);if(!validProject(p))throw 0;
       normProject(p);
       const keep=p.assets,keepAu=p.audio,keepFn=p.fonts;delete p.assets;delete p.audio;delete p.fonts;
-      P={name:p.name||_t('새 게임'),start:p.maps.some(m=>m.id===p.start)?p.start:p.maps[0].id,maps:p.maps,nextN:p.nextN,playerSprite:p.playerSprite,scripts:p.scripts,heroScript:p.heroScript,heroInit:true,roleIds:p.roleIds,roleInit:true,anim:p.anim,animInit:true,animV2:true,mgrs:p.mgrs,mgrInit:true,mgrV2:!!p.mgrV2,vgraphs:Array.isArray(p.vgraphs)?p.vgraphs:[],stiles:p.stiles,stN:p.stN,uiDocs:p.uiDocs,afolders:[],afmap:{},sfmap:p.sfmap||{}};try{UIB.migrate()}catch(e){console.error(e)}
+      P={name:p.name||_t('새 게임'),start:p.maps.some(m=>m.id===p.start)?p.start:p.maps[0].id,maps:p.maps,nextN:p.nextN,playerSprite:p.playerSprite,scripts:p.scripts,heroScript:p.heroScript,heroScripts:p.heroScripts,heroTileInit:p.heroTileInit,heroInit:true,roleIds:p.roleIds,roleInit:true,anim:p.anim,animInit:true,animV2:true,mgrs:p.mgrs,mgrInit:true,mgrV2:!!p.mgrV2,vgraphs:Array.isArray(p.vgraphs)?p.vgraphs:[],stiles:p.stiles,stN:p.stN,uiDocs:p.uiDocs,afolders:[],afmap:{},sfmap:p.sfmap||{}};try{UIB.migrate()}catch(e){console.error(e)}
       (async()=>{
         if(Array.isArray(keep)&&keep.some(a=>a.image)){
           assets=[];reindex();
@@ -8834,7 +9594,7 @@ function enter(id,tx,ty){
   if(sx==null){sx=1;sy=1}
   {const sp0=startSpawn(m);play.spr=sp0&&sp0.props.sprite||'';play.sx=sp0&&sp0.props.sx||1;play.sy=sp0&&sp0.props.sy||1}
   (m.ui||[]).forEach(u=>uiToggleApply(m,u));
-  play.m=m;play.px=(sx+.5)*TS;play.py=(sy+.5)*TS;play.gone=new Set();play.done=new Set();play.dialog=null;play.lock=true;play.hit=0;play.atk=0;
+  play.m=m;play.px=(sx+.5)*TS;play.py=(sy+.5)*TS;play.gone=new Set();play.done=new Set();play.dialog=null;play.heroLock=false;play.lock=true;play.hit=0;play.atk=0;
   play.mons=m.objs.filter(o=>o.type==='monster').map(o=>({o,x:(o.x+.5)*TS,y:(o.y+.5)*TS,hp:o.props.hp||3,dx:0,dy:0,t:0,flash:0,dead:false}));
   /* 자식의 부모 기준 오프셋 (부모가 어떻게 움직여도 따라감) */
   m.objs.forEach(o=>{const par=o.parent&&m.objs.find(q=>q.id===o.parent);if(par){o._lx=o.x-par.x;o._ly=o.y-par.y}});
@@ -8942,7 +9702,11 @@ function standable(x,y,r){
 /* 박스 콜라이더 2D 공용: 움직이는 주인공·몬스터 자신은 막는 대상에서 뺍니다 */
 function boxSolid(m,o){const b=o.props&&o.props.box;return !!b&&!b.trigger&&o.type!=='monster'&&!(o.type==='spawn'&&startSpawn(m)===o)&&objOn(m,o)}
 function boxOver(m,o,x,y,r){const b=o.props.box,w=objWorld(m,o,play),cx=w.x+(+b.ox||0)*TS,cy=w.y+(+b.oy||0)*TS,hw=(+b.w||1)*TS/2,hh=(+b.h||1)*TS/2;return x+r>cx-hw&&x-r<cx+hw&&y+r>cy-hh&&y-r<cy+hh}
-function say(name,text){play.dialog={name,text:text||'...'}}
+function say(name,text,queue){play.dialog={name,text:text||'...',queue:Array.isArray(queue)?queue.slice():[]}}
+/* 엔진 기본 대화창: 다음 대사로 · 마지막이면 닫기 (화면 클릭 · Space/Z/Enter · 행동 버튼) */
+function dialogNext(){const d=play&&play.dialog;if(!d)return;if(d.queue&&d.queue.length)play.dialog={name:d.name,text:d.queue.shift()||'...',queue:d.queue};else play.dialog=null}
+/* 대화 중 이동 봉쇄: 스크립트가 Hero.main.canMove = false로 막았거나, 씬의 대화창 UI 그룹이 열려 있으면 */
+function heroLocked(m){const p=play;if(!p)return false;if(p.heroLock||p.dialog)return true;m=m||p.m;const g=m&&dlgGroup(m);return!!(g&&(m.ui||[]).some(u=>u.group===g.id&&u.visible!==false))}
 const KMAP={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
 addEventListener('keydown',e=>{
   if(!play)return;
@@ -8952,7 +9716,7 @@ addEventListener('keydown',e=>{
   if(KMAP[e.code]){play.keys[KMAP[e.code]]=true;e.preventDefault()}
   else if(e.code==='Space'||e.code==='KeyZ'||e.code==='Enter'){
     /* 대화창이 열려 있으면 닫기만 하고 이번 키 누름은 스크립트에 넘기지 않음 (닫자마자 다시 말을 거는 것 방지) */
-    if(play.dialog&&!e.repeat){play.dialog=null;play.kdown.delete(e.code)}
+    if(play.dialog&&!e.repeat){dialogNext();play.kdown.delete(e.code)}
     e.preventDefault();
   }
 });
@@ -8965,11 +9729,17 @@ addEventListener('keyup',e=>{if(!play)return;if(play.kraw){play.kraw.delete(e.co
   document.addEventListener('click',rel,true);document.addEventListener('change',rel,true);
 })();
 addEventListener('blur',()=>{if(play){play.keys={};if(play.kraw)play.kraw.clear()}});
-pv.addEventListener('pointerdown',e=>{if(play&&play.kraw){const c='Mouse'+e.button;play.kraw.add(c);play.kdown.add(c)}});
+/* 게임 화면 어디를 눌러도 마우스 입력 (Input.GetMouseButtonDown) — 화면 위 HTML UI를 눌러도 · 플레이 막대 · 가상 패드는 제외.
+   엔진 기본 대화창이 열려 있으면 그 클릭은 다음 대사로 넘기기만 하고 게임에는 보내지 않음 */
+$('#play').addEventListener('pointerdown',e=>{
+  if(!play)return;const t=e.target;if(t&&t.closest&&t.closest('.pbar,#pad,#padA'))return;
+  if(play.dialog&&e.button===0){dialogNext();e.preventDefault();e.stopPropagation();return}
+  if(play.kraw){const c='Mouse'+e.button;play.kraw.add(c);play.kdown.add(c)}
+},true);
 addEventListener('pointerup',e=>{if(play&&play.kraw){const c='Mouse'+e.button;if(play.kraw.delete(c))play.kup.add(c)}});
 $$('#pad button').forEach(b=>{const k=b.dataset.k;b.addEventListener('pointerdown',e=>{e.preventDefault();if(play)play.keys[k]=true});['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{if(play)play.keys[k]=false}))});
 /* 모바일 행동 버튼 = Space 키 (스크립트의 Input.GetKeyDown(KeyCode.Space)로 받음) */
-$('#padA').addEventListener('pointerdown',e=>{e.preventDefault();if(!play)return;if(play.dialog){play.dialog=null;return}if(play.kraw){play.kraw.add('Space');play.kdown.add('Space')}});
+$('#padA').addEventListener('pointerdown',e=>{e.preventDefault();if(!play)return;if(play.dialog){dialogNext();return}if(play.kraw){play.kraw.add('Space');play.kdown.add('Space')}});
 ['pointerup','pointerleave','pointercancel'].forEach(ev=>$('#padA').addEventListener(ev,()=>{if(play&&play.kraw&&play.kraw.delete('Space'))play.kup.add('Space')}));
 /* 플레이 중 UI: 그리기 · 버튼 클릭 */
 function drawPlayUi(g,m,p,W,H,d){
@@ -9119,7 +9889,7 @@ function drawPlay(p,g,W,H,d){
     if(o===hsP){heroDrawn=true;drawMe();return}
     const mq=monOf.get(o);if(mq){drawMon(mq);return}
     if(!objOn(m,o))return;
-    if(o.type==='npc'||o.type==='portal'||(o.type==='item'&&!p.gone.has(o.id))||(o.type==='empty'&&(o.props.sprite||o.props.animator))){const w=o.parent||!Number.isInteger(o.x)||!Number.isInteger(o.y)?objWorld(m,o,p):null,X=w?w.x-TS/2:o.x*TS,Y=w?w.y-TS/2:o.y*TS;objArtA(g,m,o,X,Y,p.tm,p);if(o.type==='npc')label(g,o.name,X+TS/2,Y-2)}
+    if(o.type==='npc'||o.type==='portal'||(o.type==='item'&&!p.gone.has(o.id))||(o.type==='empty'&&(o.props.sprite||o.props.animator))){const w=o.parent||!Number.isInteger(o.x)||!Number.isInteger(o.y)?objWorld(m,o,p):null,X=w?w.x-TS/2:o.x*TS,Y=w?w.y-TS/2:o.y*TS;objArtA(g,m,o,X,Y,p.tm,p);if(o.type==='npc')objLabel(g,o,X,Y,o.name)}
   };
   const yOfP=o=>o===hsP?p.py/TS-.5:monOf.has(o)?monOf.get(o).y/TS-.5:o.y;
   const playObjs=m.objs.map((o,i)=>[o,i]).sort((a,b)=>ordOf(m,a[0])-ordOf(m,b[0])||yOfP(a[0])-yOfP(b[0])||a[1]-b[1]).map(q=>q[0]);
@@ -9137,7 +9907,7 @@ function drawPlay(p,g,W,H,d){
     g.textAlign='left';g.font='600 14px "IBM Plex Sans KR",sans-serif';g.fillStyle='#8fc1ff';g.fillText(p.dialog.name,bx+16,by+26);
     g.font='400 13px "IBM Plex Sans KR",sans-serif';g.fillStyle='#fff';
     wrap(g,p.dialog.text,bw-32).slice(0,4).forEach((ln,i)=>g.fillText(ln,bx+16,by+50+i*20));
-    g.fillStyle='#9399b3';g.textAlign='right';g.font='11px "IBM Plex Sans KR",sans-serif';g.fillText(_t('Space로 닫기'),bx+bw-14,by+bh-10);
+    g.fillStyle='#9399b3';g.textAlign='right';g.font='11px "IBM Plex Sans KR",sans-serif';g.fillText(p.dialog.queue&&p.dialog.queue.length?_t('클릭: 다음 ▶'):_t('클릭: 닫기'),bx+bw-14,by+bh-10);
   }
   /* 쓰러짐 화면은 엔진이 그리지 않고, 씬의 UI(쓰러짐 화면 그룹 + GameOverScreen 스크립트)가 OnHeroDeath()에서 엽니다 */
 }

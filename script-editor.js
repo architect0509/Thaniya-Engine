@@ -76,7 +76,7 @@ const CS_API={
   'SpriteRenderer':[_P('sprite','Sprite'),_P('color','Color'),_P('flipX','bool'),_P('flipY','bool'),_P('sortingOrder','int'),..._base],
   'Light':[_P('color','Color'),_P('intensity','float'),_P('radius','float'),_P('angle','float'),_P('dir','float'),_P('shadows','bool'),..._base],
   'Monster':[_P('hp','int'),_P('maxHp','int'),_P('speed','int'),_P('range','int'),_P('position','Vector2'),_P('isDead','bool'),_F('Move','bool','Vector2 delta'),_F('CanMove','bool','Vector2 delta'),_F('TakeDamage','int','int amount'),_F('Die','void'),..._base],
-  'Npc':[_P('text','string'),_F('Talk','void'),..._base],
+  'Npc':[_P('text','string'),_P('lineCount','int'),_F('GetLine','string','int index'),_F('Talk','void'),..._base],
   'Item':[_P('qty','int'),..._base],
   'Portal':[_P('tx','int'),_P('ty','int'),_P('targetScene','string'),_F('Teleport','bool'),..._base],
   'EventTrigger':[_P('text','string'),_P('once','bool'),..._base],
@@ -98,7 +98,7 @@ const CS_API={
 };
 function _mathf(){return['Abs','Sin','Cos','Tan','Asin','Acos','Atan','Sqrt','Floor','Ceil','Round','Sign','Clamp01'].map(n=>_F(n,'float','float f')).concat(['RoundToInt','FloorToInt','CeilToInt'].map(n=>_F(n,'int','float f')))}
 CS_API.Light2D=CS_API.Light;CS_API.NPC=CS_API.Npc;
-CS_API.Hero=[_P('position','Vector2'),_P('facing','Vector2'),_P('facingAngle','float'),_P('hp','int'),_P('maxHp','int'),_P('isMoving','bool'),_P('isDead','bool'),_P('isInvincible','bool'),_P('invincibleTime','float'),_P('radius','float'),_F('Move','bool','Vector2 delta'),_F('Face','void','Vector2 dir'),_F('CanMove','bool','Vector2 delta'),_F('Attack','int','int damage, float reach'),_F('Interact','bool','float distance'),_F('TakeDamage','bool','int amount'),_F('Heal','int','int amount'),..._base];
+CS_API.Hero=[_P('position','Vector2'),_P('facing','Vector2'),_P('facingAngle','float'),_P('hp','int'),_P('maxHp','int'),_P('isMoving','bool'),_P('isDead','bool'),_P('isInvincible','bool'),_P('invincibleTime','float'),_P('radius','float'),_P('canMove','bool'),_F('Move','bool','Vector2 delta'),_F('Face','void','Vector2 dir'),_F('CanMove','bool','Vector2 delta'),_F('Attack','int','int damage, float reach'),_F('Interact','bool','float distance'),_F('TakeDamage','bool','int amount'),_F('Heal','int','int amount'),..._base];
 CS_API['Hero:static']=[_P('main','Hero')];
 CS_API['Sound:static']=[_F('PlayMusic','void','string name, float volume'),_F('StopMusic','void'),_F('PauseMusic','void'),_F('ResumeMusic','void'),_F('SetMusicVolume','void','float volume'),_F('PlayEffect','void','string name, float volume'),_P('isMusicPlaying','bool'),_P('musicVolume','float'),_P('currentMusic','string')];
 CS_API['UIScreen:static']=[_F('Show','void','string screen'),_F('Hide','void','string screen'),_F('Toggle','void','string screen'),_F('HideAll','void'),_F('IsOpen','bool','string screen'),_F('SetText','void','string screen, string element, string text'),_F('GetText','string','string screen, string element'),_F('GetValue','object','string screen, string element'),_F('SetValue','void','string screen, string element, object value'),_F('SetVisible','void','string screen, string element, bool visible'),_F('SetColor','void','string screen, string element, string color')];
@@ -377,7 +377,10 @@ const AC_DOC={
 'Monster.TakeDamage':['몬스터의 체력을 줄이고 잠깐 깜빡이게 합니다. 남은 체력을 돌려줍니다.','monster.TakeDamage(1);'],
 'Monster.Die':['몬스터를 쓰러뜨려 숨깁니다. (스크립트도 멈춤)','if (monster.hp <= 0) monster.Die();'],
 'Monster.position':['몬스터의 현재 위치(칸 좌표)입니다.','float d = Vector2.Distance(monster.position, hero.position);'],
-'Npc.Talk':['이 NPC의 대사를 대화창에 띄웁니다.','GetComponent<Npc>().Talk();'],
+'Npc.Talk':['이 NPC의 대사 목록을 엔진 기본 대화창에 차례로 띄웁니다. 화면 클릭 · Space로 다음 대사, 마지막 뒤에는 닫힙니다.','GetComponent<Npc>().Talk();'],
+'Npc.lineCount':['NPC 컴포넌트에 넣은 대사의 개수입니다.','if (line >= npc.lineCount) CloseDialog();'],
+'Npc.GetLine':['번호(0부터)의 대사를 돌려줍니다. 범위를 벗어나면 빈 글자입니다.','UIScreen.SetText("대화창", "대사", npc.GetLine(line));'],
+'Hero.canMove':['false로 두면 주인공이 움직이지 않습니다(이동 · 방향 · 공격). 씬의 대화창 UI가 열려 있는 동안에도 자동으로 막힙니다.','Hero.main.canMove = false;'],
 'Portal.Teleport':['포탈에 지정한 씬의 도착 위치로 주인공을 이동시킵니다.','GetComponent<Portal>().Teleport();'],
 'Dialog.Show':['대화창을 엽니다. 열려 있는 동안 게임이 멈추고 Space로 닫힙니다.','Dialog.Show("상인", "어서 오세요!");'],
 'Dialog.Close':['열린 대화창을 닫습니다.','Dialog.Close();'],
