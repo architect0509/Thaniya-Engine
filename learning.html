@@ -315,8 +315,18 @@ select option,select optgroup{background:#26262c;color:var(--fg)}
 .ancrumb{font-size:11px;color:var(--mute);padding:0 8px;border-left:1px solid var(--line)}
 .anchip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;background:var(--btn);color:var(--mute);font-size:11px;max-width:180px;overflow:hidden;white-space:nowrap}
 .anchip.on{background:rgba(233,189,12,.16);color:var(--accent)}.anchip .ic{width:12px;height:12px}
-.anempty{margin:auto;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:24px;max-width:420px;color:var(--mute)}
+.anempty{margin:auto;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:24px;max-width:100%;box-sizing:border-box;color:var(--mute)}
 .anempty b{color:var(--fg);font-size:13px}.anempty small{font-size:11px;opacity:.8}
+/* 안내문: 문장 하나 = 한 줄 (자리가 모자랄 때만 낱말 단위로 고르게 줄바꿈) */
+.anls{display:flex;flex-direction:column;align-items:center;gap:4px;line-height:1.75;font-size:12px}
+.anls.sm{font-size:11px;opacity:.85;gap:2px}
+.anl{display:block;word-break:keep-all;overflow-wrap:break-word;text-wrap:balance}
+.cchip{display:inline-flex;align-items:center;gap:5px;height:22px;margin:0 2px;padding:0 9px 0 3px;border-radius:999px;background:var(--btn);border:1px solid var(--line2);color:var(--fg);font-size:11.5px;font-weight:600;line-height:1;vertical-align:middle;white-space:nowrap;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.cchip .ic{width:16px;height:16px;padding:2.5px;box-sizing:border-box;border-radius:50%;background:rgba(255,255,255,.1);color:var(--fg)}
+.cchip b{font-weight:600;color:inherit;font-size:inherit}
+.anls.sm .cchip{height:20px;font-size:10.5px}.anls.sm .cchip .ic{width:14px;height:14px;padding:2px}
+.anmk{display:inline-flex;align-items:center;gap:6px}.anmk .q{width:16px;height:16px;font-size:10px;line-height:14px}
+html[data-theme="light"] .cchip .ic{background:rgba(0,0,0,.07)}html[data-theme="light"] .cchip{box-shadow:0 1px 0 rgba(0,0,0,.08)}
 .anwarn{margin:6px 0 0;font-size:11.5px;color:var(--warn)}
 .anlive{font-style:normal;font-size:10px;padding:1px 7px;border-radius:999px;background:rgba(74,163,255,.18);color:#8ab4ff;margin-left:6px}
 .andef{font-style:normal;font-size:10.5px;padding:2px 8px;border-radius:999px;background:rgba(232,145,58,.2);color:#f0a35a}
@@ -425,6 +435,14 @@ select option,select optgroup{background:#26262c;color:var(--fg)}
 .awright{position:relative;flex:1;min-width:60px;overflow:hidden;outline:none;touch-action:none}
 .awright canvas{position:absolute;left:0;top:0;display:block}
 .awright.drop{outline:3px dashed var(--accent);outline-offset:-5px}
+.anhs{position:absolute;left:0;right:0;bottom:0;height:12px;z-index:2;background:rgba(0,0,0,.28);border-top:1px solid var(--line);cursor:default;touch-action:none}
+.anhs-t{position:absolute;top:2px;bottom:2px;border-radius:999px;background:rgba(255,255,255,.28);cursor:grab}
+.anhs-t:hover{background:rgba(255,255,255,.42)}.anhs-t.on{background:var(--accent);cursor:grabbing}
+.anhs.full .anhs-t{opacity:.35}
+html[data-theme="light"] .anhs{background:rgba(0,0,0,.06)}html[data-theme="light"] .anhs-t{background:rgba(0,0,0,.25)}html[data-theme="light"] .anhs-t:hover{background:rgba(0,0,0,.4)}
+.awleft.drop{outline:3px dashed var(--accent);outline-offset:-4px;background:rgba(233,189,12,.06)}
+.awrow.drop{outline:2px dashed var(--accent);outline-offset:-3px;background:rgba(233,189,12,.16)!important}
+.awaddh{display:block;margin-top:6px;font-size:10.5px;line-height:1.45;color:var(--mute);opacity:.85}
 .awdrop{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);max-width:80%;text-align:center;color:var(--mute);font-size:11.5px;pointer-events:none;line-height:1.5}
 /* ---- 레슨 6: 엔진의 애니메이터 창 · 애니메이션 창 (위 규칙은 edit.html에서 그대로 가져옴) ---- */
 .ws{--panel:var(--pbg);--f-mono:var(--fm);--f-body:var(--fb);--win:#0b0b0e;--shadow:0 18px 48px rgba(0,0,0,.6)}
@@ -1083,6 +1101,51 @@ html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.
 }
 @media (max-width:1180px){.ws.ub9{grid-template-areas:"brief view" "brief code" "brief ub"}.ws.ub9 .view-pn{min-height:560px}.ws.ub9 .ub-pn{min-height:300px}}
 @media (max-width:860px){.ws.ub9{grid-template-areas:"brief" "code" "view" "ub"}.ubmain{grid-template-columns:1fr}.ubside{border-right:0;border-bottom:1px solid var(--line)}}
+/* ---- 레슨 11 · 12: 비주얼 스크립트 실습장 (위 = 엔진과 같은 비주얼 스크립트 창 · 아래 오른쪽 = 계층 구조 · 게임 화면 · 콘솔) ---- */
+.ws.vs11{--panel:var(--pbg);--win:#0b0b0e;--warn:var(--warnc);--ok:var(--good);--shadow:0 18px 48px rgba(0,0,0,.6);--f-mono:var(--fm);--f-body:var(--fb,"IBM Plex Sans KR",system-ui,sans-serif)}
+html[data-theme="light"] .ws.vs11{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.18)}
+.vcm,.vxpop{--panel:var(--pbg);--win:#0b0b0e;--warn:var(--warnc);--ok:var(--good);--shadow:0 18px 48px rgba(0,0,0,.6);--f-mono:var(--fm);--f-body:var(--fb,"IBM Plex Sans KR",system-ui,sans-serif)}
+html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.18)}
+.ws.vs11 #views,.ws.vs11 #sTools,.ws.vs11 .view-pn .vtabs,.ws.vs11 .view-pn .vtitle,.ws.vs11 #playBtn,.ws.vs11 .hier-pn,.ws.vs11 .insp-pn,.ws.vs11 .con-pn,.ws.vs11 .wsz{display:none!important}
+.vstitle{display:none;font-size:12px;font-weight:600}.ws.vs11 .vstitle{display:inline-flex;align-items:center;gap:6px}
+.vsview{flex:1;min-height:0;display:flex;flex-direction:column}
+.vsview[hidden]{display:none}
+.vsview>.panel{flex:1;min-height:0;display:flex;flex-direction:column}
+.vsview>.panel>.pbody{flex:1;min-height:0;position:relative;overflow:hidden;padding:0}
+.vs-pn{grid-area:vs}
+.vsmain{flex:1;min-height:0;display:grid;grid-template-columns:minmax(150px,27%) minmax(0,1fr)}
+.vsside{min-height:0;overflow:auto;border-right:1px solid var(--line);padding:8px}
+.vssh{font-size:11px;font-weight:600;color:var(--mute);margin:6px 2px 4px;display:flex;gap:6px;align-items:center}.vssh:first-child{margin-top:2px}.vssh small{margin-left:auto;font-weight:400}
+.vssh.sub{margin-left:4px}.vssh .ic{width:14px;height:14px}
+.vsrow{display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px;min-height:28px;padding:3px 8px;border-radius:8px;cursor:pointer;font-size:12px}
+.vsrow:hover{background:var(--hover)}.vsrow.on{background:rgba(246,205,42,.14)}.vsrow.off b{text-decoration:line-through;color:var(--mute)}
+.vsrow b{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vsrow small{color:var(--mute);font-size:10.5px}
+.vsri{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;background:color-mix(in srgb,var(--oc) 22%,transparent);color:var(--oc);flex:none}.vsri .ic{width:14px;height:14px}
+.vsgchip{display:inline-flex;align-items:center;gap:4px;height:22px;margin-left:auto;padding:0 8px 0 5px;border-radius:999px;border:1px solid var(--line2);background:var(--field);color:var(--fg);font:inherit;font-size:11px;cursor:pointer;max-width:100%}
+.vsgchip .ic{width:13px;height:13px;color:#00CFCA}.vsgchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vsgchip:hover{border-color:var(--accent)}.vsgchip.on{border-color:var(--accent);background:rgba(246,205,42,.16)}
+.vsinv{margin:10px 4px 2px;padding:7px 9px;border-radius:8px;background:var(--field);font-size:11.5px;color:var(--mute)}.vsinv b{color:var(--fg)}
+.vsright{min-height:0;min-width:0;display:flex;flex-direction:column}
+.vsgame{flex:1;min-height:0;min-width:0;display:grid;place-items:center;padding:6px;position:relative}
+.vsgame.live .vsgame-in{box-shadow:0 0 0 2px rgba(76,217,138,.55)}
+.vsgame-in{position:relative;border-radius:10px;overflow:hidden;background:#101218;box-shadow:0 0 0 1px var(--line2)}
+.vsgame-in canvas{position:absolute;inset:0;width:100%;height:100%;display:block;outline:none}
+.vsgame-in canvas:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
+.vsgh{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:3;font-size:11px;color:#fff;background:rgba(0,0,0,.55);padding:3px 10px;border-radius:999px;white-space:nowrap;pointer-events:none;max-width:calc(100% - 16px);overflow:hidden;text-overflow:ellipsis}
+#play.vsplay{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
+#play.vsplay .pbar{display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:1px solid var(--line)}
+#play.vsplay .pbar .btn{height:24px}
+.vscon{flex:none;height:24%;min-height:64px;max-height:130px;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.vsconh{display:flex;align-items:center;gap:6px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--mute)}.vsconh .btn{height:20px;font-size:10.5px;padding:0 8px}
+.vsconl{flex:1;min-height:0;overflow:auto;padding:0 8px 6px;font:11.5px/1.55 var(--fm)}
+.vscl{padding:1px 0;border-bottom:1px solid var(--line);color:var(--fg);white-space:pre-wrap;word-break:break-word}.vscl.warn{color:var(--warnc)}.vscl.error{color:var(--danger)}
+#play.vsplay #pFlow{white-space:nowrap;display:inline-flex;align-items:center;gap:5px}#play.vsplay #pFlow .ic{width:13px;height:13px}
+#play.vsplay .vsFlow{z-index:4;left:auto;right:8px;bottom:8px;width:min(240px,46%);max-height:58%;font-size:11px;opacity:.94}
+@media (min-width:1181px) and (min-height:620px){
+  #lessonView>.ws.vs11{grid-template-areas:"brief view view view view" "brief code code vs vs";--rt:1.15fr;--rb:1fr;--v1:.85fr;--v2:1.15fr}
+}
+@media (max-width:1180px){.ws.vs11{grid-template-areas:"brief view" "brief code" "brief vs"}.ws.vs11 .view-pn{min-height:560px}.ws.vs11 .vs-pn{min-height:420px}}
+@media (max-width:860px){.ws.vs11{grid-template-areas:"brief" "code" "view" "vs"}.vsmain{grid-template-columns:1fr}.vsside{border-right:0;border-bottom:1px solid var(--line);max-height:180px}}
 /* ---- 레슨 8: 씬 · 매니저 실습장 (씬 뷰 자리) · 계층 구조 줄 버튼 ---- */
 .ws.sm8 #views,.ws.sm8 #sTools,.ws.sm8 .view-pn .vtabs,.ws.sm8 .view-pn .vtitle{display:none!important}
 .smtitle{display:none;font-size:12px;font-weight:600}.ws.sm8 .smtitle{display:inline-flex;align-items:center;gap:6px}
@@ -1186,7 +1249,7 @@ html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.
     <div class="phead">
       <span class="vtabs" role="tablist" aria-label="뷰 전환"><button class="vtab on" type="button" role="tab" aria-selected="true" data-v="pScene" data-ic="scene">씬</button><button class="vtab" type="button" role="tab" aria-selected="false" data-v="pGame" data-ic="game">게임</button></span>
       <span class="vtitle"><span class="vtab on" data-ic="scene">씬</span><span class="vtab on" data-ic="game">게임</span></span>
-      <span class="sttitle">특수 타일 실습장</span><span class="smtitle">씬 · 매니저 실습장</span><span class="ubtitle">UI 빌더 실습장 · 엔진과 같은 창</span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
+      <span class="sttitle">특수 타일 실습장</span><span class="smtitle">씬 · 매니저 실습장</span><span class="ubtitle">UI 빌더 실습장 · 엔진과 같은 창</span><span class="vstitle">비주얼 스크립트 실습장 · 엔진과 같은 창</span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
     </div>
     <div class="ptool stools" id="sTools" hidden>
       <span class="sg" role="group" aria-label="칠할 곳"><b>칠할 곳</b><button type="button" data-layer="t">타일맵 1</button><button type="button" data-layer="c">콜라이더</button></span>
@@ -1206,6 +1269,7 @@ html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.
     </div>
     <div class="smview" id="smView" hidden><div class="smbar" id="smBar"></div><div class="smmain"><div class="smstage" id="smStage"><div class="smcvw"><canvas id="smCv" aria-label="씬 그림: 플레이 중에는 지금 씬을 보여 줘요"></canvas></div><div class="smacts" id="smActs" hidden></div></div><aside class="smside" id="smSide" aria-live="polite"></aside></div></div>
     <div class="ubview" id="ubView" hidden><div class="panel" data-id="uib" id="ubPanel"><div class="pbody"><div id="uibBox"></div></div></div></div>
+    <div class="vsview" id="vsView" hidden><div class="panel" data-id="vs" id="vsPanel"><div class="pbody"><div id="vsBox" tabindex="-1"></div></div></div></div>
     <div class="stview" id="stView" hidden><div class="stpal" id="stPal"></div><div class="stgrid"><canvas id="stCv" aria-label="특수 타일을 칠해 보는 격자"></canvas></div></div>
   </section>
 
@@ -1237,6 +1301,15 @@ html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.
     <div class="phead"><button class="pcol" type="button" aria-label="접기/펼치기"></button><span class="ptab" data-ic="term">콘솔</span><span class="spacer"></span></div>
     <div class="ptool"><button class="btn sm" id="conClear" type="button">지우기</button><span class="spacer"></span><button class="cf" id="conI" type="button" data-k="info" title="일반 로그"><i class="d info"></i><b>0</b></button><button class="cf" id="conW" type="button" data-k="warn" title="경고"><i class="d warn"></i><b>0</b></button><button class="cf" id="conE" type="button" data-k="error" title="오류"><i class="d error"></i><b>0</b></button></div>
     <div class="conlist" id="conList"></div>
+  </section>
+
+  <section class="pn vs-pn" id="vsPn" hidden>
+    <div class="phead"><span class="ptab" data-ic="game">계층 구조 · 게임 화면 · 콘솔</span><span class="spacer"></span></div>
+    <div class="vsmain"><div class="vsside" id="vsSide" aria-live="polite"></div>
+      <div class="vsright"><div id="play" class="vsplay"><div class="pbar"><button class="btn sm pri playbtn" id="vsPlay" type="button">▶ 플레이</button><span class="spacer"></span></div>
+        <div class="vsgame" id="vsGameW"><div class="vsgame-in" id="vsGame"><canvas id="vsGCv" tabindex="0" aria-label="게임 화면: 방향키로 주인공 이동 · Space로 말 걸기"></canvas><span class="vsgh" id="vsGh"></span></div></div></div>
+        <div class="vscon"><div class="vsconh"><span>콘솔</span><small id="vsConN">0</small><span class="spacer"></span><button class="btn sm" id="vsConX" type="button">지우기</button></div><div class="vsconl" id="vsCon" aria-live="polite"></div></div>
+      </div></div>
   </section>
 
   <section class="pn ub-pn" id="ubPn" hidden>
@@ -1303,10 +1376,11 @@ html[data-theme="light"] .ws.ub9{--win:#f7f7f8;--shadow:0 18px 48px rgba(0,0,0,.
 </div>
 
 <script src="script-engine.js?v=20261104u"></script>
-<script src="script-editor.js?v=20261105a"></script>
-<script src="anim-editor.js?v=20261102a"></script>
+<script src="script-editor.js?v=20261107a"></script>
+<script src="anim-editor.js?v=20261107f"></script>
 <script src="ui-builder.js?v=20261105d"></script>
-<script src="learn-preview.js?v=20261105b"></script>
+<script src="visual-script.js?v=20261108d"></script>
+<script src="learn-preview.js?v=20261108b"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
@@ -2753,6 +2827,137 @@ const L10P=[
  verify:(sc,f,t,ui)=>t.open?(l10Open(ui)?'':_t('주인공이 가까이 있는데 대화창이 닫혔어요. 거리 비교(>)를 확인하세요.')):(l10Closed(ui)?'':_t('대화창이 닫혀 있어야 해요.')),
  hint:'void Update()\n{\n    if (!talking)\n    {\n        return;\n    }\n    float d = Vector2.Distance(Hero.main.position, transform.position);\n    if (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))\n    {\n        CloseDialog();\n    }\n}'}
 ];
+/* ===== 레슨 11: 비주얼 스크립트 첫걸음 (입문) — 코드 없이 노드를 선으로 이어 주인공 그래프를 만들어요 =====
+   실습장 = 위 엔진과 같은 비주얼 스크립트 창 · 아래 계층 구조 · 게임 화면 · 콘솔. 그래프는 주인공에 붙어 있어요 */
+function vs11Scene(){return{id:'yard',name:'연습 마당',w:10,h:6,walls:[],objs:[{id:'hero',name:'주인공',type:'spawn',x:2,y:3,vs:[]},{id:'sign',name:'표지판',type:'empty',icon:'sign',x:6,y:2,solid:true}],ui:[],uiGroups:[]}}
+function vs11Setup(build){return()=>{const s=vs11Scene(),g=build();s.objs[0].vs=[{id:'c1',gid:g.id,vals:{}}];return{scene:s,graphs:[g],open:g.name}}}
+const vs11G=()=>vsG('주인공 스크립트');
+const vs11Ev=(g,t)=>vsNs(g,t)[0]||null;
+/* 3번 문제 정답 (4번 처음 상태) */
+function vs11Score(){const st=vsMk('ev.start',60,60),up=vsMk('ev.update',60,240),k=vsMk('ev.key',60,420,{key:'Space',mode:'down'}),add=vsMk('var.add',380,420,{scope:'graph',name:'점수',amount:1}),
+  cc=vsMk('concat',380,660,{a:'점수: '}),lg=vsMk('log',720,420);
+  return vsGraph('주인공 스크립트',[st,up,k,add,cc,lg],[[k,'out',add,'in'],[add,'out',lg,'in'],[add,'now',cc,'b'],[cc,'r',lg,'msg']],[{name:'점수',type:'num',def:0}])}
+const L11={no:11,title:'비주얼 스크립트 첫걸음',clear:'통과했어요. 레슨 11 완료! 코드 한 줄 없이 이벤트 · 흐름 · 변수 · 조건 · 반복 노드를 이어 주인공 그래프를 만들었어요. 엔진에서는 툴바의 「비주얼 스크립트」로 같은 창을 열어요.',
+ lead:'비주얼 스크립트는 코드 대신 노드(블록)를 선으로 이어 게임 동작을 만드는 방법이에요. 엔진과 똑같은 비주얼 스크립트 창에서 이벤트 · 흐름 · 변수 · 조건 · 반복 노드를 하나씩 써 봐요.'};
+const L11P=[
+{id:'v-hello',task:true,vs:{setup:vs11Setup(()=>vsBase('주인공 스크립트'))},title:'시작하면 콘솔에 인사하기',
+ desc:'위쪽 큰 창이 엔진의 <b>비주얼 스크립트</b> 창이에요. 왼쪽 <b>노드 목록</b>에서 노드를 꺼내고, 노드의 ▶(흐름)를 끌어 다른 노드에 이으면 그 순서대로 실행돼요. 초록 <b>시작</b> 노드는 게임이 시작될 때 딱 한 번 흐름을 내보내요. 이 그래프는 <b>주인공</b>에 붙어 있어요(아래 계층 구조).',
+ goal:'게임이 시작되면 콘솔에 「안녕, 비주얼 스크립트!」가 찍히게 하세요.',
+ checks:[
+  {t:'왼쪽 <b>노드 목록</b>에서 <b>Debug.Log</b>(게임 기능)를 캔버스로 끌어다 놓기 (눌러도 돼요)',ok:()=>vsNs(vs11G(),'log').length>0},
+  {t:'<b>시작</b> 노드 오른쪽 ▶를 끌어 Debug.Log 왼쪽 ▶에 놓아 잇기',ok:()=>{const g=vs11G(),s=vs11Ev(g,'ev.start');return vsNs(g,'log').some(l=>vsLinked(g,s,'out',l,'in'))}},
+  {t:'Debug.Log의 <b>내용</b> 칸에 <b>안녕, 비주얼 스크립트!</b> 쓰기',ok:()=>vsNs(vs11G(),'log',n=>vsTx(n.v.msg,'안녕, 비주얼 스크립트!')).length>0},
+  {t:'아래 게임 화면의 <b>▶ 플레이</b> → <b>콘솔</b>에 「안녕, 비주얼 스크립트!」가 찍히는 것 보기',ok:()=>vsEvHas(/^vs:log:안녕, ?비주얼 스크립트!$/)}],
+ hint:'노드를 놓은 뒤 ▶끼리 이어야 실행돼요. 선을 지우려면 Ctrl을 누른 채 포트를 클릭해요.\n노드 이름 옆 ?에 마우스를 올리면 설명과 예시가 떠요.'},
+{id:'v-key',task:true,vs:{setup:vs11Setup(()=>vsBase('주인공 스크립트'))},title:'키를 누르면 알림 띄우기',
+ desc:'<b>이벤트</b> 노드는 「언제」를 정해요. <b>키 입력</b> 노드는 고른 키를 눌렀을 때 흐름을 내보내요. 「업데이트 → 만약 → 키를 누르고 있나」 세 노드를 하나로 줄인 거예요. <b>알림 메시지</b>는 게임 화면 위에 잠깐 글을 띄워요.',
+ goal:'Space를 누르면 게임 화면에 「점프!」 알림이 뜨게 하세요.',
+ checks:[
+  {t:'노드 목록에서 <b>키 입력</b>(이벤트)을 넣고, 키 <b>Space</b> · 언제 <b>눌렀을 때</b>로',ok:()=>vsNs(vs11G(),'ev.key',n=>n.v.key==='Space'&&n.v.mode==='down').length>0},
+  {t:'<b>알림 메시지</b>(게임 기능)를 넣고 키 입력의 ▶와 잇기',ok:()=>{const g=vs11G();return vsNs(g,'ev.key').some(k=>vsNs(g,'msg').some(m=>vsLinked(g,k,'out',m,'in')))}},
+  {t:'알림 메시지의 <b>글</b>을 <b>점프!</b>로',ok:()=>vsNs(vs11G(),'msg',n=>vsTx(n.v.text,'점프!')).length>0},
+  {t:'<b>▶ 플레이</b> → <b>게임 화면</b>을 한 번 누르고 <b>Space</b> → 화면 위에 「점프!」',ok:()=>vsEvHas(/^vs:msg:점프!$/)}],
+ hint:'키 입력이 안 들어가면 게임 화면을 한 번 눌러 고르세요. (비주얼 스크립트 창이 골라져 있으면 Space가 노드 추가로 가요)\n알림 메시지의 「초」는 글이 떠 있는 시간이에요.'},
+{id:'v-var',task:true,vs:{setup:vs11Setup(()=>{const g=vsBase('주인공 스크립트');g.nodes.push(vsMk('ev.key',60,420,{key:'Space',mode:'down'}));return g})},title:'변수로 점수 세기',
+ desc:'<b>변수</b>는 값을 기억하는 상자예요. 오른쪽 속성 패널의 <b>그래프 변수</b>에서 만들면 이 그래프 안 어디서든 써요. <b>변수에 더하기</b>는 변수에 값을 더하고, 더한 뒤의 값을 <b>더한 결과</b>로 내보내요. 노드 사이 동그라미(값) 포트끼리 이으면 값이 전달돼요. <b>글자 잇기</b>는 두 글자를 붙여요.',
+ goal:'Space를 누를 때마다 점수가 1씩 올라 콘솔에 「점수: 1」, 「점수: 2」 … 가 찍히게 하세요.',
+ checks:[
+  {t:'오른쪽 속성 패널 <b>그래프 변수</b>의 ＋로 변수를 만들고 이름 <b>점수</b>, 종류 <b>숫자</b>',ok:()=>(vs11G()&&vs11G().vars||[]).some(v=>vsTx(v.name,'점수')&&v.type==='num')},
+  {t:'노드 목록에서 <b>변수에 더하기</b>(변수)를 넣고 변수 고르기에서 <b>그래프 · 점수</b>, 키 입력 ▶와 잇기',ok:()=>{const g=vs11G();return vsNs(g,'var.add',n=>n.v.scope==='graph'&&vsTx(n.v.name,'점수')).some(a=>vsNs(g,'ev.key').some(k=>vsLinked(g,k,'out',a,'in')))}},
+  {t:'<b>글자 잇기</b>(값 · 계산)의 A에 <b>점수: </b>를 쓰고, B에 변수에 더하기의 <b>더한 결과</b>를 잇기',ok:()=>{const g=vs11G();return vsNs(g,'concat',n=>/^점수\s*:$/.test(String(n.v.a||'').trim())).some(c=>{const s=vsSrc(g,c,'b');return!!s&&(s.n.t==='var.add'&&s.p==='now'||s.n.t==='var.get')})}},
+  {t:'<b>Debug.Log</b>를 변수에 더하기 ▶ 다음에 잇고, 내용에 글자 잇기 결과를 잇기',ok:()=>{const g=vs11G();return vsNs(g,'log').some(l=>{const s=vsSrc(g,l,'msg');return!!s&&s.n.t==='concat'&&vsNs(g,'var.add').some(a=>vsReach(g,a,n=>n===l,'out'))})}},
+  {t:'<b>▶ 플레이</b> → 게임 화면을 누르고 Space를 세 번 → 콘솔에 <b>점수: 3</b>',ok:()=>vsEvHas(/^vs:log:점수\s*:\s*3$/)}],
+ hint:'그래프 변수는 그래프를 붙인 오브젝트마다 따로 있어요. 플레이를 멈추면 처음 값(0)으로 돌아가요.\n「더한 결과」 대신 변수 가져오기(그래프 · 점수)를 B에 이어도 돼요.'},
+{id:'v-if',task:true,vs:{setup:vs11Setup(vs11Score)},title:'점수가 5가 되면 목표 달성',
+ desc:'<b>만약</b> 노드는 <b>조건</b>이 참이면 <b>참</b>으로, 거짓이면 <b>거짓</b>으로 흐름을 나눠요. 조건에는 참/거짓 값을 이어요. <b>비교</b> 노드가 두 값을 비교해 참/거짓을 내요. 앞 문제의 점수 그래프가 이미 들어 있어요.',
+ goal:'점수가 5 이상이 되면 게임 화면에 「목표 달성!」 알림이 뜨게 하세요.',
+ checks:[
+  {t:'<b>만약</b>(흐름 제어)을 넣고 <b>Debug.Log</b> ▶ 다음(또는 변수에 더하기 다음)에 잇기',ok:()=>{const g=vs11G();return vsNs(g,'if').some(i=>vsNs(g,'ev.key').some(k=>vsReach(g,k,n=>n===i)))}},
+  {t:'<b>비교</b>(값 · 계산)를 넣고 A에 <b>더한 결과</b>를 잇고, 비교를 <b>A ≥ B</b>, B에 <b>5</b>',ok:()=>{const g=vs11G();return vsNs(g,'cmp',c=>(c.v.op==='>='&&+c.v.b===5)||(c.v.op==='>'&&+c.v.b===4)||(c.v.op==='=='&&+c.v.b===5)).some(c=>{const s=vsSrc(g,c,'a');return!!s&&(s.n.t==='var.add'||s.n.t==='var.get')})}},
+  {t:'비교의 <b>결과</b>를 만약의 <b>조건</b>에 잇기',ok:()=>{const g=vs11G();return vsNs(g,'if').some(i=>{const s=vsSrc(g,i,'cond');return!!s&&s.n.t==='cmp'})}},
+  {t:'만약의 <b>참</b>에 <b>알림 메시지</b>를 잇고 글을 <b>목표 달성!</b>으로',ok:()=>{const g=vs11G();return vsNs(g,'if').some(i=>vsNs(g,'msg',m=>vsTx(m.v.text,'목표 달성!')).some(m=>vsReach(g,i,n=>n===m,'yes')))}},
+  {t:'<b>▶ 플레이</b> → Space를 다섯 번 → 「목표 달성!」',ok:()=>vsEvHas(/^vs:msg:목표 달성!$/)}],
+ hint:'비교의 연산은 노드 위 드롭다운에서 바꿔요.\n만약의 거짓에는 아무것도 잇지 않아도 돼요. 그러면 조건이 거짓일 때 흐름이 거기서 끝나요.'},
+{id:'v-loop',task:true,vs:{setup:vs11Setup(()=>vsBase('주인공 스크립트'))},title:'반복하고 기다렸다가 출발',
+ desc:'<b>반복</b> 노드는 「처음」부터 「끝」 바로 앞까지 번호를 하나씩 늘리며 <b>반복할 일</b>을 실행하고, 다 돌면 <b>끝나면</b>으로 나가요. <b>번호</b> 포트로 지금 몇 번째인지 알 수 있어요. <b>기다리기</b>는 정한 초만큼 멈췄다가 다음으로 넘어가요(그동안 게임은 계속 돌아요).',
+ goal:'시작하면 콘솔에 1 · 2 · 3을 찍고, 1초 뒤 「출발!」 알림이 뜨게 하세요.',
+ checks:[
+  {t:'<b>반복</b>(흐름 제어)을 <b>시작</b>에 잇고 처음 <b>1</b> · 끝 <b>4</b>',ok:()=>{const g=vs11G(),s=vs11Ev(g,'ev.start');return vsNs(g,'for',f=>+f.v.first===1&&+f.v.last===4).some(f=>vsLinked(g,s,'out',f,'in'))}},
+  {t:'반복의 <b>반복할 일</b>에 Debug.Log를 잇고, 내용에 반복의 <b>번호</b>를 잇기',ok:()=>{const g=vs11G();return vsNs(g,'for').some(f=>vsNs(g,'log').some(l=>vsLinked(g,f,'body',l,'in')&&vsLinked(g,f,'i',l,'msg')))}},
+  {t:'<b>끝나면</b>에 <b>기다리기</b>(흐름 제어)를 잇고 초를 <b>1</b>로',ok:()=>{const g=vs11G();return vsNs(g,'for').some(f=>vsNs(g,'wait',w=>+w.v.sec>=.5).some(w=>vsLinked(g,f,'exit',w,'in')))}},
+  {t:'기다리기 다음에 <b>알림 메시지</b> 「출발!」 잇기',ok:()=>{const g=vs11G();return vsNs(g,'wait').some(w=>vsNs(g,'msg',m=>vsTx(m.v.text,'출발!')).some(m=>vsLinked(g,w,'out',m,'in')))}},
+  {t:'<b>▶ 플레이</b> → 콘솔에 1 · 2 · 3, 1초 뒤 「출발!」',ok:()=>['1','2','3'].every(k=>TASK.ev.has('vs:log:'+k))&&vsEvHas(/^vs:msg:출발!$/)}],
+ hint:'끝 칸의 숫자는 포함되지 않아요. 1부터 4 앞까지 = 1, 2, 3.\n플레이 중 위 창에서 실행된 노드가 빛나고, 게임 화면의 ⚡ 이벤트 흐름을 켜면 순서를 볼 수 있어요.'}
+];
+
+/* ===== 레슨 12: 오브젝트 · UI 상호작용 (초급) — 상자 · 문 · 게임 매니저 · UI가 이벤트로 이야기해요 ===== */
+function vs12Scene(ui){return{id:'house',name:'보물 창고',w:12,h:7,walls:[[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0]],
+  objs:[{id:'hero',name:'주인공',type:'spawn',x:2,y:4,vs:[]},{id:'chest',name:'상자',type:'empty',icon:'chest',x:5,y:2,solid:true,vs:[]},{id:'door',name:'문',type:'empty',icon:'door',x:10,y:3,solid:true,vs:[]}],
+  ui:ui.ui,uiGroups:ui.groups}}
+function vs12Ui(menu,hudShow){const U=(id,type,name,group,anchor,x,y,w,h,props,vis)=>({id,type,name,group,anchor,x,y,w,h,props,visible:vis!==false});
+  const g=[{id:'g-hud',name:'HUD'}],ui=[U('u-key','text','열쇠','g-hud','tl',14,10,220,28,{text:'열쇠: 0',color:'#ffe066',fs:16,fw:700},hudShow!==false),U('u-tip','text','안내','g-hud','bc',0,-14,520,30,{text:'상자 앞에서 Space로 말을 걸어 보세요',color:'#ffffff',fs:15,ta:'center'},hudShow!==false)];
+  if(menu){g.push({id:'g-menu',name:'메뉴'});ui.push(U('u-mp','panel','메뉴 배경','g-menu','mc',0,0,360,220,{bg:'rgba(12,14,34,.92)'}),U('u-mt','text','제목','g-menu','mc',0,-50,320,40,{text:'보물 창고 탈출',color:'#ffd23f',fs:26,fw:800,ta:'center'}),U('u-mb','button','시작','g-menu','mc',0,40,160,44,{text:'시작',fs:18}))}
+  return{ui,groups:g}}
+function vs12Chest(){const s=vsMk('ev.start',60,60),i=vsMk('ev.msg',60,240,{msg:'OnInteract'}),a=vsMk('inv.add',380,240,{item:'열쇠',n:1}),m=vsMk('msg',700,240,{text:'열쇠를 얻었다!'}),o=vsMk('active',1020,240,{to:'self',on:false});
+  return vsGraph('상자 스크립트',[s,i,a,m,o],[[i,'out',a,'in'],[a,'out',m,'in'],[m,'out',o,'in']])}
+function vs12Door(){const s=vsMk('ev.start',60,60),i=vsMk('ev.msg',60,240,{msg:'OnInteract'}),f=vsMk('if',400,240),c=vsMk('cmp',120,460,{op:'>',b:0}),n=vsMk('inv.count',-200,460,{item:'열쇠'}),
+  o=vsMk('active',720,180,{to:'self',on:false}),t=vsMk('trig',1040,180,{name:'문 열림',to:'all'}),d=vsMk('dialog',720,420,{name:'문',text:'잠겨 있다. 열쇠가 필요해.'});
+  return vsGraph('문 스크립트',[s,i,f,c,n,o,t,d],[[i,'out',f,'in'],[n,'r',c,'a'],[c,'r',f,'cond'],[f,'yes',o,'in'],[o,'out',t,'in'],[f,'no',d,'in']])}
+function vs12Gm(){const s=vsMk('ev.start',60,60),u=vsMk('ev.update',60,320),t1=vsMk('ui.text',400,60,{screen:'HUD',el:'안내',text:'열쇠를 찾아 문을 열자'}),r=vsMk('ev.custom',60,560,{name:'문 열림'}),t2=vsMk('ui.text',400,560,{screen:'HUD',el:'안내',text:'탈출 성공!'}),
+  t3=vsMk('ui.text',700,320,{screen:'HUD',el:'열쇠'}),cc=vsMk('concat',400,420,{a:'열쇠: '}),ic=vsMk('inv.count',100,460,{item:'열쇠'});
+  return vsGraph('게임 매니저 스크립트',[s,u,t1,r,t2,t3,cc,ic],[[s,'out',t1,'in'],[r,'out',t2,'in'],[u,'out',t3,'in'],[ic,'r',cc,'b'],[cc,'r',t3,'text']])}
+function vs12Setup(o){return()=>{const ui=vs12Ui(o.menu,!o.menu),s=vs12Scene(ui),gs=[];
+  const put=(obj,g)=>{gs.push(g);obj.vs=[{id:vsId(),gid:g.id,vals:{}}]};
+  put(s.objs[1],o.chest?vs12Chest():vsBase('상자 스크립트'));put(s.objs[2],o.door?vs12Door():vsBase('문 스크립트'));
+  const gm={id:'gm',name:'게임 매니저',mgr:true,vs:[]};put(gm,o.gm?vs12Gm():vsBase('게임 매니저 스크립트'));
+  return{scene:s,graphs:gs,mgrs:[gm],open:o.open}}}
+const vs12G=n=>vsG(n);
+const L12={no:12,title:'오브젝트 · UI 상호작용',clear:'통과했어요. 레슨 12 완료! 상자 · 문 · 게임 매니저 · UI가 엔진 메시지와 커스텀 이벤트로 서로 이야기하고, 버튼 하나로 메뉴에서 게임으로 넘어가는 흐름을 비주얼 스크립트만으로 만들었어요.',
+ lead:'게임은 여러 오브젝트가 서로 신호를 주고받으며 돌아가요. 상자에서 열쇠를 얻고, 열쇠가 있어야 문이 열리고, 문이 열리면 게임 매니저가 UI를 바꾸고, 메뉴 버튼으로 게임을 시작하는 흐름을 비주얼 스크립트로 만들어요.'};
+const L12P=[
+{id:'o-chest',task:true,vs:{setup:vs12Setup({open:'상자 스크립트'})},title:'상자를 열면 열쇠 얻기',
+ desc:'오브젝트마다 자기 그래프를 붙일 수 있어요. 아래 <b>계층 구조</b>에서 상자 옆 「상자 스크립트」가 지금 위 창에 열린 그래프예요. 주인공이 가까이에서 Space를 누르면 엔진이 그 오브젝트에 <b>말을 걸면 (OnInteract)</b> 메시지를 보내요. <b>엔진 메시지 받기</b> 노드로 받아요. 소지품은 주인공이 가진 물건 목록이에요.',
+ goal:'상자에 말을 걸면 열쇠 1개를 얻고, 알림을 띄우고, 상자가 사라지게 하세요.',
+ checks:[
+  {t:'노드 목록에서 <b>엔진 메시지 받기</b>(이벤트)를 넣고 메시지를 <b>말을 걸면 (OnInteract)</b>으로',ok:()=>vsNs(vs12G('상자 스크립트'),'ev.msg',n=>n.v.msg==='OnInteract').length>0},
+  {t:'<b>소지품 넣기 / 빼기</b>(게임 기능)를 잇고 이름 <b>열쇠</b> · 개수 <b>1</b>',ok:()=>{const g=vs12G('상자 스크립트');return vsNs(g,'ev.msg',n=>n.v.msg==='OnInteract').some(e=>vsNs(g,'inv.add',a=>vsTx(a.v.item,'열쇠')&&+a.v.n===1).some(a=>vsReach(g,e,n=>n===a)))}},
+  {t:'이어서 <b>알림 메시지</b> 「열쇠를 얻었다!」',ok:()=>{const g=vs12G('상자 스크립트');return vsNs(g,'inv.add').some(a=>vsNs(g,'msg',m=>vsTx(m.v.text,'열쇠를 얻었다!')).some(m=>vsReach(g,a,n=>n===m)))}},
+  {t:'마지막에 <b>켜기 / 끄기</b>(게임 오브젝트)를 잇고 대상 <b>자신</b>, 켜기 체크를 <b>해제</b>(끄기)',ok:()=>{const g=vs12G('상자 스크립트');return vsNs(g,'ev.msg').some(e=>vsNs(g,'active',o=>(o.v.to||'self')==='self'&&!o.v.on&&!vsIn(g,o,'on')).some(o=>vsReach(g,e,n=>n===o)))}},
+  {t:'<b>▶ 플레이</b> → 게임 화면을 누르고 방향키로 상자 앞까지 가서 <b>Space</b> → 상자가 사라지고 소지품에 열쇠',ok:()=>TASK.ev.has('vs:inv:열쇠')&&TASK.ev.has('vs:off:상자')}],
+ hint:'주인공이 상자 바로 옆에 서서 상자 쪽을 보고 Space를 눌러요.\n꺼진 오브젝트는 보이지 않고 말을 걸 수도 없어요. 계층 구조 아래에 지금 소지품이 보여요.'},
+{id:'o-door',task:true,vs:{setup:vs12Setup({chest:1,open:'상자 스크립트'})},title:'열쇠가 있어야 열리는 문',
+ desc:'문도 말을 걸면 반응하지만, 열쇠가 있을 때만 열려야 해요. <b>소지품 개수</b>로 열쇠 수를 읽고 <b>비교</b> · <b>만약</b>으로 나눠요. 문이 열리면 다른 오브젝트들이 알 수 있게 <b>커스텀 이벤트 보내기</b>로 「문 열림」을 씬 전체에 알려요. 이벤트 이름이 곧 약속이에요.',
+ goal:'열쇠가 있으면 문이 사라지며 「문 열림」 이벤트를 보내고, 없으면 「잠겨 있다」는 대화창이 뜨게 하세요.',
+ checks:[
+  {t:'아래 <b>계층 구조</b>에서 문 옆 「문 스크립트」를 눌러 위 창에 열기',ok:c=>c.ev.has('vs:open:문 스크립트')||(VSX._E.gid===(vs12G('문 스크립트')||{}).id)},
+  {t:'<b>엔진 메시지 받기</b>(말을 걸면)를 넣고 <b>만약</b>(흐름 제어)에 잇기',ok:()=>{const g=vs12G('문 스크립트');return vsNs(g,'ev.msg',n=>n.v.msg==='OnInteract').some(e=>vsNs(g,'if').some(i=>vsLinked(g,e,'out',i,'in')))}},
+  {t:'<b>소지품 개수</b>(게임 기능) · 이름 <b>열쇠</b> → <b>비교</b>(값 · 계산) · A &gt; B · B = <b>0</b> → 만약의 <b>조건</b>',ok:()=>{const g=vs12G('문 스크립트');return vsNs(g,'if').some(i=>{const s=vsSrc(g,i,'cond');if(!s||s.n.t!=='cmp')return false;const c=s.n,a=vsSrc(g,c,'a');return!!a&&a.n.t==='inv.count'&&vsTx(a.n.v.item,'열쇠')&&((c.v.op==='>'&&+c.v.b===0)||(c.v.op==='>='&&+c.v.b===1))})}},
+  {t:'만약 <b>참</b>: <b>켜기 / 끄기</b>(자신 · 끄기) 다음 <b>커스텀 이벤트 보내기</b>(이벤트 보내기 · C#) 「문 열림」 · 받는 곳 <b>씬 전체</b>',ok:()=>{const g=vs12G('문 스크립트');return vsNs(g,'if').some(i=>vsReach(g,i,n=>n.t==='active'&&!n.v.on,'yes')&&vsReach(g,i,n=>n.t==='trig'&&vsTx(n.v.name,'문 열림')&&n.v.to==='all','yes'))}},
+  {t:'만약 <b>거짓</b>: <b>대화창 보이기</b>(게임 기능) · 이름 <b>문</b> · 대사 「잠겨 있다. 열쇠가 필요해.」',ok:()=>{const g=vs12G('문 스크립트');return vsNs(g,'if').some(i=>vsReach(g,i,n=>n.t==='dialog'&&/열쇠/.test(String(n.v.text||'')),'no'))}},
+  {t:'<b>▶ 플레이</b> → 열쇠 없이 문에 말 걸기(대화창) → 상자에서 열쇠 → 다시 문에 말 걸기 → 문이 열림',ok:()=>vsEvHas(/^vs:say:.*열쇠/)&&TASK.ev.has('vs:off:문')&&TASK.ev.has('vs:send:문 열림')}],
+ hint:'대화창은 Space를 한 번 더 누르면 닫혀요.\n커스텀 이벤트 보내기의 받는 곳을 「씬 전체」로 하면 매니저를 포함한 모든 그래프가 받을 수 있어요.'},
+{id:'o-hud',task:true,vs:{setup:vs12Setup({chest:1,door:1,open:'게임 매니저 스크립트'})},title:'이벤트를 받아 UI 바꾸기',
+ desc:'<b>게임 매니저</b>는 씬에 보이지 않는 관리자 오브젝트예요. 게임 전체의 흐름과 UI를 맡겨요. 문이 보낸 「문 열림」을 <b>커스텀 이벤트 받기</b>로 받아 HUD 글자를 바꿔요. 이벤트 단추를 누르면 어느 오브젝트의 어느 스크립트가 보내는 이벤트인지 계층 구조로 골라요. HUD는 아래 계층 구조의 UI 그룹이에요.',
+ goal:'시작하면 HUD 안내를 바꾸고, 「문 열림」을 받으면 「탈출 성공!」을, 매 프레임 열쇠 개수를 HUD에 보여 주세요.',
+ checks:[
+  {t:'<b>시작</b>에 <b>UI 글자 바꾸기</b>(게임 기능)를 잇고 화면 <b>HUD</b> · 요소 <b>안내</b> · 글자 「열쇠를 찾아 문을 열자」',ok:()=>{const g=vs12G('게임 매니저 스크립트'),s=vsNs(g,'ev.start')[0];return vsNs(g,'ui.text',u=>vsTx(u.v.screen,'HUD')&&vsTx(u.v.el,'안내')&&vsTx(u.v.text,'열쇠를 찾아 문을 열자')).some(u=>vsLinked(g,s,'out',u,'in'))}},
+  {t:'<b>커스텀 이벤트 받기</b>(이벤트)를 넣고 <b>이벤트</b> 단추 → 문 › 문 스크립트 › <b>문 열림</b> 고르기',ok:()=>vsNs(vs12G('게임 매니저 스크립트'),'ev.custom',n=>vsTx(n.v.name,'문 열림')).length>0},
+  {t:'받은 뒤 <b>UI 글자 바꾸기</b>(HUD · 안내 · 「탈출 성공!」)',ok:()=>{const g=vs12G('게임 매니저 스크립트');return vsNs(g,'ev.custom',n=>vsTx(n.v.name,'문 열림')).some(e=>vsNs(g,'ui.text',u=>vsTx(u.v.screen,'HUD')&&vsTx(u.v.el,'안내')&&vsTx(u.v.text,'탈출 성공!')).some(u=>vsReach(g,e,n=>n===u)))}},
+  {t:'<b>업데이트</b>에 UI 글자 바꾸기(HUD · <b>열쇠</b>)를 잇고, 글자에 <b>글자 잇기</b>(A 「열쇠: 」 + B <b>소지품 개수</b>(열쇠))를 잇기',ok:()=>{const g=vs12G('게임 매니저 스크립트'),u0=vsNs(g,'ev.update')[0];return vsNs(g,'ui.text',u=>vsTx(u.v.screen,'HUD')&&vsTx(u.v.el,'열쇠')).some(u=>{if(!vsLinked(g,u0,'out',u,'in'))return false;const s=vsSrc(g,u,'text');if(!s||s.n.t!=='concat')return false;const b=vsSrc(g,s.n,'b');return!!b&&b.n.t==='inv.count'&&vsTx(b.n.v.item,'열쇠')})}},
+  {t:'<b>▶ 플레이</b> → 상자에서 열쇠를 얻으면 HUD가 「열쇠: 1」, 문을 열면 「탈출 성공!」',ok:()=>vsEvHas(/^vs:uitext:열쇠:열쇠\s*:\s*1$/)&&TASK.ev.has('vs:uitext:안내:탈출 성공!')}],
+ hint:'UI 노드의 화면 · 요소 이름은 계층 구조의 UI 그룹 · 요소 이름과 똑같이 써요.\n이벤트 고르기 창의 검색 칸에 새 이름을 써서 받을 수도 있어요.'},
+{id:'o-menu',task:true,vs:{setup:vs12Setup({chest:1,door:1,gm:1,menu:1,open:'게임 매니저 스크립트'})},title:'시작 버튼으로 게임 시작',
+ desc:'이번에는 처음에 <b>메뉴</b> UI 그룹이 떠 있고 HUD는 숨어 있어요. 메뉴가 떠 있는 동안 주인공이 움직이면 안 되니, <b>컴포넌트 값 바꾸기</b>로 주인공의 <b>움직일 수 있음</b>을 끄고, <b>버튼을 누르면</b> 노드로 「시작」 버튼을 받아 메뉴를 닫고 HUD를 열고 다시 움직이게 해요. UI ↔ 게임 오브젝트를 잇는 로직이에요.',
+ goal:'메뉴가 떠 있는 동안 주인공을 멈추고, 「시작」을 누르면 메뉴가 닫히고 HUD가 열리며 주인공이 움직이게 하세요.',
+ checks:[
+  {t:'<b>시작</b> 흐름에 <b>컴포넌트 값 바꾸기</b>(게임 오브젝트)를 잇고 대상 <b>주인공</b>, 값 <b>주인공 › 움직일 수 있음</b>, 새 값 체크 <b>해제</b>',ok:()=>{const g=vs12G('게임 매니저 스크립트'),s=vsNs(g,'ev.start')[0];return vsReach(g,s,n=>n.t==='comp.set'&&n.v.cp==='Hero|canMove'&&n.v.to==='hero'&&!n.v.value&&!vsIn(g,n,'value'))}},
+  {t:'<b>버튼을 누르면</b>(이벤트)을 넣고 <b>버튼</b> 단추 → 메뉴 › <b>시작</b> 고르기',ok:()=>vsNs(vs12G('게임 매니저 스크립트'),'ev.btn',n=>n.v.who!=='self'&&vsTx(n.v.screen,'메뉴')&&vsTx(n.v.el,'시작')).length>0},
+  {t:'이어서 <b>UI 화면 열기 / 닫기</b>: <b>닫기 (Hide)</b> · 화면 <b>메뉴</b>, 한 번 더 <b>열기 (Show)</b> · 화면 <b>HUD</b>',ok:()=>{const g=vs12G('게임 매니저 스크립트');return vsNs(g,'ev.btn').some(b=>vsReach(g,b,n=>n.t==='ui'&&n.v.mode==='Hide'&&vsTx(n.v.screen,'메뉴'))&&vsReach(g,b,n=>n.t==='ui'&&n.v.mode==='Show'&&vsTx(n.v.screen,'HUD')))}},
+  {t:'마지막에 <b>컴포넌트 값 바꾸기</b>(주인공 · 움직일 수 있음 · 체크)로 다시 움직이게',ok:()=>{const g=vs12G('게임 매니저 스크립트');return vsNs(g,'ev.btn').some(b=>vsReach(g,b,n=>n.t==='comp.set'&&n.v.cp==='Hero|canMove'&&n.v.to==='hero'&&!!n.v.value))}},
+  {t:'<b>▶ 플레이</b> → 방향키로 안 움직이는 것 보기 → <b>시작</b> 버튼 → 메뉴가 닫히고 HUD가 열리고 주인공이 움직임',ok:()=>vsEvHas(/^vs:click:메뉴\/시작$/)&&TASK.ev.has('vs:hide:메뉴')&&TASK.ev.has('vs:show:HUD')&&TASK.ev.has('vs:canmove:true')}],
+ hint:'컴포넌트 값 바꾸기의 「값」 단추를 누르면 대상에 붙은 컴포넌트가 펼쳐 볼 수 있게 나와요. 주인공 › 움직일 수 있음.\n버튼은 게임 화면에서 마우스로 눌러요.'}
+];
+
 const LESSONS=[
   {...L2,problems:L2P,hash:'lesson-1',cats:['feature'],lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
   {...L1,problems:L1P,hash:'lesson-2',cats:['cs'],lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
@@ -2763,6 +2968,8 @@ const LESSONS=[
   {...L7,problems:L7P,hash:'lesson-7',cats:['feature'],lv:2,kw:['룰 타일', '애니메이션 타일', '타일 팔레트'],preview:'타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    ↑ 같은 타일 · ✕ 다른 타일\n물 4칸     → 애니메이션 타일 (8 fps)'},
   {...L8,problems:L8P,hash:'lesson-8',cats:['feature','cs'],lv:3,kw:['씬 전환', '매니저', 'SceneManager'],preview:'계층 구조 → ＋ 새 씬 · ★ 시작 씬\n포탈     → 대상 씬 「숲」\n매니저   → BGM 매니저 · 게임 매니저\nSceneManager.LoadScene("숲");'},
   {...L9,problems:L9P,hash:'lesson-9',cats:['feature'],lv:2,kw:['UI 빌더', 'UI 그룹', '버튼 동작'],preview:'요소     → 텍스트 · 버튼 끌어다 놓기\n저장     → 「메인 화면」 · 「게임 UI」\n게임 시작 → 다른 UI 그룹 열기 「게임 UI」\n          + 이 그룹은 닫기'},
+  {...L11,problems:L11P,hash:'lesson-11',cats:['vs'],lv:1,kw:['비주얼 스크립트','노드','이벤트'],preview:'시작 ─▶ Debug.Log("안녕")\n키 입력(Space) ─▶ 변수에 더하기(점수)\n            └▶ 만약(점수 ≥ 5) ─▶ 알림'},
+  {...L12,problems:L12P,hash:'lesson-12',cats:['vs'],lv:2,kw:['오브젝트 상호작용','커스텀 이벤트','UI 버튼'],preview:'상자: 말을 걸면 ─▶ 소지품 + 열쇠\n문: 열쇠 > 0 ? ─▶ 「문 열림」 보내기\n매니저: 「문 열림」 받기 ─▶ HUD 글자'},
   {...L10,problems:L10P,hash:'lesson-10',cats:['cs'],lv:3,kw:['UIScreen','UIGroup','OnInteract'],preview:'dialogUI = UIGroup.Find("대화창");\n\nvoid OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n}'}
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
@@ -2844,7 +3051,7 @@ function snRestore(){
 function snSetup(p){
   const base=p&&p.setup?p.setup():p&&p.task?SN_INIT.filter(o=>o.id!=='quiz').map(o=>({...o})):SN_INIT.map(o=>({...o}));
   SN_OBJS.length=0;base.forEach(o=>SN_OBJS.push(o));SN_EDIT=null;SN_EDIT_UI=null;
-  l6Setup(p);stSetup(p);smSetup(p);ubSetup(p);
+  l6Setup(p);stSetup(p);smSetup(p);ubSetup(p);vsSetup(p);
   const tm=tmDefault();if(p&&p.task&&p.tiles)p.tiles(tm);tmLoad(tm);
   SN_UI.length=0;if(p&&p.uiSetup)p.uiSetup().forEach(u=>SN_UI.push(JSON.parse(JSON.stringify(u))));
   SN.tool='select';SN.layer=(p&&p.layer)||'t';SN.tile='floor';SN.hover=null;
@@ -3467,7 +3674,7 @@ $('#hier').addEventListener('click',e=>{
 });
 /* Delete 키: 입력칸 밖에서 누르면 고른 오브젝트·UI 삭제 (실습 문제) */
 document.addEventListener('keydown',e=>{
-  if(e.key!=='Delete'||$('#lessonView').hidden||!P()||!P().task||PLAY||SMON||UBON)return;
+  if(e.key!=='Delete'||$('#lessonView').hidden||!P()||!P().task||PLAY||SMON||UBON||VSON)return;
   if(e.target&&e.target.closest&&e.target.closest('input,textarea,select,#hier'))return;
   e.preventDefault();snDelete(SN.sel);
 });
@@ -3779,6 +3986,7 @@ function tkPing(){
 /* ---- 창 위치 힌트: 할 일이 어느 창에서 하는 일인지 작은 표시 + 그 창을 살짝 빛나게 ----
    할 일 글에 나오는 창 이름으로 찾음 (레슨 6은 애니메이터 · 애니메이션 · 프로젝트 · 콘솔 탭) · 위치(왼쪽 위 등)는 지금 화면 배치에서 계산 */
 const LOC_RULES=[
+  [/계층 구조/,'vsside'],[/노드 목록|속성 패널|그래프 변수|비주얼 스크립트 창/,'vs'],
   [/마을 › UI|게임 화면/,'ubpn'],[/UI 빌더/,'ub'],
   [/빌드 순서/,'smbar'],[/플레이 상황/,'smside'],
   [/계층 구조/,'hier'],[/인스펙터/,'insp'],[/도구 모음/,'sbar'],[/칠할 곳|팔레트에서/,'stools'],[/씬 뷰/,'scene'],[/게임 뷰/,'game'],
@@ -3788,6 +3996,7 @@ const LOC_GUESS=[[/샘플|반복 끄기|타임라인|속성 추가|클립 (버�
   [/지우개|브러시|이동 도구/,'sbar'],[/칠하기|칠해|점선|칸에|씬에서|끌어/,'scene'],[/키로|키를 떼|방향키|움직여|걸어/,'game'],[/앵커|글자|색을|이름을|트리거|사용은|메시지|콜라이더 모두/,'insp']];
 function locEl(k){
   if(UBON){if(k==='hier'||k==='insp'||k==='ub')return $('#ubView');if(k==='play'||k==='game'||k==='scene'||k==='ubpn')return $('#ubPn')}
+  if(VSON){if(k==='vsside'||k==='hier')return $('#vsSide');if(k==='insp'||k==='vs'||k==='scene')return $('#vsView');if(k==='play'||k==='game'||k==='ubpn'||k==='vspn')return $('#vsGameW');if(k==='con')return document.querySelector('.vscon')}
   const an=t=>L6ON?document.querySelector('#anPn .antab[data-an="'+t+'"]'):null;
   switch(k){
     case'hier':return document.querySelector('.hier-pn');case'insp':return document.querySelector('.insp-pn');
@@ -4164,6 +4373,256 @@ function ubSetup(p){
   (p.ub.groups?p.ub.groups():[]).forEach(d=>UBX.putGroup(d,'town'));
   UBX.newDraft();UBSEL=null;
   requestAnimationFrame(()=>{UBX.open();ubSide();ubFit();ubPlayBtn()});
+}
+
+/* ===================== 레슨 11 · 12: 비주얼 스크립트 실습장 — 엔진의 visual-script.js를 그대로 씀 =====================
+   VSP = 실습 프로젝트(엔진 P 모양: 씬 하나 · 그래프 · 매니저) · 위 큰 창 = 엔진과 같은 비주얼 스크립트 창 · 아래 = 계층 구조 + 게임 화면(플레이) + 콘솔
+   엔진에서 쓰는 이름(P · play · cur · startSpawn · csRunMethods · UIB …)은 over로 넘기고, 할 일 확인은 그래프 모양 + 플레이 중 일어난 일(vs:…)로 */
+const VS_TS=32;
+const VSICO={
+  ui:'<rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M4.5 6h7M4.5 9h3.5"/>',uibar:'<rect x="2" y="6.2" width="12" height="3.6" rx="1.8"/><path d="M3 8h5"/>',
+  uiimg:'<rect x="2.5" y="3" width="11" height="10" rx="1"/><path d="M3 11l3-3 2.5 2.5L10 9l3 3"/>',uitext:'<path d="M3.5 4.5h9M8 4.5v8"/>',uibtn:'<rect x="2" y="5" width="12" height="6" rx="3"/>',
+  mgr:'<rect x="2" y="4.5" width="12" height="8.5" rx="1.6"/><path d="M6 4.5V3.2a1 1 0 011-1h2a1 1 0 011 1v1.3M2 8.2h12M7 8.2v1.4h2V8.2"/>',
+  vscript:'<circle cx="3.2" cy="4" r="1.7"/><rect x="9" y="2.3" width="5.5" height="3.4" rx="1"/><rect x="5.2" y="10.3" width="5.5" height="3.4" rx="1"/><path d="M4.9 4H9M3.2 5.7v4.3c0 1.2.8 2 2 2"/>',
+  txform:'<circle cx="8" cy="8" r="5.6" stroke-dasharray="2 1.6"/><path d="M8 4.4v7.2M4.4 8h7.2M6.9 5.5L8 4.4l1.1 1.1M10.5 6.9L11.6 8l-1.1 1.1"/>',
+  animator:'<rect x="1.5" y="2.5" width="5" height="3.4" rx="1"/><rect x="9.5" y="2.5" width="5" height="3.4" rx="1"/><rect x="5.5" y="10.2" width="5" height="3.4" rx="1"/><path d="M6.5 4.2h3M4.6 5.9l2.2 4.3M11.4 5.9l-2.2 4.3"/>',
+  sound:'<path d="M2.5 6.2h2.6L8.6 3v10L5.1 9.8H2.5z"/><path d="M10.6 5.6a3.4 3.4 0 010 4.8M12.4 3.8a6 6 0 010 8.4"/>',
+  ghost:'<path d="M3.5 13.4V7a4.5 4.5 0 019 0v6.4l-1.5-1.2-1.5 1.2-1.5-1.2-1.5 1.2-1.5-1.2z"/><path d="M6.3 6.6v1.2M9.7 6.6v1.2"/>',
+  talk:'<path d="M2.5 3.3h11v7.2H7.6l-3.1 2.6v-2.6h-2z"/><path d="M5.3 6.9h.01M8 6.9h.01M10.7 6.9h.01" stroke-width="2"/>',
+  gem:'<path d="M4.6 2.8h6.8L14 6.1 8 13.4 2 6.1zM2 6.1h12M6.3 2.8l-1 3.3L8 13.4l2.7-7.3-1-3.3"/>',flag:'<path d="M3.5 14V2.5M3.5 3h8l-2 3 2 3h-8"/>',plus:'<path d="M8 3v10M3 8h10"/>',
+  chest:'<rect x="2" y="6" width="12" height="7.5" rx="1"/><path d="M2.5 6c0-2.2 1.8-3.5 5.5-3.5s5.5 1.3 5.5 3.5M2 9h12M7 8h2v2.4H7z"/>',
+  door:'<rect x="4" y="2" width="8" height="12" rx="1"/><path d="M10 8.2h.01" stroke-width="2"/>'};
+const vsIco=n=>VSICO[n]?`<svg class="ic" viewBox="0 0 16 16" aria-hidden="true">${VSICO[n]}</svg>`:(ico(n)||ico('cube'));
+const VS_UI_NAMES={panel:'패널',text:'텍스트',button:'버튼',bar:'게이지 바',image:'이미지'};
+const VS_UI_COLOR={panel:'#6f7bd9',text:'#8b90a3',button:'#e9bd0c',bar:'#ef5b6b',image:'#2ab3c6'};
+const VS_UI_ICON={panel:'ui',text:'uitext',button:'uibtn',bar:'uibar',image:'uiimg'};
+const VS_TYPES={event:{label:'이벤트 트리거',color:'#d9a431'},empty:{label:'빈 게임 오브젝트',color:'#8b90a3'},portal:{label:'포탈',color:'#8b5cf6'},npc:{label:'NPC',color:'#e8803a'},item:{label:'아이템 픽업',color:'#2ab3c6'},monster:{label:'몬스터',color:'#22a99c'},spawn:{label:'주인공',color:'#3fae7d'}};
+const vsIsUi=o=>!!o&&o.anchor!==undefined&&!!VS_UI_NAMES[o.type];
+/* 엔진 설정(선 연결 자석 · 연결 효과 · ? 보이기)은 엔진과 같은 저장소에서 읽음 */
+function vsSetv(){let v={};try{v=JSON.parse(localStorage.getItem('thaniya.settings.v1.y'))||{}}catch(e){}return{vsMagnet:v.vsMagnet!==false,vsFx:v.vsFx!==false,vsHelp:v.vsHelp!==false,ko:false}}
+let VSSETV=vsSetv();addEventListener('storage',e=>{if(!e.key||e.key==='thaniya.settings.v1.y')VSSETV=vsSetv()});
+const VSP={maps:[],vgraphs:[],mgrs:[],scripts:[],start:'yard'};
+let VSON=false,VSPLAY=null,VSSEL=null,VSOPEN=null;
+const vsScene=()=>VSP.maps[0]||null;
+const vsCur=()=>VSPLAY?VSPLAY.m:vsScene();
+const VS_L={hidden:{vs:false},tabs:{},active:{},collapsed:{},float:{},center:[]};
+const VS_PANEL={vs:document.getElementById('vsPanel')};
+const vsHero=m=>m?(m.objs||[]).find(o=>o.type==='spawn')||null:null;
+/* 계층 구조 트리 (엔진 spkTree와 같은 모양: 고르기 메뉴 · 이벤트 고르기가 씀) */
+function vsTree(){
+  const m=vsCur();if(!m)return[];
+  const own=(kind,o,extra)=>Object.assign({kind,o,id:o.id,insts:[],kids:[]},extra);
+  const objN=o=>own('obj',o,{icon:o.type==='spawn'?'user':(o.icon||'cube'),color:(VS_TYPES[o.type]||VS_TYPES.empty).color,label:o.name,sub:(VS_TYPES[o.type]||{}).label||'',off:o.active===false});
+  const uiN=u=>own('ui',u,{icon:VS_UI_ICON[u.type]||'ui',color:VS_UI_COLOR[u.type],label:u.name,sub:VS_UI_NAMES[u.type]||'',off:u.visible===false});
+  const ul=m.ui||[],ugs=m.uiGroups||[];
+  const uNodes=ugs.map(g=>({kind:'folder',user:1,key:'ug:'+g.id,icon:'folder',color:'var(--warnc)',label:g.name,kids:ul.filter(u=>u.group===g.id).map(uiN)})).concat(ul.filter(u=>!u.group).map(uiN));
+  const mgs=(VSPLAY?VSPLAY.mgrs:VSP.mgrs)||[];
+  return[{kind:'scene',key:'s',icon:'scene',label:m.name,start:true,kids:[{kind:'folder',key:'go',icon:'folder',label:'게임 오브젝트',kids:(m.objs||[]).map(objN)},{kind:'folder',key:'ui',icon:'ui',label:'UI',kids:uNodes}]},
+    {kind:'folder',key:'mgr',icon:'mgr',color:'#9a8cff',label:'매니저',kids:mgs.map(o=>own('mgr',o,{icon:'mgr',color:'#9a8cff',label:o.name,sub:'매니저'}))}];
+}
+/* ---- 플레이 중 세계 (엔진 함수와 같은 이름 · 같은 모양) ---- */
+function vsTileF(m,o){const p=VSPLAY;if(p&&p.m===m&&o&&o.type==='spawn')return{x:p.px/VS_TS-.5,y:p.py/VS_TS-.5};return{x:+o.x||0,y:+o.y||0}}
+function vsSetTile(m,o,x,y){const p=VSPLAY;if(p&&p.m===m&&o.type==='spawn'){p.px=(x+.5)*VS_TS;p.py=(y+.5)*VS_TS}o.x=x;o.y=y}
+function vsWorld(m,o,p){p=p||VSPLAY;if(p&&o&&o.type==='spawn'&&p.m===m)return{x:p.px,y:p.py};return{x:((+o.x||0)+.5)*VS_TS,y:((+o.y||0)+.5)*VS_TS}}
+/* GetComponent<T>() 대신: 위치(Transform)와 주인공(Hero)만 */
+function vsComp(m,o,T){
+  if(T==='Transform'&&!vsIsUi(o)&&!o.mgr)return{__h:'Transform',__o:o,name:o.name,
+    get(n){const t=vsTileF(m,o);if(n==='position')return CsV(t.x,t.y);if(n==='eulerAngles')return CsV(0,0,+o.rot||0,true);if(n==='localScale')return CsV(o.sx||1,o.sy||1,1,true);throw new Error('transform.'+n+'은(는) 이 실습에서 쓸 수 없어요')},
+    set(n,v){if(n==='position'){vsSetTile(m,o,v.x,v.y);return}if(n==='eulerAngles'){o.rot=+v.z||0;return}if(n==='localScale'){o.sx=v.x;o.sy=v.y;return}throw new Error('transform.'+n+'은(는) 이 실습에서 쓸 수 없어요')},call(){return null}};
+  if(T==='Hero'&&o.type==='spawn'&&VSPLAY)return{__h:'Hero',__o:o,name:o.name,
+    get(n){const p=VSPLAY;if(n==='canMove')return!p.lock;if(n==='hp')return p.hp;if(n==='isMoving')return!!p.moved;if(n==='isDead')return false;if(n==='invincibleTime')return .8;if(n==='radius')return .3;throw new Error('Hero.'+n)},
+    set(n,v){const p=VSPLAY;if(n==='canMove'){p.lock=!v;TASK.ev.add('vs:canmove:'+(!!v));return}if(n==='hp'){p.hp=Math.max(0,Math.min(100,Math.round(+v||0)));return}throw new Error('Hero.'+n+' 대입은 이 실습에서 쓸 수 없어요')},call(){return null}};
+  return null;
+}
+/* UI 노드 (UIScreen.Show / Hide / Toggle / SetText / GetValue) — 씬의 UI 그룹 · 요소 */
+function vsUiScript(name,a){
+  const m=VSPLAY&&VSPLAY.m;if(!m)return null;const scr=String(a[0]||''),gs=m.uiGroups||[];
+  const g=gs.find(x=>x.name===scr);
+  if(!g&&scr){vsLog('warn',_t('UI 화면 「{n}」을(를) 찾을 수 없어요 — 아래 계층 구조의 UI 그룹 이름을 확인하세요').replace('{n}',scr));return null}
+  const mem=g?(m.ui||[]).filter(u=>u.group===g.id):(m.ui||[]);
+  if(name==='Show'||name==='Hide'||name==='Toggle'){const on=name==='Show'?true:name==='Hide'?false:!mem.some(u=>u.visible!==false);mem.forEach(u=>u.visible=on);TASK.ev.add((on?'vs:show:':'vs:hide:')+(g?g.name:''));vsPaint();return null}
+  const el=mem.find(u=>u.name===String(a[1]||''));
+  if(!el){vsLog('warn',_t('UI 요소 「{n}」을(를) 찾을 수 없어요').replace('{n}',String(a[1]||'')));return null}
+  if(name==='SetText'){el.props=el.props||{};el.props.text=String(a[2]==null?'':a[2]);TASK.ev.add('vs:uitext:'+el.name+':'+el.props.text);return null}
+  if(name==='GetValue')return el.type==='bar'?+(el.props&&el.props.value)||0:String(el.props&&el.props.text||'');
+  return null;
+}
+/* 콘솔 · 알림 · 대화창 */
+function vsLog(k,m){m=String(m);const box=$('#vsCon');TASK.ev.add('vs:'+(k==='info'?'log':k)+':'+m);
+  if(box){const d=document.createElement('div');d.className='vscl '+k;d.textContent=m;box.append(d);while(box.children.length>200)box.firstChild.remove();box.scrollTop=box.scrollHeight;const c=$('#vsConN');if(c)c.textContent=box.children.length}
+  clearTimeout(vsLog.t);vsLog.t=setTimeout(tkPing,30)}
+function vsConClear(){const b=$('#vsCon');if(b)b.innerHTML='';const c=$('#vsConN');if(c)c.textContent='0'}
+const VS_WORLD={message:(t,sec)=>{if(!VSPLAY)return;VSPLAY.msg=String(t);VSPLAY.msgT=Math.max(.3,+sec||1.6);TASK.ev.add('vs:msg:'+VSPLAY.msg)},
+  say:(name,text)=>{if(!VSPLAY)return;VSPLAY.dialog={name:String(name||''),text:String(text||'')};TASK.ev.add('vs:say:'+VSPLAY.dialog.text)},
+  loadScene:()=>vsLog('warn',_t('이 실습에서는 다른 씬으로 갈 수 없어요'))};
+/* 학습 화면의 게임 화면은 작아서 「⚡ 이벤트 흐름」 패널은 처음에 접어 둠 — 직접 켠 적이 있으면(저장 값 '1') 그대로 (엔진 설정은 건드리지 않음) */
+const VS_FLOWK='thaniya.vs.flow.v1',vsGetItem=Storage.prototype.getItem;
+Storage.prototype.getItem=function(k){const v=vsGetItem.call(this,k);return k===VS_FLOWK&&v!=='1'?'0':v};
+const VSX=VISUAL_SCRIPT(n=>{(0,eval)(n);return(0,eval)('()=>('+n+')')},(n,v)=>{window.__vsv=v;(0,eval)(n+'=window.__vsv')},{
+  P:VSP,get play(){return VSPLAY},set play(v){VSPLAY=v},cur:()=>vsCur(),get curId(){const m=vsScene();return m?m.id:''},
+  get setv(){return VSSETV},TS:VS_TS,TYPES:VS_TYPES,UI_COLOR:VS_UI_COLOR,UI_ICON:VS_UI_ICON,_t,ico:vsIco,toast,openModal,showMenu,showMenuAt,hideMenu,
+  panelEl:VS_PANEL,POPPED:new Map(),L:VS_L,mqN:{matches:false},movePanel:()=>{},bigFloat:()=>({}),raise:()=>{},saveLayout:()=>{},renderLayout:()=>{},rootOf:id=>id,kidsOf:()=>[],insFold:new Set(),
+  markDirty:()=>vsEdited(),commit:()=>{},renderHier:()=>vsSide(),renderInsp:()=>{},selectScene:()=>{},mgrPick:id=>{VSSEL=id;vsSide()},
+  scOwner:()=>{const m=vsScene();if(!m||!VSSEL)return null;return(m.objs||[]).find(o=>o.id===VSSEL)||(m.ui||[]).find(o=>o.id===VSSEL)||(VSP.mgrs||[]).find(o=>o.id===VSSEL)||null},
+  openScriptHub:()=>toast(_t('이 실습에서는 C# 스크립트를 쓰지 않아요')),openSettings:()=>toast(_t('엔진의 설정 › 비주얼 스크립트에서 바꿀 수 있어요 · 바꾸면 여기에도 같이 적용돼요')),
+  SC:()=>[],scriptOf:()=>null,spkTree:()=>vsTree(),
+  isUiEl:vsIsUi,objOn:(m,o)=>o.active!==false,startSpawn:m=>vsHero(m),objTileF:vsTileF,setObjTile:vsSetTile,objWorld:vsWorld,
+  csRunMethods:(m,o,fns)=>VSX.msg(m,o,fns),csGetComp:vsComp,clog:(k,m)=>vsLog(k,m),CS_WORLD:VS_WORLD,UIB:{script:(n,a)=>vsUiScript(n,a)}
+});
+Storage.prototype.getItem=vsGetItem;
+/* ---- 그래프 · 노드 만들기 (문제 처음 상태) ---- */
+let vsSeq=0;const vsId=()=>'v'+(++vsSeq).toString(36)+Math.random().toString(36).slice(2,6);
+function vsMk(t,x,y,v){const d=VSX._NT[t],n={id:vsId(),t,x,y,v:{}};(d.f||[]).forEach(f=>{n.v[f[0]]=f[3];if(f[2]==='target')n.v[f[5]]=''});(d.ins||[]).forEach(p=>{if(p[2]!=='flow'&&p[3]!==undefined)n.v[p[0]]=p[3]});Object.assign(n.v,v||{});return n}
+function vsGraph(name,nodes,links,vars){return{id:vsId(),name,kind:'flow',vars:vars||[],nodes,links:(links||[]).map(l=>({id:vsId(),a:l[0].id,ap:l[1],b:l[2].id,bp:l[3]}))}}
+const vsBase=name=>vsGraph(name,[vsMk('ev.start',60,60),vsMk('ev.update',60,240)]);
+/* ---- 채점 도우미 ---- */
+const vsG=n=>VSP.vgraphs.find(g=>g.name===n)||null;
+const vsNs=(g,t,f)=>g?(g.nodes||[]).filter(n=>n.t===t&&(!f||f(n))):[];
+const vsTx=(v,w)=>{v=String(v==null?'':v).trim();return v===w||v===_t(w)};
+const vsIn=(g,n,k)=>g&&n?(g.links||[]).find(l=>l.b===n.id&&l.bp===k)||null:null;
+const vsSrc=(g,n,k)=>{const l=vsIn(g,n,k);return l?{n:g.nodes.find(q=>q.id===l.a),p:l.ap}:null};
+const vsLinked=(g,a,ap,b,bp)=>!!(g&&a&&b&&(g.links||[]).some(l=>l.a===a.id&&(!ap||l.ap===ap)&&l.b===b.id&&(!bp||l.bp===bp)));
+/* a에서 흐름(선)을 따라가면 조건에 맞는 노드에 닿나 (via = 처음 나가는 포트) */
+function vsReach(g,a,f,via){if(!g||!a)return false;const seen=new Set([a.id]);let q=(g.links||[]).filter(l=>l.a===a.id&&(!via||l.ap===via)).map(l=>l.b);
+  while(q.length){const id=q.shift();if(seen.has(id))continue;seen.add(id);const n=g.nodes.find(x=>x.id===id);if(!n)continue;if(f(n))return true;(g.links||[]).filter(l=>l.a===id&&!/^(value|r|now|name|screen|i|x|y|tx|ty|arg|result|state|d|dt|n)$/.test(l.ap)).forEach(l=>q.push(l.b))}return false}
+const vsEvHas=re=>[...TASK.ev].some(e=>re.test(e));
+/* ---- 계층 구조 (아래 왼쪽) ---- */
+function vsSide(){
+  const box=$('#vsSide');if(!box||!VSON)return;const m=vsScene();if(!m)return;
+  const curG=VSX._E&&VSX._E.gid;
+  const chips=o=>(o.vs||[]).map(c=>{const g=VSP.vgraphs.find(x=>x.id===c.gid);return g?`<button type="button" class="vsgchip${g.id===curG?' on':''}" data-vsgo="${esc(g.id)}" title="${esc(_t('이 그래프를 위 비주얼 스크립트 창에서 열기'))}">${vsIco('vscript')}<span data-i18n-skip>${esc(g.name)}</span></button>`:''}).join('');
+  const row=(o,ic,col,sub)=>`<div class="vsrow${VSSEL===o.id?' on':''}${o.active===false||o.visible===false&&!o.group?' off':''}" data-vssel="${esc(o.id)}"><span class="vsri" style="--oc:${col}">${vsIco(ic)}</span><b data-i18n-skip>${esc(o.name)}</b>${sub?`<small>${esc(_t(sub))}</small>`:''}${chips(o)}</div>`;
+  let h=`<div class="vssh">${vsIco('hier')}<span>${esc(_t('계층 구조'))}</span></div>`;
+  (m.objs||[]).forEach(o=>{h+=row(o,o.type==='spawn'?'user':(o.icon||'cube'),(VS_TYPES[o.type]||VS_TYPES.empty).color,o.type==='spawn'?'주인공':'')});
+  (m.uiGroups||[]).forEach(g=>{const mem=(m.ui||[]).filter(u=>u.group===g.id);h+=`<div class="vssh sub">${vsIco('folder')}<span data-i18n-skip>${esc(g.name)}</span><small>${esc(_t('UI 그룹'))} · ${mem.length}</small></div>`;
+    mem.forEach(u=>{if((u.vs||[]).length||u.type==='button'||u.type==='text')h+=row(u,VS_UI_ICON[u.type],VS_UI_COLOR[u.type],VS_UI_NAMES[u.type])})});
+  if((VSP.mgrs||[]).length){h+=`<div class="vssh">${vsIco('mgr')}<span>${esc(_t('매니저'))}</span></div>`;VSP.mgrs.forEach(o=>{h+=row(o,'mgr','#9a8cff','')})}
+  if(VSPLAY){const inv=Object.keys(VSPLAY.inv||{});h+=`<div class="vsinv">${esc(_t('소지품'))}: <b data-i18n-skip>${inv.length?inv.map(k=>esc(k)+' ×'+VSPLAY.inv[k]).join(', '):esc(_t('없음'))}</b></div>`}
+  box.innerHTML=h;
+}
+$('#vsSide').addEventListener('click',e=>{const c=e.target.closest('[data-vsgo]');if(c){VSX.open(c.dataset.vsgo);TASK.ev.add('vs:open:'+((VSP.vgraphs.find(g=>g.id===c.dataset.vsgo)||{}).name||''));vsSide();tkPing();return}
+  const r=e.target.closest('[data-vssel]');if(r){VSSEL=VSSEL===r.dataset.vssel?null:r.dataset.vssel;vsSide();try{VSX.render()}catch(_){}}});
+/* 편집할 때마다: 할 일 다시 확인 · 목록 새로 그리기 */
+function vsEdited(){clearTimeout(vsEdited.t);vsEdited.t=setTimeout(()=>{vsSide();tkPing()},80)}
+/* ---- 게임 화면 그리기 ---- */
+function vsFit(){const w=$('#vsGameW'),g=$('#vsGame');if(!w||!g||!VSON)return;const W=w.clientWidth-12,H=w.clientHeight-12;if(W<20||H<20)return;let gw=W,gh=W*9/16;if(gh>H){gh=H;gw=H*16/9}g.style.width=Math.floor(gw)+'px';g.style.height=Math.floor(gh)+'px';vsPaint()}
+const VS_UIA={tl:[0,0],tc:[.5,0],tr:[1,0],ml:[0,.5],mc:[.5,.5],mr:[1,.5],bl:[0,1],bc:[.5,1],br:[1,1]};
+function vsUiRect(u,cw,ch){const a=VS_UIA[u.anchor]||VS_UIA.tl;return{x:cw*a[0]+u.x-u.w*a[0],y:ch*a[1]+u.y-u.h*a[1],w:u.w,h:u.h}}
+function vsRR(x,X,Y,W,H,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+W,Y,X+W,Y+H,r);x.arcTo(X+W,Y+H,X,Y+H,r);x.arcTo(X,Y+H,X,Y,r);x.arcTo(X,Y,X+W,Y,r);x.closePath()}
+function vsDrawObj(x,o,X,Y,S){
+  const c=X+S/2,cy=Y+S/2;
+  if(o.type==='spawn'){const p=VSPLAY,fx=p?p.fx:0,fy=p?p.fy:1;
+    x.fillStyle='rgba(0,0,0,.28)';x.beginPath();x.ellipse(c,Y+S*.9,S*.3,S*.09,0,0,7);x.fill();
+    x.fillStyle='#1d1b24';x.beginPath();x.ellipse(c,cy+S*.12,S*.27,S*.28,0,0,7);x.fill();
+    x.beginPath();x.moveTo(c-S*.26,cy-S*.02);x.lineTo(c-S*.2,cy-S*.36);x.lineTo(c-S*.04,cy-S*.12);x.moveTo(c+S*.26,cy-S*.02);x.lineTo(c+S*.2,cy-S*.36);x.lineTo(c+S*.04,cy-S*.12);x.fill();
+    if(fy>=0){x.fillStyle='#ffd23f';x.beginPath();x.arc(c-S*.1+fx*S*.06,cy+S*.04,S*.045,0,7);x.arc(c+S*.1+fx*S*.06,cy+S*.04,S*.045,0,7);x.fill()}
+    x.fillStyle='#d23b3b';x.fillRect(c-S*.16,cy+S*.24,S*.32,S*.05);return}
+  if(o.icon==='chest'){x.fillStyle='#8a5a2b';vsRR(x,X+S*.12,Y+S*.32,S*.76,S*.52,S*.07);x.fill();x.fillStyle='#a86f36';vsRR(x,X+S*.12,Y+S*.2,S*.76,S*.24,S*.1);x.fill();x.fillStyle='#e8c14a';x.fillRect(c-S*.06,Y+S*.4,S*.12,S*.16);x.strokeStyle='rgba(0,0,0,.35)';x.lineWidth=1;x.strokeRect(X+S*.12,Y+S*.44,S*.76,0);return}
+  if(o.icon==='door'){x.fillStyle='#5b3a1e';vsRR(x,X+S*.16,Y+S*.04,S*.68,S*.92,S*.06);x.fill();x.fillStyle='#7a4f29';vsRR(x,X+S*.24,Y+S*.12,S*.52,S*.8,S*.04);x.fill();x.fillStyle='#e8c14a';x.beginPath();x.arc(X+S*.66,cy+S*.06,S*.05,0,7);x.fill();return}
+  if(o.icon==='sign'){x.fillStyle='#7a4f29';x.fillRect(c-S*.04,cy,S*.08,S*.42);x.fillStyle='#c79a5a';vsRR(x,X+S*.14,Y+S*.16,S*.72,S*.38,S*.06);x.fill();return}
+  x.fillStyle=(VS_TYPES[o.type]||VS_TYPES.empty).color;vsRR(x,X+S*.2,Y+S*.2,S*.6,S*.6,S*.12);x.fill();
+}
+function vsPaint(){
+  const cv=$('#vsGCv'),g=$('#vsGame');if(!cv||!g||!VSON)return;const d=window.devicePixelRatio||1,W=g.clientWidth,H=g.clientHeight;if(!W||!H)return;
+  if(cv.width!==Math.round(W*d)||cv.height!==Math.round(H*d)){cv.width=Math.round(W*d);cv.height=Math.round(H*d)}
+  const x=cv.getContext('2d');x.setTransform(d,0,0,d,0,0);const m=vsCur();if(!m)return;
+  x.fillStyle='#0e1013';x.fillRect(0,0,W,H);
+  const mw=m.w||12,mh=m.h||7,S=Math.min(W/mw,H/mh),ox=(W-S*mw)/2,oy=(H-S*mh)/2;
+  for(let j=0;j<mh;j++)for(let i=0;i<mw;i++){x.fillStyle=((i+j)&1)?'#4f8a3c':'#548f41';x.fillRect(ox+i*S,oy+j*S,S+.5,S+.5)}
+  (m.walls||[]).forEach(([i,j])=>{x.fillStyle='#6b6f78';x.fillRect(ox+i*S,oy+j*S,S+.5,S+.5);x.fillStyle='#585c64';x.fillRect(ox+i*S,oy+j*S+S*.7,S+.5,S*.3)});
+  const p=VSPLAY,objs=(m.objs||[]).filter(o=>o.active!==false).slice().sort((a,b)=>vsTileF(m,a).y-vsTileF(m,b).y);
+  x.font='600 '+Math.max(9,Math.round(S*.26))+'px '+getComputedStyle(document.body).fontFamily;x.textAlign='center';x.textBaseline='top';
+  objs.forEach(o=>{const t=vsTileF(m,o),X=ox+t.x*S,Y=oy+t.y*S;vsDrawObj(x,o,X,Y,S);if(o.type!=='spawn'){x.fillStyle='rgba(0,0,0,.55)';const tw=x.measureText(o.name).width+8;vsRR(x,X+S/2-tw/2,Y+S*.98,tw,Math.max(12,S*.32),4);x.fill();x.fillStyle='#fff';x.fillText(o.name,X+S/2,Y+S*1.01)}});
+  /* UI (640×360 캔버스 기준) */
+  const k=W/640,cw=640,ch=H/k;
+  (m.ui||[]).forEach(u=>{if(u.visible===false)return;const r=vsUiRect(u,cw,ch),X=r.x*k,Y=r.y*k,w=r.w*k,h=r.h*k,pr=u.props||{};
+    if(u.type==='panel'){x.fillStyle=pr.bg||'rgba(10,12,24,.86)';vsRR(x,X,Y,w,h,10*k);x.fill();return}
+    if(u.type==='button'){const hot=p&&p.hot===u.id;x.fillStyle=hot?(pr.bgH||'#5b8cff'):(pr.bg||'#3b6fe0');vsRR(x,X,Y,w,h,8*k);x.fill();x.fillStyle='#fff';x.font='700 '+Math.round((pr.fs||16)*k)+'px '+getComputedStyle(document.body).fontFamily;x.textAlign='center';x.textBaseline='middle';x.fillText(String(pr.text||''),X+w/2,Y+h/2);return}
+    if(u.type==='bar'){x.fillStyle='rgba(0,0,0,.5)';vsRR(x,X,Y,w,h,h/2);x.fill();x.fillStyle=pr.color||'#ef5b6b';const f=Math.max(0,Math.min(1,(+pr.value||0)/(+pr.max||100)));if(f>0){vsRR(x,X,Y,Math.max(h,w*f),h,h/2);x.fill()}return}
+    x.fillStyle=pr.color||'#fff';x.font=(pr.fw||600)+' '+Math.round((pr.fs||16)*k)+'px '+getComputedStyle(document.body).fontFamily;x.textAlign=pr.ta||'left';x.textBaseline='middle';
+    x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=3*k;x.fillText(String(pr.text||''),pr.ta==='center'?X+w/2:pr.ta==='right'?X+w:X,Y+h/2);x.shadowBlur=0});
+  if(p&&p.msg&&p.msgT>0){x.font='700 '+Math.round(15*k)+'px '+getComputedStyle(document.body).fontFamily;x.textAlign='center';x.textBaseline='middle';const tw=x.measureText(p.msg).width+28*k;x.fillStyle='rgba(0,0,0,.72)';vsRR(x,W/2-tw/2,14*k,tw,30*k,15*k);x.fill();x.fillStyle='#ffe066';x.fillText(p.msg,W/2,29*k)}
+  if(p&&p.dialog){const dh=78*k,X=16*k,Y=H-dh-12*k,w=W-32*k;x.fillStyle='rgba(12,14,30,.92)';vsRR(x,X,Y,w,dh,10*k);x.fill();x.strokeStyle='rgba(255,255,255,.25)';x.lineWidth=1;x.stroke();
+    x.textAlign='left';x.textBaseline='top';x.fillStyle='#ffd23f';x.font='700 '+Math.round(13*k)+'px '+getComputedStyle(document.body).fontFamily;x.fillText(p.dialog.name||'',X+14*k,Y+10*k);
+    x.fillStyle='#fff';x.font='500 '+Math.round(15*k)+'px '+getComputedStyle(document.body).fontFamily;x.fillText(p.dialog.text,X+14*k,Y+32*k);x.fillStyle='rgba(255,255,255,.6)';x.font=Math.round(11*k)+'px '+getComputedStyle(document.body).fontFamily;x.textAlign='right';x.fillText(_t('Space ▶'),X+w-12*k,Y+dh-20*k)}
+  if(!p){x.fillStyle='rgba(0,0,0,.35)';x.fillRect(0,0,W,H)}
+  const hint=$('#vsGh');if(hint){hint.hidden=!!(p&&p.dialog);hint.textContent=_t(!p?'▶ 플레이를 누르면 그래프가 실행돼요':document.activeElement===cv?'방향키 이동 · Space 말 걸기 · 버튼은 마우스로 · Esc 정지':'게임 화면을 한 번 눌러야 키 입력이 들어가요')}
+}
+/* ---- 플레이 ---- */
+const VS_DIR={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
+function vsPlayStart(){
+  const m0=vsScene();if(!m0)return;vsConClear();
+  const m=JSON.parse(JSON.stringify(m0)),h=vsHero(m);
+  VSPLAY={m,tm:0,keys:{},kraw:new Set(),kdown:new Set(),kup:new Set(),px:h?(h.x+.5)*VS_TS:VS_TS,py:h?(h.y+.5)*VS_TS:VS_TS,fx:0,fy:1,inv:{},mgrs:JSON.parse(JSON.stringify(VSP.mgrs||[])),msg:'',msgT:0,dialog:null,hp:100,vw:640,vh:360,lock:false,inSet:new Set(),seen:new WeakSet(),offSeen:new Set(),invSeen:{}};
+  VSX.playStart();TASK.ev.add('vs:play');
+  [...m.objs,...(m.ui||[]),...VSPLAY.mgrs].forEach(o=>{if(VSPLAY&&o.vs&&o.vs.length)VSX.msg(m,o,['Start'])});
+  vsPlayBtn();vsSide();const cv=$('#vsGCv');if(cv)cv.focus({preventScroll:true});vsLast=performance.now();requestAnimationFrame(vsLoop);tkPing();
+}
+function vsPlayStop(){if(!VSPLAY)return;try{VSX.playStop()}catch(e){}VSPLAY=null;vsPlayBtn();vsSide();vsPaint();try{VSX.render()}catch(e){}tkPing()}
+function vsPlayBtn(){const b=$('#vsPlay');if(b){b.textContent=_t(VSPLAY?'■ 정지':'▶ 플레이');b.classList.toggle('on',!!VSPLAY)}$('#vsGameW')&&$('#vsGameW').classList.toggle('live',!!VSPLAY)}
+let vsLast=0;
+function vsLoop(t){
+  const p=VSPLAY;if(!p)return;const dt=Math.min(.05,Math.max(0,(t-vsLast)/1000));vsLast=t;p.tm+=dt;const m=p.m;
+  /* 대화창: Space · Enter · E · 클릭으로 닫기 */
+  if(p.dialog&&['Space','Enter','KeyE','Mouse0'].some(k=>p.kdown.has(k))){p.dialog=null;p.kdown.clear()}
+  /* 주인공 이동 (칸 단위 충돌: 켜져 있고 막는 오브젝트 · 벽) */
+  const h=vsHero(m);let mx=(p.keys.right?1:0)-(p.keys.left?1:0),my=(p.keys.down?1:0)-(p.keys.up?1:0);p.moved=false;
+  if(h&&!p.dialog&&!p.lock&&(mx||my)){if(mx&&my){mx*=.7071;my*=.7071}if(Math.abs(mx)>=Math.abs(my)){p.fx=Math.sign(mx);p.fy=0}else{p.fx=0;p.fy=Math.sign(my)}
+    const sp=4*VS_TS*dt,blocked=(X,Y)=>{const i=Math.floor(X/VS_TS),j=Math.floor(Y/VS_TS);if(i<0||j<0||i>=(m.w||12)||j>=(m.h||7))return true;if((m.walls||[]).some(w=>w[0]===i&&w[1]===j))return true;return m.objs.some(o=>o!==h&&o.solid&&o.active!==false&&Math.round(o.x)===i&&Math.round(o.y)===j)};
+    const r=VS_TS*.28,nx=p.px+mx*sp,ny=p.py+my*sp;
+    if(!blocked(nx+Math.sign(mx)*r,p.py-r*.6)&&!blocked(nx+Math.sign(mx)*r,p.py+r*.6))p.px=nx;
+    if(!blocked(p.px-r*.6,ny+Math.sign(my)*r)&&!blocked(p.px+r*.6,ny+Math.sign(my)*r))p.py=ny;p.moved=true}
+  /* 말 걸기: Space · E — 바라보는 칸이나 가장 가까운(1.3칸 안) 켜진 오브젝트 */
+  if(h&&!p.dialog&&(p.kdown.has('Space')||p.kdown.has('KeyE'))){
+    const hx=p.px/VS_TS-.5,hy=p.py/VS_TS-.5;let best=null,bd=1.35;
+    m.objs.forEach(o=>{if(o===h||o.active===false)return;const d=Math.hypot(o.x-hx,o.y-hy)-((Math.round(o.x-hx)===p.fx&&Math.round(o.y-hy)===p.fy)?.3:0);if(d<bd){bd=d;best=o}});
+    if(best){TASK.ev.add('vs:interact:'+best.name);if(best.vs&&best.vs.length)VSX.msg(m,best,['OnInteract'])}}
+  /* 주인공이 칸에 들어오면 / 나가면 */
+  if(h){const hi=Math.floor(p.px/VS_TS),hj=Math.floor(p.py/VS_TS),now=new Set(m.objs.filter(o=>o!==h&&!o.solid&&o.active!==false&&Math.round(o.x)===hi&&Math.round(o.y)===hj).map(o=>o.id));
+    now.forEach(id=>{if(!p.inSet.has(id)){const o=m.objs.find(q=>q.id===id);if(o&&o.vs)VSX.msg(m,o,['OnHeroEnter'])}});p.inSet.forEach(id=>{if(!now.has(id)){const o=m.objs.find(q=>q.id===id);if(o&&o.vs)VSX.msg(m,o,['OnHeroExit'])}});p.inSet=now}
+  if(!VSPLAY)return;
+  VSX.tick(m,dt,false);if(!VSPLAY)return;
+  p.kdown.clear();p.kup.clear();if(p.msgT>0)p.msgT-=dt;
+  /* 일어난 일 기록 (채점용): 꺼진 오브젝트 · 소지품 · 보낸 이벤트 */
+  m.objs.forEach(o=>{if(o.active===false&&!p.offSeen.has(o.id)){p.offSeen.add(o.id);TASK.ev.add('vs:off:'+o.name);vsEdited()}});
+  Object.keys(p.inv).forEach(k=>{if(p.inv[k]!==p.invSeen[k]){p.invSeen[k]=p.inv[k];TASK.ev.add('vs:inv:'+k+':'+p.inv[k]);TASK.ev.add('vs:inv:'+k);vsEdited()}});
+  (VSX._R.log||[]).forEach(e=>{if(p.seen.has(e))return;p.seen.add(e);if(e.kind==='send'){const mm=/「(.*)」/.exec(e.txt);if(mm){TASK.ev.add('vs:send:'+mm[1]);vsEdited()}}});
+  /* 이번 프레임에 새로 일어난 일(로그 · 알림 · UI …)이 있으면 할 일을 바로 다시 확인 */
+  if(TASK.ev.size!==p.evN){p.evN=TASK.ev.size;clearTimeout(vsLoop.t);vsLoop.t=setTimeout(tkPing,40)}
+  vsPaint();try{VSX.onPlayFrame()}catch(e){}
+  requestAnimationFrame(vsLoop);
+}
+const vsGCvEl=document.getElementById('vsGCv');
+vsGCvEl.addEventListener('keydown',e=>{const p=VSPLAY;if(!p)return;if(e.key==='Escape'){e.preventDefault();vsPlayStop();return}
+  const c=e.code;if(VS_DIR[c])p.keys[VS_DIR[c]]=true;if(!p.kraw.has(c)){p.kraw.add(c);p.kdown.add(c)}if(VS_DIR[c]||c==='Space'||c==='Enter')e.preventDefault();e.stopPropagation()});
+vsGCvEl.addEventListener('keyup',e=>{const p=VSPLAY;if(!p)return;const c=e.code;if(VS_DIR[c])p.keys[VS_DIR[c]]=false;if(p.kraw.delete(c))p.kup.add(c);e.stopPropagation()});
+vsGCvEl.addEventListener('blur',()=>{const p=VSPLAY;if(p){p.keys={};p.kraw.clear()}vsPaint()});
+vsGCvEl.addEventListener('focus',()=>vsPaint());
+function vsHitUi(e){const p=VSPLAY;if(!p)return null;const r=vsGCvEl.getBoundingClientRect(),k=r.width/640,ch=r.height/k,X=(e.clientX-r.left)/k,Y=(e.clientY-r.top)/k;
+  const L0=(p.m.ui||[]).filter(u=>u.type==='button'&&u.visible!==false);for(let i=L0.length-1;i>=0;i--){const q=vsUiRect(L0[i],640,ch);if(X>=q.x&&X<=q.x+q.w&&Y>=q.y&&Y<=q.y+q.h)return L0[i]}return null}
+vsGCvEl.addEventListener('pointerdown',e=>{const p=VSPLAY;if(!p)return;vsGCvEl.focus({preventScroll:true});const c='Mouse'+e.button;p.kraw.add(c);p.kdown.add(c);
+  if(p.dialog)return;
+  const u=vsHitUi(e),m=p.m;
+  if(u){const g=(m.uiGroups||[]).find(x=>x.id===u.group);TASK.ev.add('vs:click:'+(g?g.name:'')+'/'+u.name);VSX.uiClick(m,u);vsEdited();return}
+  const r=vsGCvEl.getBoundingClientRect(),W=r.width,H=r.height,mw=m.w||12,mh=m.h||7,S=Math.min(W/mw,H/mh),ox=(W-S*mw)/2,oy=(H-S*mh)/2,lx=(e.clientX-r.left)/(W/640),ly=(e.clientY-r.top)/(W/640);
+  VSX.screenClick(m,{btn:e.button,x:Math.round(lx),y:Math.round(ly),tx:Math.floor((e.clientX-r.left-ox)/S),ty:Math.floor((e.clientY-r.top-oy)/S)});TASK.ev.add('vs:screen')});
+addEventListener('pointerup',e=>{const p=VSPLAY;if(p&&p.kraw.delete('Mouse'+e.button))p.kup.add('Mouse'+e.button)});
+vsGCvEl.addEventListener('pointermove',e=>{const p=VSPLAY;if(!p)return;const u=vsHitUi(e);const id=u?u.id:null;if(p.hot!==id){p.hot=id;vsGCvEl.style.cursor=id?'pointer':''}});
+new ResizeObserver(()=>vsFit()).observe(document.getElementById('vsGameW'));
+$('#vsPlay').addEventListener('click',()=>{if(VSPLAY)vsPlayStop();else vsPlayStart()});
+$('#vsConX').addEventListener('click',vsConClear);
+/* ---- 문제마다 차리기 ---- */
+function vsSetup(p){
+  if(VSPLAY)vsPlayStop();
+  VSON=!!(p&&p.vs);
+  const ws=document.querySelector('main.ws');if(ws)ws.classList.toggle('vs11',VSON);
+  $('#vsView').hidden=!VSON;$('#vsPn').hidden=!VSON;
+  if(!VSON)return;
+  const s=p.vs.setup();
+  VSP.maps=[s.scene];VSP.vgraphs=s.graphs||[];VSP.mgrs=s.mgrs||[];VSSEL=null;vsConClear();
+  const E=VSX._E;E.gid=null;E.path=[];E.sel.clear();E.undo=[];E.redo=[];E.view={};
+  const og=VSP.vgraphs.find(g=>g.name===s.open)||VSP.vgraphs[0];
+  requestAnimationFrame(()=>{VSX.open(og&&og.id);vsSide();vsFit();vsPlayBtn()});
 }
 
 /* ---- 학습 화면 경계 끌기: 문제 너비(--bw) · 위아래 줄(--rt/--rb) · 아래 줄 나눔(--v1/--v2) — 레슨 6과 다른 레슨을 따로 기억 ---- */
@@ -5040,7 +5499,7 @@ function route(){
   const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search',PVL=LESSONS.find(x=>'#about-'+x.hash===location.hash);
   $('#home').hidden=!!L||S||!!PVL;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;$('#pvView').hidden=!PVL;
   if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
-  else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else renderHome()}
+  else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);if(VSON)vsSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else renderHome()}
   window.scrollTo(0,0);
 }
 let tkPass=false;

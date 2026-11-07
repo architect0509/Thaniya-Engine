@@ -17,16 +17,18 @@
        flow : nodes:[{id,t,x,y,v:{}, sub?:그래프}], links:[{id,a,ap,b,bp}]   (a/ap = 나가는 노드/포트, b/bp = 들어가는 노드/포트)
        state: states:[{id,name,x,y,kind:'flow'|'super',g:그래프}], trans:[{id,a,b,c:{t,...}}], start:상태 id
 
-   VISUAL_SCRIPT(get, set) — ui-builder.js와 같은 방식으로 화면 쪽 변수(P · play · openModal · showMenu …)를 이름 그대로 읽습니다. */
-function VISUAL_SCRIPT(get,set){
+   VISUAL_SCRIPT(get, set, over) — ui-builder.js와 같은 방식으로 화면 쪽 변수(P · play · openModal · showMenu …)를 이름 그대로 읽습니다. over로 넘긴 이름이 먼저입니다(학습 화면). */
+function VISUAL_SCRIPT(get,set,over){
+  /* over = 화면마다 다른 이름을 대신 넘김 (학습 화면: 실습 프로젝트 P · play · 창 · 메뉴 …) — 엔진은 넘기지 않음 */
+  over=over||{};
   const OWN=Object.prototype.hasOwnProperty,cache=Object.create(null);
   const H=new Proxy(Object.create(null),{
-    has(_,n){if(typeof n!=='string')return false;if(cache[n])return true;
+    has(_,n){if(typeof n!=='string')return false;if(OWN.call(over,n)||cache[n])return true;
       let g;try{g=get(n)}catch(e){return false}
       if(n in globalThis){try{if(g()===globalThis[n])return false}catch(e){}}
       cache[n]=g;return true},
-    get(_,n){if(typeof n!=='string')return undefined;return(cache[n]||(cache[n]=get(n)))()},
-    set(_,n,v){set(n,v);return true}
+    get(_,n){if(typeof n!=='string')return undefined;if(OWN.call(over,n))return over[n];return(cache[n]||(cache[n]=get(n)))()},
+    set(_,n,v){if(OWN.call(over,n))over[n]=v;else set(n,v);return true}
   });
   with(H){return(function(){'use strict';
 
@@ -85,6 +87,130 @@ const CATH=Object.fromEntries(Object.keys(CATE).map(k=>[k,`rgba(${shade(EC[CATE[
 const CATD=Object.fromEntries(Object.keys(CATE).map(k=>[k,`rgba(${shade(EC[CATE[k]],.45).join(',')},.9)`]));
 const TYC={flow:'var(--vsflow)',num:EC.CALC,str:EC.TEXT,bool:EC.JUDGE,any:'#b8b8c4'};
 const F=(k,l,ty,d)=>[k,l,ty,d];
+/* ---- 컴포넌트 값 (C# GetComponent<T>().속성 과 같은 프록시를 씀) ----
+   [C# 형식, 이름, 아이콘, 색, 이 오브젝트에 있나(o), 속성 [키, 이름, 종류 num|str|bool, 바꿀 수 있나]] */
+const CMP=[
+  ['Transform','위치 · 회전 · 크기 (Transform)','txform','#31C1EC',o=>!isUiEl(o)&&!isMgr(o),[['pos.x','위치 X (칸)','num',1],['pos.y','위치 Y (칸)','num',1],['rot','회전 (°)','num',1],['scale.x','크기 X (배)','num',1],['scale.y','크기 Y (배)','num',1]]],
+  ['Hero','주인공','user','#4cd98a',o=>o.type==='spawn',[['hp','체력 (0~100)','num',1],['canMove','움직일 수 있음','bool',1],['invincibleTime','맞은 뒤 무적 시간 (초)','num',1],['radius','몸 반지름 (칸)','num',1],['isMoving','움직이는 중','bool',0],['isDead','쓰러짐','bool',0]]],
+  ['Animator','애니메이터','animator','#BF63FF',o=>!!(o.props&&o.props.animator),[['speed','재생 속도 (배)','num',1],['enabled','켜짐','bool',1]]],
+  ['AudioSource','오디오 소스','sound','#FC5D01',o=>!!(o.props&&o.props.audio),[['isPlaying','재생 중 (참 = 재생 · 거짓 = 멈춤)','bool',1],['volume','음량 (0~1)','num',1],['pitch','피치 (0.1~3)','num',1],['loop','반복','bool',1],['mute','음소거','bool',1],['time','재생 위치 (초)','num',1],['clip','클립 이름','str',1],['length','클립 길이 (초)','num',0]]],
+  ['Light','빛','sun','#FEB71A',o=>!!(o.props&&(o.props.light||o._lightOff)),[['enabled','켜짐','bool',1],['radius','반지름 (칸)','num',1],['intensity','밝기 (0.1~1)','num',1],['angle','비추는 각도 (°)','num',1],['dir','방향 (°)','num',1],['shadows','그림자','bool',1],['color','색 (#rrggbb)','str',1]]],
+  ['Camera','카메라','cam','#00CFCA',o=>!!(o.props&&o.props.camera),[['size','크기 (보이는 높이의 절반, 칸)','num',1],['smoothFollow','부드럽게 따라가기','bool',1],['smoothTime','따라가는 시간 (초)','num',1],['clampToMap','씬 밖 안 보이게','bool',1]]],
+  ['Monster','몬스터','ghost','#FF5174',o=>o.type==='monster',[['hp','체력','num',1],['speed','속도','num',1],['range','쫓아오는 거리 (칸)','num',1],['maxHp','최대 체력','num',0],['isDead','쓰러짐','bool',0]]],
+  ['Npc','NPC','talk','#7E8EFE',o=>o.type==='npc',[['text','대사 (첫 줄)','str',1],['lineCount','대사 줄 수','num',0]]],
+  ['Item','아이템','gem','#F57DF1',o=>o.type==='item',[['qty','개수','num',1]]],
+  ['Portal','포탈','portal','#DE6E22',o=>o.type==='portal',[['targetScene','도착 씬 이름','str',1],['tx','도착 X','num',1],['ty','도착 Y','num',1]]],
+  ['EventTrigger','이벤트','flag','#10D35E',o=>o.type==='event',[['text','글','str',1],['once','한 번만','bool',1]]]
+];
+const CMPT={float:'num',int:'num',bool:'bool',trigger:'bool'};
+const cpSplit=s=>{const i=String(s||'').indexOf('|');return i<0?['','']:[s.slice(0,i),s.slice(i+1)]};
+const cmpOf=k=>CMP.find(c=>c[0]===k)||null;
+/* 고른 속성 정보 {comp, key, label, type, rw} — 애니메이터 파라미터는 'p:이름:종류' */
+function cpInfo(s){const [ck,pk]=cpSplit(s),c=cmpOf(ck);if(!c||!pk)return null;
+  if(ck==='Animator'&&pk.startsWith('p:')){const [,nm,t]=pk.split(':');return{comp:c,key:pk,label:L10('파라미터 {n}',{n:nm}),short:nm,type:CMPT[t]||'num',rw:1,param:nm,pt:t}}
+  const p=c[5].find(q=>q[0]===pk);return p?{comp:c,key:pk,label:L10(p[1]),short:L10(p[1]).replace(/ \(.*\)$/,''),type:p[2],rw:p[3]}:null}
+const cpType=n=>{const i=cpInfo(n.v&&n.v.cp);return i?i.type:'any'};
+const cpDef=n=>({num:0,bool:false,str:''})[cpType(n)];
+/* 편집 중: 이 노드의 대상이 될 오브젝트들 (자신 = 이 그래프를 붙인 오브젝트) */
+function cpObjs(n){const v=n.v||{},m=curScene();
+  if(v.to==='hero'){const h=m&&startSpawn(m);return h?[h]:[]}
+  if(v.to==='name'){const o=findOwnerEd(v.tname);return o?[o]:[]}
+  const r=rootG();return r?usersOf(r.id).map(u=>u.o).filter(o=>!isUiEl(o)&&!isMgr(o)):[]}
+function ctrlOfObj(o){const a=o&&o.props&&o.props.animator,L0=P&&P.anim&&P.anim.ctrls||[];return a?L0.find(c=>c.id===a.ctrl)||null:null}
+function cpBtn(n,set){const i=cpInfo(n.v&&n.v.cp),objs=cpObjs(n);
+  const miss=!!i&&objs.length>0&&!objs.some(o=>i.comp[4](o));
+  const t=miss?L10('대상에 「{c}」 컴포넌트가 없어요',{c:L10(i.comp[1])}):L10(set?'바꿀 컴포넌트 값 고르기':'가져올 컴포넌트 값 고르기');
+  return`<button type="button" class="vtp vcp${miss?' miss':''}${i?'':' empty'}" data-cpick="${n.id}" title="${ex(t)}"><span class="vtpi" style="--oc:${i?i.comp[3]:'var(--mute)'}">${ico(i?i.comp[2]:'gear')}</span>${i?`<i>${ex(L10(i.comp[1]).replace(/ \(.*\)$/,''))} ›</i><b>${ex(i.short)}</b>`:`<b>${ex(L10('값 고르기'))}</b>`}<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>`}
+/* 「값」 고르기: 계층 구조처럼 컴포넌트를 펼쳐서 값을 고름 (대상에 없는 컴포넌트는 접힌 묶음 하나) */
+const CPF={};
+function cpMenu(btn,n,set,done){
+  cmClose();const doc=BOX.ownerDocument,win=doc.defaultView;
+  const objs=cpObjs(n),cur0=n.v&&n.v.cp||'',[curC]=cpSplit(cur0);
+  const has=c=>!objs.length||objs.some(o=>c[4](o));
+  const TYN={num:'숫자',str:'글자',bool:'참/거짓'};
+  const propsOf=c=>{const L0=c[5].filter(p=>!set||p[3]).map(p=>({key:c[0]+'|'+p[0],label:L10(p[1]),ty:p[2]}));
+    if(c[0]==='Animator'){const seen=new Set();objs.forEach(o=>{const k=ctrlOfObj(o);(k&&k.params||[]).forEach(q=>{if(seen.has(q.n))return;seen.add(q.n);
+      L0.push({key:'Animator|p:'+q.n+':'+q.t,label:L10('파라미터 {n}',{n:q.n})+' · '+({float:'Float',int:'Int',bool:'Bool',trigger:'Trigger'})[q.t],ty:CMPT[q.t]})})})}
+    return L0};
+  const mine=CMP.filter(has),rest=CMP.filter(c=>!has(c));
+  /* 처음 펼침: 지금 고른 값의 컴포넌트(와 그 묶음)만 */
+  const open=k=>k in CPF?CPF[k]:(k==='c:'+curC||(k==='g:rest'&&rest.some(c=>c[0]===curC)));
+  const el=doc.createElement('div');el.className='vcm vom vcpm';
+  el.innerHTML=`<div class="vobox"><div class="vvtop"><input type="search" placeholder="${ex(L10('컴포넌트 · 값 검색'))}" autocomplete="off" spellcheck="false"></div><div class="votree" role="tree"></div><div class="vofoot"></div></div>`;
+  doc.body.append(el);
+  const q=el.querySelector('input'),T=el.querySelector('.votree'),foot=el.querySelector('.vofoot');
+  const fold=(k,on)=>`<button type="button" class="vof${on?' open':''}" data-fk="${k}" tabindex="-1" aria-label="${ex(L10('펼치기/접기'))}"><svg viewBox="0 0 10 10"><path d="M3.5 2l3 3-3 3"/></svg></button>`;
+  const compRows=(c,d,k)=>{const ps=propsOf(c),cn=L10(c[1]),cHit=!!k&&cn.toLowerCase().includes(k),
+      vis=k&&!cHit?ps.filter(p=>p.label.toLowerCase().includes(k)):ps;if(k&&!vis.length)return'';
+      const fk='c:'+c[0],on=k?true:open(fk),sel=c[0]===curC;
+      let h=`<div class="vor vcc${sel?' cur':''}${cHit?' hit':''}" style="--d:${d}" data-fk="${fk}" tabindex="0" role="treeitem" aria-expanded="${on}">${fold(fk,on)}<span class="vtpi" style="--oc:${c[3]}">${ico(c[2])}</span><b>${ex(cn)}</b><small>${vis.length}</small></div>`;
+      if(on)h+=vis.map(p=>{const hit=!!k&&p.label.toLowerCase().includes(k);return`<div class="vor vcp1${p.key===cur0?' on':''}${hit?' hit':''}" style="--d:${d+1}" data-ck="${ex(p.key)}" tabindex="0" role="treeitem"><span class="vof sp"></span><b>${ex(p.label)}</b><small class="vty t-${p.ty}">${ex(L10(TYN[p.ty]))}</small>${p.key===cur0?'<span class="ck">✓</span>':''}</div>`}).join('');
+      return h};
+  let draw=()=>{const k=q.value.trim().toLowerCase();let h=mine.map(c=>compRows(c,0,k)).join('');
+    if(rest.length){const inner=rest.map(c=>compRows(c,1,k)).join('');
+      if(!k||inner){const on=k?true:open('g:rest');h+=`<div class="vor vcg" style="--d:0" data-fk="g:rest" tabindex="0" role="treeitem" aria-expanded="${on}">${fold('g:rest',on)}<span class="vtpi" style="--oc:var(--mute)">${ico('folder')}</span><b>${ex(L10(objs.length?'대상에 없는 컴포넌트':'다른 컴포넌트'))}</b><small>${rest.length}</small></div>`+(on?inner:'')}}
+    T.innerHTML=h||`<p class="vcm0">${ex(L10('맞는 값이 없습니다'))}</p>`;
+    foot.textContent=objs.length?L10('대상에 붙은 컴포넌트만 위에 보여요 · ▸ 를 눌러 펼치기'):L10('대상을 고르면 그 오브젝트의 컴포넌트가 위로 와요')};
+  /* 펼치거나 접어 높이가 바뀌면 화면 안으로 다시 맞춤 (단추 아래 → 모자라면 위로 → 그래도 모자라면 화면 안쪽 끝) */
+  const place=()=>{const ar=btn.getBoundingClientRect(),r=el.getBoundingClientRect(),W=win.innerWidth,H=win.innerHeight;
+    let x=ar.left;if(x+r.width>W-6)x=Math.max(6,W-r.width-6);
+    let y=ar.bottom+4;if(y+r.height>H-6){const up=ar.top-r.height-4;y=up>=6?up:Math.max(6,H-6-r.height)}
+    el.style.left=x+'px';el.style.top=y+'px'};
+  const draw0=draw;draw=()=>{draw0();place()};
+  draw();
+  const pick=key=>{cmClose();done(key);try{(VQ('#vsCv',BOX)||BOX).focus({preventScroll:true})}catch(_){}};
+  const toggle=(fk,on)=>{if(q.value.trim())return;const was=open(fk);CPF[fk]=on==null?!was:on;const keep=fk;draw();const f=T.querySelector(`[data-fk="${keep}"].vor`);if(f)f.focus({preventScroll:true})};
+  q.addEventListener('input',()=>draw());
+  el.addEventListener('click',e=>{const p=e.target.closest('[data-ck]');if(p){pick(p.dataset.ck);return}const f=e.target.closest('[data-fk]');if(f)toggle(f.dataset.fk)});
+  el.addEventListener('keydown',e=>{e.stopPropagation();const ae=doc.activeElement;
+    if(e.key==='Escape'){e.preventDefault();cmClose();try{btn.focus()}catch(_){}return}
+    if(e.key==='Enter'){e.preventDefault();if(ae&&ae.dataset){if(ae.dataset.ck){pick(ae.dataset.ck);return}if(ae.classList.contains('vor')&&ae.dataset.fk){toggle(ae.dataset.fk);return}}
+      if(ae===q){const f=T.querySelector('.vor.hit[data-ck]')||T.querySelector('[data-ck]');if(f)pick(f.dataset.ck)}return}
+    if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&ae&&ae.classList.contains('vor')&&ae.dataset.fk){e.preventDefault();toggle(ae.dataset.fk,e.key==='ArrowRight');return}
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const L0=[...T.querySelectorAll('.vor[tabindex]')];if(!L0.length)return;let i=L0.indexOf(ae);i=i<0?0:Math.max(0,Math.min(L0.length-1,i+(e.key==='ArrowDown'?1:-1)));L0[i].focus()}});
+  const out=e=>{if(!el.contains(e.target)&&!btn.contains(e.target))cmClose()};
+  CM={el,doc,win,out};doc.addEventListener('pointerdown',out,true);win.addEventListener('blur',cmClose);
+  setTimeout(()=>{try{q.focus({preventScroll:true});const on=el.querySelector('.vor.on');if(on)on.scrollIntoView({block:'nearest'})}catch(_){}},0);
+}
+/* 플레이 중: 값 읽기 · 바꾸기 */
+function cpTarget(M,to,tn){if(to==='hero')return startSpawn(M.m);return tgt(M,to,tn)}
+function cpWarn(c,msg){if(c.mem.w===msg)return;c.mem.w=msg;clog('warn',L10('[비주얼 스크립트 {g}] {m}',{g:c.M.gname,m:msg}))}
+function cpProxy(c,to,tn,s){
+  const i=cpInfo(s);if(!i){cpWarn(c,L10('「컴포넌트 값」 노드에서 바꿀 값을 고르세요'));return null}
+  const o=cpTarget(c.M,to,tn);if(!o)return null;
+  if(i.comp[0]==='Light'&&!o.props.light&&o._lightOff&&i.key==='enabled')return{i,o,px:null};
+  let px=null;try{px=csGetComp(c.M.m,o,i.comp[0])}catch(e){cpWarn(c,String(e&&e.message||e));return null}
+  if(!px){cpWarn(c,L10('「{o}」에 {c} 컴포넌트가 없어요',{o:o.name,c:L10(i.comp[1])}));return null}
+  return{i,o,px};
+}
+function compGet(c,to,tn,s){
+  const r=cpProxy(c,to,tn,s);if(!r)return null;const {i,px}=r;
+  try{
+    if(!px)return false;
+    if(i.param){const f={float:'GetFloat',int:'GetInteger',bool:'GetBool',trigger:'GetBool'}[i.pt]||'GetFloat';return px.call(f,[i.param])}
+    if(i.comp[0]==='Transform'){if(i.key==='pos.x'||i.key==='pos.y')return px.get('position')[i.key.slice(4)];if(i.key==='rot')return px.get('eulerAngles').z;return px.get('localScale')[i.key.slice(6)]}
+    if(i.comp[0]==='Camera'&&i.key==='size')return px.get('orthographicSize');
+    return px.get(i.key);
+  }catch(e){cpWarn(c,String(e&&e.message||e));return null}
+}
+function compSet(c,to,tn,s,v){
+  const r=cpProxy(c,to,tn,s);if(!r)return;const {i,o,px}=r;
+  if(!i.rw){cpWarn(c,L10('「{p}」은(는) 읽기만 할 수 있어요',{p:i.label}));return}
+  v=i.type==='num'?tN(v):i.type==='bool'?tB(v):tS(v);
+  try{
+    if(!px){if(v){o.props.light=o._lightOff;delete o._lightOff}return}
+    if(i.param){if(i.pt==='trigger'){px.call(v?'SetTrigger':'ResetTrigger',[i.param]);return}px.call({float:'SetFloat',int:'SetInteger',bool:'SetBool'}[i.pt]||'SetFloat',[i.param,v]);return}
+    if(i.comp[0]==='Transform'){
+      if(i.key==='pos.x'||i.key==='pos.y'){const q=px.get('position');px.set('position',CsV(i.key==='pos.x'?v:q.x,i.key==='pos.y'?v:q.y));return}
+      if(i.key==='rot'){px.set('eulerAngles',CsV(0,0,v,true));return}
+      const q=px.get('localScale');px.set('localScale',CsV(i.key==='scale.x'?v:q.x,i.key==='scale.y'?v:q.y,1,true));return}
+    if(i.comp[0]==='AudioSource'&&i.key==='isPlaying'){px.call(v?'Play':'Stop',[]);return}
+    if(i.comp[0]==='Light'&&i.key==='enabled'){px.set('enabled',v);return}
+    if(i.comp[0]==='Camera'&&i.key==='size'){px.set('orthographicSize',v);return}
+    px.set(i.key,v);
+  }catch(e){cpWarn(c,String(e&&e.message||e))}
+}
+
 const NT={
   /* ---- 이벤트 ---- */
   'ev.start':{cat:'ev',label:'시작 (Start)',ev:1,outs:[F('out','','flow')],tip:'머신이 시작될 때 (씬에 들어오거나 오브젝트가 켜질 때) 한 번 실행합니다.'},
@@ -92,9 +218,11 @@ const NT={
   'ev.enter':{cat:'ev',label:'상태 진입 (On Enter State)',ev:1,only:'state',outs:[F('out','','flow')],tip:'이 상태로 들어올 때 한 번 실행합니다 (상태 안의 그래프에서만).'},
   'ev.exit':{cat:'ev',label:'상태 나감 (On Exit State)',ev:1,only:'state',outs:[F('out','','flow')],tip:'이 상태에서 다른 상태로 넘어가기 직전에 실행합니다.'},
   'ev.key':{cat:'ev',label:'키 입력 (On Key)',ev:1,f:[['key','키','sel','Space',KEYS],['mode','언제','sel','down',[['down','눌렀을 때'],['up','뗐을 때'],['hold','누르는 동안']]]],outs:[F('out','','flow')],tip:'키보드 키를 누르거나 뗄 때 실행합니다.'},
-  'ev.custom':{cat:'ev',label:'커스텀 이벤트 받기',ev:1,f:[['name','이벤트 이름','text','이벤트']],outs:[F('out','','flow'),F('arg','받은 값','any')],tip:'「커스텀 이벤트 보내기」 노드나 C#의 VisualScript.Trigger("이름")가 보낸 이벤트를 받습니다.'},
+  'ev.custom':{cat:'ev',label:'커스텀 이벤트 받기',ev:1,f:[['name','이벤트','evpick','이벤트']],outs:[F('out','','flow'),F('arg','받은 값','any')],tip:'「커스텀 이벤트 보내기」 노드나 C#의 VisualScript.Trigger("이름")가 보낸 이벤트를 받습니다.'},
   'ev.msg':{cat:'ev',label:'엔진 메시지 받기',ev:1,f:[['msg','메시지','sel','OnInteract',MSGS]],outs:[F('out','','flow')],tip:'엔진이 보내는 메시지(말 걸기 · 들어오기 · 클릭 …)를 받습니다. C# 스크립트의 같은 이름 메서드와 함께 불립니다.'},
   'ev.timer':{cat:'ev',label:'타이머 (매 N초)',ev:1,f:[['sec','간격(초)','num',1]],outs:[F('out','','flow'),F('n','횟수','num')],tip:'정한 간격마다 실행합니다.'},
+  'ev.btn':{cat:'ev',label:'버튼을 누르면 (On Click)',ev:1,f:[['who','버튼','btn','name']],outs:[F('out','','flow'),F('name','버튼 이름','str'),F('screen','화면 이름','str')],tip:'플레이 중 UI 버튼을 클릭하면(누르면) 실행합니다. 화면 · 버튼 칸을 비우면 아무 화면 · 아무 버튼이나 받아요.'},
+  'ev.screen':{cat:'ev',label:'화면을 클릭하면',ev:1,f:[['btn','마우스 버튼','sel','0',[['0','왼쪽'],['2','오른쪽'],['any','아무 버튼']]]],outs:[F('out','','flow'),F('x','화면 X','num'),F('y','화면 Y','num'),F('tx','칸 X','num'),F('ty','칸 Y','num')],tip:'게임 화면을 클릭(터치)하면 실행합니다. UI 버튼 위를 누른 것은 빼고, 누른 곳의 화면 위치와 칸 위치가 나와요.'},
   'g.in':{cat:'state',label:'그래프 입력',ev:1,only:'sub',outs:[F('out','','flow'),F('value','값','any')],tip:'바깥 「서브그래프」 노드로 흐름이 들어오면 여기서 시작합니다.'},
   /* ---- 흐름 제어 ---- */
   'if':{cat:'flow',label:'만약 (If)',ins:[F('in','','flow'),F('cond','조건','bool',true)],outs:[F('yes','참','flow'),F('no','거짓','flow')],run:c=>tB(c.v('cond'))?'yes':'no'},
@@ -147,6 +275,13 @@ const NT={
     run:c=>{c.moveBy(c.f('to'),c.f('tname'),tN(c.v('dx')),tN(c.v('dy')));return'out'}},
   'active':{cat:'obj',label:'켜기 / 끄기 (SetActive)',f:[['to','대상','target','self',{allow:['self','name'],kinds:['obj','ui']},'tname']],ins:[F('in','','flow'),F('on','켜기','bool',false)],outs:[F('out','','flow')],
     run:c=>{c.setActive(c.f('to'),c.f('tname'),tB(c.v('on')));return'out'}},
+  'comp.get':{cat:'obj',label:'컴포넌트 값 가져오기',f:[['to','대상','target','self',{allow:['self','hero','name'],kinds:['obj']},'tname'],['cp','값','cprop','']],outs:[F('value','값','any')],
+    outsFn:n=>{const i=cpInfo(n.v&&n.v.cp);return[F('value',i?i.short:'값',i?i.type:'any')]},data:c=>c.compGet(c.f('to'),c.f('tname'),c.f('cp')),
+    tip:'오브젝트에 붙은 컴포넌트(애니메이터 · 오디오 소스 · 빛 · 카메라 · 주인공 · 몬스터 …)의 값을 읽습니다. C#의 GetComponent<…>().속성 과 같아요.'},
+  'comp.set':{cat:'obj',label:'컴포넌트 값 바꾸기',f:[['to','대상','target','self',{allow:['self','hero','name'],kinds:['obj']},'tname'],['cp','값','cprop','',1]],ins:[F('in','','flow'),F('value','새 값','any','')],outs:[F('out','','flow')],
+    insFn:n=>{const i=cpInfo(n.v&&n.v.cp);return[F('in','','flow'),F('value',i?i.short:'새 값',i?i.type:'any',i?({num:0,bool:false,str:''})[i.type]:'')]},
+    run:c=>{c.compSet(c.f('to'),c.f('tname'),c.f('cp'),c.v('value'));return'out'},
+    tip:'오브젝트에 붙은 컴포넌트의 값을 바꿉니다 (음량 · 빛 밝기 · 애니메이터 파라미터 · 카메라 크기 · 몬스터 속도 …). C#의 GetComponent<…>().속성 = 값 과 같아요.'},
   /* ---- 게임 기능 ---- */
   'log':{cat:'game',label:'Debug.Log',ins:[F('in','','flow'),F('msg','내용','any','Hello')],outs:[F('out','','flow')],run:c=>{c.log(tS(c.v('msg')));return'out'},tip:'콘솔에 글을 찍습니다 (로그 출력).'},
   'msg':{cat:'game',label:'알림 메시지',ins:[F('in','','flow'),F('text','글','str','안녕!'),F('sec','초','num',1.6)],outs:[F('out','','flow')],run:c=>{c.world('message',tS(c.v('text')),Math.max(.1,tN(c.v('sec'))));return'out'}},
@@ -161,9 +296,234 @@ const NT={
 };
 const NT_OK=t=>!!NT[t];
 const def=n=>NT[n.t]||{label:'(알 수 없는 노드)',cat:'flow',ins:[],outs:[]};
-const insOf=n=>def(n).ins||[],outsOf=n=>def(n).outs||[];
+const insOf=n=>{const d=def(n);return(d.insFn?d.insFn(n):d.ins)||[]},outsOf=n=>{const d=def(n);return(d.outsFn?d.outsFn(n):d.outs)||[]};
 const portTy=(n,io,k)=>{const p=(io==='i'?insOf(n):outsOf(n)).find(q=>q[0]===k);return p?p[2]:null};
-const nodeLabel=n=>{const d=def(n);if(n.t==='ev.custom')return'⚡ '+(n.v&&n.v.name||'이벤트');if(n.t==='ev.msg')return MSGN[n.v&&n.v.msg]||(n.v&&n.v.msg)||d.label;if(n.t==='trig')return'⚡→ '+(n.v&&n.v.name||'이벤트');if(n.t==='sub'||n.t==='smu')return n.name||d.label;if(n.t==='var.get'||n.t==='var.set'||n.t==='var.add')return d.label.replace('변수',(n.v&&n.v.name)||'변수');return d.label};
+const nodeLabel=n=>{const d=def(n);if(n.t==='ev.custom')return'⚡ '+(n.v&&n.v.name||'이벤트');if(n.t==='ev.msg')return MSGN[n.v&&n.v.msg]||(n.v&&n.v.msg)||d.label;if(n.t==='trig')return'⚡→ '+(n.v&&n.v.name||'이벤트');if(n.t==='comp.get'||n.t==='comp.set'){const i=cpInfo(n.v&&n.v.cp);if(i)return L10(i.comp[1]).replace(/ \(.*\)$/,'')+' · '+i.short+(n.t==='comp.set'?' '+L10('바꾸기'):'');return d.label}if(n.t==='ev.btn'){const v=n.v||{};if(v.who==='self')return'버튼을 누르면 (자신)';if(v.el)return'「'+v.el+'」 버튼을 누르면';if(v.screen)return'「'+v.screen+'」 화면 버튼을 누르면';return d.label}if(n.t==='sub'||n.t==='smu')return n.name||d.label;if(n.t==='var.get'||n.t==='var.set'||n.t==='var.add')return d.label.replace('변수',(n.v&&n.v.name)||'변수');return d.label};
+
+/* ---- 노드 도움말 (노드 목록 오른쪽 ? 에 마우스를 올리면 뜸) ----
+   d  : 설명
+   g  : 예시 그래프 (흐름 순서대로 위 줄) — [분류, 이름, 값 표시]  이름 앞 '!' = 이 노드
+   dd : 아래 줄 값 노드 — [몇 번째 위 노드에 넣는지, 분류, 이름, 값 표시]
+   cs : 같은 일을 하는 C# 코드 */
+const NEX={
+  'ev.start':{d:'머신이 처음 켜질 때 딱 한 번 흐름이 시작됩니다. 처음 위치 · 처음 값 정하기, 인사말처럼 한 번만 할 일을 여기에 잇습니다.',
+    g:[['ev','!시작'],['game','Debug.Log','"준비 완료"']],cs:'void Start()\n{\n    Debug.Log("준비 완료");\n}'},
+  'ev.update':{d:'매 프레임마다 흐름이 나갑니다. 키 확인 · 계속 움직이기처럼 쉬지 않고 확인할 일을 잇습니다. 「델타 시간」으로 프레임 속도와 상관없이 같은 빠르기를 낼 수 있어요.',
+    g:[['ev','!업데이트'],['obj','이동하기','가로 = 2 × 델타']],cs:'void Update()\n{\n    transform.Translate(new Vector3(2 * Time.deltaTime, 0, 0));\n}'},
+  'ev.enter':{d:'상태 그래프의 한 상태 안에서만 씁니다. 이 상태로 들어오는 순간 한 번 실행돼요. 상태마다 처음 할 일(대사 · 애니메이션 · 알림)을 둡니다.',
+    g:[['ev','!상태 진입'],['game','알림 메시지','"순찰 시작!"']],cs:'// 상태 머신의 「순찰」 상태에 들어올 때\nMessage.Show("순찰 시작!");'},
+  'ev.exit':{d:'이 상태에서 다른 상태로 넘어가기 직전에 한 번 실행됩니다. 켜 둔 것 끄기 · 뒷정리에 씁니다.',
+    g:[['ev','!상태 나감'],['obj','켜기 / 끄기','느낌표 · 끄기']],cs:'// 상태를 떠날 때\nGameObject.Find("느낌표").SetActive(false);'},
+  'ev.key':{d:'고른 키를 눌렀을 때 · 뗐을 때 · 누르는 동안 흐름이 나갑니다. 「업데이트 → 만약 → 키를 누르고 있나」를 한 노드로 줄인 것과 같아요.',
+    g:[['ev','!키 입력','Space · 눌렀을 때'],['game','Debug.Log','"점프!"']],cs:'void Update()\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        Debug.Log("점프!");\n}'},
+  'ev.custom':{d:'「커스텀 이벤트 보내기」나 C# VisualScript.Trigger로 보낸 같은 이름의 이벤트를 받습니다. 「이벤트」 단추를 누르면 계층 구조 › 오브젝트 › 스크립트 › 그 스크립트가 보내는 이벤트 순서로 고를 수 있고, 검색 칸에 새 이름을 써도 돼요. 함께 보낸 값은 「받은 값」으로 나와요.',
+    g:[['ev','!커스텀 이벤트 받기','"문 열기"'],['game','알림 메시지','"문이 열렸다"']],cs:'// 다른 곳에서 보내기\nVisualScript.Trigger("문 열기");\n// → 이 그래프의 「문 열기」 이벤트가 실행됨'},
+  'ev.msg':{d:'엔진이 보내는 메시지(말 걸기 · 주인공이 들어옴 · 클릭 …)를 받습니다. C# 스크립트의 같은 이름 메서드와 똑같은 때에 실행돼요.',
+    g:[['ev','!엔진 메시지 받기','OnInteract'],['game','대화창 보이기','상인 · "어서 오세요!"']],cs:'void OnInteract()\n{\n    Dialog.Show("상인", "어서 오세요!");\n}'},
+  'ev.timer':{d:'정한 초마다 흐름이 나갑니다. 「횟수」는 몇 번째 실행인지 알려 줘요. 매 프레임까지는 필요 없는 반복 작업에 좋아요.',
+    g:[['ev','!타이머','2초마다'],['var','변수에 더하기','점수 + 1']],cs:'float t;\nvoid Update()\n{\n    t += Time.deltaTime;\n    if (t >= 2) { t = 0; score += 1; }\n}'},
+  'ev.btn':{d:'플레이 중 UI 버튼을 누르면 흐름이 나갑니다. 「버튼」 단추를 누르면 계층 구조처럼 UI 화면과 버튼이 나와요. 버튼을 고르면 그 버튼만, 화면(폴더)을 고르면 그 화면의 아무 버튼, 「아무 버튼」은 모든 버튼을 받아요. 매니저나 어느 오브젝트에 붙여도 됩니다. 「자신」은 이 그래프를 붙인 UI 요소를 누를 때예요.',
+    g:[['ev','!버튼을 누르면','메인 메뉴 · 시작'],['game','UI 화면 열기 / 닫기','닫기 · 메인 메뉴'],['game','씬 불러오기','"마을"']],cs:'// 버튼에 붙인 C# 스크립트\nvoid OnClick()\n{\n    UIScreen.Hide("메인 메뉴");\n    SceneManager.LoadScene("마을");\n}'},
+  'ev.screen':{d:'게임 화면을 클릭(터치)하면 흐름이 나갑니다. UI 버튼을 누른 것은 빠져요. 화면 X · Y는 게임 화면 안의 위치(px), 칸 X · Y는 누른 곳의 씬 칸 위치예요.',
+    g:[['ev','!화면을 클릭하면','왼쪽'],['game','Debug.Log','칸 X']],cs:'void Update()\n{\n    if (Input.GetMouseButtonDown(0))\n        Debug.Log(Input.mousePosition);\n}'},
+  'g.in':{d:'서브그래프 안에서만 씁니다. 바깥 「서브그래프」 노드로 흐름이 들어오면 여기서 시작하고, 바깥에서 넣은 값이 「값」으로 나와요.',
+    g:[['state','!그래프 입력','값 = 3'],['val','계산','값 × 2'],['state','그래프 출력','결과 = 6']],cs:'// 서브그래프 = 작은 함수\nint Double(int value)\n{\n    return value * 2;\n}'},
+  'if':{d:'「조건」이 참이면 「참」으로, 거짓이면 「거짓」으로 흐름을 나눕니다. 조건 칸에는 비교 · 키를 누르고 있나 같은 참/거짓 값을 잇습니다.',
+    g:[['ev','업데이트'],['flow','!만약','조건'],['game','Debug.Log','"가까워!"']],dd:[[1,'val','비교','거리 < 2']],cs:'void Update()\n{\n    if (distance < 2)\n        Debug.Log("가까워!");\n}'},
+  'seq':{d:'들어온 흐름을 1 → 2 → 3 차례로 내보냅니다. 한 이벤트에서 여러 일을 정리해서 잇고 싶을 때 씁니다.',
+    g:[['ev','시작'],['flow','!순서대로'],['game','Debug.Log','1, 2, 3 차례로']],cs:'void Start()\n{\n    Step1();\n    Step2();\n    Step3();\n}'},
+  'wait':{d:'정한 초만큼 기다린 뒤 다음 노드로 흐름을 넘깁니다. 그동안 게임은 멈추지 않아요 (C#의 코루틴 + WaitForSeconds와 같음).',
+    g:[['ev','시작'],['flow','!기다리기','1초'],['game','알림 메시지','"시작!"']],cs:'IEnumerator Start()\n{\n    yield return new WaitForSeconds(1);\n    Message.Show("시작!");\n}'},
+  'for':{d:'「처음」부터 「끝」 바로 앞까지 번호를 하나씩 늘리며 「반복할 일」을 실행합니다. 다 돌면 「끝나면」으로 나가요.',
+    g:[['ev','시작'],['flow','!반복','0 ~ 3'],['game','Debug.Log','번호']],cs:'for (int i = 0; i < 3; i++)\n{\n    Debug.Log(i);\n}'},
+  'once':{d:'처음 들어온 흐름만 「처음 한 번」으로 보내고, 그 다음부터는 「그 다음부터」로 보냅니다. 「다시 열기」로 처음 상태로 되돌려요.',
+    g:[['ev','엔진 메시지','OnInteract'],['flow','!한 번만'],['game','대화창 보이기','첫 인사']],cs:'bool done;\nvoid OnInteract()\n{\n    if (!done) { done = true; Dialog.Show("촌장", "처음 보는 얼굴이군"); }\n    else Dialog.Show("촌장", "또 왔구나");\n}'},
+  'g.out':{d:'서브그래프 안에서만 씁니다. 흐름이 여기에 닿으면 바깥 「서브그래프」 노드의 「다음」으로 나가고, 「결과」 값을 돌려줘요.',
+    g:[['state','그래프 입력','값'],['val','계산','값 × 2'],['state','!그래프 출력','결과']],cs:'int Double(int value)\n{\n    return value * 2;  // ← 그래프 출력\n}'},
+  'sub':{d:'그래프 안에 작은 스크립트 그래프를 넣어 묶습니다. 더블클릭으로 안에 들어가 편집해요. 길어진 그래프를 정리하거나 같은 동작을 묶을 때 씁니다.',
+    g:[['ev','시작'],['state','!서브그래프','값 = 3'],['game','Debug.Log','결과']],cs:'void Start()\n{\n    int r = Double(3);  // ← 서브그래프\n    Debug.Log(r);\n}'},
+  'smu':{d:'스크립트 그래프 안에 상태 머신을 넣습니다. 「시작」으로 켜고 「멈춤」으로 끄며, 「지금 상태」로 현재 상태 이름을 읽어요. 더블클릭하면 상태 지도가 열립니다.',
+    g:[['ev','시작'],['state','!상태 머신 유닛','대기 → 순찰']],cs:'// C#에서 상태 머신 읽기\nstring s = VisualScript.CurrentState(gameObject);\nDebug.Log(s);'},
+  'st.go':{d:'이 그래프를 품은 상태 그래프를 이름이 같은 상태로 바로 바꿉니다. 화살표(전환)를 그리지 않고도 상태를 옮길 수 있어요.',
+    g:[['ev','키 입력','E'],['state','!상태 바꾸기','"쫓아가기"']],cs:'VisualScript.SetState(gameObject, "쫓아가기");'},
+  'st.done':{d:'지금 상태의 일이 끝났다고 알립니다. 상태 그래프에서 조건이 「상태가 끝나면」인 화살표가 이때 지나가요.',
+    g:[['ev','상태 진입'],['flow','기다리기','2초'],['state','!상태 끝내기']],cs:'// 상태 안 그래프에서만 쓰는 노드\n// 조건 「상태가 끝나면」 화살표로 다음 상태에 갑니다'},
+  'st.cur':{d:'바깥 상태 그래프가 지금 어느 상태에 있는지 이름을 돌려줍니다. 비교 노드와 이어 「지금 쉬는 중이면 …」 같은 판단에 씁니다.',
+    g:[['ev','업데이트'],['game','Debug.Log','내용']],dd:[[1,'state','!현재 상태','"순찰"']],cs:'Debug.Log(VisualScript.CurrentState(gameObject));'},
+  'trig':{d:'이름 붙인 커스텀 이벤트를 보냅니다. 받는 곳은 자신 · 씬 전체 · 이름으로 고른 오브젝트예요. 받는 쪽의 「커스텀 이벤트 받기」와 상태 전환이 함께 반응합니다.',
+    g:[['ev','엔진 메시지','OnInteract'],['send','!커스텀 이벤트 보내기','"문 열기" → 문']],cs:'VisualScript.TriggerOn(GameObject.Find("문"), "문 열기");\n// 씬 전체: VisualScript.TriggerAll("문 열기");'},
+  'cs':{d:'대상 오브젝트에 붙은 C# 스크립트의 메서드를 이름으로 부릅니다. 비주얼 스크립트와 C# 스크립트를 함께 쓸 때 다리 역할을 해요.',
+    g:[['ev','키 입력','Space'],['send','!C# 메서드 부르기','Attack → 자신']],cs:'// 대상에 붙은 C# 스크립트\nvoid Attack()\n{\n    Debug.Log("공격!");\n}'},
+  'var.get':{d:'변수 값을 읽습니다. 범위: 그래프(이 그래프만) · 오브젝트(이 오브젝트의 모든 머신) · 씬 · 앱(씬이 바뀌어도 유지).',
+    g:[['ev','업데이트'],['game','UI 글자 바꾸기','HUD · 점수']],dd:[[1,'var','!변수 가져오기','점수']],cs:'int score = (int)VisualScript.GetVariable(gameObject, "점수");\nUIScreen.SetText("게임 HUD", "점수", "점수 " + score);'},
+  'var.set':{d:'변수에 새 값을 넣습니다. 값 칸에 숫자를 바로 쓰거나 다른 노드의 값을 이을 수 있어요. 「지금 값」으로 넣은 값을 다시 내보냅니다.',
+    g:[['ev','시작'],['var','!변수 설정','체력 = 10']],cs:'VisualScript.SetVariable(gameObject, "체력", 10);'},
+  'var.add':{d:'숫자 변수에 값을 더합니다 (빼려면 음수). 점수 올리기 · 체력 깎기에 씁니다. 「지금 값」으로 더한 뒤 값을 내보내요.',
+    g:[['ev','엔진 메시지','OnHit'],['var','!변수에 더하기','체력 + (−1)']],cs:'void OnHit()\n{\n    hp += -1;\n}'},
+  'num':{d:'숫자 하나를 내보내는 값 노드입니다. 여러 곳에 같은 숫자를 이어 줄 때 씁니다.',
+    g:[['ev','시작'],['flow','기다리기','초']],dd:[[1,'val','!숫자','1.5']],cs:'float sec = 1.5f;'},
+  'str':{d:'글자(문자열) 하나를 내보내는 값 노드입니다.',
+    g:[['ev','시작'],['game','Debug.Log','내용']],dd:[[1,'val','!글자','"안녕"']],cs:'Debug.Log("안녕");'},
+  'bool':{d:'참 또는 거짓을 내보내는 값 노드입니다. 「만약」의 조건이나 「켜기 / 끄기」에 잇습니다.',
+    g:[['ev','시작'],['obj','켜기 / 끄기','켜기']],dd:[[1,'val','!참 / 거짓','참']],cs:'gameObject.SetActive(true);'},
+  'math':{d:'두 숫자 A · B로 더하기 · 빼기 · 곱하기 · 나누기 · 나머지 · 작은 값 · 큰 값을 계산합니다.',
+    g:[['ev','시작'],['var','변수 설정','점수']],dd:[[1,'val','!계산','점수 × 2']],cs:'score = score * 2;\n// 작은 값: Mathf.Min(a, b)'},
+  'cmp':{d:'A와 B를 비교해 참/거짓을 냅니다 (> < ≥ ≤ = ≠). 주로 「만약」의 조건에 잇습니다.',
+    g:[['ev','업데이트'],['flow','만약','조건'],['game','알림 메시지','"승리!"']],dd:[[1,'val','!비교','점수 ≥ 10']],cs:'if (score >= 10)\n    Message.Show("승리!");'},
+  'logic':{d:'두 참/거짓 값을 「그리고」(둘 다 참) 또는 「또는」(하나라도 참)으로 묶습니다.',
+    g:[['ev','업데이트'],['flow','만약','조건']],dd:[[1,'val','!그리고 / 또는','열쇠 AND 가까움']],cs:'if (hasKey && near)\n    OpenDoor();'},
+  'not':{d:'참은 거짓으로, 거짓은 참으로 뒤집습니다.',
+    g:[['ev','업데이트'],['flow','만약','조건']],dd:[[1,'val','!반대로','열쇠 있음']],cs:'if (!hasKey)\n    Message.Show("열쇠가 필요해");'},
+  'concat':{d:'글자 A 뒤에 B를 이어 붙입니다. 숫자도 글자로 바꿔서 붙어요.',
+    g:[['ev','업데이트'],['game','UI 글자 바꾸기','글자']],dd:[[1,'val','!글자 잇기','"점수 " + 점수']],cs:'UIScreen.SetText("게임 HUD", "점수", "점수 " + score);'},
+  'rand':{d:'최소 이상, 최대 미만의 무작위 숫자를 만듭니다. 정수 또는 소수를 고를 수 있어요.',
+    g:[['ev','엔진 메시지','OnInteract'],['game','Debug.Log','내용']],dd:[[1,'val','!무작위 숫자','0 ~ 6']],cs:'int n = Random.Range(0, 6);\nDebug.Log(n);'},
+  'time':{d:'시간 값을 읽습니다: 델타 시간(지난 프레임부터 흐른 초) · 플레이 시간 · 이 상태에 머문 시간.',
+    g:[['ev','업데이트'],['obj','이동하기','가로']],dd:[[1,'val','!시간','델타 시간']],cs:'transform.Translate(new Vector3(3 * Time.deltaTime, 0, 0));\n// 플레이 시간: Time.time'},
+  'in.key':{d:'고른 키를 지금 누르고 있으면 참을 냅니다. 「만약」과 함께 써서 누르는 동안만 하는 일을 만들어요.',
+    g:[['ev','업데이트'],['flow','만약','조건'],['obj','이동하기','가로 1']],dd:[[1,'input','!키를 누르고 있나','Shift']],cs:'if (Input.GetKey(KeyCode.LeftShift))\n    transform.Translate(Vector2.right);'},
+  'in.axis':{d:'방향키 · WASD 입력을 숫자로 냅니다. 가로: 왼쪽 −1 · 오른쪽 1, 세로: 위 −1 · 아래 1, 안 누르면 0.',
+    g:[['ev','업데이트'],['obj','이동하기','가로 · 세로']],dd:[[1,'input','!방향 입력','가로 · 세로']],cs:'float x = Input.GetAxisRaw("Horizontal");\nfloat y = Input.GetAxisRaw("Vertical");\ntransform.Translate(new Vector3(x, y, 0));'},
+  'self':{d:'이 머신이 붙은 오브젝트의 이름을 냅니다. 대사나 로그에 자기 이름을 넣을 때 씁니다.',
+    g:[['ev','시작'],['game','Debug.Log','내용']],dd:[[1,'obj','!자신 이름','"상자"']],cs:'Debug.Log(gameObject.name);'},
+  'pos':{d:'대상(자신 · 주인공 · 이름으로 고른 오브젝트)의 칸 위치 X · Y를 냅니다.',
+    g:[['ev','업데이트'],['game','Debug.Log','X']],dd:[[1,'obj','!위치 가져오기','주인공']],cs:'Debug.Log(Hero.main.position.x);'},
+  'dist':{d:'두 오브젝트 사이의 거리(칸)입니다. 기본은 자신 ↔ 주인공이에요. 비교 노드와 이어 「가까이 오면」을 만듭니다.',
+    g:[['ev','업데이트'],['flow','만약','거리 < 3'],['game','알림 메시지','"들켰다!"']],dd:[[1,'obj','!거리','자신 ↔ 주인공']],cs:'float d = Vector2.Distance(transform.position, Hero.main.position);\nif (d < 3) Message.Show("들켰다!");'},
+  'move':{d:'대상 오브젝트를 가로 · 세로로 정한 칸만큼 옮깁니다. 업데이트에서 델타 시간을 곱하면 부드럽게 움직여요.',
+    g:[['ev','키 입력','→'],['obj','!이동하기','가로 1 · 세로 0']],cs:'if (Input.GetKeyDown(KeyCode.RightArrow))\n    transform.Translate(new Vector3(1, 0, 0));'},
+  'comp.get':{d:'대상 오브젝트의 컴포넌트 값을 읽습니다. 「값」 단추를 누르면 대상에 붙은 컴포넌트(위치 · 주인공 · 애니메이터 · 오디오 소스 · 빛 · 카메라 · 몬스터 · NPC …)와 그 값 목록이 나와요. 애니메이터는 컨트롤러의 파라미터도 고를 수 있어요.',
+    g:[['ev','업데이트'],['flow','만약','조건']],dd:[[1,'obj','!컴포넌트 값 가져오기','주인공 · 체력']],cs:'Hero hero = GetComponent<Hero>();\nif (hero.hp < 30)\n    Debug.Log("위험!");'},
+  'comp.set':{d:'대상 오브젝트의 컴포넌트 값을 바꿉니다. 「값」에서 고른 종류(숫자 · 글자 · 참/거짓)에 맞게 「새 값」 칸이 바뀌어요. 오디오 소스 「재생 중」을 참으로 하면 재생, 거짓이면 멈춰요. 애니메이터 Trigger 파라미터는 참이면 발동해요.',
+    g:[['ev','키 입력','Space'],['obj','!컴포넌트 값 바꾸기','애니메이터 · Jump = 참']],cs:'Animator anim = GetComponent<Animator>();\nif (Input.GetKeyDown(KeyCode.Space))\n    anim.SetTrigger("Jump");'},
+  'active':{d:'오브젝트나 UI 요소를 켜거나 끕니다. 꺼진 오브젝트는 보이지 않고 스크립트도 멈춰요.',
+    g:[['ev','엔진 메시지','OnInteract'],['obj','!켜기 / 끄기','상자 · 끄기']],cs:'void OnInteract()\n{\n    gameObject.SetActive(false);\n}'},
+  'log':{d:'콘솔 창에 글을 찍습니다. 흐름이 어디까지 왔는지, 값이 얼마인지 확인할 때 가장 많이 써요.',
+    g:[['ev','시작'],['game','!Debug.Log','"안녕 비주얼!"']],cs:'Debug.Log("안녕 비주얼!");'},
+  'msg':{d:'게임 화면에 잠깐 알림 글을 띄웁니다. 「초」 동안 보였다가 사라져요.',
+    g:[['ev','엔진 메시지','OnHeroEnter'],['game','!알림 메시지','"열쇠 획득" · 2초']],cs:'Message.Show("열쇠 획득", 2f);'},
+  'dialog':{d:'이름과 대사가 있는 대화창을 띄웁니다. 대화창 UI가 연결되어 있으면 그 UI로 보여요.',
+    g:[['ev','엔진 메시지','OnInteract'],['game','!대화창 보이기','상인 · "어서 오세요!"']],cs:'void OnInteract()\n{\n    Dialog.Show("상인", "어서 오세요!");\n}'},
+  'ui':{d:'UI 빌더에서 만든 화면(UI 그룹)을 열거나 닫거나 전환합니다.',
+    g:[['ev','키 입력','Esc'],['game','!UI 화면 열기 / 닫기','전환 · 메인 메뉴']],cs:'if (Input.GetKeyDown(KeyCode.Escape))\n    UIScreen.Toggle("메인 메뉴");'},
+  'ui.text':{d:'UI 화면 안의 요소(글자 · 버튼 …)에 보이는 글자를 바꿉니다. 점수 · 체력 표시에 씁니다.',
+    g:[['ev','업데이트'],['game','!UI 글자 바꾸기','게임 HUD · 점수']],dd:[[1,'val','글자 잇기','"점수 " + 점수']],cs:'UIScreen.SetText("게임 HUD", "점수", "점수 " + score);'},
+  'ui.val':{d:'UI 요소의 지금 값(슬라이더 · 체크박스 · 입력 상자 …)을 읽습니다.',
+    g:[['ev','엔진 메시지','OnValueChanged'],['var','변수 설정','음량']],dd:[[1,'game','!UI 값 읽기','설정 창 · 음량']],cs:'float v = UIScreen.GetValue("설정 창", "음량");'},
+  'scene':{d:'이름이 같은 씬으로 넘어갑니다. 흐름은 여기서 끝나요.',
+    g:[['ev','엔진 메시지','OnHeroEnter'],['game','!씬 불러오기','"마을"']],cs:'void OnHeroEnter()\n{\n    SceneManager.LoadScene("마을");\n}'},
+  'inv.add':{d:'주인공 소지품에 물건을 넣습니다. 개수를 음수로 하면 뺍니다.',
+    g:[['ev','엔진 메시지','OnInteract'],['game','!소지품 넣기 / 빼기','열쇠 · 1'],['obj','켜기 / 끄기','끄기']],cs:'void OnInteract()\n{\n    Inventory.Add("열쇠", 1);\n    gameObject.SetActive(false);\n}'},
+  'inv.count':{d:'소지품에 그 물건이 몇 개 있는지 냅니다. 0보다 큰지 비교하면 「가지고 있나」가 돼요.',
+    g:[['ev','엔진 메시지','OnInteract'],['flow','만약','개수 > 0'],['game','알림 메시지','"문이 열렸다"']],dd:[[1,'game','!소지품 개수','열쇠']],cs:'if (Inventory.Count("열쇠") > 0)\n    Message.Show("문이 열렸다");'}
+};
+/* ---- 포트 도움말 (노드의 연결 칸 이름 옆 ? 에 마우스를 올리면 뜸) — '노드:포트' → 짧은 설명 ---- */
+const PEX={
+  'ev.update:dt':'지난 프레임부터 흐른 시간(초)이 나와요. 이동 칸 수에 곱하면 컴퓨터 속도와 상관없이 같은 빠르기로 움직여요.',
+  'ev.custom:arg':'보내는 쪽이 「보낼 값」에 넣은 값이 나와요. 아무것도 안 보냈으면 비어 있어요.',
+  'ev.timer:n':'몇 번째 실행인지 나와요 (1, 2, 3 …).',
+  'ev.btn:name':'누른 버튼의 이름이 나와요. 「아무 버튼」으로 받을 때 비교 노드로 어떤 버튼인지 가를 수 있어요.',
+  'ev.btn:screen':'누른 버튼이 있는 화면(UI 그룹)의 이름이 나와요. 「UI 화면 열기 / 닫기」의 화면에 이으면 그 화면을 닫을 수 있어요.',
+  'ev.screen:x':'누른 곳의 가로 위치예요. 게임 화면 왼쪽 끝이 0인 화면 픽셀이에요.',
+  'ev.screen:y':'누른 곳의 세로 위치예요. 게임 화면 위쪽 끝이 0인 화면 픽셀이에요.',
+  'ev.screen:tx':'누른 곳이 씬의 몇 번째 칸인지(가로) 나와요. 카메라가 움직여도 씬 기준이에요. 「위치 가져오기」의 X와 비교할 수 있어요.',
+  'ev.screen:ty':'누른 곳이 씬의 몇 번째 칸인지(세로) 나와요.',
+  'g.in:value':'바깥 「서브그래프」 노드의 「값」에 넣은 값이 나와요.',
+  'if:cond':'참/거짓 값을 이어요. 보통 「비교」 · 「그리고 / 또는」 · 「키를 누르고 있나」를 잇습니다. 잇지 않으면 체크 칸 값을 써요.',
+  'if:yes':'조건이 참일 때 실행할 노드의 ▶ 입력에 이어요.',
+  'if:no':'조건이 거짓일 때 실행할 노드의 ▶ 입력에 이어요.',
+  'seq:o1':'가장 먼저 실행할 노드에 이어요.','seq:o2':'1 다음에 실행할 노드에 이어요.','seq:o3':'마지막으로 실행할 노드에 이어요.',
+  'wait:sec':'기다릴 시간(초)이에요. 숫자를 바로 쓰거나 「무작위 숫자」 등을 이어요.',
+  'for:first':'처음 번호예요 (보통 0).','for:last':'이 번호 바로 앞까지 돌아요. 3이면 0 · 1 · 2.',
+  'for:body':'번호마다 한 번씩 실행할 노드에 이어요.','for:i':'지금 몇 번째인지 번호가 나와요. 「반복할 일」 안의 노드에 이어 써요.',
+  'for:exit':'반복이 다 끝난 뒤 실행할 노드에 이어요.',
+  'once:reset':'여기로 흐름이 들어오면 다시 「처음 한 번」부터 시작해요.',
+  'once:first':'처음 한 번만 실행할 노드에 이어요.','once:after':'두 번째부터 실행할 노드에 이어요.',
+  'g.out:result':'바깥 「서브그래프」 노드의 「결과」로 돌려줄 값을 이어요.',
+  'sub:value':'서브그래프 안 「그래프 입력」의 「값」으로 넘겨줄 값을 이어요.',
+  'sub:out':'서브그래프 안 일이 끝나면(「그래프 출력」에 닿으면) 다음에 실행할 노드에 이어요.',
+  'sub:result':'서브그래프 안 「그래프 출력」이 돌려준 값이 나와요.',
+  'smu:start':'여기로 흐름이 들어오면 안의 상태 머신을 켜요.','smu:stop':'여기로 흐름이 들어오면 안의 상태 머신을 꺼요.',
+  'smu:out':'켜거나 끈 다음 바로 실행할 노드에 이어요.','smu:state':'안의 상태 머신이 지금 어느 상태인지 이름이 나와요.',
+  'st.cur:name':'바깥 상태 그래프의 지금 상태 이름이 나와요. 「비교」에 이어 「지금 쉬는 중이면 …」을 만들어요.',
+  'trig:arg':'이벤트와 함께 보낼 값을 이어요 (숫자 · 글자 무엇이든). 받는 쪽 「커스텀 이벤트 받기」의 「받은 값」으로 나와요. 비워도 돼요.',
+  'var.get:value':'변수의 지금 값이 나와요.',
+  'var.set:value':'변수에 넣을 값을 이어요. 숫자 · 글자를 바로 쓰거나 계산 결과를 이어요.',
+  'var.set:now':'방금 넣은 값이 그대로 나와요. Debug.Log 등에 이어 확인할 때 써요.',
+  'var.add:amount':'더할 값이에요. 빼려면 음수(−1)를 써요.',
+  'var.add:now':'더한 뒤의 값이 나와요. 「비교」에 이어 「10점이 되면」을 만들어요.',
+  'math:a':'계산할 첫 번째 숫자예요.','math:b':'계산할 두 번째 숫자예요.','math:r':'계산 결과 숫자가 나와요.',
+  'cmp:a':'비교할 첫 번째 값이에요 (숫자 · 글자).','cmp:b':'비교할 두 번째 값이에요.',
+  'cmp:r':'비교가 맞으면 참이 나와요. 「만약」의 「조건」에 이어요.',
+  'logic:a':'첫 번째 참/거짓 값이에요.','logic:b':'두 번째 참/거짓 값이에요.','logic:r':'묶은 결과 참/거짓이 나와요. 「만약」의 「조건」에 이어요.',
+  'concat:a':'앞에 올 글자예요.','concat:b':'뒤에 붙일 글자예요. 숫자를 이어도 글자로 바뀌어 붙어요.',
+  'rand:min':'나올 수 있는 가장 작은 수예요.','rand:max':'이 수보다 작은 수까지 나와요 (이 수는 안 나와요).',
+  'in.axis:x':'왼쪽 −1 · 오른쪽 1 · 안 누르면 0. 「이동하기」의 가로에 이어요.',
+  'in.axis:y':'위 −1 · 아래 1 · 안 누르면 0. 「이동하기」의 세로에 이어요.',
+  'pos:x':'대상의 가로 칸 위치가 나와요.','pos:y':'대상의 세로 칸 위치가 나와요.',
+  'dist:d':'두 오브젝트 사이 거리(칸)가 나와요. 「비교」에 이어 「3칸보다 가까우면」을 만들어요.',
+  'move:dx':'가로로 옮길 칸 수예요. 오른쪽 +, 왼쪽 −.','move:dy':'세로로 옮길 칸 수예요. 아래 +, 위 −.',
+  'active:on':'참이면 켜고, 거짓이면 꺼요. 체크 칸을 쓰거나 참/거짓 값을 이어요.',
+  'log:msg':'콘솔에 찍을 내용이에요. 숫자 · 글자 · 참/거짓 무엇이든 이을 수 있어요.',
+  'msg:text':'화면에 띄울 글이에요.','msg:sec':'글이 떠 있을 시간(초)이에요.',
+  'dialog:name':'대화창에 보일 말하는 사람 이름이에요. 비워도 돼요.','dialog:text':'대화창에 보일 대사예요.',
+  'ui:screen':'열거나 닫을 화면(UI 그룹) 이름이에요. 「버튼을 누르면」의 「화면 이름」을 이으면 누른 버튼의 화면이 돼요.',
+  'ui.text:screen':'글자를 바꿀 요소가 있는 화면(UI 그룹) 이름이에요.','ui.text:el':'글자를 바꿀 요소(텍스트 · 버튼) 이름이에요.',
+  'ui.text:text':'새로 보일 글자예요. 「글자 잇기」로 \"점수 \" + 점수 처럼 만들어 이어요.',
+  'ui.val:screen':'값을 읽을 요소가 있는 화면 이름이에요.','ui.val:el':'값을 읽을 요소(슬라이더 · 체크박스 · 입력 상자) 이름이에요.',
+  'ui.val:r':'요소의 지금 값이 나와요 (슬라이더는 숫자, 체크박스는 참/거짓, 입력 상자는 글자).',
+  'scene:name':'불러올 씬 이름이에요. 프로젝트 패널의 씬 이름과 똑같이 써요.',
+  'inv.add:item':'넣거나 뺄 물건 이름이에요.','inv.add:n':'넣을 개수예요. 빼려면 음수(−1)를 써요.',
+  'inv.count:item':'개수를 셀 물건 이름이에요.',
+  'comp.get:value':'고른 컴포넌트 값이 나와요. 종류(숫자 · 글자 · 참/거짓)는 「값」에서 고른 것에 따라 정해져요.',
+  'comp.set:value':'컴포넌트에 넣을 새 값이에요. 칸에 바로 쓰거나, 계산 · 변수 · 다른 컴포넌트 값을 이어요.'
+};
+const PTY={flow:['흐름','다음에 실행할 노드의 ▶ 입력에 이어요.','앞 노드의 흐름(▶) 출력을 이어요.'],
+  num:['숫자','숫자 · 계산 · 무작위 숫자 · 변수 가져오기 · 시간 같은 숫자 값','계산 · 비교 · 이동하기 · Debug.Log 같은 숫자를 받는 칸'],
+  str:['글자','글자 · 글자 잇기 · 버튼 이름 · 자신 이름 같은 글자 값','글자 잇기 · 비교 · 대화창 · UI 글자 같은 글자를 받는 칸'],
+  bool:['참/거짓','비교 · 그리고 / 또는 · 반대로 · 키를 누르고 있나','만약의 조건 · 그리고 / 또는 · 켜기 / 끄기'],
+  any:['아무 값','숫자 · 글자 · 참/거짓 무엇이든','Debug.Log · 변수 설정 · 비교 같은 아무 값이나 받는 칸']};
+function pexHtml(t,k,io){
+  const d=NT[t];if(!d)return'';const p=((io==='i'?d.ins:d.outs)||[]).find(q=>q[0]===k);if(!p)return'';
+  const ty=PTY[p[2]]||PTY.any,tx=PEX[t+':'+k]||'';
+  return`<div class="vxh"><i style="background:${TYC[p[2]]||TYC.any}"></i><b>${ex(L10(p[1]||ty[0]))}</b><small>${ex(L10(io==='i'?'입력':'출력'))} · ${ex(L10(ty[0]))}</small></div>`+
+    (tx?`<p class="vxd">${ex(L10(tx))}</p>`:'')+
+    `<div class="vxk">${ex(L10(io==='i'?'여기에 잇는 것':'여기서 잇는 곳'))}</div><p class="vxd vxs">${ex(L10(p[2]==='flow'?(io==='i'?ty[2]:ty[1]):(io==='i'?ty[1]:ty[2])))}</p>`;
+}
+/* 설정 › 비주얼 스크립트 › 상세정보 버튼(?) 보이기 */
+const helpOn=()=>{try{return setv.vsHelp!==false}catch(e){return true}};
+/* 예시 그래프 그림 (미니 노드 · 선) */
+function nexPic(x){
+  const box=(it,on)=>{const [c,lb,sub]=it,me=lb[0]==='!',nm=me?lb.slice(1):lb;
+    return`<div class="vxn${me?' me':''}" style="--ch:${CATH[c]};--cd:${CATD[c]}"><b>${ex(L10(nm))}</b>${sub?`<span>${ex(L10(sub))}</span>`:''}</div>`};
+  const g=x.g||[],dd=x.dd||[],cols=g.length;
+  let h=`<div class="vxg" style="grid-template-columns:repeat(${cols},auto)">`;
+  g.forEach((it,i)=>{h+=`<div class="vxc${i<cols-1?' fl':''}" style="grid-column:${i+1};grid-row:1">${box(it)}</div>`});
+  dd.forEach(([i,...it])=>{h+=`<div class="vxc dt" style="grid-column:${i+1};grid-row:2">${box(it)}</div>`});
+  return h+'</div>';
+}
+function nexHtml(t){
+  const d=NT[t];if(!d)return'';const x=NEX[t]||{};const c=d.cat;
+  const cat=(CATS.find(q=>q[0]===c)||[])[1]||'';
+  return`<div class="vxh"><i style="background:${CATC[c]}"></i><b>${ex(L10(d.label))}</b><small>${ex(L10(cat))}</small></div>`+
+    `<p class="vxd">${ex(L10(x.d||d.tip||''))}</p>`+
+    (x.g?`<div class="vxk">${L10('예시')}</div>${nexPic(x)}`:'')+
+    (x.cs?`<div class="vxk">${L10('C#으로 쓰면')}</div><pre class="vxcs" data-i18n-skip>${ex(x.cs)}</pre>`:'');
+}
+/* ? 위에 마우스를 올리면 뜨는 창 */
+let NXE=null,NXT=0;
+function nexShow(q){
+  clearTimeout(NXT);const doc=BOX.ownerDocument,win=doc.defaultView;
+  if(NXE&&NXE.doc!==doc){NXE.el.remove();NXE=null}
+  if(!NXE){const el=doc.createElement('div');el.className='vxpop';el.setAttribute('role','tooltip');doc.body.append(el);NXE={el,doc,t:''}}
+  const el=NXE.el,key=q.dataset.nq||('p:'+q.dataset.pq);if(NXE.t!==key){NXE.t=key;let h='';if(q.dataset.nq)h=nexHtml(q.dataset.nq);else{const [t,k,io]=String(q.dataset.pq).split('|');h=pexHtml(t,k,io)}el.innerHTML=h;el.classList.toggle('sm',!q.dataset.nq)}
+  el.style.left='0px';el.style.top='0px';el.classList.add('on');
+  const r=q.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,W=win.innerWidth,H=win.innerHeight;
+  let x=r.right+10;if(x+w>W-8)x=r.left-10-w;if(x<8)x=Math.max(8,W-8-w);
+  let y=r.top+r.height/2-40;y=Math.max(8,Math.min(y,H-8-h));
+  el.style.left=Math.round(x)+'px';el.style.top=Math.round(y)+'px';
+}
+function nexHide(){clearTimeout(NXT);if(NXE)NXE.el.classList.remove('on')}
 
 /* ===================== 그래프 만들기 · 찾기 ===================== */
 function GL(){if(!P)return[];if(!Array.isArray(P.vgraphs))P.vgraphs=[];return P.vgraphs}
@@ -186,7 +546,7 @@ function walkG(g,fn,par){if(!g)return;fn(g,par);if(g.kind==='flow')(g.nodes||[])
 let VER=1;const bump=()=>{VER++};
 /* 메시지 이름 모음 (엔진 메시지 + 전환 이벤트) — has() 캐시 */
 const MCACHE=new WeakMap();
-function msgsOf(g){let c=MCACHE.get(g);if(c&&c.v===VER)return c.s;const s=new Set();walkG(g,x=>{if(x.kind==='flow')x.nodes.forEach(n=>{if(n.t==='ev.msg'&&n.v)s.add(n.v.msg)});else x.trans.forEach(t=>{if(t.c&&t.c.t==='event')s.add(t.c.name)})});MCACHE.set(g,{v:VER,s});return s}
+function msgsOf(g){let c=MCACHE.get(g);if(c&&c.v===VER)return c.s;const s=new Set();walkG(g,x=>{if(x.kind==='flow')x.nodes.forEach(n=>{if(n.t==='ev.msg'&&n.v)s.add(n.v.msg);if(n.t==='ev.btn'&&n.v&&n.v.who==='self')s.add('OnClick')});else x.trans.forEach(t=>{if(t.c&&t.c.t==='event')s.add(t.c.name)})});MCACHE.set(g,{v:VER,s});return s}
 function has(o,fn){if(!o||!o.vs||!o.vs.length)return false;return o.vs.some(c=>{const g=gOf(c.gid);return!!g&&msgsOf(g).has(fn)})}
 const usersOf=gid=>{const out=[];if(!P)return out;(P.mgrs||[]).forEach(o=>(o.vs||[]).forEach(c=>{if(c.gid===gid)out.push({o,kind:'mgr',scene:null})}));P.maps.forEach(m=>m.objs.concat(m.ui||[]).forEach(o=>(o.vs||[]).forEach(c=>{if(c.gid===gid)out.push({o,kind:isUiEl(o)?'ui':'obj',scene:m})})));return out};
 
@@ -345,7 +705,7 @@ function trigger(M,to,tname,name,arg){
 }
 function ctx(fi,n,port){
   const M=fi.M;
-  return{fi,n,M,port,m:M.m,o:M.owner,mem:(fi.mem[n.id]||(fi.mem[n.id]={})),
+  const cx={fi,n,M,port,m:M.m,o:M.owner,mem:(fi.mem[n.id]||(fi.mem[n.id]={})),
     v:k=>val(fi,n,k),f:k=>n.v?n.v[k]:undefined,
     slot:(k,v)=>{fi.slots[n.id+':'+k]=v},go:p=>flowOut(fi,n,p),
     getVar:(s,k)=>getVar(M,fi,s,k),setVar:(s,k,v)=>setVar(M,s,k,v),
@@ -357,17 +717,42 @@ function ctx(fi,n,port){
     heroDist:()=>heroDist(M),dist:(a,an,b,bn)=>distOf(M,a,an,b,bn),
     posOf:(to,tn)=>{const p=play;if(to==='hero')return{x:p.px/TS-.5,y:p.py/TS-.5};const o=tgt(M,to,tn);if(!o||isUiEl(o)||isMgr(o))return null;try{const t=objTileF(M.m,o);return{x:t.x,y:t.y}}catch(e){return null}},
     moveBy:(to,tn,dx,dy)=>{const o=tgt(M,to,tn);if(!o||isUiEl(o)||isMgr(o))return;const t=objTileF(M.m,o);setObjTile(M.m,o,t.x+dx,t.y+dy)},
+    compGet:(to,tn,cp)=>compGet(cx,to,tn,cp),compSet:(to,tn,cp,v)=>compSet(cx,to,tn,cp,v),
     setActive:(to,tn,on)=>{const o=tgt(M,to,tn);if(!o)return;if(isUiEl(o)){o.visible=!!on;return}if(on)delete o.active;else o.active=false},
     log:s=>{clog('info',s);rlog(M,'log','Debug.Log: '+s)},
     world:(k,...a)=>{const f=CS_WORLD[k];if(typeof f==='function')return f(...a)},
     ui:(name,a)=>{try{return UIB.script(name,a)}catch(e){clog('warn',L10('[비주얼 스크립트 {g}] UI: {e}',{g:M.gname,e:e&&e.message||e}));return null}}
   };
+  return cx;
 }
 /* ---- 엔진에서 부르는 것 ---- */
 function playStart(){R.on=true;R.mach.clear();R.ovars.clear();R.svars={};R.avars={};R.mid=null;R.mo=null;R.hot.clear();R.cur.clear();R.log=[];R.dirty=true;
   /* 컴포넌트에 넣어 둔 오브젝트 변수 초기값 */
   flowUi(true);}
 function playStop(){R.on=false;R.mach.clear();R.cur.clear();flowUi(false);paintLive(true)}
+/* 모든 머신에 「이 노드가 맞으면 실행」 (버튼 · 화면 클릭) */
+function dispatchAll(m,match,slots){
+  if(!R.on)return 0;let n=0;
+  for(const M of [...R.mach.values()]){if(!R.on)break;if(!ownerLive(M))continue;R.depth++;
+    try{n+=M.root.kind==='flow'?fiEvent(M.root,n0=>match(n0,M),slots,true,null):siEvent(M.root,n0=>match(n0,M),slots,null)}finally{R.depth--}}
+  return n;
+}
+/* UI 버튼을 눌렀을 때 (edit.html의 캔버스 UI · ui-builder.js의 UI 빌더 화면) */
+function uiClick(m,u,screen,el){
+  if(!R.on||!m)return;
+  if(screen==null)screen=u&&u.group?(((m.uiGroups||[]).find(g=>g.id===u.group))||{}).name||'':'';
+  if(u&&u.name)el=u.name;else if(el==null)el='';
+  screen=String(screen||'');el=String(el||'');
+  return dispatchAll(m,(n,M)=>{if(n.t!=='ev.btn')return false;const v=n.v||{};
+    if(v.who==='self')return!!u&&M.owner===u;
+    const ws=String(v.screen||'').trim(),we=String(v.el||'').trim();
+    return(!ws||ws===screen)&&(!we||we===el)},{name:el,screen});
+}
+/* 게임 화면 클릭 (UI 버튼 위는 빼고) */
+function screenClick(m,c){
+  if(!R.on||!m||!c)return;const b=String(c.btn);
+  return dispatchAll(m,n=>{if(n.t!=='ev.screen')return false;const w=String((n.v&&n.v.btn)!=null?n.v.btn:'0');return w==='any'||w===b},{x:c.x,y:c.y,tx:c.tx,ty:c.ty});
+}
 /* csRunMethods(m, o, fns) 다음에 불림: Start = 머신 시작, 그 밖 = 엔진 메시지 */
 function msg(m,o,fns){
   if(!R.on||!o||!o.vs||!o.vs.length)return;
@@ -520,6 +905,7 @@ function goDepth(d){E.path=E.path.slice(0,d);E.sel.clear();render()}
 /* ---- 그리기 ---- */
 const isVisible=()=>{const el=panelEl[PID];return!!el&&!L.hidden[PID]&&el.isConnected&&el.offsetWidth>0};
 function render(){
+  nexHide();
   if(!BOX)return;
   /* 다시 그려도 창 안에 키보드 포커스를 남김 (안 그러면 Backspace · Delete가 씬의 오브젝트를 지움) */
   const d0=BOX.ownerDocument,ae=d0.activeElement,keepF=!!ae&&(BOX.contains(ae)&&!/INPUT|SELECT|TEXTAREA/.test(ae.tagName)||(ae===d0.body||!ae.isConnected)&&E.focus);
@@ -538,6 +924,7 @@ function render(){
     <span class="vsp"></span>
     ${R.on&&dbgOpts.length?`<label class="vdbg" title="${ex(L10('플레이 중 흐름을 볼 오브젝트'))}"><i class="vlive"></i><select id="vsDbg">${dbgOpts.map(M=>`<option value="${ex(M.owner.id)}"${M.owner.id===E.dbg?' selected':''} data-i18n-skip>${ex(M.owner.name)}</option>`).join('')}</select></label>`:R.on?`<span class="vdbg off"><i class="vlive"></i>${L10('이 그래프를 쓰는 오브젝트가 실행 중이 아닙니다')}</span>`:''}
     ${canAttach?`<button type="button" class="btn sm pri" id="vsAttach" title="${ex(L10('인스펙터에서 고른 오브젝트에 이 그래프를 컴포넌트로 붙입니다'))}">${IC.plus}<span>${L10('붙이기')}:</span><b data-i18n-skip>${ex(own.name)}</b></button>`:''}
+    <button type="button" class="ib" id="vsSet" title="${ex(L10('비주얼 스크립트 설정'))}">${ico('gear')}</button>
     <button type="button" class="ib" id="vsFit" title="${ex(L10('전체 보기 (F)'))}">${IC.fit}</button>
     <button type="button" class="ib${E.lib?' on':''}" id="vsLibT" title="${ex(L10('노드 목록 보이기/숨기기'))}">${IC.lib}</button>
     <button type="button" class="ib${E.side?' on':''}" id="vsSideT" title="${ex(L10('속성 패널 보이기/숨기기'))}">${IC.side}</button>
@@ -568,16 +955,16 @@ function libHtml(g){
   const items=Object.keys(NT).filter(ok).filter(t=>!q||(L10(NT[t].label)+' '+NT[t].label+' '+t+' '+(NT[t].tip||'')).toLowerCase().includes(q));
   return`<div class="vlq"><input type="search" id="vsLibQ" placeholder="${ex(L10('노드 검색'))}" value="${ex(E.libQ)}" autocomplete="off" spellcheck="false"></div><div class="vll">`+
     CATS.map(([c,cn])=>{const L0=items.filter(t=>NT[t].cat===c);if(!L0.length)return'';const shut=!q&&!E.libOpen[c];
-      return`<div class="vlc${shut?' vshut':''}"><button type="button" class="vlch" data-vfold="${c}" aria-expanded="${!shut}"><svg class="vchev" viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2l3 3-3 3"/></svg><i style="background:${CATC[c]}"></i><span>${L10(cn)}</span><small>${L0.length}</small></button><div class="vlcb">${L0.map(t=>`<button type="button" class="vln" data-add="${t}" draggable="true" title="${ex(NT[t].tip?L10(NT[t].tip):'')}" style="--cc:${CATC[c]};--ch:${CATH[c]};--cd:${CATD[c]}">${ex(L10(NT[t].label))}</button>`).join('')}</div></div>`}).join('')+
+      return`<div class="vlc${shut?' vshut':''}"><button type="button" class="vlch" data-vfold="${c}" aria-expanded="${!shut}"><svg class="vchev" viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2l3 3-3 3"/></svg><i style="background:${CATC[c]}"></i><span>${L10(cn)}</span><small>${L0.length}</small></button><div class="vlcb">${L0.map(t=>`<button type="button" class="vln" data-add="${t}" draggable="true" style="--cc:${CATC[c]};--ch:${CATH[c]};--cd:${CATD[c]}"><span class="vlnt">${ex(L10(NT[t].label))}</span>${helpOn()?`<span class="vnq" data-nq="${t}" aria-label="${ex(L10('도움말'))}">?</span>`:''}</button>`).join('')}</div></div>`}).join('')+
     (items.length?'':`<p class="vlnone">${L10('검색 결과가 없습니다')}</p>`)+'</div>';
 }
 function portHtml(n,p,io,g){
-  const [k,lb,ty]=p,linked=g.links.some(l=>io==='i'?l.b===n.id&&l.bp===k:l.a===n.id&&l.ap===k);
+  const [k,lb,ty]=p,qh=lb&&helpOn()?`<i class="vpq" data-pq="${ex(n.t+'|'+k+'|'+io)}" aria-label="${ex(L10('도움말'))}">?</i>`:'',linked=g.links.some(l=>io==='i'?l.b===n.id&&l.bp===k:l.a===n.id&&l.ap===k);
   let ed='';
   if(io==='i'&&ty!=='flow'&&!linked&&p[3]!==undefined){const v=n.v?n.v[k]:p[3];
     if(ty==='bool')ed=`<input type="checkbox" class="vpe" data-v="${k}"${tB(v)?' checked':''}>`;
     else ed=`<input type="${ty==='num'?'number':'text'}" class="vpe" data-v="${k}" value="${ex(v)}"${ty==='num'?' step="any"':''} spellcheck="false">`}
-  return`<span class="vp ${io==='i'?'pin':'pout'} t-${ty}${linked?' on':''}" data-p="${k}" data-io="${io}" style="--pc:${TYC[ty]||TYC.any}">${io==='i'?`<i class="vpd"></i>`:''}${lb?`<b>${ex(L10(lb))}</b>`:''}${ed}${io==='o'?`<i class="vpd"></i>`:''}</span>`;
+  return`<span class="vp ${io==='i'?'pin':'pout'} t-${ty}${linked?' on':''}" data-p="${k}" data-io="${io}" style="--pc:${TYC[ty]||TYC.any}">${io==='i'?`<i class="vpd"></i>`:''}${io==='o'?qh:''}${lb?`<b>${ex(L10(lb))}</b>`:''}${io==='i'?qh:''}${ed}${io==='o'?`<i class="vpd"></i>`:''}</span>`;
 }
 const SCOPEC={graph:EC.START,object:EC.FLOW,scene:EC.CALC,app:EC.VARIABLE};
 const scopeName=k=>L10((SCOPES.find(q=>q[0]===k)||SCOPES[0])[1]);
@@ -590,9 +977,23 @@ function tpickBtn(spec,to,tname,attr){to=to||'self';let ic='cube',col=EC.MOVING,
   else{const o=findOwnerEd(tname);if(o){const r=ownerLook(o);ic=r.icon;col=r.color}lb=tname||L10('오브젝트 고르기')}
   const miss=to==='name'&&tname&&!findOwnerEd(tname);
   return`<button type="button" class="vtp${miss?' miss':''}" ${attr} title="${ex(miss?L10('지금 씬에서 「{n}」을(를) 찾을 수 없어요',{n:tname}):L10('대상 고르기'))}"><span class="vtpi" style="--oc:${col}">${ic==='target'?IC.target:ico(ic)}</span><b${to==='name'?' data-i18n-skip':''}>${ex(lb)}</b><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>`}
+/* UI 요소가 속한 화면(UI 그룹) 이름 */
+function uiGrpName(m,u){return u&&u.group?(((m&&m.uiGroups)||[]).find(g=>g.id===u.group)||{}).name||'':''}
+function curScene(){try{return cur()}catch(e){return null}}
+/* 「버튼을 누르면」의 버튼 단추: 아무 버튼 · 자신 · 화면(아무 버튼) · 화면 › 버튼 */
+function bpickBtn(n){const v=n.v||{},m=curScene();let ic='ui',col=EC.HARDWARE,lb=L10('아무 버튼'),miss=false,sub='';
+  if(v.who==='self'){ic='target';col=EC.START;lb=L10('자신')}
+  else if(v.el){ic=UI_ICON.button||'ui';col=UI_COLOR.button||EC.HARDWARE;lb=v.el;sub=v.screen||'';
+    miss=!!m&&!(m.ui||[]).some(u=>u.name===v.el&&(!v.screen||uiGrpName(m,u)===v.screen))}
+  else if(v.screen){ic='folder';col='var(--warn)';lb=v.screen;sub=L10('아무 버튼');miss=!!m&&!(m.uiGroups||[]).some(g=>g.name===v.screen)}
+  const t=miss?L10('지금 씬에서 「{n}」을(를) 찾을 수 없어요',{n:v.el||v.screen}):L10('버튼 고르기');
+  return`<button type="button" class="vtp vbp${miss?' miss':''}" data-bpick="${n.id}" title="${ex(t)}"><span class="vtpi" style="--oc:${col}">${ic==='target'?IC.target:ico(ic)}</span>${sub&&v.el?`<i data-i18n-skip>${ex(sub)} ›</i>`:''}<b data-i18n-skip>${ex(lb)}</b>${sub&&!v.el?`<i>${ex(sub)}</i>`:''}<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>`}
 function findOwnerEd(nm){if(!nm||!P)return null;let m=null;try{m=cur()}catch(e){}if(m){const o=m.objs.find(q=>q.name===nm)||(m.ui||[]).find(q=>q.name===nm);if(o)return o}return(P.mgrs||[]).find(q=>q.name===nm)||null}
 function ownerLook(o){if(o.mgr)return{icon:'mgr',color:'#9a8cff',kind:'mgr'};if(isUiEl(o))return{icon:UI_ICON[o.type]||'ui',color:UI_COLOR[o.type]||'#8b90a3',kind:'ui'};return{icon:o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':'cube'),color:(TYPES[o.type]||{}).color||'#8b90a3',kind:'obj'}}
 function fieldHtml(n,f){const [k,lb,ty,d,opts]=f,v=n.v&&k in n.v?n.v[k]:d;
+  if(ty==='evpick')return`<div class="vf vft">${lb?`<span>${ex(L10(lb))}</span>`:''}${evBtn(v,`data-evpick="${n.id}"`)}</div>`;
+  if(ty==='cprop')return`<div class="vf vft">${lb?`<span>${ex(L10(lb))}</span>`:''}${cpBtn(n,!!f[4])}</div>`;
+  if(ty==='btn')return`<div class="vf vft">${lb?`<span>${ex(L10(lb))}</span>`:''}${bpickBtn(n)}</div>`;
   if(ty==='target'){const nk=f[5];return`<div class="vf vft">${lb?`<span>${ex(L10(lb))}</span>`:''}${tpickBtn(opts,v,n.v&&n.v[nk],`data-tpick="${n.id}" data-tk="${k}"`)}</div>`}
   /* 변수 노드: 범위 + 이름 칸 대신 변수 고르기 단추 하나 */
   if(/^var\./.test(n.t)){if(k==='scope')return'';if(k==='name')return`<div class="vf vfv">${vpickBtn(n.v&&n.v.scope,v,`data-vpick="${n.id}"`)}</div>`}
@@ -649,7 +1050,7 @@ function stateSide(g,s){return`<div class="vsec"><div class="vsh">${s.kind==='su
 function transSide(g,t){const c=t.c||(t.c={t:'event',name:'이벤트'}),a=g.states.find(q=>q.id===t.a),b=g.states.find(q=>q.id===t.b);
   const ty=[['event','이벤트를 받으면'],['time','시간이 지나면'],['done','상태가 끝나면'],['var','변수 조건'],['key','키를 누르면'],['dist','오브젝트와의 거리'],['always','바로 (조건 없음)']];
   let p='';
-  if(c.t==='event')p=`<label class="vsf"><span>${L10('이벤트 이름')}</span><input type="text" data-c="name" value="${ex(c.name||'')}" list="vsEvList" data-i18n-skip></label><datalist id="vsEvList">${MSGS.map(m=>`<option value="${m[0]}">${ex(L10(m[1]))}</option>`).join('')}${allEvents().map(e=>`<option value="${ex(e)}"></option>`).join('')}</datalist><p class="vsx">${L10('커스텀 이벤트 이름이나 엔진 메시지(OnInteract …)')}</p>`;
+  if(c.t==='event')p=`<div class="vsf"><span>${L10('이벤트')}</span>${evBtn(c.name,`data-evpickt="${t.id}"`)}</div><p class="vsx">${L10('오브젝트 › 스크립트 › 보내는 이벤트에서 고르거나, 엔진 메시지(OnInteract …) · 새 이름')}</p>`;
   if(c.t==='time')p=`<label class="vsf"><span>${L10('초')}</span><input type="number" data-c="sec" value="${ex(c.sec==null?1:c.sec)}" step="any"></label>`;
   if(c.t==='key')p=`<label class="vsf"><span>${L10('키')}</span><select data-c="key">${KEYS.map(k=>`<option value="${k[0]}"${c.key===k[0]?' selected':''}>${ex(L10(k[1]))}</option>`).join('')}</select></label>`;
   if(c.t==='var')p=`<div class="vsf"><span>${L10('변수')}</span>${vpickBtn(c.scope,c.name,`data-vpickt="${t.id}"`)}</div><label class="vsf"><span>${L10('비교')}</span><select data-c="op">${['==','!=','>','<','>=','<='].map(o=>`<option${(c.op||'==')===o?' selected':''}>${o}</option>`).join('')}</select></label><label class="vsf"><span>${L10('값')}</span><input type="text" data-c="val" value="${ex(c.val==null?'':c.val)}" data-i18n-skip></label>`;
@@ -658,6 +1059,81 @@ function transSide(g,t){const c=t.c||(t.c={t:'event',name:'이벤트'}),a=g.stat
   return`<div class="vsec"><div class="vsh">${L10('전환')}</div><p class="vtrn"><b data-i18n-skip>${ex(a?a.name:'?')}</b> → <b data-i18n-skip>${ex(b?b.name:'?')}</b></p>
   <label class="vsf"><span>${L10('언제')}</span><select data-c="t">${ty.map(o=>`<option value="${o[0]}"${c.t===o[0]?' selected':''}>${L10(o[1])}</option>`).join('')}</select></label>${p}
   <div class="vsbtns"><button type="button" class="btn sm danger" id="vsDel">${L10('전환 삭제')}</button></div></div>`}
+/* ---- 이벤트 고르기: 계층 구조 › 오브젝트 › 스크립트 › 그 스크립트가 보내는 이벤트 ---- */
+/* C# 코드에서 VisualScript.Trigger / TriggerAll / TriggerOn (한글: 이벤트보내기 · 모두에게보내기 · 대상에게보내기) 의 이벤트 이름 */
+function csArgs(code,i){const out=[];let d=0,cur='',q=null;for(;i<code.length;i++){const ch=code[i];
+    if(q){cur+=ch;if(ch==='\\'){cur+=code[++i]||'';continue}if(ch===q)q=null;continue}
+    if(ch==='"'||ch==="'"){q=ch;cur+=ch;continue}
+    if(ch==='('||ch==='['||ch==='{'){d++;cur+=ch;continue}
+    if(ch===')'||ch===']'||ch==='}'){if(d===0){out.push(cur.trim());return out}d--;cur+=ch;continue}
+    if(ch===','&&d===0){out.push(cur.trim());cur='';continue}cur+=ch}
+  return out}
+const strLit=a=>{const m=/^@?"((?:[^"\\]|\\.)*)"$/.exec(String(a||'').trim());return m?m[1].replace(/\\(.)/g,'$1'):null};
+function csEvents(code){const out=[],re=/(?<![\w가-힣.])(?:VisualScript|비주얼스크립트)\s*\.\s*(Trigger|TriggerAll|TriggerOn|이벤트보내기|모두에게보내기|대상에게보내기)\s*\(/g;let m;code=String(code||'');
+  while((m=re.exec(code))){const k=m[1],on=k==='TriggerOn'||k==='대상에게보내기',all=k==='TriggerAll'||k==='모두에게보내기';
+    const a=csArgs(code,m.index+m[0].length),nm=strLit(a[on?1:0]);if(!nm)continue;
+    let to=all?L10('씬 전체'):L10('자신');if(on){const s=/"((?:[^"\\]|\\.)*)"/.exec(a[0]||'');to=s?s[1]:String(a[0]||'?').slice(0,24)}
+    out.push({name:nm,to})}
+  return out}
+function graphEvents(g){const out=[];walkG(g,x=>{if(x.kind==='flow')x.nodes.forEach(n=>{if(n.t==='trig'&&n.v&&n.v.name){const to=n.v.to==='all'?L10('씬 전체'):n.v.to==='name'?(n.v.tname||'?'):L10('자신');out.push({name:n.v.name,to})}})});return out}
+/* 보내는 쪽 트리 (지금 씬 + 매니저). 이벤트를 보내는 스크립트가 있는 가지만 남김 */
+function evTree(){
+  let tree=[];try{tree=spkTree()}catch(e){}
+  const scr=o=>{const L0=[];
+    (o.scripts||[]).forEach(inst=>{const s=scriptOf(inst.sid);if(!s)return;const ev=csEvents(s.code);if(ev.length)L0.push({kind:'cs',key:'s:'+o.id+':'+inst.sid,label:s.name+'.cs',ev})});
+    (o.vs||[]).forEach(c=>{const g=gOf(c.gid);if(!g)return;const ev=graphEvents(g);if(ev.length)L0.push({kind:'vs',key:'v:'+o.id+':'+c.id,label:g.name,ev})});
+    return L0};
+  const walk=L0=>L0.map(nd=>{const kids=walk(nd.kids||[]),sc=nd.o?scr(nd.o):[];return sc.length||kids.length?Object.assign({},nd,{kids,sc}):null}).filter(Boolean);
+  return walk(tree)}
+const EVF={};
+function evBtn(name,attr){return`<button type="button" class="vtp vev" ${attr} title="${ex(L10('받을 이벤트 고르기'))}"><span class="vtpi" style="--oc:${EC.START}">${IC.bolt}</span><b data-i18n-skip>${ex(name||L10('이벤트 고르기'))}</b><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>`}
+function evPicker(btn,opt,pick){
+  cmClose();const doc=BOX.ownerDocument,win=doc.defaultView;opt=opt||{};const cur0=String(opt.cur||'');
+  const tree=evTree(),inTree=new Set();const walkN=L0=>L0.forEach(nd=>{(nd.sc||[]).forEach(s=>s.ev.forEach(e=>inTree.add(e.name)));walkN(nd.kids||[])});walkN(tree);
+  /* C# 코드에서 찾은 다른 씬 · 받는 쪽에만 있는 이름 */
+  const others=new Set(allEvents());(SC?SC():[]).forEach(s=>csEvents(s.code).forEach(e=>others.add(e.name)));inTree.forEach(n=>others.delete(n));
+  const el=doc.createElement('div');el.className='vcm vom vevm';
+  el.innerHTML=`<div class="vobox"><div class="vvtop"><input type="search" placeholder="${ex(L10('검색하거나 새 이벤트 이름 쓰기'))}" autocomplete="off" spellcheck="false"></div><div class="votree" role="tree"></div><div class="vofoot"></div></div>`;
+  doc.body.append(el);
+  const q=el.querySelector('input'),T=el.querySelector('.votree'),foot=el.querySelector('.vofoot');
+  const isOpen=(k,def)=>k in EVF?EVF[k]:def;
+  const fold=(k,on)=>`<button type="button" class="vof${on?' open':''}" data-fk="${ex(k)}" tabindex="-1" aria-label="${ex(L10('펼치기/접기'))}"><svg viewBox="0 0 10 10"><path d="M3.5 2l3 3-3 3"/></svg></button>`;
+  const evRow=(e,d,k,sub)=>{const hit=!!k&&e.name.toLowerCase().includes(k),on=e.name===cur0;
+    return`<div class="vor vevr${on?' on':''}${hit?' hit':''}" style="--d:${d}" data-ev="${ex(e.name)}" tabindex="0" role="treeitem"><span class="vof sp"></span><span class="vtpi" style="--oc:${EC.START}">${IC.bolt}</span><b data-i18n-skip>${ex(e.name)}</b>${sub?`<small data-i18n-skip>${ex(sub)}</small>`:''}${on?'<span class="ck">✓</span>':''}</div>`};
+  const draw=()=>{const k=q.value.trim().toLowerCase(),kr=q.value.trim();let h='';
+    const m=t=>!k||String(t||'').toLowerCase().includes(k);
+    const rows=(L0,d)=>L0.map(nd=>{
+      const scH=(nd.sc||[]).map(s=>{const sHit=m(s.label)||m(nd.label);const evs=s.ev.filter((e,i,a)=>a.findIndex(z=>z.name===e.name&&z.to===e.to)===i).filter(e=>sHit||m(e.name));if(!evs.length)return'';
+          const fk=s.key,on=k?true:isOpen(fk,true);
+          return`<div class="vor vevs" style="--d:${d+1}" data-fk="${ex(fk)}" tabindex="0" role="treeitem" aria-expanded="${on}">${fold(fk,on)}<span class="vtpi" style="--oc:${s.kind==='cs'?'#7E8EFE':EC.HARDWARE}">${ico(s.kind==='cs'?'script':'vscript')}</span><b data-i18n-skip>${ex(s.label)}</b><small>${evs.length}</small></div>`+
+            (on?evs.map(e=>evRow(e,d+2,k,'→ '+e.to)).join(''):'')}).join('');
+      const kd=rows(nd.kids||[],d+1);if(!scH&&!kd)return'';
+      const fk='n:'+(nd.key||nd.id),on=k?true:isOpen(fk,true);
+      return`<div class="vor${nd.o?'':' fol'} vevo" style="--d:${d}" data-fk="${ex(fk)}" tabindex="0" role="treeitem" aria-expanded="${on}">${fold(fk,on)}<span class="vtpi" style="--oc:${nd.color||'var(--mute)'}">${ico(nd.icon||'cube')}</span><b data-i18n-skip>${ex(nd.label)}</b>${nd.kind==='scene'?`<small>${L10('지금 씬')}</small>`:''}</div>`+(on?scH+kd:'')}).join('');
+    if(kr&&![...inTree,...others].some(n=>n===kr)&&!(opt.msgs&&MSGS.some(x=>x[0]===kr)))h+=`<div class="vor vevnew" style="--d:0" data-ev="${ex(kr)}" tabindex="0" role="treeitem"><span class="vof sp"></span><span class="vtpi" style="--oc:var(--accent)">${ico('plus')}</span><b data-i18n-skip>${ex(L10('「{n}」 이름으로 받기',{n:kr}))}</b></div>`;
+    h+=rows(tree,0);
+    const oth=[...others].filter(n=>m(n));if(oth.length){const on=k?true:isOpen('g:oth',false);h+=`<div class="vor vevg" style="--d:0" data-fk="g:oth" tabindex="0" role="treeitem" aria-expanded="${on}">${fold('g:oth',on)}<span class="vtpi" style="--oc:var(--mute)">${ico('folder')}</span><b>${ex(L10('다른 이벤트 이름'))}</b><small>${oth.length}</small></div>`+(on?oth.map(n=>evRow({name:n},1,k,'')).join(''):'')}
+    if(opt.msgs){const ms=MSGS.filter(x=>m(x[0])||m(L10(x[1])));if(ms.length){const on=k?true:isOpen('g:msg',false);h+=`<div class="vor vevg" style="--d:0" data-fk="g:msg" tabindex="0" role="treeitem" aria-expanded="${on}">${fold('g:msg',on)}<span class="vtpi" style="--oc:var(--mute)">${ico('folder')}</span><b>${ex(L10('엔진 메시지'))}</b><small>${ms.length}</small></div>`+(on?ms.map(x=>evRow({name:x[0]},1,k,L10(x[1]).replace(/ \(.*\)$/,''))).join(''):'')}}
+    T.innerHTML=h||`<p class="vcm0">${ex(L10(tree.length?'맞는 이벤트가 없습니다':'이 씬에는 이벤트를 보내는 스크립트가 없어요. 위 칸에 이름을 쓰면 새 이름으로 받아요'))}</p>`;
+    foot.textContent=L10('오브젝트 › 스크립트 › 그 스크립트가 보내는 이벤트 · 검색 칸에 새 이름을 써도 돼요');place()};
+  const place=()=>{const ar=btn.getBoundingClientRect(),r=el.getBoundingClientRect(),W=win.innerWidth,H=win.innerHeight;
+    let x=ar.left;if(x+r.width>W-6)x=Math.max(6,W-r.width-6);let y=ar.bottom+4;if(y+r.height>H-6){const up=ar.top-r.height-4;y=up>=6?up:Math.max(6,H-6-r.height)}
+    el.style.left=x+'px';el.style.top=y+'px'};
+  draw();
+  const done=nm=>{cmClose();if(nm)pick(nm);try{(VQ('#vsCv',BOX)||BOX).focus({preventScroll:true})}catch(_){}};
+  const toggle=(fk,on)=>{if(q.value.trim())return;const was=T.querySelector(`.vor[data-fk="${CSS.escape(fk)}"]`);const cur=was?was.getAttribute('aria-expanded')==='true':false;EVF[fk]=on==null?!cur:on;draw();const f=T.querySelector(`.vor[data-fk="${CSS.escape(fk)}"]`);if(f)f.focus({preventScroll:true})};
+  q.addEventListener('input',()=>draw());
+  el.addEventListener('click',e=>{const r=e.target.closest('[data-ev]');if(r){done(r.dataset.ev);return}const f=e.target.closest('[data-fk]');if(f)toggle(f.dataset.fk)});
+  el.addEventListener('keydown',e=>{e.stopPropagation();const ae=doc.activeElement;
+    if(e.key==='Escape'){e.preventDefault();cmClose();try{btn.focus()}catch(_){}return}
+    if(e.key==='Enter'){e.preventDefault();if(ae&&ae.dataset){if(ae.dataset.ev!=null){done(ae.dataset.ev);return}if(ae.classList.contains('vor')&&ae.dataset.fk){toggle(ae.dataset.fk);return}}
+      if(ae===q){const f=T.querySelector('.vor.hit[data-ev]')||T.querySelector('.vevnew[data-ev]')||T.querySelector('[data-ev]');if(f)done(f.dataset.ev)}return}
+    if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&ae&&ae.classList.contains('vor')&&ae.dataset.fk){e.preventDefault();toggle(ae.dataset.fk,e.key==='ArrowRight');return}
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const L0=[...T.querySelectorAll('.vor[tabindex]')];if(!L0.length)return;let i=L0.indexOf(ae);i=i<0?0:Math.max(0,Math.min(L0.length-1,i+(e.key==='ArrowDown'?1:-1)));L0[i].focus()}});
+  const out=e=>{if(!el.contains(e.target)&&!btn.contains(e.target))cmClose()};
+  CM={el,doc,win,out};doc.addEventListener('pointerdown',out,true);win.addEventListener('blur',cmClose);
+  setTimeout(()=>{try{q.focus({preventScroll:true});const on=el.querySelector('.vor.on');if(on)on.scrollIntoView({block:'nearest'})}catch(_){}},0);
+}
 function allEvents(){const s=new Set();GL().forEach(g=>walkG(g,x=>{if(x.kind==='flow')x.nodes.forEach(n=>{if((n.t==='ev.custom'||n.t==='trig')&&n.v&&n.v.name)s.add(n.v.name)});else x.trans.forEach(t=>{if(t.c&&t.c.t==='event'&&t.c.name)s.add(t.c.name)})}));return[...s]}
 
 /* ---- 화면 (이동 · 확대) ---- */
@@ -889,35 +1365,39 @@ function objPicker(anchor,spec,to0,name0,pick){
   cmClose();const doc=BOX.ownerDocument,win=doc.defaultView;spec=spec||{allow:['self','name'],kinds:['obj']};
   const allow=new Set(spec.allow),kinds=new Set(spec.kinds||['obj']);
   let tree=[];try{tree=spkTree()}catch(e){}
+  const BT=!!spec.btn,m0=curScene();
+  if(BT){const sc=tree.find(nd=>nd.kind==='scene'),uf=sc&&(sc.kids||[]).find(nd=>nd.key==='ui');tree=uf?uf.kids||[]:[]}
   const fold={};
   const el=doc.createElement('div');el.className='vcm vom';
-  const SP=[['self','자신','target',EC.START,'이 스크립트가 붙은 오브젝트'],['hero','주인공','user','#4cd98a','플레이어가 움직이는 주인공'],['all','씬 전체','scene',EC.HARDWARE,'씬의 모든 오브젝트 · UI · 매니저']].filter(x=>allow.has(x[0]));
-  el.innerHTML=`<div class="vobox"><div class="vvtop"><input type="search" placeholder="${ex(L10('오브젝트 이름 검색'))}" autocomplete="off" spellcheck="false"></div>
+  const SP=(BT?[['any','아무 버튼','ui',EC.HARDWARE,'어느 화면의 어떤 버튼이든'],['self','자신','target',EC.START,'이 그래프를 붙인 UI 요소']]:[]).concat(BT?[]:[['self','자신','target',EC.START,'이 스크립트가 붙은 오브젝트'],['hero','주인공','user','#4cd98a','플레이어가 움직이는 주인공'],['all','씬 전체','scene',EC.HARDWARE,'씬의 모든 오브젝트 · UI · 매니저']]).filter(x=>allow.has(x[0]));
+  el.innerHTML=`<div class="vobox"><div class="vvtop"><input type="search" placeholder="${ex(L10(BT?'화면 · 버튼 이름 검색':'오브젝트 이름 검색'))}" autocomplete="off" spellcheck="false"></div>
     <div class="vosp">${SP.map(x=>`<button type="button" class="vos${to0===x[0]?' on':''}" data-to="${x[0]}" title="${ex(L10(x[4]))}" style="--oc:${x[3]}"><span class="vtpi">${x[2]==='target'?IC.target:ico(x[2])}</span>${ex(L10(x[1]))}</button>`).join('')}</div>
     ${allow.has('name')?`<div class="votree" role="tree"></div>`:''}<div class="vofoot"></div></div>`;
   doc.body.append(el);
   const q=el.querySelector('input'),T=el.querySelector('.votree'),foot=el.querySelector('.vofoot');
-  const pickable=nd=>nd.o&&kinds.has(nd.kind);
+  const grpRow=nd=>BT&&!nd.o&&String(nd.key||'').startsWith('ug:');
+  const pickable=nd=>BT?(!!nd.o&&nd.kind==='ui'&&nd.o.type==='button')||grpRow(nd):nd.o&&kinds.has(nd.kind);
   const match=(nd,k)=>!k||String(nd.label||'').toLowerCase().includes(k)||(nd.kids||[]).some(c=>match(c,k));
   const rows=(L0,d,k)=>L0.filter(nd=>match(nd,k)).map(nd=>{const key=nd.key||nd.id,kids=(nd.kids||[]).filter(c=>match(c,k)),open=k?true:!fold[key];
-      const can=pickable(nd),on=to0==='name'&&nd.o&&nd.o.name===name0;
+      const can=pickable(nd),on=BT?(grpRow(nd)?to0==='screen'&&nd.label===spec.screen:to0==='name'&&!!nd.o&&nd.o.name===name0&&uiGrpName(m0,nd.o)===spec.screen):to0==='name'&&nd.o&&nd.o.name===name0;
       const hit=!!k&&String(nd.label||'').toLowerCase().includes(k);
-      const row=`<div class="vor${nd.o?'':' fol'}${can?'':' no'}${on?' on':''}${nd.off?' off':''}${hit?' hit':''}" style="--d:${d}"${can?` data-pk="${ex(nd.o.name)}" tabindex="0" role="treeitem"`:''}>${kids.length?`<button type="button" class="vof${open?' open':''}" data-fk="${ex(key)}" aria-label="${ex(L10('펼치기/접기'))}"><svg viewBox="0 0 10 10"><path d="M3.5 2l3 3-3 3"/></svg></button>`:'<span class="vof sp"></span>'}<span class="vtpi" style="--oc:${nd.color||'var(--mute)'}">${ico(nd.icon||'cube')}</span><b data-i18n-skip>${ex(nd.label)}</b>${nd.kind==='scene'?`<small>${L10('지금 씬')}</small>`:nd.sub?`<small>${ex(L10(nd.sub))}</small>`:''}${on?'<span class="ck">✓</span>':''}</div>`;
+      const row=`<div class="vor${nd.o?'':' fol'}${can?'':' no'}${on?' on':''}${nd.off?' off':''}${hit?' hit':''}" style="--d:${d}"${can?` data-pk="${ex(nd.o?nd.o.name:'')}"${grpRow(nd)?` data-pg="${ex(nd.label)}"`:''}${BT&&nd.o?` data-ps="${ex(uiGrpName(m0,nd.o))}"`:''} tabindex="0" role="treeitem"`:''}>${kids.length?`<button type="button" class="vof${open?' open':''}" data-fk="${ex(key)}" aria-label="${ex(L10('펼치기/접기'))}"><svg viewBox="0 0 10 10"><path d="M3.5 2l3 3-3 3"/></svg></button>`:'<span class="vof sp"></span>'}<span class="vtpi" style="--oc:${nd.color||'var(--mute)'}">${ico(nd.icon||'cube')}</span><b data-i18n-skip>${ex(nd.label)}</b>${nd.kind==='scene'?`<small>${L10('지금 씬')}</small>`:nd.sub?`<small>${ex(L10(nd.sub))}</small>`:''}${on?'<span class="ck">✓</span>':''}</div>`;
       return row+(kids.length&&open?rows(kids,d+1,k):'')}).join('');
-  const draw=()=>{if(!T)return;const k=q.value.trim().toLowerCase();const h=rows(tree,0,k);T.innerHTML=h||`<p class="vcm0">${ex(L10('맞는 오브젝트가 없습니다'))}</p>`;
-    foot.textContent=kinds.has('ui')||kinds.has('mgr')?L10('흐린 줄은 이 노드에서 고를 수 없어요'):L10('위치가 있는 게임 오브젝트만 고를 수 있어요')};
+  const draw=()=>{if(!T)return;const k=q.value.trim().toLowerCase();const h=rows(tree,0,k);T.innerHTML=h||`<p class="vcm0">${ex(L10(BT?(tree.length?'맞는 버튼이 없습니다':'이 씬에 UI 화면이 없어요'):'맞는 오브젝트가 없습니다'))}</p>`;
+    foot.textContent=BT?L10('버튼을 고르거나, 화면(폴더)을 고르면 그 화면의 아무 버튼'):kinds.has('ui')||kinds.has('mgr')?L10('흐린 줄은 이 노드에서 고를 수 없어요'):L10('위치가 있는 게임 오브젝트만 고를 수 있어요')};
   draw();
   const ar=anchor.getBoundingClientRect(),r=el.getBoundingClientRect();
   let x=ar.left,y=ar.bottom+4;if(x+r.width>win.innerWidth-6)x=Math.max(6,win.innerWidth-r.width-6);if(y+r.height>win.innerHeight-6)y=Math.max(6,ar.top-r.height-4);
   el.style.left=x+'px';el.style.top=y+'px';
-  const done=(to,nm)=>{cmClose();pick(to,nm||'');try{(VQ('#vsCv',BOX)||BOX).focus({preventScroll:true})}catch(_){}};
+  const done=(to,nm,x)=>{cmClose();pick(to,nm||'',x||null);try{(VQ('#vsCv',BOX)||BOX).focus({preventScroll:true})}catch(_){}};
   q.addEventListener('input',draw);
   el.addEventListener('click',e=>{const f=e.target.closest('[data-fk]');if(f){const k0=f.dataset.fk;fold[k0]=!fold[k0];draw();return}
     const s0=e.target.closest('[data-to]');if(s0){done(s0.dataset.to,'');return}
-    const rw=e.target.closest('[data-pk]');if(rw)done('name',rw.dataset.pk)});
+    const rw=e.target.closest('[data-pk]');if(rw)pickRow(rw)});
+  const pickRow=rw=>{if(rw.dataset.pg!=null)done('screen','',{screen:rw.dataset.pg});else done('name',rw.dataset.pk,{screen:rw.dataset.ps||''})};
   el.addEventListener('keydown',e=>{e.stopPropagation();const ae=doc.activeElement;
     if(e.key==='Escape'){e.preventDefault();cmClose();try{anchor.focus()}catch(_){}return}
-    if(e.key==='Enter'){e.preventDefault();if(ae&&ae.dataset&&ae.dataset.pk){done('name',ae.dataset.pk);return}if(ae===q){const f=el.querySelector('.vor.hit[data-pk]')||el.querySelector('[data-pk]');if(f)done('name',f.dataset.pk)}return}
+    if(e.key==='Enter'){e.preventDefault();if(ae&&ae.dataset&&ae.dataset.pk!=null){pickRow(ae);return}if(ae===q){const f=el.querySelector('.vor.hit[data-pk]')||el.querySelector('[data-pk]');if(f)pickRow(f)}return}
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const L0=[...el.querySelectorAll('.vos,[data-pk]')];if(!L0.length)return;let i=L0.indexOf(ae);i=i<0?0:Math.max(0,Math.min(L0.length-1,i+(e.key==='ArrowDown'?1:-1)));L0[i].focus()}});
   const out=e=>{if(!el.contains(e.target)&&!anchor.contains(e.target))cmClose()};
   CM={el,doc,win,out};doc.addEventListener('pointerdown',out,true);win.addEventListener('blur',cmClose);
@@ -942,6 +1422,7 @@ BOX.addEventListener('pointerdown',e=>{
   if(e.button===1||(e.button===0&&e.altKey)){PD={k:'pan',x:e.clientX,y:e.clientY,vx:v.x,vy:v.y};cv.setPointerCapture(e.pointerId);e.preventDefault();return}
   if(e.button!==0)return;
   /* 포트 → 선 */
+  if(e.target.closest('.vpq'))return;
   const pt=e.target.closest('.vp');
   if(pt&&g.kind==='flow'&&(e.target.closest('.vpd')||e.target.tagName==='B')){
     const nEl=pt.closest('.vn'),n=g.nodes.find(q=>q.id===nEl.dataset.n),io=pt.dataset.io,k=pt.dataset.p,ty=portTy(n,io,k);
@@ -1047,19 +1528,34 @@ function setKind(st,k){if(st.kind===k)return;const has=st.g&&((st.g.nodes||[]).l
   if(has)openModal(L10('상태 종류 바꾸기'),`<p style="margin:0">${ex(L10('「{s}」 안의 그래프가 새 그래프로 바뀝니다. 계속할까요?',{s:st.name}))}</p>`,[{t:L10('취소')},{t:L10('바꾸기'),cls:'danger',fn:go}]);else go()}
 
 /* ---- 클릭 · 입력 ---- */
+/* 노드 목록 ? — 마우스를 올리면 설명 · 예시 그림 · C# 코드 */
+BOX.addEventListener('pointerover',e=>{const q=e.target.closest&&e.target.closest('.vnq,.vpq');if(!q)return;clearTimeout(NXT);NXT=setTimeout(()=>{if(q.isConnected)nexShow(q)},120)});
+BOX.addEventListener('pointerout',e=>{const q=e.target.closest&&e.target.closest('.vnq,.vpq');if(!q||(e.relatedTarget&&q.contains(e.relatedTarget)))return;nexHide()});
+BOX.addEventListener('pointerdown',nexHide,true);BOX.addEventListener('scroll',nexHide,true);BOX.addEventListener('dragstart',nexHide,true);
 BOX.addEventListener('click',e=>{
   const t=e.target;const g=curG();
   const q=s=>t.closest&&t.closest(s);
+  if(q('.vnq,.vpq'))return;
   if(q('[data-new]')){const k=q('[data-new]').dataset.new;const ng=newAsset(k);E.gid=ng.id;E.path=[];E.sel.clear();render();requestAnimationFrame(fitIfNew);return}
   if(q('#vsPick')){pickMenu(q('#vsPick'));return}
   if(q('#vsUp')){goDepth(E.path.length-1);requestAnimationFrame(fitIfNew);return}
   const cb=q('.vcb');if(cb){goDepth(+cb.dataset.depth);return}
+  if(q('#vsSet')){try{openSettings('vscript')}catch(_){}return}
   if(q('#vsFit')){fit();return}
   if(q('#vsLibT')){E.lib=!E.lib;render();return}
   if(q('#vsSideT')){E.side=!E.side;render();return}
   if(q('#vsFlip')){UI.flip=!UI.flip;saveUI();render();return}
   if(q('#vsMore')){moreMenu(q('#vsMore'));return}
   if(q('#vsAttach')){const o=ownerNow();if(o)attach(o,E.gid);return}
+  const evp=q('[data-evpick]');if(evp&&g){const n=g.nodes.find(x=>x.id===evp.dataset.evpick);if(n)evPicker(evp,{cur:n.v&&n.v.name},nm=>edit(()=>{n.v=n.v||{};n.v.name=nm}));return}
+  const evt=q('[data-evpickt]');if(evt&&g){const tr=(g.trans||[]).find(x=>x.id===evt.dataset.evpickt);if(tr)evPicker(evt,{cur:tr.c&&tr.c.name,msgs:true},nm=>edit(()=>{tr.c=tr.c||{t:'event'};tr.c.name=nm}));return}
+  const cpk=q('[data-cpick]');if(cpk&&g){const n=g.nodes.find(x=>x.id===cpk.dataset.cpick);if(n){const fd=(def(n).f||[]).find(f=>f[2]==='cprop');
+    cpMenu(cpk,n,!!(fd&&fd[4]),key=>edit(()=>{n.v=n.v||{};const old=cpInfo(n.v.cp);n.v.cp=key;const ni=cpInfo(key);
+      if(n.t==='comp.set'&&(!old||!ni||old.type!==ni.type))n.v.value=ni?({num:0,bool:false,str:''})[ni.type]:'';
+      if(n.t==='comp.get'&&old&&ni&&old.type!==ni.type)g.links=g.links.filter(l=>!(l.a===n.id&&l.ap==='value'&&portTy(g.nodes.find(z=>z.id===l.b)||{},'i',l.bp)!==ni.type&&portTy(g.nodes.find(z=>z.id===l.b)||{},'i',l.bp)!=='any'))}))}return}
+  const bp=q('[data-bpick]');if(bp&&g){const n=g.nodes.find(x=>x.id===bp.dataset.bpick);if(n){const v=n.v||{};
+    objPicker(bp,{allow:['any','self','name'],kinds:['ui'],btn:true,screen:v.screen||''},v.who==='self'?'self':v.el?'name':v.screen?'screen':'any',v.el||'',(to,nm,x)=>edit(()=>{n.v=n.v||{};
+      if(to==='self'){n.v.who='self';n.v.screen='';n.v.el=''}else{n.v.who='name';n.v.screen=to==='screen'||to==='name'?(x&&x.screen||''):'';n.v.el=to==='name'?nm:''}}))}return}
   const tp=q('[data-tpick]');if(tp&&g){const n=g.nodes.find(x=>x.id===tp.dataset.tpick);const fd=n&&(def(n).f||[]).find(f=>f[0]===tp.dataset.tk);if(n&&fd){const nk=fd[5];objPicker(tp,fd[4],n.v[fd[0]]||fd[3],n.v[nk]||'',(to,nm)=>edit(()=>{n.v[fd[0]]=to;n.v[nk]=to==='name'?nm:''}))}return}
   const tt=q('[data-tpickt]');if(tt&&g){const tr=g.trans.find(x=>x.id===tt.dataset.tpickt);if(tr){tr.c=tr.c||{};objPicker(tt,{allow:['hero','name'],kinds:['obj']},tr.c.to||'hero',tr.c.tname||'',(to,nm)=>edit(()=>{tr.c.to=to;tr.c.tname=to==='name'?nm:''}))}return}
   const vp=q('[data-vpick]');if(vp&&g){const n=g.nodes.find(x=>x.id===vp.dataset.vpick);if(n)varPicker(vp,n.v.scope||'graph',n.v.name||'',(sc,nm)=>{edit(()=>{n.v.scope=sc;n.v.name=nm})});return}
@@ -1084,7 +1580,7 @@ BOX.addEventListener('click',e=>{
 });
 BOX.addEventListener('input',e=>{
   const t=e.target,g=curG();if(!g)return;
-  if(t.id==='vsLibQ'){E.libQ=t.value;const lib=VQ('.vlib',BOX);if(lib){const pos=t.selectionStart;lib.innerHTML=libHtml(g);const i=VQ('#vsLibQ',BOX);i.focus();try{i.setSelectionRange(pos,pos)}catch(_){}}return}
+  if(t.id==='vsLibQ'){E.libQ=t.value;const lib=VQ('.vlib',BOX),old=lib&&VQ('.vll',lib);if(old){/* 검색 칸은 그대로 두고 목록만 바꿈 — 칸을 새로 만들면 한글 조합이 끊겨 ㅈㅜㅁ처럼 낱자로 들어감 */const tmp=lib.ownerDocument.createElement('div');tmp.innerHTML=libHtml(g);const nw=VQ('.vll',tmp);if(nw)old.replaceWith(nw)}return}
   if(t.id==='vsName'){const r=rootG();if(r){r.name=t.value.slice(0,40)||r.name;bump();markDirty();const pk=VQ('#vsPick span',BOX);if(pk)pk.textContent=r.name;renderInspSafe()}return}
   if(t.id==='vsNodeName'){const n=g.nodes.find(q=>q.id===[...E.sel][0]);if(n){n.name=t.value.slice(0,40);markDirty();const h=BOX.querySelector(`.vn[data-n="${n.id}"] .vnh span`);if(h)h.textContent=n.name||def(n).label}return}
   if(t.id==='vsStName'){const s=g.states.find(q=>q.id===[...E.sel][0]);if(s){s.name=t.value.slice(0,30)||s.name;markDirty();bump();const h=BOX.querySelector(`.vs-st[data-st="${s.id}"] .vsth b`);if(h)h.textContent=s.name}return}
@@ -1265,7 +1761,7 @@ const VS_CSS=`
 .vp.t-flow .vpd{border-radius:2px;width:11px;height:12px;clip-path:polygon(0 0,100% 50%,0 100%);border:0;background:color-mix(in srgb,var(--pc) 45%,transparent)}
 .vp.t-flow.on .vpd{background:var(--pc)}
 .vp.can .vpd{transform:scale(1.5);box-shadow:0 0 0 3px var(--accent)}
-.vpe{width:70px;height:20px;font-size:11px;padding:0 4px}.vpe[type=checkbox]{width:auto;height:auto}
+.vpe{flex:none;width:70px;height:20px;font-size:11px;padding:0 4px}.vn .vr .vpe[type=text]{width:70px}.vn .vr .vpe[type=number]{width:56px}.vr>.vp{flex:none}.vr>.vp.pin:has(+span:empty){flex:1 1 0}.vn .vr>.vp.pin:has(+span:empty)>.vpe:not([type=checkbox]){flex:1 1 0;width:0;min-width:56px}.vpe[type=checkbox]{width:auto;height:auto}
 .vin{display:flex;align-items:center;gap:6px;width:calc(100% - 14px);margin:0 7px 7px;height:24px;border-radius:6px;border:1px dashed var(--cc);background:var(--head);color:var(--cc);justify-content:center}
 .vin:hover{background:var(--hover)}
 .vs-st{position:absolute;width:170px;border-radius:12px;background:var(--win);border:1.5px solid var(--line2);box-shadow:0 6px 18px rgba(0,0,0,.28);cursor:grab;user-select:none;--hot:0}
@@ -1377,7 +1873,9 @@ const VS_CSS=`
 /* 대상 고르기 */
 .vft{display:flex;align-items:center;gap:6px}
 .vtp{display:flex;align-items:center;gap:6px;flex:1;min-width:0;height:26px;padding:0 8px 0 4px;border-radius:7px;border:1px solid var(--line2);background:var(--field);color:var(--fg)}
-.vtp:hover{border-color:var(--accent)}.vtp.miss{border-color:var(--danger)}.vtp.miss b{color:var(--danger)}
+.vtp:hover{border-color:var(--accent)}
+.vcp i{font-style:normal;color:var(--mute);white-space:nowrap;flex:none;max-width:48%;overflow:hidden;text-overflow:ellipsis}.vcp.empty b{color:var(--mute);font-weight:500}
+.vbp i{font-style:normal;color:var(--mute);white-space:nowrap;flex:none;max-width:45%;overflow:hidden;text-overflow:ellipsis}.vbp b+i{font-size:11px}.vtp.miss{border-color:var(--danger)}.vtp.miss b{color:var(--danger)}
 .vtp b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-weight:600}
 .vtp>svg{width:10px;height:10px;fill:none;stroke:var(--mute);stroke-width:1.5;flex:none}
 .vtpi{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:color-mix(in srgb,var(--oc) 22%,transparent);color:var(--oc);flex:none}
@@ -1399,6 +1897,8 @@ const VS_CSS=`
 .vof{width:16px;height:16px;padding:0;border:0;background:none;display:inline-flex;align-items:center;justify-content:center;flex:none;color:var(--mute)}
 .vof svg{width:9px;height:9px;fill:none;stroke:currentColor;stroke-width:1.6;transition:transform .1s}.vof.open svg{transform:rotate(90deg)}
 .vofoot{color:var(--mute);font-size:11px;padding:2px 4px 0}
+.vevm .vevnew b{color:var(--accent)}.vevm .vor small{max-width:40%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vevm .vor.vevs b{font-weight:500}
+.vcpm .vty{flex:none;padding:1px 7px;border-radius:999px;background:var(--head);color:var(--mute);font-size:10px}.vcpm .vor.vcp1 b{font-weight:500}.vcpm .vor.vcc.cur>b{color:var(--accent)}.vcpm .vor.vcg b{color:var(--mute);font-weight:500}.vcpm .vor.vcc small,.vcpm .vor.vcg small{min-width:16px;text-align:right}
 /* 게임 화면 이벤트 흐름 */
 .vsFlow{position:absolute;left:calc(8px + env(safe-area-inset-left,0px));bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:3;width:min(340px,calc(100% - 16px));max-height:min(46%,330px);display:flex;flex-direction:column;border-radius:10px;background:rgba(14,14,18,.82);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.14);color:#f2f2f5;font:12px var(--f-body);box-shadow:0 10px 30px rgba(0,0,0,.45);overflow:hidden}
 .vsFlow .ic{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5}
@@ -1421,6 +1921,30 @@ const VS_CSS=`
 #pFlow .ic{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.6}
 html[data-theme="light"] .vn{background:rgba(255,255,255,.8)}html[data-theme="light"] .vs-st,html[data-theme="light"] .vtl{background:#fff}
 html[data-theme="light"] .vpd{background:#fff}
+.vln .vlnt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.vln{padding-right:4px}
+.vnq{flex:none;display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:rgba(0,0,0,.24);color:rgba(255,255,255,.85);font:700 10.5px/1 var(--f-body);text-shadow:none;cursor:help;opacity:.55;transition:opacity .12s,background .12s}
+.vln:hover .vnq{opacity:1}.vnq:hover{background:rgba(0,0,0,.45);color:#fff}
+.vxpop{position:fixed;z-index:100001;left:0;top:0;width:max-content;max-width:min(420px,calc(100vw - 16px));padding:12px 13px 13px;background:color-mix(in srgb,var(--win) 95%,transparent);backdrop-filter:blur(10px);border:1px solid var(--line2);border-radius:10px;box-shadow:var(--shadow);font:12.5px/1.55 var(--f-body);color:var(--fg);pointer-events:none;visibility:hidden;opacity:0;transform:translateY(3px);transition:opacity .12s,transform .12s}
+.vxpop.on{visibility:visible;opacity:1;transform:none}
+.vxpop.sm{max-width:min(300px,calc(100vw - 16px));padding:10px 12px 11px}.vxpop.sm .vxd{max-width:274px}.vxpop .vxs{margin-top:0}
+.vpq{flex:none;display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;background:var(--head);border:1px solid var(--line2);color:var(--mute);font:700 9px/1 var(--f-body);font-style:normal;cursor:help;opacity:.7;margin:0 1px}
+.vpq:hover{opacity:1;color:var(--fg);border-color:var(--accent)}
+.vxh{display:flex;align-items:center;gap:7px}.vxh i{width:9px;height:9px;border-radius:2px;flex:none}.vxh b{font-size:13.5px}.vxh small{margin-left:auto;padding-left:10px;color:var(--mute);white-space:nowrap}
+.vxd{margin:6px 0 0;color:var(--mute);max-width:394px}
+.vxk{margin:11px 0 5px;font-size:11px;font-weight:600;color:var(--mute);letter-spacing:.02em}
+.vxg{display:grid;column-gap:22px;row-gap:16px;align-items:start;justify-content:start;padding:12px;border-radius:8px;border:1px solid var(--line);background-color:rgba(0,0,0,.22);background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1.2px);background-size:12px 12px;overflow:hidden}
+html[data-theme="light"] .vxg{background-color:rgba(0,0,0,.04);background-image:radial-gradient(rgba(0,0,0,.12) 1px,transparent 1.2px)}
+.vxc{position:relative;display:flex}
+.vxc.fl::after{content:"";position:absolute;left:100%;top:13px;width:16px;height:2px;background:var(--vsflow);opacity:.8}
+.vxc.fl::before{content:"";position:absolute;left:calc(100% + 14px);top:9px;border:5px solid transparent;border-left:7px solid var(--vsflow);opacity:.8;z-index:1}
+.vxc.dt::before{content:"";position:absolute;left:18px;bottom:100%;width:0;height:16px;border-left:2px dashed #FEB71A;opacity:.85}
+.vxn{display:flex;flex-direction:column;min-width:64px;max-width:150px;border-radius:7px;overflow:hidden;background:rgba(30,30,36,.92);border:1px solid rgba(255,255,255,.08);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.vxn b{padding:5px 8px;background:var(--ch);border-bottom:2px solid var(--cd);color:#fff;font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+.vxn span{padding:4px 8px 5px;color:#c9c9d3;font-size:11px;line-height:1.35}
+.vxn.me{outline:2px solid var(--accent);outline-offset:2px}
+.vxcs{margin:0;padding:9px 11px;border-radius:8px;background:rgba(0,0,0,.32);border:1px solid var(--line);font:11.5px/1.5 var(--f-mono);color:#e6e6ee;white-space:pre;overflow:hidden;max-width:394px}
+html[data-theme="light"] .vxcs{background:rgba(0,0,0,.05);color:#2a2a33}
 `;
 {const st=document.createElement('style');st.id='vsCss';st.textContent=VS_CSS;document.head.append(st)}
 
@@ -1465,7 +1989,7 @@ if(window.TI18N)TI18N.add({
 });
 
 /* ===================== 내보내기 ===================== */
-return{open,close,render,has,msg,tick,playStart,playStop,csHook,compsHtml,menuItems,onPlayFrame,isVisible,
+return{open,close,render,has,msg,tick,uiClick,screenClick,playStart,playStop,csHook,compsHtml,menuItems,onPlayFrame,isVisible,
   get on(){return R.on},_R:R,_E:E,_NT:NT};
 })()}
 }

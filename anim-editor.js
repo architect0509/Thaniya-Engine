@@ -40,6 +40,9 @@ const AN_PROPS={
   ev:{n:'이벤트',en:'Events',kind:'ev'}
 };
 const AN_ORDER=['sprite','x','y','rot','sx','sy','alpha','flip','ev'];
+/* 타임라인(timeline.js · 엔진 화면 전용): 있으면 그 화면의 TLH를 읽는 함수, 없으면(학습 화면) null */
+const anTLH=(()=>{try{return get('TLH')}catch(e){return null}})();
+const anTL=()=>{try{return anTLH&&anTLH()}catch(e){return null}};
 const AN_PT={float:'Float',int:'Int',bool:'Bool',trigger:'Trigger'};
 const AN_OPS={float:[['gt','> 큼'],['lt','< 작음']],int:[['gt','> 큼'],['lt','< 작음'],['eq','= 같음'],['ne','≠ 다름']],bool:[['true','= true'],['false','= false']],trigger:[['trig','발동됨']]};
 let AN_VER=0;
@@ -51,7 +54,7 @@ const anLen=c=>{let n=0;if(c)c.tracks.forEach(t=>t.keys.forEach(k=>{if(k.f+1>n)n
 const anDur=c=>c?anLen(c)/Math.max(1,c.fps||12):1;
 function anUniq(list,base){const has=new Set(list);if(!has.has(base))return base;for(let i=1;i<999;i++){const n=base+' '+i;if(!has.has(n))return n}return base+' '+uid()}
 function anNormClip(c){
-  const o={id:String(c.id||uid()),name:String(c.name||'클립').slice(0,40),fps:clamp(Math.round(+c.fps||12),1,60),loop:c.loop!==false,tracks:[]};
+  const o={id:String(c.id||uid()),name:String(c.name||'클립').slice(0,40),fps:clamp(Math.round(+c.fps||12),1,60),loop:c.loop!==false,tracks:[]};if(c.smooth)o.smooth=true;
   (Array.isArray(c.tracks)?c.tracks:[]).forEach(t=>{if(!t||!AN_PROPS[t.p]||o.tracks.some(x=>x.p===t.p))return;
     const kind=AN_PROPS[t.p].kind,seen=new Map();
     (Array.isArray(t.keys)?t.keys:[]).forEach(k=>{if(!k)return;const f=clamp(Math.round(+k.f||0),0,9999);let v=k.v;
@@ -112,20 +115,28 @@ function anMigrate(p){
 }
 /* ---- 클립 계산 ---- */
 function anTrack(c,p,make){let t=c.tracks.find(x=>x.p===p);if(!t&&make){t={p,keys:[]};c.tracks.push(t);c.tracks.sort((a,b)=>AN_ORDER.indexOf(a.p)-AN_ORDER.indexOf(b.p))}return t||null}
-function anValAt(t,f){
+/* sm = 부드럽게(ease in-out): 키 사이를 천천히 출발해 천천히 멈춤 (유니티 기본 곡선과 비슷) */
+function anValAt(t,f,sm){
   const k=t.keys,kind=AN_PROPS[t.p].kind;if(!k.length)return undefined;
   if(kind!=='num'){const fi=Math.floor(f+1e-6);let v=k[0].v;for(const q of k){if(q.f<=fi)v=q.v;else break}return v}
   if(f<=k[0].f)return +k[0].v;const L=k[k.length-1];if(f>=L.f)return +L.v;
-  for(let i=0;i<k.length-1;i++){const a=k[i],b=k[i+1];if(f>=a.f&&f<=b.f)return +a.v+(b.v-a.v)*((f-a.f)/Math.max(1e-6,b.f-a.f))}
+  for(let i=0;i<k.length-1;i++){const a=k[i],b=k[i+1];if(f>=a.f&&f<=b.f){let r=(f-a.f)/Math.max(1e-6,b.f-a.f);if(sm)r=r*r*(3-2*r);return +a.v+(b.v-a.v)*r}}
   return +L.v;
 }
-function anEval(c,f){const o={};if(!c)return o;c.tracks.forEach(t=>{if(t.p==='ev'||!t.keys.length)return;o[t.p]=anValAt(t,f)});return o}
+function anEval(c,f){const o={};if(!c)return o;c.tracks.forEach(t=>{if(t.p==='ev'||!t.keys.length)return;o[t.p]=anValAt(t,f,c.smooth)});return o}
 /* 클립 시간(초) → 프레임 (반복이면 되감기, 아니면 마지막 프레임에서 멈춤) */
 function anFrameAt(c,t){const L=anLen(c),fps=Math.max(1,c.fps||12);let f=t*fps;if(c.loop)f=((f%L)+L)%L;else f=clamp(f,0,L-1);return f}
 function anRestPose(a){const c=a&&anCtrl(a.ctrl);if(!c)return null;const s=anState(c,c.def)||c.states[0];const k=s&&anClip(s.clip);return k?anEval(k,0):null}
 /* 오브젝트의 지금 포즈: 애니메이션 창 미리보기 → 플레이 중 런타임 → 기본 상태 첫 프레임 */
 function anPoseFor(m,o,p){
   if(!o||!o.props)return null;
+  /* 타임라인: 플레이 중 디렉터가 재생하는 애니메이션 트랙 · 편집 중 타임라인 창 미리보기 (애니메이터보다 우선 · 유니티와 같음) */
+  const tq=(()=>{const th=anTL();return th?th.pose(m,o,p):null})();
+  const q0=anPoseBase(m,o,p);
+  /* 타임라인 포즈는 애니메이터 포즈 위에 덮어씀 (위치만 키가 있으면 걷기 애니메이션 그림은 그대로) */
+  return tq?Object.assign({},q0||{},tq):q0;
+}
+function anPoseBase(m,o,p){
   if(!play&&AW.preview&&AW.obj===o.id&&anVis('anim')){const c=anClip(AW.clip);if(c)return anEval(c,AW.f)}
   const a=o.props.animator;if(!a)return null;
   let q=null,got=false;
@@ -279,6 +290,28 @@ function anAsk(title,label,val,fn){
     [{t:'취소'},{t:'확인',cls:'pri',fn:()=>{const v=$('#anAskIn').value.trim();if(!v)return false;fn(v)}}]);
   const i=$('#anAskIn');if(i){i.select();i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const v=i.value.trim();if(v){closeModal();fn(v)}}})}
 }
+/* 빈 창 안내문: 컴포넌트 · 창 이름은 아이콘 칩으로, 문장 하나 = 한 줄 (번역은 _t 템플릿 · 칩 이름도 번역)
+   anChip(아이콘, 이름) · anLines([[템플릿, {자리: 칩}], …], 작게?) */
+const anChip=(ic,l)=>`<span class="cchip">${ico(ic)||ico('cube')}<b>${esc(_t(l))}</b></span>`;
+const anLines=(L,sm)=>`<div class="anls${sm?' sm':''}" data-i18n-skip>${L.map(q=>`<span class="anl">${Array.isArray(q)?_t(q[0],q[1]):esc(_t(q))}</span>`).join('')}</div>`;
+const AC={animator:()=>anChip('animator','애니메이터'),ctrl:()=>anChip('animator','애니메이터 컨트롤러'),clip:()=>anChip('anim','애니메이션 클립'),spr:()=>anChip('uiimg','스프라이트'),go:()=>anChip('cube','게임 오브젝트'),scene:()=>anChip('scene','씬 뷰'),hier:()=>anChip('hier','계층 구조')};
+/* 「만들기」 버튼 + 옆 ? (마우스를 올리면 무엇을 만드는지 · 문장마다 한 줄) — 도움말 표시는 화면의 qb()를 따름 */
+const anMk=(btn,L)=>`<span class="anmk">${btn}${qb(L.map(q=>_t(q)).join('\n'),'qwide')}</span>`;
+if(window.TI18N)TI18N.onChange(()=>{try{anRenderAll(true)}catch(e){}});
+if(window.TI18N)TI18N.add({
+'애니메이터':['Animator','アニメーター','动画器'],'애니메이터 컨트롤러':['Animator Controller','アニメーターコントローラー','动画控制器'],'애니메이션 클립':['Animation Clip','アニメーションクリップ','动画片段'],'스프라이트':['Sprite','スプライト','精灵'],'게임 오브젝트':['GameObject','ゲームオブジェクト','游戏对象'],'씬 뷰':['Scene view','シーンビュー','场景视图'],'계층 구조':['Hierarchy','ヒエラルキー','层级'],
+'{a}는 상태(클립)와 전환으로 오브젝트의 애니메이션 흐름을 정합니다.':['An {a} decides an object’s animation flow with states (clips) and transitions.','{a} は、ステート（クリップ）と遷移でオブジェクトのアニメーションの流れを決めます。','{a} 用状态（片段）和过渡决定对象的动画流程。'],
+'{a} 컴포넌트에 컨트롤러가 없습니다.':['The {a} component has no controller.','{a} コンポーネントにコントローラーがありません。','{a} 组件没有控制器。'],
+'애니메이션을 시작하려면 {a}와 {b}을 만드세요.':['To begin animating, create an {a} and an {b}.','アニメーションを始めるには、{a} と {b} を作成してください。','要开始制作动画，请创建 {a} 和 {b}。'],
+'{a} 컴포넌트 · 컨트롤러 · 클립을 한 번에 만듭니다.':['Creates the {a} component, controller and clip at once.','{a} コンポーネント・コントローラー・クリップを一度に作ります。','一次创建 {a} 组件、控制器和片段。'],
+'애니메이터 컴포넌트 · 컨트롤러 · 클립을 한 번에 만듭니다.':['Creates the Animator component, controller and clip at once.','アニメーターコンポーネント・コントローラー・クリップを一度に作ります。','一次创建动画器组件、控制器和片段。'],
+'지금 스프라이트를 첫 프레임으로 넣습니다.':['The current sprite becomes the first frame.','今のスプライトを最初のフレームにします。','当前的精灵会成为第一帧。'],
+'지금 {a}를 첫 프레임으로 넣습니다.':['The current {a} becomes the first frame.','今の {a} を最初のフレームにします。','当前的 {a} 会成为第一帧。'],
+'새 클립을 만들면 {a}에 상태로 함께 추가됩니다.':['New clips are also added to the {a} as states.','新しいクリップは {a} にステートとしても追加されます。','新建的片段也会作为状态添加到 {a}。'],
+'{a}에서 {b}를 선택하면 그 오브젝트의 클립을 편집할 수 있습니다.':['Select a {b} in the {a} to edit its clips.','{a} で {b} を選ぶと、そのオブジェクトのクリップを編集できます。','在 {a} 中选择 {b} 即可编辑它的片段。'],
+'부드럽게':['Smooth','なめらか','平滑'],'부드럽게: 키 사이를 천천히 출발해 천천히 멈춥니다 (끄면 일정한 속도)':['Smooth: ease in and out between keys (off = constant speed)','なめらか: キーの間をゆっくり動き出してゆっくり止まります（オフ = 一定の速さ）','平滑：关键帧之间缓入缓出（关闭 = 匀速）'],
+'편집한 클립은 {a}에서 바로 미리 볼 수 있습니다.':['Edited clips preview right away in the {a}.','編集したクリップは {a} ですぐにプレビューできます。','编辑后的片段可在 {a} 中立即预览。']
+});
 /* 패널이 화면에 보이는지 (접힘·숨김·다른 탭 뒤가 아님) */
 const anVis=id=>{const el=panelEl[id];return!!el&&el.isConnected&&!el.classList.contains('collapsed')&&!el.classList.contains('nhide')&&el.offsetWidth>0};
 function anShowPanel(id){
@@ -289,7 +322,7 @@ function anShowPanel(id){
   if(mqN.matches)L.nActive=id;
   saveLayout();renderLayout();anRenderAll(true);
 }
-function anRenderAll(force){if(force)AN_VER++;try{agRender();awRender()}catch(e){console.error(e)}}
+function anRenderAll(force){if(force)AN_VER++;try{agRender();awRender()}catch(e){console.error(e)}{const th=anTL();if(th)try{th.render()}catch(e){console.error(e)}}}
 /* 선택이 바뀌면 (renderInsp 뒤) 두 창을 맞춤 */
 let anSyncSig='';
 function anSync(){
@@ -347,7 +380,7 @@ function anFitCanvas(cv){const w=cv.parentElement.clientWidth,h=cv.parentElement
 function anRR(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
 
 /* ======================= 애니메이터 창 (상태 머신 그래프) ======================= */
-const AG={ctrl:null,sel:null,view:{},drag:null,link:null,mouse:null,side:true,sideN:false};
+const AG={ctrl:null,sel:null,hov:null,view:{},drag:null,link:null,mouse:null,side:true,sideN:false};
 const AG_NW=160,AG_NH=38;
 function agCtrl(){
   const o=anSelObj(),oc=anObjCtrl(o);if(oc){AG.ctrl=oc.id;return oc}
@@ -393,7 +426,7 @@ function agRender(){
     <div class="agmain">
       <aside class="agside">${c?agParamsHtml(c):''}</aside><div class="agrz" data-rz="side" role="separator" aria-orientation="vertical" title="끌어서 파라미터 패널 너비 조절"></div>
       <div class="agcv" id="agCvWrap" tabindex="0"><canvas id="agCv"></canvas>
-        ${c?`<div class="aghint">우클릭: 상태 만들기 · 상태 우클릭: 전환 만들기 · 드래그: 이동 · 휠: 확대 · 더블클릭: 클립 편집</div>`:`<div class="anempty"><b>애니메이터 컨트롤러가 없습니다</b><span>컨트롤러는 상태(클립)와 전환으로 오브젝트의 애니메이션 흐름을 정합니다.</span><button class="btn pri sm" data-ag="new">＋ 새 컨트롤러</button></div>`}
+        ${c?`<div class="aghint">우클릭: 상태 만들기 · 상태 우클릭: 전환 만들기 · 드래그: 이동 · 휠: 확대 · 더블클릭: 클립 편집</div>`:`<div class="anempty"><b>애니메이터 컨트롤러가 없습니다</b>${anLines([['{a}는 상태(클립)와 전환으로 오브젝트의 애니메이션 흐름을 정합니다.',{a:AC.ctrl()}]])}<button class="btn pri sm" data-ag="new">＋ 새 컨트롤러</button></div>`}
       </div>
       <div class="agrz" data-rz="prop" role="separator" aria-orientation="vertical" title="끌어서 상태 패널 너비 조절"></div><aside class="agprop" id="agProp">${c?agPropHtml(c):''}</aside>
     </div></div>`;
@@ -526,6 +559,7 @@ function agPropHtml(c){
     return`<div class="aghd"><b>전환</b></div>
     <div class="agform">
       <div class="agtrh" data-i18n-skip>${esc(agTrName(c,t))}</div>
+      ${(()=>{const sib=c.trans.filter(x=>x.a===t.a&&x.b===t.b);return sib.length>1?`<div class="agsub">같은 화살표의 전환 ${sib.length}개</div>${sib.map(x=>agTrBtn(c,x,(x===t?'● ':'')+agTrName(c,x))).join('')}`:''})()}
       ${t.a!=='any'?`<label class="chk"><input type="checkbox" data-agt="exit"${t.exit?' checked':''}>종료 시간 사용 (Has Exit Time)</label>
       ${t.exit?`<label>종료 시간 (클립 길이 기준)<input type="number" data-agt="et" step="0.05" min="0" value="${t.et}"></label>`:''}`
       :`<label class="chk"><input type="checkbox" data-agt="self"${t.self?' checked':''}>자기 자신으로 전환 허용</label>`}
@@ -566,12 +600,16 @@ function agDraw(){
   const acc=css('--accent')||'#e9bd0c',rt=agRt(c);
   /* 전환 화살표 */
   const segs=agSegs(c);
-  segs.forEach(sg=>{const on=AG.sel&&AG.sel.k==='tr'&&AG.sel.id===sg.t.id;const live=rt&&rt.lastTr===sg.t.id;
-    g.strokeStyle=on?acc:sg.t.a==='any'?(anLight()?'#2d8d78':'#7fd8c4'):C.line;g.lineWidth=on?2.6:1.6;
+  /* 굵기 · 화살표는 화면 픽셀 기준 (축소해도 얇아지지 않게) */
+  const px=1/z,hovT=AG.hov&&AG.hov.k==='tr'?AG.hov.id:null;
+  segs.forEach(sg=>{const on=AG.sel&&AG.sel.k==='tr'&&sg.all.some(t=>t.id===AG.sel.id);const hv=!on&&sg.all.some(t=>t.id===hovT);
+    const base=sg.t.a==='any'?(anLight()?'#2d8d78':'#7fd8c4'):C.line;
+    if(on||hv){g.strokeStyle=on?'rgba(233,189,12,.28)':'rgba(255,255,255,.16)';g.lineWidth=9*px;g.lineCap='round';g.beginPath();g.moveTo(sg.x0,sg.y0);g.lineTo(sg.x1,sg.y1);g.stroke();g.lineCap='butt'}
+    g.strokeStyle=on?acc:hv?(anLight()?'#111':'#fff'):base;g.lineWidth=(on?3:hv?2.4:1.6)*px;
     g.beginPath();g.moveTo(sg.x0,sg.y0);g.lineTo(sg.x1,sg.y1);g.stroke();
-    const mx=(sg.x0+sg.x1)/2,my=(sg.y0+sg.y1)/2,a=Math.atan2(sg.y1-sg.y0,sg.x1-sg.x0);
-    g.fillStyle=g.strokeStyle;g.beginPath();g.moveTo(mx+Math.cos(a)*7,my+Math.sin(a)*7);g.lineTo(mx+Math.cos(a+2.4)*7,my+Math.sin(a+2.4)*7);g.lineTo(mx+Math.cos(a-2.4)*7,my+Math.sin(a-2.4)*7);g.closePath();g.fill();
-    if(sg.n>1){g.font='600 10px '+css('--f-mono');g.fillText('×'+sg.n,mx+8,my-6)}
+    const mx=(sg.x0+sg.x1)/2,my=(sg.y0+sg.y1)/2,a=Math.atan2(sg.y1-sg.y0,sg.x1-sg.x0),r=(on||hv?8:7)*px;
+    g.fillStyle=g.strokeStyle;g.beginPath();g.moveTo(mx+Math.cos(a)*r,my+Math.sin(a)*r);g.lineTo(mx+Math.cos(a+2.4)*r,my+Math.sin(a+2.4)*r);g.lineTo(mx+Math.cos(a-2.4)*r,my+Math.sin(a-2.4)*r);g.closePath();g.fill();
+    if(sg.n>1){g.font='600 '+(10*px).toFixed(1)+'px '+css('--f-mono');g.fillText('×'+sg.n,mx+8*px,my-6*px)}
   });
   /* Entry → 기본 상태 */
   {const a=pos('entry'),b=c.def&&pos(c.def);if(a&&b){g.strokeStyle='#e8913a';g.lineWidth=1.8;const e=agEdge(a,b);g.beginPath();g.moveTo(e.x0,e.y0);g.lineTo(e.x1,e.y1);g.stroke();const mx=(e.x0+e.x1)/2,my=(e.y0+e.y1)/2,an=Math.atan2(e.y1-e.y0,e.x1-e.x0);g.fillStyle='#e8913a';g.beginPath();g.moveTo(mx+Math.cos(an)*7,my+Math.sin(an)*7);g.lineTo(mx+Math.cos(an+2.4)*7,my+Math.sin(an+2.4)*7);g.lineTo(mx+Math.cos(an-2.4)*7,my+Math.sin(an-2.4)*7);g.fill()}}
@@ -594,6 +632,22 @@ function agDraw(){
       g.fillStyle='rgba(0,0,0,.35)';g.fillRect(q.x+8,q.y+AG_NH-7,AG_NW-16,3);g.fillStyle='#4aa3ff';g.fillRect(q.x+8,q.y+AG_NH-7,(AG_NW-16)*fr,3)}
   });
   g.restore();
+  if(hovT&&AG.mouse&&!AG.drag&&!AG.link)agTip(g,c,hovT,w,h,v);
+}
+/* 전환에 마우스를 올리면: 「A → B」 + 조건 요약 (같은 방향 전환이 여럿이면 모두) */
+function agTip(g,c,id,w,h,v){
+  const sg=agSegs(c).find(x=>x.all.some(t=>t.id===id));if(!sg)return;
+  const L0=[];sg.all.forEach(t=>{L0.push([agTrName(c,t),1]);const cs=t.conds.map(q=>agCondTxt(c,q));if(t.exit)cs.push(_t('종료 시간')+' '+t.et);L0.push([cs.length?cs.join(' · '):_t(t.exit?'조건 없음':'조건 없음 · 일어나지 않음'),cs.length?0:2])});
+  L0.push([_t('클릭: 선택해서 조건 편집'),3]);
+  const fb=css('--f-body')||'sans-serif';g.font='600 11.5px '+fb;let tw=0;L0.forEach(([t,k])=>{g.font=(k===1?'600 11.5px ':'11px ')+fb;tw=Math.max(tw,g.measureText(t).width)});
+  const lh=16,pw=Math.min(w-12,tw+18),ph=L0.length*lh+10;
+  let x=AG.mouse.sx+14,y=AG.mouse.sy+16;if(x+pw>w-6)x=Math.max(6,AG.mouse.sx-14-pw);if(y+ph>h-6)y=Math.max(6,AG.mouse.sy-12-ph);
+  g.save();g.shadowColor='rgba(0,0,0,.35)';g.shadowBlur=10;anRR(g,x,y,pw,ph,7);g.fillStyle=anLight()?'rgba(255,255,255,.97)':'rgba(20,20,24,.95)';g.fill();g.shadowColor='transparent';
+  g.strokeStyle=anLight()?'rgba(0,0,0,.14)':'rgba(255,255,255,.14)';g.lineWidth=1;g.stroke();
+  g.textAlign='left';g.textBaseline='middle';
+  L0.forEach(([t,k],i)=>{g.font=(k===1?'600 11.5px ':'11px ')+fb;g.fillStyle=k===1?(anLight()?'#111':'#f2f2f5'):k===2?'#ef6b6b':k===3?(anLight()?'#8a6d00':'#e9bd0c'):(anLight()?'#555':'#b9b9c4');
+    let tt=t;while(g.measureText(tt).width>pw-18&&tt.length>2)tt=tt.slice(0,-2)+'…';g.fillText(tt,x+9,y+5+lh*i+lh/2)});
+  g.restore();
 }
 /* 노드 가장자리까지의 선 (중심 → 중심을 사각형 테두리에서 자름) */
 function agEdge(a,b,off){
@@ -613,7 +667,7 @@ function agSegs(c){
 function agToGraph(c,e){const cv=$('#agCv'),r=cv.getBoundingClientRect(),v=agV(c);return{sx:e.clientX-r.left,sy:e.clientY-r.top,x:(e.clientX-r.left-v.ox)/v.z,y:(e.clientY-r.top-v.oy)/v.z}}
 function agHit(c,p){
   const ns=agNodes(c);for(let i=ns.length-1;i>=0;i--){const q=ns[i];if(p.x>=q.x&&p.x<=q.x+AG_NW&&p.y>=q.y&&p.y<=q.y+AG_NH)return{k:q.k,id:q.id}}
-  const segs=agSegs(c);let best=null,bd=8/agV(c).z;
+  const segs=agSegs(c);let best=null,bd=10/agV(c).z;
   segs.forEach(sg=>{const dx=sg.x1-sg.x0,dy=sg.y1-sg.y0,l2=dx*dx+dy*dy||1,u=clamp(((p.x-sg.x0)*dx+(p.y-sg.y0)*dy)/l2,0,1),d=Math.hypot(sg.x0+dx*u-p.x,sg.y0+dy*u-p.y);if(d<bd){bd=d;best={k:'tr',id:sg.t.id}}});
   return best;
 }
@@ -697,6 +751,7 @@ function agDelete(c,S){
   pan.addEventListener('pointerdown',e=>{
     const wrap=e.target.closest('#agCvWrap');if(!wrap||e.target.closest('.anempty'))return;const c=agCtrl();if(!c)return;
     wrap.focus({preventScroll:true});const p=agToGraph(c,e),v=agV(c);
+    AG.hov=null;
     if(e.button===2)return;
     if(AG.link){const h=agHit(c,p);const from=AG.link;AG.link=null;if(h)agLinkTo(c,from,h);else agDraw();return}
     const h=e.button===0?agHit(c,p):null;
@@ -711,12 +766,15 @@ function agDelete(c,S){
   pan.addEventListener('pointermove',e=>{
     const wrap=e.target.closest('#agCvWrap');const c=agCtrl();if(!c)return;
     if(AG.link&&wrap){AG.mouse=agToGraph(c,e);agDraw()}
+    if(!AG.link&&!AG.drag&&wrap&&e.pointerType!=='touch'){const p=agToGraph(c,e),hh=agHit(c,p),k0=AG.hov?AG.hov.k+AG.hov.id:'',k1=hh?hh.k+hh.id:'';AG.mouse=p;
+      wrap.style.cursor=hh?(hh.k==='tr'?'pointer':'grab'):'';if(k0!==k1||(hh&&hh.k==='tr')){AG.hov=hh;agDraw()}}
     const D=AG.drag;if(!D)return;
     if(D.t==='pan'){const v=agV(c);v.auto=false;v.ox=D.ox+e.clientX-D.sx;v.oy=D.oy+e.clientY-D.sy;agDraw();return}
     if(D.t==='node'){const p=agToGraph(c,e);let nx=D.ox+p.x-D.sx,ny=D.oy+p.y-D.sy;if(!e.altKey){nx=Math.round(nx/10)*10;ny=Math.round(ny/10)*10}if(nx!==D.n.x||ny!==D.n.y){D.n.x=nx;D.n.y=ny;D.moved=true;agDraw()}}
   });
   const end=()=>{const D=AG.drag;AG.drag=null;if(D&&D.t==='node'&&D.moved){AU.u.push(D.snap);AU.r=[];anDirty()}};
   pan.addEventListener('pointerup',end);pan.addEventListener('pointercancel',end);
+  pan.addEventListener('pointerout',e=>{const w=e.target.closest&&e.target.closest('#agCvWrap');if(!w||(e.relatedTarget&&w.contains(e.relatedTarget)))return;if(AG.hov){AG.hov=null;w.style.cursor='';agDraw()}});
   pan.addEventListener('dblclick',e=>{if(!e.target.closest('#agCvWrap'))return;const c=agCtrl();if(!c)return;const h=agHit(c,agToGraph(c,e));
     if(h&&h.k==='st'){const s=anState(c,h.id);if(s.clip){AW.clip=s.clip;AW.f=0;anShowPanel('anim')}else toast('이 상태에는 모션(클립)이 없습니다. 오른쪽 속성에서 클립을 고르세요')}});
   pan.addEventListener('contextmenu',e=>{
@@ -776,9 +834,9 @@ function awRender(){
   const box=$('#awBox');if(!box||!anVis('anim'))return;
   const{o,c,k,list}=awTarget(),D=anData();
   if(o&&!c){
-    box.innerHTML=`<div class="anempty"><b data-i18n-skip>${esc(o.name)}</b><span>${o.props.animator?'애니메이터 컴포넌트에 컨트롤러가 없습니다.':'애니메이션을 시작하려면 애니메이터와 애니메이션 클립을 만드세요.'}</span><button class="btn pri sm" data-aw="create">만들기</button><small>애니메이터 컴포넌트 · 컨트롤러 · 클립을 한 번에 만들고, 지금 스프라이트를 첫 프레임으로 넣습니다.</small></div>`;return}
+    box.innerHTML=`<div class="anempty"><b data-i18n-skip>${esc(o.name)}</b>${anLines([o.props.animator?['{a} 컴포넌트에 컨트롤러가 없습니다.',{a:AC.animator()}]:['애니메이션을 시작하려면 {a}와 {b}을 만드세요.',{a:AC.animator(),b:AC.clip()}]])}${anMk('<button class="btn pri sm" data-aw="create">만들기</button>',['애니메이터 컴포넌트 · 컨트롤러 · 클립을 한 번에 만듭니다.','지금 스프라이트를 첫 프레임으로 넣습니다.'])}</div>`;return}
   if(!k){
-    box.innerHTML=`<div class="anempty"><b>${o?'이 컨트롤러에 클립이 없습니다':'애니메이션 클립이 없습니다'}</b><span>${o?'새 클립을 만들면 컨트롤러에 상태로 함께 추가됩니다.':'게임 오브젝트를 선택하면 그 오브젝트의 클립을 편집하고 씬 뷰에서 미리 볼 수 있습니다.'}</span>${o?'<button class="btn pri sm" data-aw="newclip">＋ 새 클립</button>':''}</div>`;return}
+    box.innerHTML=`<div class="anempty"><b>${o?'이 컨트롤러에 클립이 없습니다':'애니메이션 클립이 없습니다'}</b>${anLines(o?[['새 클립을 만들면 {a}에 상태로 함께 추가됩니다.',{a:AC.ctrl()}]]:[['{a}에서 {b}를 선택하면 그 오브젝트의 클립을 편집할 수 있습니다.',{a:AC.hier(),b:AC.go()}],['편집한 클립은 {a}에서 바로 미리 볼 수 있습니다.',{a:AC.scene()}]])}${o?'<button class="btn pri sm" data-aw="newclip">＋ 새 클립</button>':''}</div>`;return}
   const tr=k.tracks,len=anLen(k);AW.f=clamp(AW.f,0,Math.max(len-1,AW.f));
   const opts=(o?list:D.clips).map(x=>`<option value="${x.id}"${x.id===k.id?' selected':''} data-i18n-skip>${esc(x.name)}</option>`).join('')+(o?(D.clips.some(x=>!list.includes(x))?`<optgroup label="${esc(_t('다른 클립'))}">${D.clips.filter(x=>!list.includes(x)).map(x=>`<option value="${x.id}" data-i18n-skip>${esc(x.name)}</option>`).join('')}</optgroup>`:''):'')+'<option value="+new">＋ 새 클립…</option>';
   box.innerHTML=`<div class="awwin">
@@ -794,6 +852,7 @@ function awRender(){
       <button class="ib" data-aw="menu" title="클립 메뉴" aria-label="클립 메뉴">${ico('more')}</button>
       <label class="awfps" title="1초에 재생하는 프레임 수 (Samples)">샘플<input type="number" data-aw="fps" min="1" max="60" value="${k.fps}"></label>
       <label class="chk" title="끝까지 재생하면 처음부터 다시 (Loop Time)"><input type="checkbox" data-aw="loop"${k.loop?' checked':''}>반복</label>
+      <label class="chk" title="부드럽게: 키 사이를 천천히 출발해 천천히 멈춥니다 (끄면 일정한 속도)"><input type="checkbox" data-aw="smooth"${k.smooth?' checked':''}>부드럽게</label>
       <span class="awlen">${len}프레임 · ${(len/k.fps).toFixed(2)}초</span>
       <span class="spacer"></span>
       ${o?`<span class="anchip on">${ico('cube')}<span data-i18n-skip>${esc(o.name)}</span></span>`:''}
@@ -803,7 +862,7 @@ function awRender(){
       <div class="awleft">
         <div class="awlh"><span>속성</span><span class="spacer"></span><button class="ib" data-aw="keyall" title="모든 속성에 이 프레임 키 추가" aria-label="키 추가">◆</button></div>
         ${tr.map(t=>awRowHtml(k,t)).join('')}
-        <div class="awadd"><button class="btn sm" data-aw="addprop">＋ 속성 추가</button></div>
+        <div class="awadd"><button class="btn sm" data-aw="addprop">＋ 속성 추가</button><small class="awaddh">프로젝트 패널의 스프라이트를 스프라이트 속성(또는 여기)에 끌어다 놓으면 현재 프레임에 키가 들어갑니다</small></div>
       </div>
       <div class="awright" id="awCvWrap" tabindex="0"><canvas id="awCv"></canvas>${tr.length?'':`<div class="awdrop">프로젝트 패널의 스프라이트(나눈 조각)를 여기로 끌어다 놓으면 프레임이 차례로 들어갑니다</div>`}</div>
     </div></div>`;
@@ -819,7 +878,7 @@ function awMissHtml(k){
 const awSprBtn=ref=>`<img alt="" src="${spriteThumbURL(ref,48)}"><span class="tpn"><b data-i18n-skip>${esc(sprName(ref))}</b></span>`;
 function awRowHtml(k,t){
   const P0=AN_PROPS[t.p],f=Math.floor(AW.f),v=anValAt(t,AW.f),has=t.keys.some(q=>q.f===f);let ed='';
-  if(P0.kind==='spr')ed=`<button type="button" class="tpbtn" data-awv="${t.p}" data-ref="${esc(v||'')}" title="이 프레임의 스프라이트 (눌러서 선택 · 바꾸면 키가 만들어집니다)">${awSprBtn(v||'')}</button>`;
+  if(P0.kind==='spr')ed=`<button type="button" class="tpbtn" data-awv="${t.p}" data-ref="${esc(v||'')}" title="이 프레임의 스프라이트 (눌러서 선택 · 프로젝트 패널에서 끌어다 놓아도 됩니다 · 바꾸면 키가 만들어집니다)">${awSprBtn(v||'')}</button>`;
   else if(P0.kind==='bool')ed=`<input type="checkbox" data-awv="${t.p}"${v?' checked':''}>`;
   else if(P0.kind==='ev'){const q=t.keys.find(x=>x.f===f);ed=`<input type="text" data-awv="${t.p}" value="${esc(q?q.v:'')}" placeholder="${esc(_t('메서드 이름'))}" spellcheck="false" title="이 프레임에서 부를 스크립트 메서드 이름 (예: Footstep)">`}
   else ed=`<input type="number" data-awv="${t.p}" step="${P0.step}" value="${v==null?P0.def:+(+v).toFixed(3)}">`;
@@ -830,6 +889,26 @@ function awSetKey(k,p,f,v){const t=anTrack(k,p,true),q=t.keys.find(x=>x.f===f);i
 function awDelKey(k,p,f){const t=anTrack(k,p);if(t)t.keys=t.keys.filter(x=>x.f!==f)}
 function awFrameX(f){return f*AW.ppf-AW.sx+8}
 function awXFrame(x){return(x-8+AW.sx)/AW.ppf}
+/* 아래 가로 스크롤 막대 (애니메이션 창 · 타임라인 창 공용): wrap 안에 .anhs를 만들고, 그릴 때마다 anHsSync(wrap, 전체 너비, 보이는 너비, 지금 위치, 바꾸는 함수)
+   막대 끌기 = 좌우 이동 · 빈 곳 누르기 = 한 화면씩 · 막대 위 휠 = 좌우 */
+function anHsSync(wrap,total,view,pos,setPos){
+  if(!wrap)return;let el=wrap.querySelector(':scope>.anhs');
+  if(!el){el=wrap.ownerDocument.createElement('div');el.className='anhs';el.innerHTML='<div class="anhs-t"></div>';wrap.append(el);
+    const stop=e=>e.stopPropagation();['dblclick','contextmenu','click'].forEach(n=>el.addEventListener(n,stop));
+    el.addEventListener('pointerdown',e=>{
+      e.stopPropagation();e.preventDefault();if(e.button!==0)return;const S=el._s;if(!S)return;const th=el.firstChild,W=el.clientWidth,tw=th.offsetWidth,max=Math.max(0,S.total-S.view);
+      if(e.target===th){const x0=e.clientX,p0=S.pos;th.classList.add('on');try{el.setPointerCapture(e.pointerId)}catch(_){}
+        const mv=ev=>{const k=max/Math.max(1,W-tw);el._s.set(clamp(p0+(ev.clientX-x0)*k,0,max))};
+        const up=()=>{th.classList.remove('on');el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up)};
+        el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up)}
+      else{const r=th.getBoundingClientRect();S.set(clamp(S.pos+(e.clientX<r.left?-1:1)*S.view*.9,0,max))}
+    });
+    el.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();const S=el._s;if(!S)return;S.set(clamp(S.pos+(e.deltaY||e.deltaX),0,Math.max(0,S.total-S.view)))},{passive:false});
+  }
+  total=Math.max(total,pos+view);el._s={total,view,pos,set:setPos};
+  const th=el.firstChild,W=el.clientWidth||view,tw=Math.max(28,W*Math.min(1,view/Math.max(1,total))),max=Math.max(0,total-view);
+  th.style.width=tw+'px';th.style.left=(max?(W-tw)*pos/max:0)+'px';el.classList.toggle('full',max<1);
+}
 function awDraw(){
   const cv=$('#awCv');if(!cv||!cv.isConnected)return;const k=awClip();if(!k)return;
   const{w,h,d}=anFitCanvas(cv),g=cv.getContext('2d'),C=anCol(),acc=css('--accent')||'#e9bd0c',len=anLen(k),fps=k.fps;
@@ -864,6 +943,7 @@ function awDraw(){
   /* 상자 선택 */
   if(AW.drag&&AW.drag.t==='box'){const b=AW.drag;g.fillStyle='rgba(233,189,12,.12)';g.strokeStyle=acc;g.lineWidth=1;const x=Math.min(b.x0,b.x1),y=Math.min(b.y0,b.y1);g.fillRect(x,y,Math.abs(b.x1-b.x0),Math.abs(b.y1-b.y0));g.strokeRect(x+.5,y+.5,Math.abs(b.x1-b.x0),Math.abs(b.y1-b.y0))}
   /* 재생 위치 */
+  anHsSync(cv.parentElement,Math.max((Math.max(len,AW.f+1)+8)*AW.ppf+16,w*1.5),w,AW.sx,v=>{AW.sx=v;awDraw()});
   const px=Math.round(awFrameX(AW.f)+AW.ppf/2)+.5;g.strokeStyle='#ff5b5b';g.lineWidth=1.5;g.beginPath();g.moveTo(px,AW_TOP-12);g.lineTo(px,h);g.stroke();
   g.fillStyle='#ff5b5b';anRR(g,px-14,1,28,13,4);g.fill();g.fillStyle='#fff';g.textAlign='center';g.font='600 10px '+css('--f-mono');g.fillText(String(Math.floor(AW.f)),px,8);
 }
@@ -898,6 +978,7 @@ function awPlay(){
   AW.raf=requestAnimationFrame(tick);
 }
 function awStop(){if(!AW.playing)return;AW.playing=false;cancelAnimationFrame(AW.raf);AW.f=Math.floor(AW.f);awSyncRows()}
+const awNearHead=x=>Math.abs(x-(awFrameX(AW.f)+AW.ppf/2))<=5;
 function awHit(e){
   const cv=$('#awCv'),r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,k=awClip();
   const row=y<AW_TOP?-1:Math.floor((y-AW_TOP)/AW_RH),t=k&&k.tracks[row]||null;
@@ -958,6 +1039,7 @@ function awPropMenu(anchor){
     if(t.dataset.aw==='clip'){if(t.value==='+new'){t.value=AW.clip||'';anNewClip(anObjCtrl(anSelObj()),anSelObj());return}AW.clip=t.value;AW.f=0;AW.sel.clear();awStop();awRender();need();return}
     if(!k)return;
     if(t.dataset.aw==='fps'){const v=clamp(Math.round(+t.value||12),1,60);anEdit(()=>{k.fps=v})}
+    else if(t.dataset.aw==='smooth')anEdit(()=>{if(t.checked)k.smooth=true;else delete k.smooth});
     else if(t.dataset.aw==='loop')anEdit(()=>{k.loop=t.checked});
     else if(t.dataset.aw==='frame'){const v=Math.max(0,Math.round(+t.value||0));if(v!==Math.floor(AW.f))awSetFrame(v)}
     else if(t.dataset.awv){const p=t.dataset.awv,P0=AN_PROPS[p],f=Math.floor(AW.f);
@@ -975,6 +1057,8 @@ function awPropMenu(anchor){
     const h=awHit(e);
     try{wrap.setPointerCapture(e.pointerId)}catch(_){}
     if(h.row<0){AW.drag={t:'scrub'};awSetFrame(h.f);return}
+    /* 빨간 재생 위치 선을 잡으면 어디서든 끌어 옮김 (키 위가 아니면) */
+    if(!h.key&&awNearHead(h.x)){AW.drag={t:'scrub'};wrap.style.cursor='ew-resize';return}
     if(h.key){const id=h.t.p+':'+h.key.f;
       if(e.shiftKey||e.ctrlKey||e.metaKey){if(AW.sel.has(id))AW.sel.delete(id);else AW.sel.add(id)}
       else if(!AW.sel.has(id)){AW.sel.clear();AW.sel.add(id)}
@@ -984,6 +1068,7 @@ function awPropMenu(anchor){
     AW.drag={t:'box',x0:h.x,y0:h.y,x1:h.x,y1:h.y,f:h.f,moved:false};awDraw();
   });
   pan.addEventListener('pointermove',e=>{
+    if(!AW.drag){const w=e.target.closest&&e.target.closest('#awCvWrap');if(w&&!e.target.closest('.anhs')&&awClip()){const h=awHit(e);w.style.cursor=h.row>=0&&!h.key&&awNearHead(h.x)?'ew-resize':''}}
     const D=AW.drag;if(!D)return;const k=awClip();if(!k)return;const h=awHit(e);
     if(D.t==='scrub'){awSetFrame(h.f);return}
     if(D.t==='move'){const df=Math.round((h.x-D.sx)/AW.ppf),mn=Math.min(...D.base.map(b=>b.f));const d2=Math.max(-mn,df);if(d2===D.df)return;D.df=d2;
@@ -1027,8 +1112,22 @@ function awPropMenu(anchor){
   });
   /* 프로젝트 패널에서 스프라이트 끌어다 놓기 */
   const isAD=e=>{const ty=[...((e.dataTransfer&&e.dataTransfer.types)||[])];return ty.includes('application/x-thaniya-sprite')||ty.includes('application/x-thaniya-asset')};
-  pan.addEventListener('dragover',e=>{if(!e.target.closest('#awCvWrap')||!isAD(e)||!awClip())return;e.preventDefault();e.dataTransfer.dropEffect='copy';$('#awCvWrap').classList.add('drop')});
-  pan.addEventListener('dragleave',e=>{const w=$('#awCvWrap');if(w&&!w.contains(e.relatedTarget))w.classList.remove('drop')});
+  /* 왼쪽 속성 칸: 스프라이트 줄(또는 속성 목록 아무 곳)에 놓으면 현재 프레임부터 스프라이트 키 (스프라이트 속성이 없으면 새로 만듦) */
+  const awLeftZone=e=>{const l=e.target.closest&&e.target.closest('.awleft');if(!l)return null;return l.querySelector('.awrow[data-p="sprite"]')||l};
+  const awClrDrop=()=>pan.querySelectorAll('.awleft .drop,.awleft.drop').forEach(x=>x.classList.remove('drop'));
+  pan.addEventListener('dragover',e=>{
+    if(!isAD(e)||!awClip())return;
+    const z=awLeftZone(e);if(z){e.preventDefault();e.dataTransfer.dropEffect='copy';if(!z.classList.contains('drop')){awClrDrop();z.classList.add('drop')}return}
+    if(!e.target.closest('#awCvWrap'))return;e.preventDefault();e.dataTransfer.dropEffect='copy';$('#awCvWrap').classList.add('drop')});
+  pan.addEventListener('dragleave',e=>{const w=$('#awCvWrap');if(w&&!w.contains(e.relatedTarget))w.classList.remove('drop');const l=$('#awBox .awleft');if(l&&!l.contains(e.relatedTarget))awClrDrop()});
+  pan.addEventListener('drop',e=>{
+    if(!e.target.closest||!e.target.closest('.awleft')||!isAD(e)||!awClip())return;e.preventDefault();e.stopPropagation();awClrDrop();
+    const ref=e.dataTransfer.getData('application/x-thaniya-sprite'),aid=e.dataTransfer.getData('application/x-thaniya-asset'),a=aid&&byId.get(aid),f0=Math.floor(AW.f);
+    if(ref&&spriteRef(ref))awAddSprites([ref],f0);
+    else if(a&&slCount(a))awAddSprites(a.slices.map(r=>a.id+':'+r.id),f0);
+    else if(a)toast('"'+a.name+'"은(는) 스프라이트가 아닙니다. 텍스처 유형을 스프라이트로 바꾸거나 스프라이트 에디터로 나눈 뒤 끌어다 놓으세요');
+  });
+  document.addEventListener('dragend',()=>{awClrDrop();const w=$('#awCvWrap');if(w)w.classList.remove('drop')});
   pan.addEventListener('drop',e=>{
     const w=e.target.closest('#awCvWrap');if(!w||!isAD(e)||!awClip())return;e.preventDefault();e.stopPropagation();w.classList.remove('drop');
     const h=awHit(e),ref=e.dataTransfer.getData('application/x-thaniya-sprite'),aid=e.dataTransfer.getData('application/x-thaniya-asset'),a=aid&&byId.get(aid);
@@ -1060,6 +1159,6 @@ function anLive(t){
 }
 
 
-return{agDraw,anAsk,anData,anDirty,anHeroCtrl,anLive,anMigrate,anNewCtrl,anPoseFor,anRenderAll,anShowPanel,anSync,anUndo,anUniq,animProxy,animTick,animatorComp,awDraw,awStop,giveHeroAnimator,objArtA,spritePickerModal,spriteThumbURL,anClip,anCtrl,anState,anLen,anDur,anRt,anEval,anFrameAt,anNormP,AG,AW,agRender,awRender,anVis};
+return{anHsSync,anChip,anLines,anMk,anCol,anFitCanvas,anRR,anTrack,anValAt,anEdit,clipPickerModal,clipThumbURL,anObjCtrl,anCtrlClips,anNewClip,agDraw,anAsk,anData,anDirty,anHeroCtrl,anLive,anMigrate,anNewCtrl,anPoseFor,anRenderAll,anShowPanel,anSync,anUndo,anUniq,animProxy,animTick,animatorComp,awDraw,awStop,giveHeroAnimator,objArtA,spritePickerModal,spriteThumbURL,anClip,anCtrl,anState,anLen,anDur,anRt,anEval,anFrameAt,anNormP,AG,AW,agRender,awRender,anVis};
 })()}
 }

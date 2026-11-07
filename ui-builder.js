@@ -1579,6 +1579,7 @@ function rtClick(e){
   if(n.type!=='button')return;e.stopPropagation();
   {const b=e.target.closest('button');if(b)setTimeout(()=>{if(document.activeElement===b)b.blur()},0)}
   fire(s,n,'OnClick');if(!play||play.m!==m)return;
+  try{vsCall('uiClick',m,mirrorOf(s,n),s.g.name,n.name)}catch(e){console.error(e)}if(!play||play.m!==m)return;
   const a=n.act||{};
   if(a.t==='close')grpVis(m,s.g,false);
   else if(a.t==='open'||a.t==='toggle'){const t=(m.uiGroups||[]).find(x=>x.name===a.v);if(t)grpVis(m,t,a.t==='open'?true:!grpOpen(m,t));if(a.t==='open'&&a.cs&&t!==s.g)grpVis(m,s.g,false)}

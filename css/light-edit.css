@@ -734,6 +734,8 @@ html[data-theme="light"] .awleft{border-right:1px solid var(--line)}
 html[data-theme="light"] .awlh{border-bottom:1px solid var(--line);color:var(--mute);background:var(--panel)}
 html[data-theme="light"] .awlh .ib{color:var(--accent-tx,var(--accent))}
 html[data-theme="light"] .awrow:nth-of-type(odd){background:rgba(0,0,0,0.025)}
+html[data-theme="light"] .tlhead:nth-of-type(odd){background:rgba(0,0,0,0.025)}
+html[data-theme="light"] .tlm.on{color:#a00000}
 html[data-theme="light"] .awrow.haskey .awk{color:var(--accent-tx,var(--accent))}
 html[data-theme="light"] .awright{outline:none}
 html[data-theme="light"] .awright.drop{outline:3px dashed var(--accent)}
@@ -777,3 +779,6 @@ html[data-theme="light"] .spk-list{background:rgba(0,0,0,.025)}
 html[data-theme="light"] .spk-ft{background:rgba(0,0,0,.02)}
 html[data-theme="light"] .spk-od{box-shadow:0 0 0 2px #fff}
 html[data-theme="light"] .spk-q input,html[data-theme="light"] .spk-q input:focus{border:0;background:none;box-shadow:none;outline:0;padding:0;height:100%}
+
+html[data-theme="light"] .cchip{box-shadow:0 1px 0 rgba(0,0,0,.08)}
+html[data-theme="light"] .cchip .ic{background:rgba(0,0,0,.07)}

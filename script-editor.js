@@ -28,7 +28,7 @@ function acKoName(it,owner,dot,attr){
 }
 const CS_RE=(()=>{
   const kw='public|private|protected|internal|static|void|class|using|new|return|if|else|for|foreach|while|switch|case|break|continue|true|false|null|this|readonly|const|override|virtual|namespace|in|out|ref|var|struct|enum|interface|abstract|sealed|get|set'.split('|').concat(Object.keys(KO_KW));
-  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Rigidbody2D|Rigidbody|Transform|GameObject|MonoBehaviour|Collider2D|Debug|Time|Input|Mathf|Quaternion|SpriteRenderer|Animator|Camera|AudioSource|KeyCode|Header|SerializeField|Range|Tooltip|Space|RectTransform|Button|Text|Image|Slider|CanvasGroup|SceneManager|Application|UIGroup|Hero|Random|Light|Light2D|Monster|Npc|Item|Portal|EventTrigger|Dialog|Message|Inventory|Scene|List|Dictionary'.split('|').concat(Object.keys(KO_TY),Object.keys(KO_SELF));
+  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Rigidbody2D|Rigidbody|Transform|GameObject|MonoBehaviour|Collider2D|Debug|Time|Input|Mathf|Quaternion|SpriteRenderer|Animator|PlayableDirector|Camera|AudioSource|KeyCode|Header|SerializeField|Range|Tooltip|Space|RectTransform|Button|Text|Image|Slider|CanvasGroup|SceneManager|Application|UIGroup|Hero|Random|Light|Light2D|Monster|Npc|Item|Portal|EventTrigger|Dialog|Message|Inventory|Scene|List|Dictionary'.split('|').concat(Object.keys(KO_TY),Object.keys(KO_SELF));
   const alt=a=>[...new Set(a)].sort((x,y)=>y.length-x.length).join('|'),B0='(?<![\\p{L}\\p{N}_])',B1='(?![\\p{L}\\p{N}_])';
   return new RegExp('(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)|("(?:[^"\\\\\\n]|\\\\.)*")|'+B0+'('+alt(kw)+')'+B1+'|'+B0+'('+alt(ty)+')'+B1+'|'+B0+'(\\d+\\.?\\d*[fFdD]?)'+B1+'|'+B0+'([\\p{L}_][\\p{L}\\p{N}_]*)(?=\\s*\\()','gu');
 })();
@@ -86,6 +86,7 @@ const CS_API={
   'SceneManager:static':[_F('LoadScene','void','string sceneName'),_F('RestartGame','void'),_F('GetActiveScene','Scene')],
   'Scene':[_P('name','string'),_P('buildIndex','int')],
   'Animator':[_P('speed','float'),_F('SetBool','void','string name, bool value'),_F('SetTrigger','void','string name'),_F('ResetTrigger','void','string name'),_F('SetFloat','void','string name, float value'),_F('SetInteger','void','string name, int value'),_F('GetBool','bool','string name'),_F('GetFloat','float','string name'),_F('GetInteger','int','string name'),_F('Play','void','string stateName'),_F('CrossFade','void','string stateName, float duration'),_F('GetCurrentAnimatorStateInfo','AnimatorStateInfo','int layerIndex'),_F('HasState','bool','int layer, string stateName'),..._base],
+  'PlayableDirector':[_P('time','double'),_P('duration','double'),_P('state','PlayState'),_P('playOnAwake','bool'),_P('extrapolationMode','DirectorWrapMode'),_P('playableAsset','string'),_F('Play','void'),_F('Pause','void'),_F('Resume','void'),_F('Stop','void'),_F('Evaluate','void'),..._base],
   'AnimatorStateInfo':[_P('normalizedTime','float'),_P('length','float'),_P('loop','bool'),_P('speed','float'),_F('IsName','bool','string name')],
   'AudioSource':[_P('volume','float'),_P('pitch','float'),_P('loop','bool'),_P('mute','bool'),_P('playOnAwake','bool'),_P('isPlaying','bool'),_P('time','float'),_P('clip','string'),_P('length','float'),_P('spatialBlend','float'),_P('maxDistance','float'),_F('Play','void'),_F('PlayDelayed','void','float delay'),_F('PlayOneShot','void','string clipName, float volumeScale'),_F('Stop','void'),_F('Pause','void'),_F('UnPause','void'),..._base],
   'Collider2D':[_P('isTrigger','bool'),_F('CompareTag','bool','string tag'),..._base],
@@ -105,8 +106,8 @@ CS_API['UIScreen:static']=[_F('Show','void','string screen'),_F('Hide','void','s
 CS_API['VisualScript:static']=[_F('Trigger','void','string eventName, object arg'),_F('TriggerAll','void','string eventName, object arg'),_F('TriggerOn','void','string objectName, string eventName, object arg'),_F('GetVariable','object','string name'),_F('SetVariable','void','string name, object value'),_F('SetState','void','string stateName'),_P('CurrentState','string')];
 CS_API['Random:static']=[_F('Range','float','float min, float max'),_P('value','float')];
 CS_API.Camera.unshift(_P('smoothFollow','bool'),_P('smoothTime','float'));
-const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','AudioSource','Camera','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen','VisualScript'];
-const AC_COMPS=['Hero','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','SpriteRenderer','Rigidbody2D','Collider2D','Animator','AudioSource','Camera','Transform'];
+const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','PlayableDirector','AudioSource','Camera','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen','VisualScript'];
+const AC_COMPS=['Hero','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','SpriteRenderer','Rigidbody2D','Collider2D','Animator','PlayableDirector','AudioSource','Camera','Transform'];
 const AC_EV=[['Awake','void Awake()\n{\n    |\n}'],['Start','void Start()\n{\n    |\n}'],['Update','void Update()\n{\n    |\n}'],['FixedUpdate','void FixedUpdate()\n{\n    |\n}'],['LateUpdate','void LateUpdate()\n{\n    |\n}'],['OnEnable','void OnEnable()\n{\n    |\n}'],['OnDisable','void OnDisable()\n{\n    |\n}'],['OnDestroy','void OnDestroy()\n{\n    |\n}'],['OnTriggerEnter2D','void OnTriggerEnter2D(Collider2D other)\n{\n    |\n}'],['OnTriggerExit2D','void OnTriggerExit2D(Collider2D other)\n{\n    |\n}'],['OnCollisionEnter2D','void OnCollisionEnter2D(Collision2D collision)\n{\n    |\n}'],['OnHeroEnter','void OnHeroEnter()\n{\n    |\n}'],['OnHeroExit','void OnHeroExit()\n{\n    |\n}'],['OnInteract','void OnInteract()\n{\n    |\n}'],['OnHit','void OnHit()\n{\n    |\n}'],['OnHeroDeath','void OnHeroDeath()\n{\n    |\n}']];
 const AC_SN=[['if','if (|)\n{\n}'],['else','else\n{\n    |\n}'],['for','for (int i = 0; i < |; i++)\n{\n}'],['foreach','foreach (var item in |)\n{\n}'],['while','while (|)\n{\n}'],['switch','switch (|)\n{\n    case 0:\n        break;\n}']];
 const AC_ATTR=[['Header','Header("|")'],['SerializeField','SerializeField'],['Range','Range(0, |1)'],['Tooltip','Tooltip("|")'],['Space','Space'],['HideInInspector','HideInInspector']];
@@ -531,6 +532,14 @@ const AC_DOC={
 'loop':['반복 재생 여부입니다.','audio.loop = true;'],
 'isPlaying':['재생 중인지 나타냅니다.','if (audio.isPlaying) Debug.Log("재생 중");'],
 'AudioSource.Play':['소리를 재생합니다.','audio.Play();'],
+'PlayableDirector':['타임라인을 재생하는 플레이어블 디렉터 컴포넌트입니다. 타임라인 창에서 만든 트랙(애니메이션 · 활성화 · 오디오 · 시그널)을 시간에 맞춰 재생합니다. 파일 맨 위에 using UnityEngine.Playables; 를 써도 됩니다.','PlayableDirector director = GetComponent<PlayableDirector>();\ndirector.Play();'],
+'PlayableDirector.Play':['타임라인을 처음부터(일시 정지였으면 그 자리부터) 재생합니다.','director.Play();'],
+'PlayableDirector.Pause':['타임라인을 그 자리에서 멈춥니다. Resume()으로 이어서 재생합니다.','director.Pause();'],
+'PlayableDirector.Resume':['일시 정지한 타임라인을 이어서 재생합니다.','director.Resume();'],
+'PlayableDirector.Stop':['타임라인을 멈추고 처음으로 되돌립니다. 활성화 트랙은 「끝난 뒤 상태」를 따릅니다.','director.Stop();'],
+'PlayableDirector.time':['지금 재생 위치(초)입니다. 대입하면 그 시간으로 건너뜁니다.','director.time = 2.5;'],
+'PlayableDirector.duration':['타임라인 길이(초)입니다.','if (director.time >= director.duration) Debug.Log("끝");'],
+'PlayableDirector.state':['재생 중이면 "Playing", 아니면 "Paused"입니다.','if (director.state == "Playing") Debug.Log("재생 중");'],
 'Stop':['소리를 멈춥니다.','audio.Stop();'],
 'Pause':['소리를 일시정지합니다.','audio.Pause();'],
 'isTrigger':['true이면 통과하면서 트리거 이벤트만 발생합니다.','col.isTrigger = true;'],
