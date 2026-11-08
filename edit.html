@@ -1969,6 +1969,7 @@ body.popbody .pcol{display:none}
 <script src="timeline.js?v=20261107k"></script>
 <script src="ui-builder.js?v=20261107a"></script>
 <script src="visual-script.js?v=20261108d"></script>
+<script src="tour.js?v=20261109c"></script>
 <script>
 (()=>{
 'use strict';
@@ -9155,7 +9156,7 @@ const menuDefs={
   go:()=>[{label:'빈 게임 오브젝트 만들기',fn:()=>createObjectAtView('empty')},{label:'새 그룹',fn:newGroup}],
   win:()=>Object.keys(PANELS).map(id=>({label:PANELS[id]+(POPPED.has(id)?' (새 창)':''),checked:POPPED.has(id)||!L.hidden[id],fn:()=>{if(POPPED.has(id)){popIn(id,true);return}if(id==='uib'){UIB.toggle();return}L.hidden[id]=!L.hidden[id];saveLayout();renderLayout()}})).concat([{sep:1},{label:'학습 창',checked:!!learn.el,fn:learnToggle},{label:'도구 모음 위치 초기화',fn:resetSbar},{label:'레이아웃 초기화',fn:()=>{[...POPPED.keys()].forEach(k=>popIn(k));L=defLayout();saveLayout();renderLayout()}}]),
   ui:()=>[{label:'UI 화면 만들기 (UI 빌더)…',fn:()=>UIB.open()},{sep:1}].concat(Object.keys(UI_NAMES).map(k=>({label:UI_NAMES[k]+' 만들기',fn:()=>createUiAtCenter(k)}))).concat([{sep:1},{label:'UI 캔버스 설정',fn:()=>{setLayer('ui');selUi=null;renderInsp();renderHier();focusInspector()}},{label:'UI 숨기기 (씬 뷰)',checked:$('#optUiHide').checked,fn:()=>{const c=$('#optUiHide');c.checked=!c.checked;c.dispatchEvent(new Event('change'))}}]),
-  help:()=>[{label:'단축키 목록',fn:showHelp},{label:'단축키 설정…',key:kb('app.keybindings'),fn:()=>openSettings('keys')},{sep:1},{label:'공식 홈페이지 (thaniya.co.kr)',fn:()=>window.open(HOME_URL,'_blank','noopener')},{label:'Thaniya Engine 정보',fn:()=>openSettings('about')}]
+  help:()=>[{label:'처음 안내 다시 보기',fn:()=>{if(window.TOUR)TOUR.start()}},{sep:1},{label:'단축키 목록',fn:showHelp},{label:'단축키 설정…',key:kb('app.keybindings'),fn:()=>openSettings('keys')},{sep:1},{label:'공식 홈페이지 (thaniya.co.kr)',fn:()=>window.open(HOME_URL,'_blank','noopener')},{label:'Thaniya Engine 정보',fn:()=>openSettings('about')}]
 };
 $$('#menubar [data-menu]').forEach(b=>{
   b.addEventListener('click',()=>showMenu(b,menuDefs[b.dataset.menu]()));
@@ -9209,7 +9210,7 @@ addEventListener('beforeunload',()=>{if(dirty){try{localStorage.setItem(KEY,JSON
 
 /* ===================== 패널 도킹 ===================== */
 /* center = 씬 뷰 머리의 씬·게임 탭 옆에 탭으로 붙는 패널 (기본: 애니메이터) · cActive = 지금 보이는 가운데 패널 (없으면 씬/게임 뷰) */
-const defLayout=()=>({lv:2,left:['hier'],right:['insp','animator'],bottom:['assets','console','script','palette','anim','tl','uib','vs'],center:[],cActive:null,float:{},hidden:{script:true,uib:true,vs:true},collapsed:{},tabs:{console:'assets',anim:'palette',tl:'palette',animator:'insp'},active:{},size:{left:280,right:300,bottom:260},z:{},brk:{},cw:{},bw:{}});
+const defLayout=()=>({lv:2,left:['hier'],right:['insp','animator'],bottom:['assets','console','script','palette','anim','tl','uib','vs'],center:[],cActive:null,float:{},hidden:{script:true,uib:true,vs:true},collapsed:{},tabs:{console:'assets',anim:'palette',tl:'palette',animator:'insp'},active:{},size:{left:280,right:380,bottom:260},rw2:1,z:{},brk:{},cw:{},bw:{}});
 let L;
 const mqN=matchMedia('(max-width: 900px)');
 const zoneEl={left:$('#dockL'),right:$('#dockR'),bottom:$('#dockB')};
@@ -9219,7 +9220,9 @@ function loadLayout(){
   let l=null;try{l=JSON.parse(localStorage.getItem(LKEY))}catch(e){}
   const d=defLayout();
   if(!l||typeof l!=='object')return d;
-  const out={left:[],right:[],bottom:[],center:[],cActive:null,float:{},hidden:l.hidden||{},collapsed:l.collapsed||{},tabs:{},active:{},size:Object.assign(d.size,l.size||{}),z:{},brk:{},cw:{}};
+  const out={left:[],right:[],bottom:[],center:[],cActive:null,float:{},hidden:l.hidden||{},collapsed:l.collapsed||{},tabs:{},active:{},size:Object.assign(d.size,l.size||{}),z:{},brk:{},cw:{},rw2:1};
+  /* 오른쪽 패널 기본 너비 300 → 380 (2026-11-09): 예전 기본값 그대로인 저장 배치만 한 번 넓힘 */
+  if(!l.rw2&&!(+(l.size||{}).right>300))out.size.right=380;
   const seen=new Set();let animNew=false,tlNew=false;
   (Array.isArray(l.center)?l.center:[]).forEach(id=>{if(PANELS[id]&&!seen.has(id)){seen.add(id);out.center.push(id)}});
   ['left','right','bottom'].forEach(z=>{(Array.isArray(l[z])?l[z]:[]).forEach(id=>{if(PANELS[id]&&!seen.has(id)){seen.add(id);out[z].push(id)}})});
@@ -10414,6 +10417,11 @@ function stBuild(){
         <a class="sthome" href="${HOME_URL}" target="_blank" rel="noopener"><img src="${LOGO_URI}" alt="">공식 홈페이지<span class="u">thaniya.co.kr</span><span class="ar">↗</span></a>
       </div></div>
     </div>
+    <div class="sti" data-st="tour" data-q="처음 안내 튜토리얼 tutorial tour 다시 보기 도움말 둘러보기">
+      <div class="stit"><span><span class="cat">정보: </span><b data-hl="처음 안내 다시 보기">처음 안내 다시 보기</b></span></div>
+      <div class="stid">엔진을 처음 열었을 때 나온 튜토리얼을 다시 봅니다. 패널과 탭, 학습 기능, 전체 화면을 차례로 소개합니다.</div>
+      <div class="stctl"><button class="btn pri" type="button" id="stTour" style="height:28px">튜토리얼 보기</button></div>
+    </div>
     <div class="sti" data-st="resetAll" data-q="초기화 reset 모든 설정 기본값">
       <div class="stit"><span><span class="cat">정보: </span><b data-hl="모든 설정 초기화">모든 설정 초기화</b></span></div>
       <div class="stid">화면·편집기·단축키·스크립트 템플릿 설정을 모두 기본값으로 되돌립니다. 프로젝트 데이터는 바뀌지 않습니다.</div>
@@ -10666,6 +10674,7 @@ stCont.addEventListener('click',e=>{
   const tn=e.target.closest('[data-tplnew]');if(tn){const k=tn.dataset.tplnew;
     if(k==='ui'){const u=typeof getUi==='function'&&layerSel==='ui'?getUi():null;if(!u){toast('UI 템플릿은 UI 요소를 선택한 뒤 인스펙터의 “새 C# 스크립트…”로 만들 수 있습니다');return}closeSettings();newScript(u);return}
     closeSettings();newScript(null);return}
+  if(e.target.closest('#stTour')){closeSettings();setTimeout(()=>{if(window.TOUR)TOUR.start()},120);return}
   if(e.target.closest('#stResetAll')){
     openModal('모든 설정 초기화','<p style="margin:0">화면·편집기·단축키·스크립트 템플릿 설정을 모두 기본값으로 되돌립니다. 프로젝트 데이터는 바뀌지 않습니다.</p>',[{t:'취소'},{t:'초기화',cls:'danger',fn:()=>{
       setv={btn:ST_DEF.btn,tone:ST_DEF.tone,edOpen:ST_DEF.edOpen,edFs:ST_DEF.edFs,ko:false,acKo:true,acCase:true,sceneBg:ST_DEF.sceneBg,fxSpark:false,fxCombo:false,fxSound:false,vsMagnet:true,vsFx:true,vsHelp:true,tileAnim:false,kb:{},tpl:{}};if(window.TTheme)TTheme.set('dark');koApply();applySettings();saveSettings();sceneBgRefresh();kbRebuild();refreshKbHints();kbRows();stSync();toast('모든 설정을 기본값으로 되돌렸습니다')}}]);

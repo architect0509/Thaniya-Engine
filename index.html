@@ -39,6 +39,7 @@ header a.cta{display:inline-flex;align-items:center;height:28px;padding:0 14px;c
 header a.cta:hover{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);filter:brightness(1.07);transform:translateY(-1px);box-shadow:0 6px 16px rgba(233,189,12,.32),inset 0 1px 0 rgba(255,255,255,.4)}
 header .brand{justify-self:start;display:inline-flex;align-items:center;gap:8px;padding:4px 10px 4px 0;color:var(--fg);font-weight:700;font-size:14px;letter-spacing:-.01em}
 .brand img{display:block;width:24px;height:24px;flex:none}
+header a.brand:hover{background:none;color:var(--fg)}
 
 /* 언어 선택 (오른쪽 상단) */
 .lang{position:relative;margin-left:2px}
@@ -112,6 +113,11 @@ footer .info p{margin:0 0 16px}
 footer .info p:last-of-type{margin-bottom:22px}
 footer .biz{display:inline-block;color:var(--fg);font-weight:500;text-decoration:none;padding-bottom:3px;border-bottom:1px solid var(--accent)}
 footer .biz:hover{color:var(--accent)}
+footer .ft-x{animation:up .35s cubic-bezier(.2,.7,.2,1) both}
+footer .ft-more button{display:inline-flex;align-items:center;gap:4px;padding:0;background:none;border:0;cursor:pointer;font:500 13px var(--f);color:var(--mute);transition:color .15s}
+footer .ft-more button:hover{color:var(--fg)}
+footer .ft-more svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+footer .ft-more button[aria-expanded="true"] svg{transform:rotate(180deg)}
 footer .copy{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);color:var(--mute);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:560px;margin-inline:auto}
 footer .copy a{color:var(--mute)}footer .copy a:hover{color:var(--fg)}
 
@@ -368,6 +374,128 @@ body.lb-open{overflow:hidden}
   .st-steps.auto li.on::after{animation:none;transform:none}
 }
 @media print{html body .rv{opacity:1;translate:none}.totop,.tp-popup,.progress{display:none}}
+
+/* ---------- 펼침 메뉴 (메가 메뉴) ---------- */
+.hc .mm{position:relative;display:inline-flex;align-items:center;gap:5px;font:500 13px var(--f);color:var(--mute);background:none;border:0;padding:5px 12px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:color .15s,background .15s}
+.hc .mm:hover{color:var(--fg);background:rgba(255,255,255,.07)}
+.hc .mm svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.6;transition:transform .2s}
+.hc .mm[aria-expanded="true"] svg{transform:rotate(180deg)}
+.hc .mm.on{color:var(--fg);background:rgba(255,255,255,.07)}
+.hc .mm[aria-expanded="true"]{color:var(--fg);background:rgba(255,255,255,.1)}
+@media (min-width:821px){
+  .hc .mm{padding:4px 12px}
+  .hc .mm.on{background:rgba(233,189,12,.16);color:var(--accent-tx,var(--accent))}
+}
+.mega{position:absolute;left:0;right:0;top:100%;z-index:-1;background:#111116;border-bottom:1px solid var(--line2);box-shadow:0 30px 60px rgba(0,0,0,.45);visibility:hidden;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .25s cubic-bezier(.2,.7,.2,1),visibility 0s .25s}
+.mega.open{visibility:visible;opacity:1;transform:none;transition:opacity .2s,transform .25s cubic-bezier(.2,.7,.2,1)}
+.mega-in{display:grid;grid-template-columns:240px minmax(0,1fr);gap:40px;padding:34px 0 40px}
+.mega-grp{list-style:none;margin:0;padding:0;display:grid;gap:4px;align-content:start}
+.mega-grp[hidden]{display:none}
+.mega-cap{font:500 11px var(--m);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+header .mega a{color:var(--fg);border-radius:10px}
+header .mega-grp a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;margin-left:-12px;font-size:16px;font-weight:600;white-space:normal}
+header .mega-grp a:hover{background:rgba(255,255,255,.07);color:var(--accent)}
+.mega-grp a .ar{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:0;translate:-4px 0;transition:opacity .15s,translate .15s}
+.mega-grp a:hover .ar,.mega-grp a:focus-visible .ar{opacity:1;translate:0 0}
+.mega-grp a.ext .ar{opacity:.5;translate:0 0}
+.mega-grp a[aria-current="page"]{color:var(--accent)}
+.mega-rh{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 14px}
+.mega-rh b{font-size:17px}
+header .mega-rh a{padding:2px 6px;margin-right:-6px;font-size:13px;color:var(--mute)}
+header .mega-rh a:hover{color:var(--fg);background:none}
+
+/* 업데이트 카드 (메뉴 · 홈) */
+.ncards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+header .mega a.ncard,a.ncard{display:block;padding:0;margin:0;text-decoration:none;color:var(--fg);font-size:14px;font-weight:500;white-space:normal;background:none;border-radius:0}
+.ncard-img{display:block;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--panel);border:1px solid var(--line)}
+.ncard-img img{display:block;width:100%;height:100%;object-fit:cover;object-position:left top;transition:transform .35s ease}
+.ncard:hover .ncard-img img{transform:scale(1.05)}
+.ncard-meta{display:flex;align-items:center;gap:8px;margin:12px 0 4px;font:400 12px var(--m);color:var(--mute)}
+.ncard-meta em{font-style:normal;font-family:var(--f)}
+.ncard-meta em::after{content:"";display:inline-block;width:1px;height:10px;margin-left:8px;background:var(--line2);vertical-align:-1px}
+.ncard-t{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;transition:color .15s}
+.ncard:hover .ncard-t{color:var(--accent)}
+
+/* ---------- 페이지 ---------- */
+main>[data-page][hidden]{display:none}
+.page-in{animation:pgin .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes pgin{from{opacity:0;translate:0 14px}to{opacity:1;translate:0 0}}
+.crumb{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 18px;font-size:12px;color:var(--mute)}
+.crumb a{text-decoration:none;color:var(--mute)}.crumb a:hover{color:var(--fg)}
+.crumb i{font-style:normal;opacity:.5}
+.st-copy .crumb{justify-content:flex-start}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:64px}
+.pager a{display:flex;flex-direction:column;gap:2px;padding:16px 20px;border:1px solid var(--line);border-radius:14px;background:var(--panel);text-decoration:none;transition:border-color .15s,transform .15s}
+.pager a:hover{border-color:rgba(233,189,12,.5);transform:translateY(-2px)}
+.pager small{font-size:12px;color:var(--mute)}
+.pager b{font-size:16px}
+.pager .nx{grid-column:2;text-align:right}
+.pager span:empty{display:none}
+
+/* ---------- 홈: 바로가기 ---------- */
+section.qk{position:relative;z-index:1;border-top:0;padding:0 0 64px;margin-top:-28px}
+.qk-h,.hn-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 16px}
+.qk-h h2,.hn-h h2{margin:0;text-align:left;font-size:clamp(20px,2.4vw,26px)}
+.hn-h a{font-size:14px;color:var(--mute);text-decoration:none}.hn-h a:hover{color:var(--fg)}
+.qk-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.qk-card{position:relative;aspect-ratio:1/1;border-radius:18px;overflow:hidden;isolation:isolate;background:#16161c;border:1px solid var(--line);box-shadow:0 14px 34px rgba(0,0,0,.35);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s,border-color .25s}
+.qk-card:hover,.qk-card:focus-within{transform:translateY(-4px);border-color:rgba(233,189,12,.45);box-shadow:0 22px 44px rgba(0,0,0,.45)}
+.qk-bg{position:absolute;inset:0;z-index:-1;width:100%;height:100%;object-fit:cover;transition:filter .35s,transform .45s ease}
+.qk-card:hover .qk-bg,.qk-card:focus-within .qk-bg{filter:blur(7px) brightness(.32);transform:scale(1.1)}
+.qk-px{display:grid;place-items:center;background:
+  linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px) 0 0/16px 16px,
+  linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px) 0 0/16px 16px,
+  radial-gradient(90% 80% at 50% 35%,#4a3a86 0,#1f1838 60%,#121019 100%)}
+.qk-px i{display:block;width:56%;aspect-ratio:1;background:url(assets/base/hero.png) 0 0/400% 400% no-repeat;image-rendering:pixelated;filter:drop-shadow(0 10px 0 rgba(0,0,0,.25));animation:qkwalk .8s steps(4) infinite}
+@keyframes qkwalk{from{background-position-x:0}to{background-position-x:133.333%}}
+.qk-cap{position:absolute;left:0;right:0;bottom:0;padding:44px 18px 16px;background:linear-gradient(180deg,rgba(11,11,14,0),rgba(11,11,14,.88));transition:opacity .25s}
+.qk-cap b{display:block;font-size:18px;color:#fff}
+.qk-cap span{display:block;font-size:13px;color:#c9c9d1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.qk-card:hover .qk-cap,.qk-card:focus-within .qk-cap{opacity:0}
+.qk-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;color:#fff;opacity:0;transition:opacity .25s}
+.qk-card:hover .qk-ov,.qk-card:focus-within .qk-ov{opacity:1}
+.qk-ic{display:grid;place-items:center;width:46px;height:46px;margin-bottom:4px;border-radius:14px;background:rgba(233,189,12,.16);color:var(--accent)}
+.qk-ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.qk-t{font-size:18px}
+.qk-d{font-size:13px;line-height:1.5;color:#c9c9d1;max-width:220px}
+a.qk-go{margin-top:12px;display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:10px;background:var(--accent);color:var(--accent-fg);font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 6px 16px rgba(233,189,12,.3);transition:filter .15s}
+a.qk-go:hover{filter:brightness(1.08)}
+a.qk-go::after{content:"";position:absolute;inset:0;z-index:0}
+a.qk-more{position:absolute;right:16px;bottom:12px;z-index:1;display:inline-flex;align-items:center;gap:4px;font-size:13px;color:#bdbdc6;text-decoration:none}
+a.qk-more:hover{color:#fff}
+a.qk-more svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (hover:none){
+  .qk-cap{display:none}
+  .qk-ov{opacity:1;justify-content:flex-end;align-items:flex-start;text-align:left;gap:2px;padding:16px;background:linear-gradient(180deg,rgba(11,11,14,0) 30%,rgba(11,11,14,.9))}
+  .qk-ic,.qk-d,a.qk-more{display:none}
+  a.qk-go{margin-top:8px;height:34px;padding:0 14px;font-size:13px}
+  .qk-card:hover .qk-bg,.qk-card:focus-within .qk-bg{filter:none;transform:none}
+}
+section.hn{padding-top:56px}
+
+@media (max-width:1000px){.qk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.qk-card{aspect-ratio:4/3}}
+@media (max-width:820px){
+  section.qk{margin-top:0;padding-top:8px}
+  .mega-in{grid-template-columns:1fr;gap:22px;padding:22px 0 26px}
+  .mega-grp{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ncards{gap:14px}
+  .mega .ncards .ncard:nth-child(3){display:none}
+  .mega .ncards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pager{margin-top:44px}
+}
+@media (max-width:560px){
+  .hc .mm{padding:5px 9px}
+  .mega-r{display:none}
+  .mega-grp{grid-template-columns:1fr}
+  header .mega-grp a{font-size:15px}
+  .qk-grid{gap:12px}
+  .qk-card{aspect-ratio:1/1;border-radius:14px}
+  .qk-ov{padding:12px}.qk-t{font-size:15px}
+  a.qk-go{font-size:12px;padding:0 10px;height:30px}
+  .ncards{grid-template-columns:1fr}
+  .pager{grid-template-columns:1fr}.pager .nx{grid-column:1}
+}
+@media (prefers-reduced-motion:reduce){.mega,.qk-card,.qk-bg,.ncard-img img{transition:none}.qk-px i{animation:none}.page-in{animation:none}}
 </style>
 </head>
 <body>
@@ -375,15 +503,14 @@ body.lb-open{overflow:hidden}
 <header>
   <div class="progress" id="prog" aria-hidden="true"><i></i></div>
   <div class="wrap hbar">
-    <div class="brand"><img src="assets/thaniya-logo.png" width="36" height="36" alt=""><span>Thaniya Engine</span></div>
+    <a class="brand" href="#" aria-label="Thaniya Engine 처음 화면" data-i18n-aria="brand.aria"><img src="assets/thaniya-logo.png" width="36" height="36" alt=""><span>Thaniya Engine</span></a>
     <nav class="hc" aria-label="주 메뉴" data-i18n-aria="nav.aria">
-      <a href="#about" data-i18n="nav.about">소개</a>
-      <a href="#features" data-i18n="nav.features">기능</a>
-      <a href="#store" data-i18n="nav.store">에셋 스토어</a>
-      <a href="#updates" data-i18n="nav.updates">최신 업데이트</a>
+      <button type="button" class="mm" data-m="engine" aria-expanded="false" aria-controls="mega"><span data-i18n="nav.engine">엔진</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button type="button" class="mm" data-m="learn" aria-expanded="false" aria-controls="mega"><span data-i18n="nav.learn">학습</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button type="button" class="mm" data-m="asset" aria-expanded="false" aria-controls="mega"><span data-i18n="nav.asset">에셋</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button type="button" class="mm" data-m="news" aria-expanded="false" aria-controls="mega"><span data-i18n="nav.news">소식</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
     </nav>
     <div class="hr">
-      <a href="learning.html" data-i18n="nav.learn">학습</a>
       <a class="cta" href="mypage.html" data-i18n="nav.start">시작하기</a>
       <span id="themeHost"></span>
       <div class="lang" id="lang">
@@ -401,14 +528,43 @@ body.lb-open{overflow:hidden}
       </div>
     </div>
   </div>
+  <div class="mega" id="mega" aria-hidden="true">
+    <div class="wrap mega-in">
+      <div class="mega-l">
+        <ul class="mega-grp" data-m="engine">
+          <li><a href="#about"><span data-i18n="nav.about">소개</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#features"><span data-i18n="mm.features">주요 기능</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="#play"><span data-i18n="pg.title">직접 실행해 보기</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="mypage.html"><span data-i18n="mm.start">엔진 시작하기</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        </ul>
+        <ul class="mega-grp" data-m="learn" hidden>
+          <li><a href="#learning"><span data-i18n="mm.learnAbout">학습 소개</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a href="learning.html"><span data-i18n="hero.learn">C# 학습하기</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        </ul>
+        <ul class="mega-grp" data-m="asset" hidden>
+          <li><a href="#store"><span data-i18n="mm.store">에셋 스토어 소개</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a class="ext" href="https://architect0509.github.io/Thaniya-Engine-AssetStore/" target="_blank" rel="noopener"><span data-i18n="st.open">스토어 둘러보기</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+          <li><a class="ext" href="https://architect0509.github.io/Pixel-meow/canvas/canvas.html" target="_blank" rel="noopener"><span data-i18n="mm.pixel">Pixel-Meow 도트 그리기</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+        </ul>
+        <ul class="mega-grp" data-m="news" hidden>
+          <li><a href="#updates"><span data-i18n="nav.updates">최신 업데이트</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+          <li><a class="ext" href="https://thaniya.co.kr/" target="_blank" rel="noopener"><span data-i18n="mm.site">Thaniya Project 공식 사이트</span><svg class="ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+        </ul>
+      </div>
+      <div class="mega-r">
+        <div class="mega-rh"><b data-i18n="upd.h2">최신 업데이트</b><a href="#updates" data-i18n="mm.more">더보기</a></div>
+        <div class="ncards" id="megaNews"></div>
+      </div>
+    </div>
+  </div>
 </header>
 
 <main>
-  <div class="hero">
+  <div class="hero" data-page="home">
     <div class="hero-media"><img src="assets/engine-screenshot.png" width="1908" height="905" alt="Thaniya Engine 에디터 화면: 계층 구조, 씬 뷰, 인스펙터, 프로젝트 패널" data-i18n-alt="hero.alt"></div>
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="hero-copy">
-      <p class="kick"><span data-i18n="hero.kick">설치 없이, 브라우저에서 바로</span> <span class="ver">v11.03-01</span></p>
+      <p class="kick"><span data-i18n="hero.kick">설치 없이, 브라우저에서 바로</span> <span class="ver">v11.08-01</span></p>
       <h1>Thaniya <em id="heroEm">Engine</em></h1>
       <p class="sub" data-i18n="hero.sub">던전 맵을 그리고, C# 스크립트로 직접 움직여 보는 2D 게임 엔진.</p>
       <div class="btns">
@@ -418,8 +574,65 @@ body.lb-open{overflow:hidden}
     </div>
   </div>
 
+  <section class="qk" id="quick" data-page="home" aria-labelledby="qkH">
+    <div class="wrap">
+      <div class="qk-h"><h2 id="qkH" data-i18n="qk.h">바로가기</h2></div>
+      <div class="qk-grid">
+        <div class="qk-card" data-qk="store">
+          <img class="qk-bg" src="assets/assetstore-screenshot.webp" width="1055" height="843" alt="" loading="lazy" decoding="async" style="object-position:left top">
+          <div class="qk-cap"><b data-i18n="nav.store">에셋 스토어</b><span data-i18n="qk.store.d">무료 타일 · 오브젝트 · 배경 음악</span></div>
+          <div class="qk-ov">
+            <span class="qk-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></span>
+            <b class="qk-t" data-i18n="nav.store">에셋 스토어</b>
+            <span class="qk-d" data-i18n="qk.store.d">무료 타일 · 오브젝트 · 배경 음악</span>
+            <a class="qk-go" href="https://architect0509.github.io/Thaniya-Engine-AssetStore/" target="_blank" rel="noopener" data-i18n="st.open">스토어 둘러보기</a>
+            <a class="qk-more" href="#store"><span data-i18n="qk.more">자세히 보기</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="qk-card" data-qk="pixel">
+          <span class="qk-bg qk-px" aria-hidden="true"><i></i></span>
+          <div class="qk-cap"><b>Pixel-Meow</b><span data-i18n="qk.pixel.d">브라우저에서 픽셀 아트를 직접 그려요</span></div>
+          <div class="qk-ov">
+            <span class="qk-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></svg></span>
+            <b class="qk-t">Pixel-Meow</b>
+            <span class="qk-d" data-i18n="qk.pixel.d">브라우저에서 픽셀 아트를 직접 그려요</span>
+            <a class="qk-go" href="https://architect0509.github.io/Pixel-meow/canvas/canvas.html" target="_blank" rel="noopener" data-i18n="qk.pixel.b">그리기 시작</a>
+          </div>
+        </div>
+        <div class="qk-card" data-qk="learn">
+          <img class="qk-bg" src="assets/learning-screenshot.webp" width="1600" height="792" alt="" loading="lazy" decoding="async" style="object-position:left top">
+          <div class="qk-cap"><b data-i18n="nav.learn">학습</b><span data-i18n="qk.learn.d">엔진 사용법과 C#을 레슨으로 익혀요</span></div>
+          <div class="qk-ov">
+            <span class="qk-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 1 4 17.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg></span>
+            <b class="qk-t" data-i18n="nav.learn">학습</b>
+            <span class="qk-d" data-i18n="qk.learn.d">엔진 사용법과 C#을 레슨으로 익혀요</span>
+            <a class="qk-go" href="learning.html" data-i18n="hero.learn">C# 학습하기</a>
+            <a class="qk-more" href="#learning"><span data-i18n="qk.more">자세히 보기</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="qk-card" data-qk="my">
+          <img class="qk-bg" src="assets/engine-screenshot.png" width="1908" height="905" alt="" loading="lazy" decoding="async" style="object-position:30% top">
+          <div class="qk-cap"><b data-i18n="qk.my.t">마이페이지</b><span data-i18n="qk.my.d">내 프로젝트를 만들고 이어서 작업해요</span></div>
+          <div class="qk-ov">
+            <span class="qk-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></span>
+            <b class="qk-t" data-i18n="qk.my.t">마이페이지</b>
+            <span class="qk-d" data-i18n="qk.my.d">내 프로젝트를 만들고 이어서 작업해요</span>
+            <a class="qk-go" href="mypage.html" data-i18n="qk.my.b">바로 가기</a>
+            <a class="qk-more" href="#about"><span data-i18n="qk.more">자세히 보기</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <section id="about">
+  <section class="hn" id="news" data-page="home" aria-labelledby="hnH">
+    <div class="wrap">
+      <div class="hn-h"><h2 id="hnH" data-i18n="home.news">최신 소식</h2><a href="#updates"><span data-i18n="home.all">전체 보기</span> →</a></div>
+      <div class="ncards" id="homeNews"></div>
+    </div>
+  </section>
+
+  <section id="about" data-page="about" hidden>
     <div class="wrap">
       <div class="eyebrow">About</div>
       <h2 data-i18n="about.h2">만들고, 쓰고, 바로 실행합니다</h2>
@@ -432,7 +645,7 @@ body.lb-open{overflow:hidden}
     </div>
   </section>
 
-  <section id="learning">
+  <section id="learning" data-page="learning" hidden>
     <div class="wrap">
       <div class="eyebrow">Learning</div>
       <h2 data-i18n="learn.h2">엔진 안에서 C#을 배워요</h2>
@@ -452,7 +665,7 @@ body.lb-open{overflow:hidden}
     </div>
   </section>
 
-  <section id="features">
+  <section id="features" data-page="features" hidden>
     <div class="wrap">
       <div class="eyebrow">Features</div>
       <h2 data-i18n="feat.h2">주요 기능</h2>
@@ -501,7 +714,7 @@ body.lb-open{overflow:hidden}
     </div>
   </section>
 
-  <section id="store">
+  <section id="store" data-page="store" hidden>
     <div class="wrap st-grid">
       <div class="st-copy">
         <div class="eyebrow">Asset Store</div>
@@ -530,15 +743,17 @@ body.lb-open{overflow:hidden}
     </div>
   </section>
 
-  <section id="updates">
+  <section id="updates" data-page="updates" hidden>
     <div class="wrap">
       <div class="eyebrow">Updates</div>
       <h2 data-i18n="upd.h2">최신 업데이트</h2>
       <p class="lead" data-i18n="upd.lead">엔진에 새로 들어온 변경 사항입니다.</p>
       <div class="log">
-        <article><div class="v">v11.03-01<small data-i18n="upd.cur">현재 버전</small></div><div><h3 data-i18n="u0.t">씬 · 매니저 · 레슨 8</h3><p data-i18n="u0.d">학습에 레슨 8 「씬과 매니저」가 생겼습니다. 새 씬을 만들어 포탈로 잇고 시작 씬을 바꿔 보며, 씬이 바뀌어도 살아 있는 BGM 매니저 · 게임 매니저로 음악과 목숨을 이어 갑니다. SceneManager.GetActiveScene · LoadScene · RestartGame도 코드로 익혀요.</p></div></article>
-        <article><div class="v">v11.02-03</div><div><h3 data-i18n="u1.t">룰 타일 · 애니메이션 타일 · 레슨 7</h3><p data-i18n="u1.d">타일 팔레트에서 타일을 고르면 인스펙터에서 유니티식 룰 타일 · 애니메이션 타일을 만들고 저장해, 타일 선택 창의 「특수 타일」에서 골라 칠합니다. 학습에 레슨 7 「특수 타일」이 생겼고, 타일 칠하기도 Ctrl+Z로 되돌릴 수 있게 고쳤습니다.</p></div></article>
-        <article><div class="v">v11.02-02</div><div><h3 data-i18n="u2.t">에셋 스토어 연결</h3><p data-i18n="u2.d">프로젝트 창 「에셋스토어」에서 무료 타일 45 · 오브젝트 65 · 배경 음악 14곡을 미리 보고, 고른 폴더로 바로 불러옵니다.</p></div></article>
+        <article data-img="assets/learn/lesson-11-0.webp"><div class="v">v11.08-01<small data-i18n="upd.cur">현재 버전</small></div><div><h3 data-i18n="uv.t">비주얼 스크립트 · 레슨 11 · 12</h3><p data-i18n="uv.d">노드를 선으로 이어 코드 없이 게임을 움직이는 비주얼 스크립트 창이 생겼습니다. 스크립트 머신 · 상태 머신 · 서브그래프 · 커스텀 이벤트를 쓰고, 플레이 중 「⚡ 이벤트 흐름」으로 실행된 노드와 상태 전환을 눈으로 따라갑니다. 노드마다 ? 도움말(예시 그림 · C# 코드)이 있고, 학습에는 레슨 11 · 12 비주얼 스크립트 실습이 더해졌어요.</p></div></article>
+        <article data-img="assets/learn/lesson-6-3.webp"><div class="v">v11.07-01</div><div><h3 data-i18n="ut.t">타임라인 · 녹화</h3><p data-i18n="ut.d">유니티 Timeline처럼 애니메이션 · 활성화 · 오디오 · 시그널 트랙을 시간 위에 놓고 플레이어블 디렉터로 재생합니다. ● 녹화를 켜고 씬 뷰에서 오브젝트를 옮기면 그 시간에 키가 남고, 키 사이는 부드럽게 이어져요. 스크립트에서는 PlayableDirector로 Play · Pause · Stop을 부를 수 있습니다.</p></div></article>
+        <article data-img="assets/learn/lesson-8-0.webp"><div class="v">v11.03-01</div><div><h3 data-i18n="u0.t">씬 · 매니저 · 레슨 8</h3><p data-i18n="u0.d">학습에 레슨 8 「씬과 매니저」가 생겼습니다. 새 씬을 만들어 포탈로 잇고 시작 씬을 바꿔 보며, 씬이 바뀌어도 살아 있는 BGM 매니저 · 게임 매니저로 음악과 목숨을 이어 갑니다. SceneManager.GetActiveScene · LoadScene · RestartGame도 코드로 익혀요.</p></div></article>
+        <article data-img="assets/learn/lesson-7-0.webp"><div class="v">v11.02-03</div><div><h3 data-i18n="u1.t">룰 타일 · 애니메이션 타일 · 레슨 7</h3><p data-i18n="u1.d">타일 팔레트에서 타일을 고르면 인스펙터에서 유니티식 룰 타일 · 애니메이션 타일을 만들고 저장해, 타일 선택 창의 「특수 타일」에서 골라 칠합니다. 학습에 레슨 7 「특수 타일」이 생겼고, 타일 칠하기도 Ctrl+Z로 되돌릴 수 있게 고쳤습니다.</p></div></article>
+        <article data-img="assets/assetstore-screenshot.webp"><div class="v">v11.02-02</div><div><h3 data-i18n="u2.t">에셋 스토어 연결</h3><p data-i18n="u2.d">프로젝트 창 「에셋스토어」에서 무료 타일 45 · 오브젝트 65 · 배경 음악 14곡을 미리 보고, 고른 폴더로 바로 불러옵니다.</p></div></article>
         <article><div class="v">11.01</div><div><h3 data-i18n="u3.t">애니메이터 · 애니메이션 창 · 레슨 6</h3><p data-i18n="u3.d">상태 · 전환 · 조건을 그래프로 편집하고 키프레임 타임라인으로 클립을 만듭니다. 기본 주인공은 걷기 애니메이션이 있는 검은 고양이로 바뀌었고, 학습에 레슨 6 「애니메이션 다루기」가 생겼습니다.</p></div></article>
         <article><div class="v">11.01</div><div><h3 data-i18n="u4.t">오디오 소스 · 매니저 · 배경 음악</h3><p data-i18n="u4.d">AudioSource 컴포넌트와 Sound 클래스로 소리를 내고, 씬에 그려지지 않는 매니저가 배경 음악을 이어 줍니다. 기본 배경 음악 「타니아의 아침」이 들어 있어요.</p></div></article>
         <article><div class="v">11.01</div><div><h3 data-i18n="u5.t">타일 합치기 · 설정 정리</h3><p data-i18n="u5.d">여러 타일을 무한 격자에 겹쳐 새 타일셋으로 저장합니다. 설정 창은 항목마다 페이지로 나뉘고, 레이아웃을 JSON으로 저장 · 불러올 수 있어요.</p></div></article>
@@ -556,11 +771,12 @@ body.lb-open{overflow:hidden}
   <div class="wrap">
     <div class="info">
       <p><span data-i18n="ft.name">상호명</span> : 타니아 (Thaniya project)</p>
-      <p><span data-i18n="ft.rep">대표자명</span> : 홍재현</p>
-      <p><span data-i18n="ft.addr">주소</span> : 경기도 부천시 원미구 중동로 108 (중동, 펠리스카운티) 116동 1003호</p>
+      <p class="ft-x" hidden><span data-i18n="ft.rep">대표자명</span> : 홍재현</p>
+      <p class="ft-x" hidden><span data-i18n="ft.addr">주소</span> : 경기도 부천시 원미구 중동로 108 (중동, 펠리스카운티) 116동 1003호</p>
       <p><span data-i18n="ft.biz">사업자 등록번호</span> : 401-23-95257</p>
       <p><span data-i18n="ft.mail">통신판매업신고</span> : 2026-부천원미-2125</p>
-      <p><span data-i18n="ft.tel">전화</span> : 010-9703-0061</p>
+      <p class="ft-x" hidden><span data-i18n="ft.tel">전화</span> : 010-9703-0061</p>
+      <p class="ft-more"><button type="button" id="ftMore" aria-expanded="false"><span id="ftMoreT" data-i18n="ft.more">자세히 보기</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></p>
       <a class="biz" href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=4012395257" target="_blank" rel="noopener" data-i18n="ft.check">사업자정보 확인 &gt;</a>
     </div>
     <div class="copy">
@@ -581,6 +797,14 @@ ja:{"flt.aria":"機能を絞り込む","flt.all":"すべて","flt.build":"作る
 zh:{"flt.aria":"筛选功能","flt.all":"全部","flt.build":"创作","flt.code":"编程","flt.media":"媒体","flt.flow":"工作环境","pg.title":"亲手试试","pg.label":"输出内容","pg.ph":"输入消息","pg.run":"运行","pg.clear":"清空","pg.copy":"复制代码","pg.copied":"已复制","pg.console":"控制台","pg.empty":"点击“运行”在控制台中输出","pg.type":"日志类型","st.rand":"随机推荐","st.hint":"点击主题，选出你喜欢的","st.sel":"已选主题","st.today":"今日推荐","upd.more":"查看更早的更新","upd.less":"收起","lb.aria":"图片查看器","lb.open":"放大查看","lb.zoom":"放大","lb.close":"关闭","lb.prev":"上一张","lb.next":"下一张","top.aria":"回到顶部"}
 };
 Object.keys(X).forEach(function(l){for(var k in X[l])T[l][k]=X[l][k]});
+
+var Y={
+ko:{"nav.engine":"엔진","nav.asset":"에셋","nav.news":"소식","mm.features":"주요 기능","mm.start":"엔진 시작하기","mm.learnAbout":"학습 소개","mm.store":"에셋 스토어 소개","mm.pixel":"Pixel-Meow 도트 그리기","mm.site":"Thaniya Project 공식 사이트","mm.more":"더보기","mm.upd":"업데이트","qk.h":"바로가기","qk.store.d":"무료 타일 · 오브젝트 · 배경 음악","qk.pixel.d":"브라우저에서 픽셀 아트를 직접 그려요","qk.pixel.b":"그리기 시작","qk.learn.d":"엔진 사용법과 C#을 레슨으로 익혀요","qk.my.t":"마이페이지","qk.my.d":"내 프로젝트를 만들고 이어서 작업해요","qk.my.b":"바로 가기","qk.more":"자세히 보기","home.news":"최신 소식","home.all":"전체 보기","pgr.prev":"이전","pgr.next":"다음","page.home":"홈","ft.more":"자세히 보기","ft.less":"접기","brand.aria":"Thaniya Engine 처음 화면","uv.t":"비주얼 스크립트 · 레슨 11 · 12","uv.d":"노드를 선으로 이어 코드 없이 게임을 움직이는 비주얼 스크립트 창이 생겼습니다. 스크립트 머신 · 상태 머신 · 서브그래프 · 커스텀 이벤트를 쓰고, 플레이 중 「⚡ 이벤트 흐름」으로 실행된 노드와 상태 전환을 눈으로 따라갑니다. 노드마다 ? 도움말(예시 그림 · C# 코드)이 있고, 학습에는 레슨 11 · 12 비주얼 스크립트 실습이 더해졌어요.","ut.t":"타임라인 · 녹화","ut.d":"유니티 Timeline처럼 애니메이션 · 활성화 · 오디오 · 시그널 트랙을 시간 위에 놓고 플레이어블 디렉터로 재생합니다. ● 녹화를 켜고 씬 뷰에서 오브젝트를 옮기면 그 시간에 키가 남고, 키 사이는 부드럽게 이어져요. 스크립트에서는 PlayableDirector로 Play · Pause · Stop을 부를 수 있습니다."},
+en:{"nav.engine":"Engine","nav.asset":"Assets","nav.news":"News","mm.features":"Key features","mm.start":"Launch the engine","mm.learnAbout":"About learning","mm.store":"About the Asset Store","mm.pixel":"Draw pixel art in Pixel-Meow","mm.site":"Thaniya Project website","mm.more":"More","mm.upd":"Update","qk.h":"Shortcuts","qk.store.d":"Free tiles, objects and music","qk.pixel.d":"Draw your own pixel art in the browser","qk.pixel.b":"Start drawing","qk.learn.d":"Learn the engine and C# lesson by lesson","qk.my.t":"My page","qk.my.d":"Create projects and pick up where you left off","qk.my.b":"Open","qk.more":"Details","home.news":"Latest news","home.all":"View all","pgr.prev":"Previous","pgr.next":"Next","page.home":"Home","ft.more":"Show details","ft.less":"Hide details","brand.aria":"Thaniya Engine home","uv.t":"Visual Scripting · Lessons 11 & 12","uv.d":"A new Visual Scripting window lets you move your game by wiring nodes together, no code required. Use script machines, state machines, subgraphs and custom events, and follow executed nodes and state transitions live with “⚡ Event flow” during play. Every node has a ? help card with an example diagram and the equivalent C#, and Learning adds hands-on Lessons 11 and 12.","ut.t":"Timeline · Recording","ut.d":"Like Unity Timeline, lay out animation, activation, audio and signal tracks over time and play them with a Playable Director. Turn on ● Record and move objects in the Scene view to leave keys at that time, with smooth motion between keys. Scripts can call Play, Pause and Stop through PlayableDirector."},
+ja:{"nav.engine":"エンジン","nav.asset":"アセット","nav.news":"ニュース","mm.features":"主な機能","mm.start":"エンジンを起動","mm.learnAbout":"学習の紹介","mm.store":"アセットストアの紹介","mm.pixel":"Pixel-Meow でドット絵","mm.site":"Thaniya Project 公式サイト","mm.more":"もっと見る","mm.upd":"アップデート","qk.h":"ショートカット","qk.store.d":"無料のタイル・オブジェクト・BGM","qk.pixel.d":"ブラウザでドット絵を描こう","qk.pixel.b":"描きはじめる","qk.learn.d":"レッスンでエンジンとC#を学ぶ","qk.my.t":"マイページ","qk.my.d":"プロジェクトを作って続きから作業","qk.my.b":"開く","qk.more":"詳しく見る","home.news":"最新ニュース","home.all":"すべて見る","pgr.prev":"前へ","pgr.next":"次へ","page.home":"ホーム","ft.more":"詳しく見る","ft.less":"閉じる","brand.aria":"Thaniya Engine ホーム","uv.t":"ビジュアルスクリプト・レッスン 11・12","uv.d":"ノードを線でつなぎ、コードなしでゲームを動かすビジュアルスクリプトウィンドウを追加しました。スクリプトマシン・ステートマシン・サブグラフ・カスタムイベントを使い、プレイ中は「⚡ イベントの流れ」で実行されたノードと状態遷移を目で追えます。各ノードには ? ヘルプ（例の図・C# コード）があり、学習にはレッスン 11・12 のビジュアルスクリプト実習が加わりました。","ut.t":"タイムライン・録画","ut.d":"Unity の Timeline のように、アニメーション・アクティベーション・オーディオ・シグナルのトラックを時間軸に並べ、Playable Director で再生します。● 録画をオンにしてシーンビューでオブジェクトを動かすとその時間にキーが残り、キーの間はなめらかにつながります。スクリプトからは PlayableDirector で Play・Pause・Stop を呼べます。"},
+zh:{"nav.engine":"引擎","nav.asset":"资源","nav.news":"动态","mm.features":"主要功能","mm.start":"启动引擎","mm.learnAbout":"学习介绍","mm.store":"资源商店介绍","mm.pixel":"用 Pixel-Meow 画像素画","mm.site":"Thaniya Project 官网","mm.more":"更多","mm.upd":"更新","qk.h":"快捷入口","qk.store.d":"免费图块、物件与背景音乐","qk.pixel.d":"在浏览器中绘制像素画","qk.pixel.b":"开始绘制","qk.learn.d":"通过课程学习引擎与 C#","qk.my.t":"我的页面","qk.my.d":"创建项目并继续上次的工作","qk.my.b":"打开","qk.more":"查看详情","home.news":"最新动态","home.all":"查看全部","pgr.prev":"上一页","pgr.next":"下一页","page.home":"首页","ft.more":"查看详情","ft.less":"收起","brand.aria":"Thaniya Engine 首页","uv.t":"可视化脚本 · 第 11、12 课","uv.d":"新增可视化脚本窗口：用连线把节点连接起来，无需代码即可让游戏动起来。可使用脚本机、状态机、子图和自定义事件，运行时还能通过“⚡ 事件流”直观追踪执行的节点和状态切换。每个节点都有 ? 帮助（示例图 · C# 代码），学习中也新增了第 11、12 课可视化脚本实操。","ut.t":"时间轴 · 录制","ut.d":"像 Unity Timeline 一样，把动画、激活、音频和信号轨道排在时间轴上，并用 Playable Director 播放。打开 ● 录制后在场景视图中移动对象，就会在该时间留下关键帧，关键帧之间平滑过渡。脚本中可通过 PlayableDirector 调用 Play、Pause、Stop。"}
+};
+Object.keys(Y).forEach(function(l){for(var k in Y[l])T[l][k]=Y[l][k]});
 var subs=[];
 window.TIDX={get lang(){return cur},t:function(k){var d=T[cur]||T.ko;return d[k]!=null?d[k]:(T.ko[k]!=null?T.ko[k]:k)},on:function(f){subs.push(f)}};
 var NAMES={ko:['한국어','KO'],en:['English','EN'],ja:['日本語','JA'],zh:['中文','ZH']};
@@ -689,19 +913,13 @@ function $$(s,r){return[].slice.call((r||document).querySelectorAll(s))}
 function sub(f){I.on(f)}
 
 /* ===== 스크롤: 진행 막대 · 현재 섹션 표시 · 맨 위로 ===== */
-var bar=$('#prog i'),hdr=$('header'),secs=$$('main section'),navs=$$('.hc a[href^="#"]'),toTop=$('#toTop'),tick=false;
+var bar=$('#prog i'),hdr=$('header'),toTop=$('#toTop'),tick=false;
 function onScroll(){
   if(tick)return;tick=true;
   requestAnimationFrame(function(){
     tick=false;
     var max=document.documentElement.scrollHeight-innerHeight,y=scrollY;
     bar.style.setProperty('--p',(max>0?Math.min(1,y/max):0).toFixed(4));
-    var line=y+hdr.offsetHeight+innerHeight*.3,cur=null;
-    secs.forEach(function(s){if(s.offsetTop<=line)cur=s.id});
-    navs.forEach(function(a){
-      var on=a.getAttribute('href')==='#'+cur;a.classList.toggle('on',on);
-      if(on)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');
-    });
     toTop.classList.toggle('show',y>700);
   });
 }
@@ -713,7 +931,7 @@ if('IntersectionObserver' in window&&!reduce){
   var groups=[
     $$('main section .eyebrow,main section h2,main section .lead'),
     $$('.about > div'),$$('.chips .chip'),$$('.feat .card'),$$('.st-stats li'),$$('.st-steps li'),
-    $$('.log article').slice(0,3),$$('.lrn-cta,.st-btns,.st-lic,.st-tools,.log-more'),$$('.play,.lrn-shot,.st-fig')
+    $$('.log article').slice(0,3),$$('.lrn-cta,.st-btns,.st-lic,.st-tools,.log-more'),$$('.play,.lrn-shot,.st-fig'),$$('.qk-card')
   ];
   var io=new IntersectionObserver(function(es){
     es.forEach(function(e){
@@ -998,9 +1216,138 @@ if(more&&extra.length){
 measure();addEventListener('resize',measure);addEventListener('load',measure);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measure);
 
+
+/* ===== 페이지 나누기 (#about · #features · #learning · #store · #updates) ===== */
+var PAGES=['about','features','learning','store','updates'],
+    PNAME={home:'page.home',about:'nav.about',features:'mm.features',learning:'nav.learn',store:'nav.store',updates:'nav.updates'},
+    PCAT={about:'engine',features:'engine',learning:'learn',store:'asset',updates:'news'},
+    CNAME={engine:'nav.engine',learn:'nav.learn',asset:'nav.asset',news:'nav.news'},
+    blocks=$$('main>[data-page]'),curPage=null,pendOpen=-1;
+function inst(f){var r=document.documentElement,o=r.style.scrollBehavior;r.style.scrollBehavior='auto';f();r.style.scrollBehavior=o}
+/* 각 페이지 위쪽 경로 · 아래쪽 이전/다음 */
+PAGES.forEach(function(p,i){
+  var s=$('#'+p),w=$('.eyebrow',s),c=document.createElement('nav');
+  c.className='crumb';c.setAttribute('aria-label','breadcrumb');
+  c.innerHTML='<a href="#"></a><i>›</i><span class="cc"></span><i>›</i><span class="cp"></span>';
+  w.parentNode.insertBefore(c,w);
+  var g=document.createElement('div');g.className='wrap';
+  var pv=PAGES[i-1],nx=PAGES[i+1];
+  g.innerHTML='<nav class="pager">'+(pv?'<a class="pv" href="#'+pv+'"><small></small><b></b></a>':'<span></span>')+(nx?'<a class="nx" href="#'+nx+'"><small></small><b></b></a>':'')+'</nav>';
+  s.appendChild(g);
+});
+function pageText(){
+  PAGES.forEach(function(p){
+    var s=$('#'+p),c=$('.crumb',s);
+    $('a',c).textContent=I.t('page.home');$('.cc',c).textContent=I.t(CNAME[PCAT[p]]);$('.cp',c).textContent=I.t(PNAME[p]);
+    $$('.pager a',s).forEach(function(a){
+      var to=a.getAttribute('href').slice(1);
+      $('small',a).textContent=a.classList.contains('pv')?'← '+I.t('pgr.prev'):I.t('pgr.next')+' →';
+      $('b',a).textContent=I.t(PNAME[to]);
+    });
+  });
+  if(curPage)document.title=(curPage==='home'?'':I.t(PNAME[curPage])+' · ')+I.t('title');
+}
+function showPage(p,anchor){
+  var changed=p!==curPage;curPage=p;
+  blocks.forEach(function(b){
+    var on=b.getAttribute('data-page')===p;
+    if(on&&b.hidden){b.hidden=false;if(!reduce){b.classList.remove('page-in');void b.offsetWidth;b.classList.add('page-in')}}
+    else if(!on)b.hidden=true;
+  });
+  $$('.hc .mm').forEach(function(b){var on=PCAT[p]===b.getAttribute('data-m');b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  $$('.mega-grp a').forEach(function(a){var h=a.getAttribute('href');if(h==='#'+p)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  pageText();
+  dispatchEvent(new Event('resize'));
+  if(anchor){var el=document.getElementById(anchor);if(el)inst(function(){el.scrollIntoView({block:'start'})})}
+  else if(changed)inst(function(){scrollTo(0,0)});
+  if(p==='updates'&&pendOpen>=0){
+    var a=arts[pendOpen];pendOpen=-1;
+    if(a){if(a.classList.contains('exp')&&!a.classList.contains('open'))toggleArt(a);
+      setTimeout(function(){a.scrollIntoView({block:'center',behavior:reduce?'auto':'smooth'})},60)}
+  }
+}
+function route(){
+  var h=decodeURIComponent(location.hash.slice(1));
+  if(!h||h==='home'||h==='top')return showPage('home');
+  if(PAGES.indexOf(h)>=0)return showPage(h);
+  var el=document.getElementById(h),pg=el&&el.closest('[data-page]');
+  if(pg)return showPage(pg.getAttribute('data-page'),pg.id===h?null:h);
+  showPage('home');
+}
+addEventListener('hashchange',route);addEventListener('popstate',route);
+/* 지금 보고 있는 페이지 링크를 다시 누르면 맨 위로 */
+document.addEventListener('click',function(e){
+  var a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;
+  var h=a.getAttribute('href');
+  if(h==='#'){e.preventDefault();closeM();
+    if(curPage==='home'){if(location.hash)history.pushState(null,'',location.pathname+location.search);scrollTo({top:0,behavior:reduce?'auto':'smooth'})}
+    else{history.pushState(null,'',location.pathname+location.search);route()}}
+  else if(h==='#'+curPage){e.preventDefault();scrollTo({top:0,behavior:reduce?'auto':'smooth'})}
+});
+
+/* ===== 업데이트 카드 (메뉴 · 홈) ===== */
+function buildNews(box,n){
+  if(!box)return;box.textContent='';
+  arts.slice(0,n).forEach(function(a,i){
+    var c=document.createElement('a'),v=$('.v',a).firstChild.textContent.trim();
+    c.className='ncard';c.href='#updates';
+    c.innerHTML='<span class="ncard-img"><img alt="" loading="lazy" decoding="async"></span><span class="ncard-meta"><em></em><span></span></span><span class="ncard-t"></span>';
+    $('img',c).src=a.getAttribute('data-img')||'assets/engine-screenshot.png';
+    $('em',c).textContent=I.t('mm.upd');$('.ncard-meta span',c).textContent=v;
+    $('.ncard-t',c).textContent=$('h3',a).textContent;c.title=$('h3',a).textContent;
+    c.addEventListener('click',function(){pendOpen=i;if(curPage==='updates')showPage('updates')});
+    box.appendChild(c);
+  });
+}
+function news(){buildNews($('#megaNews'),3);buildNews($('#homeNews'),3)}
+news();
+
+/* ===== 펼침 메뉴 ===== */
+var mms=$$('.hc .mm'),mega=$('#mega'),grps=$$('.mega-grp'),curM=null,hideT=null,hovAt=0;
+function openM(k,focus){
+  clearTimeout(hideT);curM=k;
+  grps.forEach(function(g){g.hidden=g.getAttribute('data-m')!==k});
+  mms.forEach(function(b){b.setAttribute('aria-expanded',b.getAttribute('data-m')===k?'true':'false')});
+  mega.classList.add('open');mega.setAttribute('aria-hidden','false');
+  if(focus){var f=$('.mega-grp:not([hidden]) a',mega);if(f)f.focus()}
+}
+function closeM(back){
+  clearTimeout(hideT);if(!curM)return;
+  var b=mms.filter(function(x){return x.getAttribute('data-m')===curM})[0];
+  curM=null;mega.classList.remove('open');mega.setAttribute('aria-hidden','true');
+  mms.forEach(function(x){x.setAttribute('aria-expanded','false')});
+  if(back&&b)b.focus();
+}
+mms.forEach(function(b){
+  var k=b.getAttribute('data-m');
+  b.addEventListener('click',function(){
+    if(curM===k&&Date.now()-hovAt>450)closeM();else openM(k);
+  });
+  b.addEventListener('keydown',function(e){if(e.key==='ArrowDown'){e.preventDefault();openM(k,true)}});
+  if(fine)b.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse'){if(curM!==k)hovAt=Date.now();openM(k)}});
+});
+if(fine){
+  hdr.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse'&&curM)hideT=setTimeout(closeM,220)});
+  hdr.addEventListener('pointerenter',function(){clearTimeout(hideT)});
+}
+mega.addEventListener('click',function(e){if(e.target.closest('a'))closeM()});
+document.addEventListener('click',function(e){if(curM&&!hdr.contains(e.target))closeM()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&curM)closeM(true)});
+hdr.addEventListener('focusout',function(e){if(curM&&e.relatedTarget&&!hdr.contains(e.relatedTarget))closeM()});
+
+route();
+
+/* ===== 푸터: 대표자명 · 주소 · 전화 자세히 보기 ===== */
+var ftB=$('#ftMore'),ftX=$$('footer .ft-x');
+function ftLabel(){$('#ftMoreT').textContent=I.t(ftB.getAttribute('aria-expanded')==='true'?'ft.less':'ft.more')}
+if(ftB)ftB.addEventListener('click',function(){
+  var o=ftB.getAttribute('aria-expanded')!=='true';ftB.setAttribute('aria-expanded',o?'true':'false');
+  ftX.forEach(function(p){p.hidden=!o});ftLabel();
+});
+
 /* ===== 언어를 바꾸면 ===== */
 sub(function(){
-  setEmpty();pickText();moreLabel();measure();
+  setEmpty();pickText();moreLabel();measure();news();pageText();if(ftB)ftLabel();
   var ct=$('#pgCopyT');if(ct)ct.textContent=I.t('pg.copy');
   if(dlg&&dlg.open){var im=$('img',figs[li]);lbCap.textContent=im.alt;lbImg.alt=im.alt}
   centerShot();

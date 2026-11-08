@@ -159,3 +159,19 @@ html[data-theme="light"] .hc{border-color:var(--line);background:rgba(0,0,0,.03)
 html[data-theme="light"] header .hc a.on{background:rgba(233,189,12,.2);color:var(--accent-tx)}
 html[data-theme="light"] header a.cta{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);box-shadow:0 3px 10px rgba(233,189,12,.3),inset 0 1px 0 rgba(255,255,255,.5)}
 html[data-theme="light"] header a.cta:hover{background:linear-gradient(180deg,#f6cd2a,#e9bd0c)}
+
+/* 펼침 메뉴 · 페이지 · 바로가기 (라이트) */
+html[data-theme="light"] .hc .mm:hover,
+html[data-theme="light"] .hc .mm.on{background:rgba(0,0,0,.06);color:var(--fg)}
+html[data-theme="light"] .hc .mm[aria-expanded="true"]{background:rgba(0,0,0,.08);color:var(--fg)}
+@media (min-width:821px){html[data-theme="light"] .hc .mm.on{background:rgba(233,189,12,.2);color:var(--accent-tx)}}
+html[data-theme="light"] .mega{background:#fff;border-bottom-color:var(--line);box-shadow:0 30px 60px rgba(0,0,0,.12)}
+html[data-theme="light"] header .mega-grp a:hover{background:rgba(0,0,0,.05);color:var(--accent-tx)}
+html[data-theme="light"] .mega-grp a[aria-current="page"]{color:var(--accent-tx)}
+html[data-theme="light"] .ncard:hover .ncard-t{color:var(--accent-tx)}
+html[data-theme="light"] .qk-card{box-shadow:0 14px 30px rgba(0,0,0,.12)}
+html[data-theme="light"] .qk-card:hover,html[data-theme="light"] .qk-card:focus-within{box-shadow:0 22px 40px rgba(0,0,0,.18)}
+html[data-theme="light"] .pager a{background:var(--panel)}
+html[data-theme="light"] header .mega a{color:var(--fg)}
+html[data-theme="light"] header .mega-rh a{color:var(--mute)}
+html[data-theme="light"] header .mega-grp a:hover,html[data-theme="light"] header .mega-grp a[aria-current="page"]{color:var(--accent-tx)}
