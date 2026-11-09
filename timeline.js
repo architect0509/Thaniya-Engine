@@ -159,10 +159,10 @@ function tlSignals(p,d,tl,t0,t1,incl0){
     for(const mk of tr.marks){if(!mk.m)continue;if(!((incl0?mk.t>=t0:mk.t>t0)&&mk.t<=t1))continue;
       if(!/^[A-Za-z_가-힣][\w가-힣]*$/.test(mk.m)){continue}
       const tgt=tlBound(m,d.o,tr)||d.o;if(!objOn(m,tgt))continue;
-      d.t=mk.t;csRunMethods(m,tgt,[mk.m]);if(!play||play.m!==m)return false}}
+      d.t=mk.t;try{learnEmit('tl:sig:'+mk.m+':'+tgt.name)}catch(e){}csRunMethods(m,tgt,[mk.m]);if(!play||play.m!==m)return false}}
   return true;
 }
-function tlPlay(p,d){const tl=tlGet(d.o.props.director.tl);if(!tl)return;if(d.st==='stopped'){d.t=0}d.st='playing';d.first=true;tlAudSync(p,d,tl)}
+function tlPlay(p,d){const tl=tlGet(d.o.props.director.tl);if(!tl)return;if(d.st==='stopped'&&p.tl&&p.tl.base){const dc=tlDirOf(d.o);if(dc)Object.values(dc.binds||{}).forEach(id=>p.tl.base.delete(id))}try{learnEmit('tl:play:'+d.o.name)}catch(e){}if(d.st==='stopped'){d.t=0}d.st='playing';d.first=true;tlAudSync(p,d,tl)}
 function tlPause(p,d){if(d.st!=='playing')return;d.st='paused';tlAudStop(d)}
 function tlStop(p,d,natural){
   const tl=tlGet(d.o.props.director.tl),m=p.m;
@@ -185,6 +185,7 @@ function tick(p,dt){
       if(t1>=dur){
         const w=dc.wrap||'none';
         if(!tlSignals(p,d,tl,t0,dur,incl))return;
+        try{learnEmit('tl:end:'+d.o.name)}catch(e){}
         if(w==='loop'&&dur>0){t1=t1%dur;tlAudStop(d);if(!tlSignals(p,d,tl,0,t1,true))return;d.t=t1}
         else if(w==='hold'){d.t=dur}
         else{d.t=dur;tlStop(p,d,true);continue}
@@ -201,7 +202,8 @@ function tlRtCollect(p,dt){
   const m=p.m,hero=startSpawn(m);if(!R.base)R.base=new Map();R.heroDrive=false;
   R.pose.forEach((q,id)=>{
     if(q.x==null&&q.y==null)return;const o=m.objs.find(x=>x.id===id);if(!o)return;
-    if(!R.base.has(id))R.base.set(id,{x:o.x,y:o.y});const b=R.base.get(id),nx=b.x+(q.x||0),ny=b.y+(q.y||0);
+    /* 주인공은 지금 서 있는 자리가 기준 (트리거 등으로 중간에 재생해도 순간이동하지 않게 · 유니티 「Apply Scene Offsets」처럼) */
+    if(!R.base.has(id))R.base.set(id,o===hero&&p.px!=null?{x:p.px/TS-.5,y:p.py/TS-.5}:{x:o.x,y:o.y});const b=R.base.get(id),nx=b.x+(q.x||0),ny=b.y+(q.y||0);
     if(o===hero){const px=(nx+.5)*TS,py=(ny+.5)*TS,dx=px-p.px,dy=py-p.py,mv=Math.abs(dx)+Math.abs(dy)>.05;
       p.px=px;p.py=py;R.heroDrive=true;
       if(mv&&dt>0){heroFace(p,dx,dy);p.moved=true;p.walk=(p.walk||0)+dt}
@@ -254,6 +256,8 @@ function dirProxy(m,o){
 }
 
 /* ---------- 인스펙터: 플레이어블 디렉터 컴포넌트 ---------- */
+/* 바인딩 목록은 처음에 접혀 있음 (머리를 누르면 펼침 · 이 창을 쓰는 동안 기억) */
+let tlBindOpen=false;
 function directorComp(o){
   const d=tlDirNorm(o.props.director),tl=tlGet(d.tl),m=cur(),L0=tlList();
   const objs=m?m.objs.filter(q=>!isUiEl(q)):[];
@@ -263,7 +267,9 @@ function directorComp(o){
     fr('타임라인',`<select data-tld="tl"><option value="">(없음)</option>${L0.map(x=>`<option value="${x.id}"${x.id===d.tl?' selected':''} data-i18n-skip>${esc(x.name)}</option>`).join('')}${d.tl&&!tl?'<option value="'+esc(d.tl)+'" selected>(찾을 수 없음)</option>':''}<option value="+new">＋ 새 타임라인…</option></select>`,false,'playableAsset','이 디렉터가 재생할 타임라인 에셋입니다. 타임라인 창에서 트랙과 클립을 편집합니다.')+
     fr('시작할 때 재생',`<input type="checkbox" data-tld="awake"${d.awake!==false?' checked':''}>`,false,'playOnAwake','켜면 플레이를 시작하거나 이 씬에 들어올 때 바로 재생합니다. 끄면 스크립트에서 director.Play()로 재생합니다.')+
     fr('끝나면',`<select data-tld="wrap">${TL_WRAP.map(([v,l])=>`<option value="${v}"${v===d.wrap?' selected':''}>${l}</option>`).join('')}</select>`,false,'extrapolationMode','타임라인 끝에 닿았을 때: 없음 = 멈추고 처음 상태로, 유지 = 마지막 장면에 머묾, 반복 = 처음부터 다시.')+
-    (tl?`<div class="tlibh">바인딩 <small>트랙이 움직일 게임 오브젝트 · 계층 구조에서 타임라인 창의 트랙 머리로 끌어다 놓아도 됩니다</small></div>${binds||'<p class="hint" style="margin:2px 0 6px">아직 트랙이 없습니다. 타임라인 창의 「＋ 트랙」으로 추가하세요.</p>'}`:'')+
+    (tl?(()=>{const nb=tl.tracks.filter(tr=>TL_T[tr.type].bind),set=nb.filter(tr=>d.binds[tr.id]).length;
+      return`<button type="button" class="tlibh tlbf${tlBindOpen?' open':''}" data-tlbfold aria-expanded="${tlBindOpen}" title="${esc(_t(tlBindOpen?'바인딩 접기':'바인딩 펼치기'))}"><i class="tlbcar" aria-hidden="true"></i><span>바인딩</span><em>${nb.length?set+' / '+nb.length:''}</em><small>트랙이 움직일 게임 오브젝트 · 계층 구조에서 타임라인 창의 트랙 머리로 끌어다 놓아도 됩니다</small></button>`+
+      (tlBindOpen?`<div class="tlibs">${binds||'<p class="hint" style="margin:2px 0 6px">아직 트랙이 없습니다. 타임라인 창의 「＋ 트랙」으로 추가하세요.</p>'}</div>`:'')})():'')+
     `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button type="button" class="btn sm" data-anopen="tl">${ico('timeline')} 타임라인 창</button></div>`,
     '타임라인을 재생하는 컴포넌트입니다(유니티 PlayableDirector). 컷신처럼 여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출(시그널)을 시간에 맞춰 한 번에 연출합니다. 스크립트: GetComponent<PlayableDirector>().Play()');
 }
@@ -280,6 +286,7 @@ function tlCreateFor(o){
 function tlNewFor(o){anAsk(_t('새 타임라인'),_t('타임라인 이름'),anUniq(tlList().map(x=>x.name),_t('{name} 타임라인',{name:o.name})),v=>{let tl;ANX.anEdit(()=>{tl=newTimeline(v)},true);tlDirNorm(o.props.director).tl=tl.id;TL.obj=o.id;TL.t=0;TL.sel=null;commit();renderInsp();render();need()})}
 (()=>{
   const ins=$('#insp');
+  ins.addEventListener('click',e=>{const b=e.target.closest('[data-tlbfold]');if(!b)return;tlBindOpen=!tlBindOpen;if(tlBindOpen)try{learnEmit('tlbind:open')}catch(er){}renderInsp()});
   ins.addEventListener('change',e=>{
     const t=e.target,o=inspObj();if(!o||!o.props||!o.props.director)return;const d=tlDirNorm(o.props.director);
     if(t.dataset.tld==='tl'){if(t.value==='+new'){t.value=d.tl||'';tlNewFor(o);return}d.tl=t.value;TL.obj=o.id;TL.sel=null;commit();renderInsp();render();need();return}
@@ -898,7 +905,7 @@ if(window.TI18N)TI18N.add({
 '유니티 Timeline 트랙':['Unity Timeline tracks','Unity Timeline のトラック','Unity Timeline 轨道'],
 '활성':['Active','アクティブ','激活'],'(클립 없음)':['(no clip)','(クリップなし)','(无片段)'],'(오디오 없음)':['(no audio)','(オーディオなし)','(无音频)'],'(메서드 없음)':['(no method)','(メソッドなし)','(无方法)'],
 '(디렉터 오브젝트)':['(Director object)','(ディレクターのオブジェクト)','(导演对象)'],'오디오를 끌어다 놓으세요':['Drop audio here','オーディオをドロップ','拖入音频'],'클립 {n}개':['{n} clips','クリップ {n} 個','{n} 个片段'],
-'시작할 때 재생':['Play On Awake','開始時に再生','唤醒时播放'],'끝나면':['Wrap Mode','終了時','结束时'],'바인딩':['Bindings','バインディング','绑定'],
+'시작할 때 재생':['Play On Awake','開始時に再生','唤醒时播放'],'끝나면':['Wrap Mode','終了時','结束时'],'바인딩':['Bindings','バインディング','绑定'],'바인딩 접기':['Collapse bindings','バインディングを折りたたむ','折叠绑定'],'바인딩 펼치기':['Expand bindings','バインディングを展開','展开绑定'],
 '없음 (끝나면 멈춤)':['None (stop at end)','なし（終わると停止）','无（结束时停止）'],'유지 (마지막 장면에서 멈춤)':['Hold (stay on last frame)','ホールド（最後の場面で停止）','保持（停在最后一帧）'],'반복':['Loop','ループ','循环'],
 '되돌리기 (원래 상태)':['Revert (original state)','元に戻す（元の状態）','还原（原始状态）'],'켜 두기':['Active','アクティブのまま','保持激活'],'꺼 두기':['Inactive','非アクティブ','保持停用'],'마지막 상태 그대로':['Leave as is','最後の状態のまま','保持最后状态'],
 '끝난 뒤 상태':['Post-playback state','再生後の状態','播放后状态'],'타임라인이 멈추면 바인딩된 오브젝트를':['When the timeline stops, the bound object is','タイムライン停止後、バインドされたオブジェクトを','时间轴停止后，绑定的对象'],

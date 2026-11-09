@@ -59,6 +59,7 @@ TI18N.add({
 '“{name}”을(를) 만들었어요':['Created “{name}”','「{name}」を作成しました','已创建“{name}”'],
 '프로젝트를 삭제할까요?':['Delete this project?','プロジェクトを削除しますか？','要删除此项目吗？'],
 '“{name}”의 씬·오브젝트·스크립트가 이 브라우저에서 지워지고 되돌릴 수 없어요. 에셋 이미지는 다른 프로젝트와 함께 쓰므로 남아 있어요.':['The scenes, objects and scripts of “{name}” will be erased from this browser and can’t be restored. Asset images are shared with other projects, so they’ll remain.','「{name}」のシーン・オブジェクト・スクリプトがこのブラウザから削除され、元に戻せません。アセット画像は他のプロジェクトと共有しているため残ります。','“{name}”的场景、对象和脚本将从此浏览器中删除，且无法恢复。素材图片与其他项目共用，因此会保留。'],
+'“{name}”의 씬·오브젝트·스크립트와 이 프로젝트의 에셋(이미지·오디오·글꼴)이 이 브라우저에서 지워지고 되돌릴 수 없어요.':['The scenes, objects, scripts and this project’s assets (images, audio, fonts) of “{name}” will be erased from this browser and can’t be restored.','「{name}」のシーン・オブジェクト・スクリプトとこのプロジェクトのアセット（画像・オーディオ・フォント）がこのブラウザから削除され、元に戻せません。','“{name}”的场景、对象、脚本以及该项目的素材（图片、音频、字体）将从此浏览器中删除，且无法恢复。'],
 '이 브라우저에서는 프로젝트를 저장할 수 없어요':['Projects can’t be saved in this browser','このブラウザではプロジェクトを保存できません','此浏览器无法保存项目'],
 '저장 공간이 부족해 이름을 바꾸지 못했어요':['Not enough storage space to rename','保存容量が足りず、名前を変更できませんでした','存储空间不足，无法重命名'],
 '이름을 바꿨어요':['Renamed','名前を変更しました','已重命名'],

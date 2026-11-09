@@ -185,7 +185,8 @@ function enToKo(code){
 /* 설명 글 속 형식 이름만 한글로 (예: "(KeyCode key) → bool" → "(키코드 key) → 논리") */
 const koTypes=s=>String(s||'').replace(/[A-Za-z_]\w*/g,w=>KO_TY_R[w]||KO_KW_R[w]||w);
 const CS_UIT=new Set(['RectTransform','Button','Text','Image','Slider','CanvasGroup','TMP_Text','TextMeshProUGUI']);
-const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','UIGroup',...CS_UIT]);
+/* 인스펙터 슬롯(오브젝트를 끌어다 놓는 칸)이 되는 필드 형식 — 컴포넌트 형식이면 그 오브젝트의 컴포넌트(예: PlayableDirector)를 씀 */
+const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','UIGroup','PlayableDirector','Animator','AudioSource',...CS_UIT]);
 const csKind=t=>CS_OBJT.has(t)?'obj':t in CS_NUM?'num':t==='bool'?'bool':t==='string'?'str':t==='Vector2'||t==='Vector3'?'vec':t==='Color'?'color':'ref';
 function parseCS(code){
   code=koCode(code);

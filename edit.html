@@ -206,10 +206,14 @@ body.scrubxy,body.scrubxy *{cursor:move!important}
 .wbadge{font:600 9px var(--f-mono);padding:0 4px;border-radius:3px;background:var(--warn);color:#1a1100;margin-left:4px;vertical-align:1px}
 .phead.tabbed .ptab{display:none}
 .tabstrip{display:flex;align-items:flex-end;gap:2px;min-width:0;overflow:hidden;align-self:flex-end}
+/* 탭 폭을 모두 같게 (가장 긴 이름 기준) — 끌어서 순서 바꿀 때 자리가 고르게 */
+.tabstrip{display:inline-grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:end}.tabstrip .ptabbtn{justify-content:center;min-width:0;overflow:hidden;text-overflow:ellipsis}.tabstrip .ptabbtn .tl{overflow:hidden;text-overflow:ellipsis}
 .ptabbtn{display:inline-flex;align-items:center;gap:6px;height:25px;padding:0 11px;background:transparent;border:0;border-top:2px solid transparent;color:var(--mute);font:inherit;font-weight:500;white-space:nowrap;cursor:pointer}
 .ptabbtn:hover{color:var(--fg);background:var(--hover)}
 .ptabbtn.on{background:var(--panel);border-top-color:var(--accent);color:var(--fg)}
 .ptabbtn .ticon{display:inline-flex;color:var(--mute)}
+.tabstrip.treo{overflow:visible}.tabstrip.treo .ptabbtn{transition:transform .16s ease;position:relative}
+.tabstrip.treo .ptabbtn.tdragging{transition:none;z-index:3;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:grabbing}
 #dropLine.tab{opacity:.4;border-radius:3px}
 .tbtn{height:30px;padding:0 12px;display:inline-flex;align-items:center;gap:7px;background:var(--btn);border:1px solid var(--line2);border-radius:6px;color:var(--fg);white-space:nowrap;position:relative}
 .tbtn:hover{background:var(--btn-h)}
@@ -1096,6 +1100,39 @@ textarea.code{width:100%;height:min(420px,56vh);font:12px/1.55 var(--f-mono);tab
 .pjdet .asset{border-bottom:0}
 .pjdet .asset.det>.ahead{height:38px;background:transparent;cursor:default}
 .pjdet .abody{background:transparent;border-top:1px solid var(--line);padding-left:14px}
+/* ---- 프리팹 (파란색) ---- */
+.learn-embed #bLearn,.learn-embed .plearn{display:none!important}
+.lflash{animation:lflash .55s ease-in-out 3!important}@keyframes lflash{50%{box-shadow:0 0 0 2px #f6cd2a,0 0 22px rgba(246,205,42,.4)}}
+.learn-embed .bhome{pointer-events:none}
+.pfn{color:#6cb6ff}.tr.on .pfn{color:inherit}
+.gpf .gth{border-radius:6px;background:linear-gradient(160deg,rgba(90,169,255,.22),rgba(90,169,255,.06));box-shadow:inset 0 0 0 1px rgba(90,169,255,.35)}
+.gpf.on .gth{box-shadow:0 0 0 2px var(--sel)}
+.gpf .gth canvas{width:78%;height:78%;background:none}
+.pfk{background:rgba(31,96,180,.85)!important;color:#fff!important}
+.pfcube{display:grid;place-items:center;width:100%;height:100%;color:#5aa9ff}.pfcube .ic{width:56%;height:56%;stroke-width:1.3;fill:color-mix(in srgb,var(--tc,#5aa9ff) 30%,transparent)}
+.pfrow canvas,.pfrow .pfcube{width:20px;height:20px;flex:none;image-rendering:pixelated}.pfrow .pfcube .ic{width:16px;height:16px}
+.pfrow b{color:#6cb6ff;font-weight:500}
+.pfflash{animation:pff .5s ease-in-out 3}@keyframes pff{50%{box-shadow:0 0 0 2px #5aa9ff,0 0 16px rgba(90,169,255,.5)}}
+.pfdet{padding:8px 10px 10px}
+.pfdh{display:flex;align-items:center;gap:8px}.pfdh canvas,.pfdh .pfcube{width:30px;height:30px;flex:none;image-rendering:pixelated}.pfdh .pfcube .ic{width:24px;height:24px}
+.pfdn{flex:1;min-width:0;display:flex;flex-direction:column}.pfdn b{color:#6cb6ff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pfdn small{color:var(--mute);font-size:10.5px}
+.pfdb{margin-top:6px;display:flex;flex-direction:column;gap:5px}
+.pfdl{display:grid;grid-template-columns:62px 1fr;gap:6px;font-size:11.5px;align-items:baseline}.pfdl>span:first-child{color:var(--mute)}
+.pfchip{display:inline-block;margin:0 4px 3px 0;padding:0 6px;border-radius:6px;background:rgba(90,169,255,.14);color:var(--fg);font-style:normal;font-size:11px;line-height:1.6}
+.pfdb .hint{margin:2px 0 0;font-size:10.5px}
+#hier.pfdrop{box-shadow:inset 0 0 0 2px #5aa9ff;border-radius:8px}
+.panel[data-id="assets"].pfmk .pbody,.panel[data-id="assets"].pfmk #aList{box-shadow:inset 0 0 0 2px #5aa9ff;border-radius:8px}
+.pfbar{margin:6px 8px 2px;padding:7px 8px;border:1px solid rgba(90,169,255,.4);border-radius:12px;background:rgba(90,169,255,.08);display:flex;flex-direction:column;gap:6px}
+.pfbar.miss{flex-direction:row;align-items:center;border-color:rgba(239,91,107,.5);background:rgba(239,91,107,.08)}
+.pfbr{display:flex;align-items:center;gap:6px;min-width:0}
+.pfbi{display:grid;place-items:center;width:22px;height:22px;border-radius:6px;background:#2f78d0;color:#fff;flex:none}.pfbi .ic{width:14px;height:14px}
+.pfbt{display:flex;align-items:baseline;gap:5px;min-width:0;overflow:hidden}.pfbt small{color:var(--mute);font-size:10.5px;white-space:nowrap}.pfbt b{color:#6cb6ff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
+.pfov{flex-wrap:wrap}.pfovn{font-size:11.5px;color:var(--mute);white-space:nowrap}.pfbar.ov .pfovn{color:#6cb6ff;font-weight:600}
+.pfovk{display:flex;flex-wrap:wrap;gap:3px;min-width:0}.pfovk i{font-style:normal;font-size:10.5px;padding:0 5px;border-radius:5px;background:rgba(90,169,255,.16);line-height:1.6}
+.fr.pfov{box-shadow:-3px 0 0 #3d8ef0;border-radius:2px}
+.fr.pfov>label{color:#6cb6ff}
+.comp.pfovc{box-shadow:inset 3px 0 0 #3d8ef0}
+html[data-theme="light"] .pfn,html[data-theme="light"] .pfrow b,html[data-theme="light"] .pfdn b,html[data-theme="light"] .pfbt b,html[data-theme="light"] .fr.pfov>label,html[data-theme="light"] .pfbar.ov .pfovn{color:#1d6fd6}
 /* 스프라이트 에디터 */
 .spe{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
 .spe[hidden]{display:none}
@@ -1151,7 +1188,17 @@ textarea.code{width:100%;height:min(420px,56vh);font:12px/1.55 var(--f-mono);tab
 .hzc input[type=range]{flex:1;min-width:36px;height:16px;margin:0;accent-color:#e9bd0c}
 .hzc .ic{width:12px;height:12px}
 #hier{--hz:1;font-size:calc(12px*var(--hz))}
-#hier .tr{height:calc(28px*var(--hz));padding-left:calc(var(--d)*14px*var(--hz) + 4px);gap:calc(4px*var(--hz))}
+#hier .tr{height:calc(25px*var(--hz));margin-top:0;margin-bottom:1px;padding-left:calc(var(--d)*14px*var(--hz) + 4px);gap:calc(4px*var(--hz));position:relative}
+/* 같은 깊이 안내선 (VS Code처럼): 위 단계 폴더의 접기 단추 가운데마다 연한 세로선 — 줄 사이 틈까지 이어 그림 */
+#hier{--hguide:rgba(255,255,255,.09)}
+html[data-theme="light"] #hier{--hguide:rgba(0,0,0,.11)}
+/* 안내선: 연한 회색 · 타일맵 · 게임 오브젝트 · UI 폴더 안(세 번째 줄)만 연한 초록 · 1.5px */
+#hier{--hg2:rgba(120,210,150,.24)}
+html[data-theme="light"] #hier{--hg2:rgba(30,150,80,.26)}
+#hier .tr::before{content:"";position:absolute;left:calc(4px + 7px*var(--hz) - .75px);top:-1px;bottom:-1px;width:calc(var(--d)*14px*var(--hz));pointer-events:none;--st:calc(14px*var(--hz));
+  background-image:linear-gradient(var(--hg2),var(--hg2)),repeating-linear-gradient(to right,var(--hguide) 0 1.5px,transparent 1.5px var(--st));
+  background-size:1.5px 100%,100% 100%;background-repeat:no-repeat;background-position:calc(var(--st)*2) 0,0 0}
+#hier .tr.on::before{opacity:.5}
 #hier .tr .ic{width:calc(14px*var(--hz));height:calc(14px*var(--hz))}
 #hier .fold{width:calc(14px*var(--hz));height:calc(14px*var(--hz))}
 #hier .fold::before{font-size:calc(10px*var(--hz))}
@@ -1723,6 +1770,13 @@ html[data-theme="light"] .anhs{background:rgba(0,0,0,.06)}html[data-theme="light
 .tlprop .tpbtn{height:26px;padding:2px 8px 2px 2px;border-radius:999px;max-width:180px}.tlprop .tpbtn img{width:20px;height:20px;border-radius:4px}.tlprop .tpbtn .tpn small{display:none}
 .tlprop .btn.sm{height:22px;font-size:11px}
 .tlibh{margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--fg)}.tlibh small{display:block;font-weight:400;color:var(--mute);font-size:10.5px;margin-top:1px}
+.tlibh.tlbf{display:grid;grid-template-columns:12px auto 1fr;align-items:center;column-gap:5px;width:100%;padding:5px 6px;margin:8px 0 4px;border:1px solid var(--line);border-radius:8px;background:none;color:var(--fg);font-family:inherit;font-weight:600;font-size:11px;line-height:1.3;text-align:left;cursor:pointer}
+.tlibh.tlbf:hover{background:var(--hover,rgba(255,255,255,.05))}
+.tlibh.tlbf em{font-style:normal;font-weight:500;color:var(--mute);font-size:10.5px;justify-self:end}
+.tlibh.tlbf small{grid-column:2/4}
+.tlbcar{width:0;height:0;border-left:5px solid currentColor;border-top:4px solid transparent;border-bottom:4px solid transparent;opacity:.7;transition:transform .12s;justify-self:center}
+.tlibh.tlbf.open .tlbcar{transform:rotate(90deg)}
+.tlibs{margin-bottom:2px}
 .tlib{display:flex;align-items:center;gap:6px;margin:3px 0}
 .tlibn{flex:0 0 45%;min-width:0;display:inline-flex;align-items:center;gap:5px;font-size:11px;border-left:3px solid var(--tc);padding-left:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tlibn .ic{flex:none;width:12px;height:12px;color:var(--tc)}
 .tlib select{flex:1;min-width:0;height:22px;font-size:11px}
@@ -1963,10 +2017,10 @@ body.popbody .pcol{display:none}
   <button id="padA">행동</button>
 </div>
 
-<script src="script-engine.js?v=20261106p"></script>
+<script src="script-engine.js?v=20261110a"></script>
 <script src="script-editor.js?v=20261107a"></script>
 <script src="anim-editor.js?v=20261107h"></script>
-<script src="timeline.js?v=20261107k"></script>
+<script src="timeline.js?v=20261110a"></script>
 <script src="ui-builder.js?v=20261107a"></script>
 <script src="visual-script.js?v=20261108d"></script>
 <script src="tour.js?v=20261109c"></script>
@@ -2019,7 +2073,16 @@ const TS=32, MAXOBJ=1000, PER=4096;
 const PRJ_Q=new URLSearchParams(location.search);
 const PRJ_ID=(PRJ_Q.get('pj')||'default').replace(/[^\w-]/g,'').slice(0,40)||'default';
 const PRJ_IDX='thaniya.projects.v1';
-const KEY=PRJ_ID==='default'?'dungeon-map-maker.v2':'thaniya.pj.'+PRJ_ID, LKEY='dungeon-map-maker.layout.v2';
+/* 학습 실습장(learning.html 안의 iframe: edit.html?learn=1)이면 내 프로젝트 · 창 배치와 따로 저장하고, 마이페이지 목록에도 넣지 않음 */
+const LEARN_EMBED=PRJ_Q.get('learn')==='1'&&window.parent!==window;
+if(LEARN_EMBED)document.documentElement.classList.add('learn-embed');
+/* 에셋(이미지 · 오디오 · 글꼴)은 프로젝트마다 따로: IndexedDB 레코드 키 = 「프로젝트id::에셋id」 (aid = 원래 id, pj = 프로젝트)
+   · 예전(프로젝트 구분 없던) 레코드는 그 프로젝트를 처음 열 때 한 번 복사해 옴 (새 프로젝트 · 학습 실습장은 가져오지 않음)
+   · 기본 에셋 넣기 기록(버전 · 지운 목록)도 프로젝트마다 */
+const ASCOPE=LEARN_EMBED?'learnlab':PRJ_ID;
+const askey=id=>ASCOPE+'::'+id;
+const ascoped=r=>Object.assign(r,{aid:r.id,id:askey(r.id),pj:ASCOPE});
+const KEY=LEARN_EMBED?'thaniya.learnlab.pj':PRJ_ID==='default'?'dungeon-map-maker.v2':'thaniya.pj.'+PRJ_ID, LKEY=LEARN_EMBED?'thaniya.learnlab.layout':'dungeon-map-maker.layout.v2';
 /* 스크립트 미리보기 · 복사/붙여넣기 상태 */
 let palScript=null,hClip=null,pClip=null,clipCtx='hier',pasteQ=0;
 const TYPES={
@@ -2315,17 +2378,31 @@ async function importFiles(files){
 /* IndexedDB: 에셋 이미지는 여기에만 저장 */
 function idb(){return new Promise((res,rej)=>{if(typeof indexedDB==='undefined')return rej(new Error('no idb'));let r;try{r=indexedDB.open('dungeon-map-maker',1)}catch(e){return rej(e)}r.onupgradeneeded=()=>r.result.createObjectStore('assets',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('blocked'))})}
 const rec=a=>({id:a.id,n:a.n,name:a.name,baseRev:a.baseRev,combo:a.combo||null,kind:a.kind,tw:a.tw,th:a.th,theme:a.theme,solid:a.solid,src:a.src,mode:a.mode||'single',slices:(a.slices||[]).map(q=>Object.assign({},q))});
-async function idbPutMany(list){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');list.forEach(a=>tx.objectStore('assets').put(rec(a)));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
-async function idbDel(id){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+async function idbPutMany(list){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');list.forEach(a=>tx.objectStore('assets').put(ascoped(rec(a))));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+async function idbDel(id){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').delete(askey(id));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
 async function idbAll(){const db=await idb();return new Promise((res,rej)=>{const q=db.transaction('assets').objectStore('assets').getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
 async function saveAssets(list,quiet){
   list=list||assets.filter(a=>!a.saved);if(!list.length){if(!quiet)toast('저장할 에셋 변경 사항이 없습니다');return true}
   try{await idbPutMany(list);list.forEach(a=>a.saved=true);renderAssets();renderStatus();if(!quiet)toast('에셋 '+list.length+'개를 이 브라우저에 저장했습니다');return true}
   catch(e){toast('에셋을 저장하지 못했습니다. 이 환경에서는 브라우저 저장소를 쓸 수 없습니다');return false}
 }
+async function idbPutRecs(list){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');list.forEach(r=>tx.objectStore('assets').put(r));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+async function idbDelKeys(keys){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');keys.forEach(k=>tx.objectStore('assets').delete(k));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+/* 이 프로젝트의 에셋 레코드 (처음이면 예전 공용 레코드를 이 프로젝트로 복사) */
+async function scopedRecs(){
+  const all=await idbAll();let list=all.filter(r=>r&&r.pj===ASCOPE).map(r=>Object.assign({},r,{id:r.aid}));
+  let fresh=false;try{fresh=!!prjFresh}catch(e){}
+  if(!P.assetScoped&&!list.length&&!LEARN_EMBED&&!fresh){
+    const leg=all.filter(r=>r&&!r.pj&&r.id);
+    if(leg.length){try{await idbPutRecs(leg.map(r=>ascoped(Object.assign({},r))))}catch(e){}list=leg.map(r=>Object.assign({},r))}
+    try{const v=localStorage.getItem(BASE_KEY0),d=localStorage.getItem(BASE_DEL0);if(v!=null&&localStorage.getItem(BASE_KEY)==null)localStorage.setItem(BASE_KEY,v);if(d!=null&&localStorage.getItem(BASE_DEL)==null)localStorage.setItem(BASE_DEL,d)}catch(e){}
+  }
+  if(!P.assetScoped){P.assetScoped=true;if(!LEARN_EMBED)setTimeout(()=>{try{markDirty()}catch(e){}},0)}
+  return list;
+}
 async function loadSavedAssets(){
   try{
-    const list=await idbAll();
+    const list=await scopedRecs();
     for(const r of list){
       if(r&&r.kind==='audio'){if(!audios.some(x=>x.id===r.id))audios.push(r);continue}
       if(r&&r.kind==='font'){if(!fonts.some(x=>x.id===r.id)){fonts.push(r);fntLoad(r)}continue}
@@ -2337,7 +2414,7 @@ async function loadSavedAssets(){
 }
 /* 기본 에셋 (base-assets.js): 이 브라우저에서 처음 한 번 에셋으로 넣어 저장하고, 프로젝트마다 「기본 에셋 › 타일 · 사물」 폴더에 정리합니다.
    지운 기본 에셋은 다시 넣지 않습니다 (에셋 메뉴 › 기본 에셋 다시 넣기로 복구) */
-const BASE_KEY='thaniya.baseAssets.v1',BASE_VER=3,BASE_DEL='thaniya.baseAssets.del';
+const BASE_KEY0='thaniya.baseAssets.v1',BASE_DEL0='thaniya.baseAssets.del',BASE_KEY=BASE_KEY0+':'+ASCOPE,BASE_VER=3,BASE_DEL=BASE_DEL0+':'+ASCOPE;
 /* 기본 에셋 넣기
    · v1 에셋(타일·사물): 이 브라우저에서 처음 한 번만 (지운 것은 다시 넣지 않음 · 예전 규칙 그대로)
    · v2부터(주인공 시트 등): 빠져 있으면 언제든 다시 넣음 — 사용자가 직접 지운 것(BASE_DEL 목록)만 빼고.
@@ -2995,7 +3072,7 @@ $('#insp').addEventListener('click',e=>{
 });
 
 /* ===================== 데이터 ===================== */
-let P,curId,layerSel='l0',tool='brush',objType='empty',colMode='block',sel=null;
+let lastTL='l0',P,curId,layerSel='l0',tool='brush',objType='empty',colMode='block',sel=null;
 let selUi=null,uiType='button';
 let cam={x:20,y:20,z:1},hover=null,spaceDown=false,drag=null;
 let undo=[],redo=[],baseline='',dirty=false,lastSave=null,saveTimer=0,raf=0;
@@ -3122,7 +3199,7 @@ function sampleProject(){
   return{name:_t('새 게임'),start:m.id,maps:[m],nextN:0,playerSprite:'',afolders:[],afmap:{},sfmap:{}};
 }
 function validProject(p){return p&&Array.isArray(p.maps)&&p.maps.length&&p.maps.every(m=>m&&m.id&&m.w>=0&&m.h>=0&&Array.isArray(m.l)&&m.l.length>=1&&m.l.every(a=>Array.isArray(a)&&a.length===m.w*m.h)&&Array.isArray(m.col)&&m.col.length===m.w*m.h&&Array.isArray(m.objs))}
-function normProject(p){p.nextN=p.nextN||0;if(p.uiDocs&&!Array.isArray(p.uiDocs))delete p.uiDocs;if(p.vgraphs!==undefined&&!Array.isArray(p.vgraphs))delete p.vgraphs;if(Array.isArray(p.vgraphs))p.vgraphs=p.vgraphs.filter(g=>g&&g.id&&(g.kind==='flow'||g.kind==='state'));spNormP(p);if(!Array.isArray(p.scripts))p.scripts=[];p.scripts=p.scripts.filter(s=>s&&typeof s.name==='string'&&typeof s.code==='string').map(s=>({id:s.id||uid(),name:s.name,code:s.code}));
+function normProject(p){p.nextN=p.nextN||0;try{pfNorm(p)}catch(e){p.prefabs=[]}if(p.uiDocs&&!Array.isArray(p.uiDocs))delete p.uiDocs;if(p.vgraphs!==undefined&&!Array.isArray(p.vgraphs))delete p.vgraphs;if(Array.isArray(p.vgraphs))p.vgraphs=p.vgraphs.filter(g=>g&&g.id&&(g.kind==='flow'||g.kind==='state'));spNormP(p);if(!Array.isArray(p.scripts))p.scripts=[];p.scripts=p.scripts.filter(s=>s&&typeof s.name==='string'&&typeof s.code==='string').map(s=>({id:s.id||uid(),name:s.name,code:s.code}));
   (p.maps||[]).forEach(m=>{if(!Array.isArray(m.objs))return;m.objs.forEach(o=>{if(o.scripts!==undefined){o.scripts=Array.isArray(o.scripts)?o.scripts.filter(x=>x&&x.sid).map(x=>({id:x.id||uid(),sid:x.sid,vals:x.vals&&typeof x.vals==='object'?x.vals:{}})):[];if(!o.scripts.length)delete o.scripts}});m.objs.forEach(o=>{if(o.type==='spawn'&&(!o.props||typeof o.props!=='object'))o.props={}});fixStart(m)});if(!Array.isArray(p.afolders))p.afolders=[];if(!p.afmap||typeof p.afmap!=='object')p.afmap={};if(!p.sfmap||typeof p.sfmap!=='object')p.sfmap={};p.playerSprite=p.playerSprite||'';p.maps.forEach(m=>{if(!Array.isArray(m.ui))m.ui=[];m.ui=m.ui.filter(u=>u&&typeof u==='object'&&UI_NAMES[u.type]).map(normUi);if(!Array.isArray(m.uiGroups))m.uiGroups=[];m.uiGroups=m.uiGroups.filter(g=>g&&g.id).map(g=>Object.assign({id:String(g.id),name:String(g.name||'UI 그룹').slice(0,30)},g.uib&&typeof g.uib==='object'?{uib:g.uib}:{},g.dialog?{dialog:true}:{}));m.ui.forEach(u=>{if(!m.uiGroups.some(g=>g.id===u.group))u.group=null});if(!m.uiCv||typeof m.uiCv!=='object')m.uiCv={};m.uiCv={w:clamp(+m.uiCv.w||640,64,4096),h:clamp(+m.uiCv.h||360,64,4096),mode:UI_SCALE[m.uiCv.mode]?m.uiCv.mode:'match',match:clamp(m.uiCv.match==null?1:+m.uiCv.match||0,0,1)};m.theme=typeof m.theme==='string'&&m.theme?m.theme:'기본';if(!Array.isArray(m.groups))m.groups=[];if(!m.objs.some(o=>o.type==='spawn')){let fx=1,fy=1;search:for(let y=1;y<30;y++)for(let x=1;x<30;x++)if(!m.objs.some(o=>o.x===x&&o.y===y)){fx=x;fy=y;break search}m.objs.push({id:uid(),type:'spawn',name:'주인공',x:fx,y:fy,props:{},group:null})}if(!Array.isArray(m.lm))m.lm=[];while(m.lm.length<m.l.length)m.lm.push({name:'타일맵 '+(m.lm.length+1),wall:false});m.lm.length=m.l.length;m.lm.forEach((q,i)=>{if(!q||typeof q!=='object')m.lm[i]=q={};q.name=String(q.name||'타일맵 '+(i+1)).slice(0,30);q.wall=!!q.wall});if(!m.dark||typeof m.dark!=='object')m.dark={};m.dark={on:!!m.dark.on,color:/^#[0-9a-f]{6}$/i.test(m.dark.color)?m.dark.color:'#05060d',level:clamp(+m.dark.level>=0?+m.dark.level:.88,0,1)};m.objs.forEach(o=>{if(o.props&&o.props.memo==='')delete o.props.memo;if(o.group&&!m.groups.some(g=>g.id===o.group))o.group=null;if(!o.group)o.group=null});normObjTree(m);m.bg=ownBg(m)?m.bg:'';m.ox=Number.isFinite(+m.ox)?Math.round(+m.ox):0;m.oy=Number.isFinite(+m.oy)?Math.round(+m.oy):0;tTrim(m)});if(!p.heroInit){p.maps.forEach(m=>m.objs.forEach(o=>{if(o.type==='spawn')giveHeroScript(o,p)}));p.heroInit=true}
   if(!p.roleIds||typeof p.roleIds!=='object')p.roleIds={};
   if(!p.roleInit){p.maps.forEach(m=>{m.objs.forEach(o=>giveRoleScripts(o,p))});p.roleInit=true}
@@ -3132,7 +3209,7 @@ function normProject(p){p.nextN=p.nextN||0;if(p.uiDocs&&!Array.isArray(p.uiDocs)
     if(fr&&heroCodeIsDef('free',fr.code))(p.maps||[]).forEach(m=>(m.objs||[]).forEach(o=>{if(o.type==='spawn'&&(o.scripts||[]).some(x=>x.sid===fr.id))giveHeroScript(o,p,'tile')}));
     p.heroTileInit=true}catch(e){}}
   /* 고치지 않은 첫 타일형 코드 → 새 코드 (한글 변환본은 한글로) */
-  try{const ts=heroScriptK('tile',p,false);if(ts){const t=String(ts.code||'').replace(/\r\n/g,'\n');if(t===HERO_TILE_V1)ts.code=HERO_TILE_CODE;else if(t===enToKo(HERO_TILE_V1))ts.code=enToKo(HERO_TILE_CODE)}}catch(e){}
+  try{const ts=heroScriptK('tile',p,false);if(ts){const t=String(ts.code||'').replace(/\r\n/g,'\n');if(t===HERO_TILE_V1||t===HERO_TILE_V2)ts.code=HERO_TILE_CODE;else if(t===enToKo(HERO_TILE_V1)||t===enToKo(HERO_TILE_V2))ts.code=enToKo(HERO_TILE_CODE)}}catch(e){}
   anMigrate(p);mgrNorm(p);return p}
 function load(){
   try{const s=localStorage.getItem(KEY);if(s){const p=JSON.parse(s);if(validProject(p))return normProject(p)}}catch(e){}
@@ -3161,6 +3238,7 @@ function prjThumb(){
   }catch(e){return ''}
 }
 function prjTouch(force){
+  if(LEARN_EMBED)return;
   try{
     let a=null;try{a=JSON.parse(localStorage.getItem(PRJ_IDX))}catch(e){}
     if(!Array.isArray(a))a=[];
@@ -3171,28 +3249,82 @@ function prjTouch(force){
     try{localStorage.setItem(PRJ_IDX,JSON.stringify(a))}catch(err){delete e.thumb;localStorage.setItem(PRJ_IDX,JSON.stringify(a))}
   }catch(e){}
 }
-function markDirty(){if(play&&play.m)return;dirty=true;renderStatus();clearTimeout(saveTimer);saveTimer=setTimeout(()=>save(true),1500)}
+function markDirty(){if(play&&play.m)return;dirty=true;renderStatus();clearTimeout(saveTimer);saveTimer=setTimeout(()=>save(true),1500);histLater()}
 
-/* ===================== 실행 취소 ===================== */
-const snap=()=>JSON.stringify(cur());
+/* ===================== 실행 취소 =====================
+   한 줄의 기록에 「엔진 전체 상태」를 남김: 모든 씬 · 씬 목록 순서 · 프로젝트 설정(프리팹 · 폴더 · 매니저 · 시작 씬 · 이름 …) · 창 배치(어느 탭을 보고 있는지는 빼고)
+   · 씬 편집(commit)뿐 아니라 저장 표시가 생기는 모든 변경(markDirty)과 창 배치 저장(saveLayout)도 잠시 뒤 한 번에 기록 (같으면 남기지 않음)
+   · 스크립트 · 애니메이션 · 타임라인 · 비주얼 스크립트 · UI 빌더는 각 창에 따로 실행 취소가 있어 여기서는 뺌
+   · 씬마다 따로였던 기록 → 씬을 바꿔도 이어지고, 다른 씬의 변경을 되돌리면 그 씬으로 옮겨 감
+   · 씬 JSON은 바뀌지 않았으면 앞 기록의 글자를 그대로 함께 씀(메모리 절약) */
+const HIST_SKIP=new Set(['maps','scripts','anim','nextN','vgraphs','uibDraft','assetScoped','learnSig','roleIds','roleInit','heroScript','heroScripts','heroInit','heroTileInit','animInit','animV2','mgrInit','mgrV2','baseFol']);
+let histMute=0,histT2=0;
+function snapProj(){const o={};Object.keys(P).forEach(k=>{if(!HIST_SKIP.has(k))o[k]=P[k]});return JSON.stringify(o)}
+function snapLay(){if(!L)return'';const o=Object.assign({},L);delete o.active;return JSON.stringify(o)}
+function snap(){
+  const b=baseline&&typeof baseline==='object'?baseline:null,m={};
+  P.maps.forEach(x=>{const j=JSON.stringify(x);m[x.id]=b&&b.m[x.id]===j?b.m[x.id]:j});
+  const pj=snapProj(),ly=snapLay();
+  return{c:curId,o:P.maps.map(x=>x.id),m,p:b&&b.p===pj?b.p:pj,l:b&&b.l===ly?b.l:ly};
+}
+function stEq(a,b){if(!a||!b||typeof a!=='object'||typeof b!=='object')return false;if(a.p!==b.p||a.l!==b.l||a.o.join()!==b.o.join())return false;return a.o.every(id=>a.m[id]===b.m[id])}
 function resetHistory(){undo=[];redo=[];baseline=snap();renderHistBtns()}
+function histPush(s){undo.push(baseline);if(undo.length>80)undo.shift();redo=[];baseline=s;renderHistBtns()}
 function commit(){
   if(play&&play.m){renderHier();return}
   /* 타임라인 녹화 중: 바인딩된 오브젝트를 바꿨으면 재생 위치에 키로 (timeline.js) */
   if(TLH)TLH.recHook();
   {const m0=cur();if(m0)tTrim(m0)}
-  const s=snap();if(s===baseline)return;
-  undo.push(baseline);if(undo.length>60)undo.shift();redo=[];baseline=s;
+  clearTimeout(histT2);
+  const s=snap();if(stEq(s,baseline))return;
+  histPush(s);
   markDirty();renderHistBtns();renderHier();
+  try{pfLive()}catch(e){}
 }
-function restore(s){
-  const m=JSON.parse(s),i=P.maps.findIndex(x=>x.id===m.id);P.maps[i]=m;baseline=s;
-  if(sel&&!m.objs.some(o=>o.id===sel))sel=null;
-  if(selUi&&!(m.ui||[]).some(u=>u.id===selUi))selUi=null;
-  renderAll();markDirty();
+/* 씬 밖의 변경(프로젝트 설정 · 창 배치)도 잠시 뒤 한 번에 기록 */
+function histLater(){if(histMute||!P||!baseline)return;clearTimeout(histT2);histT2=setTimeout(()=>{if(histMute||(play&&play.m))return;const s=snap();if(!stEq(s,baseline))histPush(s)},450)}
+function restore(st){
+  if(!st||typeof st!=='object')return;
+  histMute++;
+  try{
+    const cm=new Map(P.maps.map(x=>[x.id,x])),bm=baseline&&typeof baseline==='object'?baseline.m:{};
+    P.maps=st.o.map(id=>cm.has(id)&&bm[id]===st.m[id]?cm.get(id):JSON.parse(st.m[id]));
+    /* 프로젝트 설정 */
+    const pj=JSON.parse(st.p||'{}');Object.keys(P).forEach(k=>{if(!HIST_SKIP.has(k)&&!(k in pj))delete P[k]});Object.assign(P,pj);
+    /* 창 배치 (지금 보고 있는 탭은 그대로) */
+    if(st.l&&st.l!==snapLay()){const act=L.active;L=JSON.parse(st.l);L.active=act||{};saveLayout();renderLayout()}
+    /* 바뀐 씬으로 이동 (지금 씬이 사라졌으면 기록의 씬) */
+    const ch=st.o.find(id=>bm[id]!==st.m[id]);
+    let to=ch&&ch!==curId&&!(bm[curId]!==st.m[curId])?ch:(P.maps.some(x=>x.id===curId)?curId:st.c);
+    if(!P.maps.some(x=>x.id===to))to=P.maps[0].id;
+    if(to!==curId){curId=to;sel=null;selUi=null;uiSel=new Set();hsel=new Set();syncSel=null;pickActiveForMap()}
+    baseline=st;
+    const m=cur();
+    if(sel&&!m.objs.some(o=>o.id===sel))sel=null;
+    if(selUi&&!(m.ui||[]).some(u=>u.id===selUi))selUi=null;
+    if(selMgr&&!(P.mgrs||[]).some(o=>o.id===selMgr)){selMgr=null;if(hierPick==='mgr')hierPick='mgrfolder'}
+    if(pfSel&&!(P.prefabs||[]).some(x=>x.id===pfSel))pfSel=null;
+    renderAll();try{renderAssets()}catch(e){}markDirty();
+  }finally{histMute--;clearTimeout(histT2)}
 }
-function doUndo(){if(!undo.length){histToast('undo','더 이상 되돌릴 작업이 없습니다');return}const now=baseline,prev=undo.pop();redo.push(now);restore(prev);renderHistBtns();histToast('undo',histDesc(prev,now))}
-function doRedo(){if(!redo.length){histToast('redo','다시 실행할 작업이 없습니다');return}const now=baseline,next=redo.pop();undo.push(now);restore(next);renderHistBtns();histToast('redo',histDesc(now,next))}
+function doUndo(){if(!undo.length){histToast('undo','더 이상 되돌릴 작업이 없습니다');return}const now=baseline,prev=undo.pop();redo.push(now);restore(prev);renderHistBtns();histToast('undo',histDescS(prev,now))}
+function doRedo(){if(!redo.length){histToast('redo','다시 실행할 작업이 없습니다');return}const now=baseline,next=redo.pop();undo.push(now);restore(next);renderHistBtns();histToast('redo',histDescS(now,next))}
+/* 두 기록의 차이: 씬 변경은 아래 histDesc로, 그 밖은 무엇이 바뀌었는지 이름으로 */
+function histDescS(a,b){
+  const out=[],J=JSON.stringify;
+  if(!a||!b||typeof a!=='object'||typeof b!=='object')return'변경 사항';
+  const add=b.o.filter(id=>!a.m[id]),del=a.o.filter(id=>!b.m[id]),nm=(st,id)=>{try{return JSON.parse(st.m[id]).name}catch(e){return''}};
+  if(add.length)out.push(`씬 '${nm(b,add[0])}' 추가`);if(del.length)out.push(`씬 '${nm(a,del[0])}' 삭제`);
+  if(!add.length&&!del.length&&a.o.join()!==b.o.join())out.push('씬 순서 변경');
+  b.o.filter(id=>a.m[id]&&a.m[id]!==b.m[id]).slice(0,2).forEach(id=>{const d=histDesc(a.m[id],b.m[id]);out.push(b.o.length>1&&id!==curId?`[${nm(b,id)}] ${d}`:d)});
+  if(a.p!==b.p){let x={},y={};try{x=JSON.parse(a.p);y=JSON.parse(b.p)}catch(e){}
+    const KN={prefabs:'프리팹',afolders:'프로젝트 폴더',afmap:'에셋 폴더 위치',sfmap:'스크립트 폴더 위치',mgrs:'매니저',start:'시작 씬',name:'프로젝트 이름',playerSprite:'주인공 스프라이트',stiles:'특수 타일',uiDocs:'UI 문서',desc:'프로젝트 설명'};
+    const ks=[...new Set([...Object.keys(x),...Object.keys(y)])].filter(k=>J(x[k])!==J(y[k]));
+    out.push(ks.map(k=>KN[k]||'프로젝트 설정').filter((v,i,arr)=>arr.indexOf(v)===i).slice(0,3).join(', ')+' 변경')}
+  if(a.l!==b.l)out.push('창 배치 변경');
+  if(!out.length)return'변경 사항';
+  return out.slice(0,2).join(' · ')+(out.length>2?` 외 ${out.length-2}건`:'');
+}
 /* 두 씬 상태(before → after)를 비교해 무엇이 바뀌었는지 짧은 문장으로 */
 function histDesc(aS,bS){
   let a,b;try{a=JSON.parse(aS);b=JSON.parse(bS)}catch(e){return'변경 사항'}
@@ -4125,7 +4257,7 @@ function setTool(t){tool=t;try{cv.classList.toggle('pan',spaceDown||t==='hand');
 function syncToolbar(){const b=$('#sbar');if(!b)return;const md=objMode()?'obj':'tile';if(b.dataset.mode!==md){b.dataset.mode=md;if(typeof placeSbar==='function')placeSbar()}}
 function setLayer(l){const mm=cur();if(l[0]==='l'&&mm&&!mm.l[lIdx(l)])return;
   const wasObj=objMode();
-  layerSel=l;fixLayer();hierPick='layer';$$('#layers button[data-layer]').forEach(b=>b.classList.toggle('on',b.dataset.layer===layerSel));
+  layerSel=l;fixLayer();if(layerSel[0]==='l')lastTL=layerSel;hierPick='layer';try{renderLayerBar()}catch(e){}
   if((l==='obj'||l==='ui')&&TILE_ONLY.has(tool))tool='select';
   if(l!=='obj'&&l!=='ui'&&(OBJ_ONLY.has(tool)||(tool==='select'&&wasObj)))tool='brush';
   syncToolbar();setTool(tool);renderHier();try{renderPal()}catch(e){console.error(e)}renderStatus();need();
@@ -4137,10 +4269,12 @@ function applyTool(t){
 }
 function renderLayerBar(){
   const m=cur(),box=$('#layers');if(!m)return;
-  let h=m.l.map((_,i)=>{const q=m.lm[i];return`<button data-layer="l${i}" class="${q.wall?'wl':''}" title="${esc(q.name)}${q.wall?esc(_t(' (벽 · 빛을 막습니다)')):''}">${q.wall?'<span class="wb">벽</span>':''}${enm(q.name)}</button>`}).join('');
-  h+=`<button data-addtm="1" title="타일맵 추가" aria-label="타일맵 추가">＋</button><button data-layer="col" title="콜라이더">콜라이더</button><button data-layer="obj" title="게임 오브젝트">게임 오브젝트</button><button data-layer="ui" title="UI (화면 위에 겹치는 인터페이스)">UI</button>`;
+  /* 타일맵은 하나의 단추 (어느 타일맵에 칠할지는 계층 구조 · 타일 팔레트에서) — 누르면 계층 구조의 「타일맵」 폴더가 선택됨 */
+  const tl=layerSel[0]==='l'&&m.l[lIdx(layerSel)]?layerSel:(lastTL&&m.l[lIdx(lastTL)]?lastTL:'l0');
+  let h=`<button data-layer="${tl}" data-tmall="1" title="${esc(_t('타일맵 · 지금 칠할 곳: {n}',{n:m.lm[lIdx(tl)].name}))}">${esc(_t('타일맵'))}</button>`;
+  h+=`<button data-layer="col" title="콜라이더">콜라이더</button><button data-layer="obj" title="게임 오브젝트">게임 오브젝트</button><button data-layer="ui" title="UI (화면 위에 겹치는 인터페이스)">UI</button>`;
   box.innerHTML=h;
-  $$('#layers button[data-layer]').forEach(b=>b.classList.toggle('on',b.dataset.layer===layerSel));
+  $$('#layers button[data-layer]').forEach(b=>b.classList.toggle('on',b.dataset.tmall?layerSel[0]==='l':b.dataset.layer===layerSel));
 }
 function fixLayer(){const m=cur();if(m&&layerSel[0]==='l'&&!m.l[lIdx(layerSel)])layerSel='l'+Math.max(0,m.l.length-1)}
 function addTilemap(wall){
@@ -4167,8 +4301,14 @@ function tmMenu(i){
 $('#layers').onclick=e=>{
   const a=e.target.closest('button[data-addtm]');
   if(a){showMenu(a,[{label:'일반 타일맵 추가',fn:()=>addTilemap(false)},{label:'벽 타일맵 추가 (빛을 막음)',fn:()=>addTilemap(true)}]);return}
-  const b=e.target.closest('button');if(b){const w=layerSel==='ui';setLayer(b.dataset.layer);if(w&&layerSel!=='ui')fitView();palFront()}};
-$('#layers').addEventListener('contextmenu',e=>{const b=e.target.closest('button[data-layer^="l"]');if(!b)return;e.preventDefault();setLayer(b.dataset.layer);showMenuAt(e.clientX,e.clientY,tmMenu(lIdx(b.dataset.layer)))});
+  const b=e.target.closest('button');if(b){const w=layerSel==='ui';setLayer(b.dataset.layer);if(w&&layerSel!=='ui')fitView();palFront();
+    /* 타일맵 · 콜라이더 단추: 계층 구조의 그 타일맵 줄을 고른 상태로 (인스펙터도 그 타일맵) */
+    if(layerSel[0]==='l'||layerSel==='col'){const m=cur(),all=!!b.dataset.tmall;fold['s:'+m.id]=true;fold['tm:'+m.id]=true;setHsel(new Set(),null);hierPick=all?'tmfolder':'layer';renderInsp();renderHier();
+      requestAnimationFrame(()=>{const r=all?$(`#hier .tr[data-t="folder"][data-k="tm"][data-s="${m.id}"]`):$(`#hier .tr[data-t="layer"][data-s="${m.id}"][data-id="${layerSel}"]`);if(r)r.scrollIntoView({block:'nearest'})})}
+    /* 게임 오브젝트 · UI 단추: 계층 구조의 그 폴더가 선택됨 */
+    else if(layerSel==='obj'||layerSel==='ui'){const m=cur(),go=layerSel==='obj';fold['s:'+m.id]=true;fold[(go?'go:':'ui:')+m.id]=true;setHsel(new Set(),null);if(!go){try{setUiSel(new Set(),null)}catch(e){}}hierPick=go?'gofolder':'layer';renderInsp();renderHier();
+      requestAnimationFrame(()=>{const r=$(`#hier .tr[data-t="${go?'gofolder':'uifolder'}"][data-s="${m.id}"]`);if(r)r.scrollIntoView({block:'nearest'})})}}};
+$('#layers').addEventListener('contextmenu',e=>{const b=e.target.closest('button[data-layer^="l"]');if(!b)return;e.preventDefault();showMenuAt(e.clientX,e.clientY,[{label:'새 타일맵',fn:()=>addTilemap(false)},{label:'새 벽 타일맵',fn:()=>addTilemap(true)}])});
 $('#tools').onclick=e=>{const b=e.target.closest('button');if(b)applyTool(b.dataset.tool)};
 
 /* ===================== 타일 팔레트 ===================== */
@@ -4708,7 +4848,7 @@ function spDelete(id){
     P.maps.forEach(m=>m.l.forEach(A=>{for(let i=0;i<A.length;i++)if(A[i]===v)A[i]=0}));
     P.stiles=P.stiles.filter(x=>x.id!==id);spDrafts.delete(id);spReindex();
     if(spAct===id){spAct=null;spEditKey=null;stamp=null;pickActiveForMap()}
-    baseline=snap();markDirty();renderPal();renderInsp();renderHier();need();toast(_t('「{name}」 특수 타일을 지웠어요',{name:s.name}));
+    resetHistory();markDirty();renderPal();renderInsp();renderHier();need();toast(_t('「{name}」 특수 타일을 지웠어요',{name:s.name}));
   }}]);
 }
 function updPalInfo(a){
@@ -5087,7 +5227,7 @@ function duplicateFolder(f,parent){
 function deleteFolder(f){
   const isS=isScriptFid(f.id),n=isS?SC().filter(x=>sFolderOf(x)===f.id).length:assets.filter(a=>folderOf(a)===f.id).length,sub=subFolders(f.id).length;
   const run=()=>{
-    assets.concat(audios).forEach(a=>{if(folderOf(a)===f.id){if(f.parent)P.afmap[a.id]=f.parent;else delete P.afmap[a.id]}});
+    assets.concat(audios,PFS()).forEach(a=>{if(folderOf(a)===f.id){if(f.parent)P.afmap[a.id]=f.parent;else delete P.afmap[a.id]}});
     SC().forEach(x=>{if(sFolderOf(x)===f.id){if(f.parent&&f.parent!==SROOT)P.sfmap[x.id]=f.parent;else delete P.sfmap[x.id]}});
     P.afolders.forEach(s=>{if(s.parent===f.id)s.parent=f.parent||null});
     P.afolders=P.afolders.filter(s=>s!==f);if(aFol===f.id)aFol=null;if(sFol===f.id)sFol=f.parent&&f.parent!==SROOT?f.parent:null;markDirty();renderAssets();
@@ -5132,7 +5272,7 @@ function pjMax(on){
 }
 $('#aMax').onclick=()=>pjMax();
 $('#aZoom').addEventListener('input',e=>{pjZoom=+e.target.value;savePj();renderAssets()});
-const MODEN={tile:'모든 타일셋',sprite:'모든 스프라이트',audio:'모든 오디오',font:'모든 글꼴',scripts:'스크립트'};
+const MODEN={tile:'모든 타일셋',sprite:'모든 스프라이트',audio:'모든 오디오',font:'모든 글꼴',prefab:'모든 프리팹',scripts:'스크립트'};
 function drawThumb(cv,img,r,W){
   cv.width=cv.height=W;const g=cv.getContext('2d');g.imageSmoothingEnabled=false;
   let s=Math.min(W/r.w,W/r.h);if(s>=1)s=Math.floor(s);
@@ -5148,6 +5288,7 @@ function pjTree(){
     h+=node({d:0,attr:'data-mode="sprite"',icon:ico('search'),label:MODEN.sprite,cnt:assets.filter(a=>a.kind==='sprite').length,on:aMode==='sprite'});
     h+=node({d:0,attr:'data-mode="audio"',icon:ico('search'),label:MODEN.audio,cnt:audios.length,on:aMode==='audio'});
     h+=node({d:0,attr:'data-mode="font"',icon:ico('search'),label:MODEN.font,cnt:fonts.length,on:aMode==='font'});
+    h+=node({d:0,attr:'data-mode="prefab"',icon:ico('search'),label:MODEN.prefab,cnt:PFS().length,on:aMode==='prefab'});
   }
   h+='<div class="tsec">프로젝트</div>';
   const rec=(pid,d)=>subFolders(pid).map(f=>{const kids=subFolders(f.id).length,open=!aClosed.has(f.id);
@@ -5172,14 +5313,15 @@ function pjCrumb(){
 function pjItems(){
   const flt=AP.querySelector('#aFilter').value,q=(AP.querySelector('#aSearch').value||'').trim().toLowerCase();
   if(aMode==='scripts'){
-    if(q)return{search:true,folders:[],assets:[],audio:[],font:[],scripts:SC().filter(s=>s.name.toLowerCase().includes(q)).slice().sort(byName)};
-    return{search:false,folders:subFolders(sFol||SROOT),assets:[],audio:[],font:[],scripts:SC().filter(s=>sFolderOf(s)===sFol).slice().sort(byName)};
+    if(q)return{search:true,folders:[],assets:[],audio:[],font:[],pf:[],scripts:SC().filter(s=>s.name.toLowerCase().includes(q)).slice().sort(byName)};
+    return{search:false,folders:subFolders(sFol||SROOT),assets:[],audio:[],font:[],pf:[],scripts:SC().filter(s=>sFolderOf(s)===sFol).slice().sort(byName)};
   }
-  if(aMode||flt||q)return{search:true,folders:[],scripts:[],font:(aMode&&aMode!=='font')||flt?[]:fonts.filter(a=>!q||a.name.toLowerCase().includes(q)).slice().sort(byName),assets:aMode==='audio'||aMode==='font'?[]:assets.filter(a=>(!aMode||a.kind===aMode)&&(!flt||a.theme===flt)&&(!q||a.name.toLowerCase().includes(q))).sort(byName),
+  if(aMode==='prefab')return{search:true,folders:[],scripts:[],font:[],assets:[],audio:[],pf:PFS().filter(a=>!q||a.name.toLowerCase().includes(q)).slice().sort(byName)};
+  if(aMode||flt||q)return{search:true,folders:[],scripts:[],pf:aMode||flt?[]:PFS().filter(a=>a.name.toLowerCase().includes(q)).slice().sort(byName),font:(aMode&&aMode!=='font')||flt?[]:fonts.filter(a=>!q||a.name.toLowerCase().includes(q)).slice().sort(byName),assets:aMode==='audio'||aMode==='font'?[]:assets.filter(a=>(!aMode||a.kind===aMode)&&(!flt||a.theme===flt)&&(!q||a.name.toLowerCase().includes(q))).sort(byName),
     audio:(aMode&&aMode!=='audio')||flt?[]:audios.filter(a=>!q||a.name.toLowerCase().includes(q)).slice().sort(byName)};
-  return{search:false,folders:subFolders(aFol),assets:assets.filter(a=>folderOf(a)===aFol).sort(byName),audio:audios.filter(a=>folderOf(a)===aFol).sort(byName),font:fonts.filter(a=>folderOf(a)===aFol).sort(byName),scripts:[]};
+  return{search:false,folders:subFolders(aFol),pf:PFS().filter(a=>folderOf(a)===aFol).slice().sort(byName),assets:assets.filter(a=>folderOf(a)===aFol).sort(byName),audio:audios.filter(a=>folderOf(a)===aFol).sort(byName),font:fonts.filter(a=>folderOf(a)===aFol).sort(byName),scripts:[]};
 }
-const folderCount=f=>{const sc=isScriptFid(f.id);return descFolders(f.id).reduce((s,id)=>s+(sc?SC().filter(x=>sFolderOf(x)===id).length:assets.filter(a=>folderOf(a)===id).length+audios.filter(a=>folderOf(a)===id).length+fonts.filter(a=>folderOf(a)===id).length),0)};
+const folderCount=f=>{const sc=isScriptFid(f.id);return descFolders(f.id).reduce((s,id)=>s+(sc?SC().filter(x=>sFolderOf(x)===id).length:assets.filter(a=>folderOf(a)===id).length+audios.filter(a=>folderOf(a)===id).length+fonts.filter(a=>folderOf(a)===id).length+PFS().filter(a=>folderOf(a)===id).length),0)};
 function scriptInfo(s){const r=parseCS(s.code),use=scriptUse(s.id);return{errs:r.errs.length,use}}
 function renderAssets(){
   const sel=AP.querySelector('#aFilter'),prev=sel.value||'';
@@ -5198,6 +5340,7 @@ function renderAssets(){
     });
     (it.audio||[]).forEach(a=>{c+=`<div class="gi gaud${a.id===auSel?' on':''}" data-aid="${a.id}" draggable="true" title="${esc(a.name)} · ${audFmtDur(a.dur)} · ${audFmtSize(a.size)}&#10;${esc(_t('더블클릭: 미리 듣기 · 인스펙터로 끌어다 놓으면 오디오 소스의 클립'))}"><div class="gth"><span class="auic">${ico('sound')}</span><button class="aupl${audPrevId===a.id?' on':''}" type="button" data-au="play" aria-label="미리 듣기">${audPrevId===a.id?'■':'▶'}</button><small class="audur">${audFmtDur(a.dur)}</small></div><span class="gn">${enm(a.name)}</span></div>`});
     (it.font||[]).forEach(a=>{fntLoad(a);c+=`<div class="gi gfnt${a.id===fnSel?' on':''}" data-fnt="${a.id}" draggable="true" title="${esc(a.name)} · ${esc(_t('글꼴'))} · ${audFmtSize(a.size)}&#10;${esc(_t('텍스트 UI의 글꼴 칸에서 고를 수 있습니다'))}"><div class="gth"><span class="fnpv" style="font-family:'${fntFam(a)}',${FNT_FALL}">가Aa</span></div><span class="gn">${enm(a.name)}</span></div>`});
+    (it.pf||[]).forEach(f=>{c+=`<div class="gi gpf${f.id===pfSel?' on':''}" data-pf="${f.id}" draggable="true" title="${esc(f.name)} · ${esc(_t('프리팹 · 더블클릭: 씬에 배치 · 씬으로 끌어다 놓기'))}"><div class="gth">${pfThumbHTML(f)}<em class="gk pfk">${esc(_t('프리팹'))}</em></div><span class="gn">${enm(f.name)}</span></div>`});
     it.scripts.forEach(s=>{const r=scriptInfo(s);c+=`<div class="gi gscr${s.id===sSel?' on':''}${r.errs?' err':''}" data-sid="${s.id}" draggable="true" title="${esc(s.name)}.cs · ${esc(_t(r.errs?'오류 {n}':r.use?'{n}개 오브젝트':'미사용',{n:r.errs||r.use}))}&#10;${esc(_t('더블클릭: 편집'))}"><div class="gth"><span class="page">#</span></div><span class="gn">${enm(s.name)}</span></div>`});
     c+='</div>';
   }else{
@@ -5205,11 +5348,13 @@ function renderAssets(){
     it.assets.forEach(a=>{c+=assetRow(a,0);if(slCount(a)&&pjOpenSl.has(a.id))(a.slices||[]).forEach(r=>{const ref=a.id+':'+r.id;c+=`<div class="slrow gslice${slSel===ref?' on':''}" data-ref="${ref}" draggable="true" title="씬으로 끌어다 놓으면 게임 오브젝트가 됩니다"><canvas data-th="${a.id}" data-sl="${r.id}" data-sz="20"></canvas><b>${enm(r.name)}</b><small>${r.w}×${r.h}</small></div>`})});
     (it.audio||[]).forEach(a=>{const u=audUse(a.id);c+=`<div class="srow aurow${a.id===auSel?' on':''}" data-aid="${a.id}" draggable="true"><button class="ib aup" type="button" data-au="play" aria-label="미리 듣기">${audPrevId===a.id?'■':'▶'}</button><b>${enm(a.name)}</b><small>${audFmtDur(a.dur)} · ${audFmtSize(a.size)}${u?' · '+esc(_t('{n}개 오브젝트',{n:u})):''}</small><span class="spacer"></span><button class="ib" type="button" data-au="ren" title="이름 바꾸기" aria-label="이름 바꾸기">${ico('pencil')}</button><button class="ib" type="button" data-au="del" title="삭제" aria-label="삭제">${ico('trash')}</button></div>`});
     (it.font||[]).forEach(a=>{fntLoad(a);const u=fntUse(a.id);c+=`<div class="srow fnrow${a.id===fnSel?' on':''}" data-fnt="${a.id}" draggable="true"><span class="fnpv sm" style="font-family:'${fntFam(a)}',${FNT_FALL}">Aa</span><b>${enm(a.name)}</b><small>${esc(_t('글꼴'))} · ${audFmtSize(a.size)}${u?' · '+esc(_t('텍스트 {n}개',{n:u})):''}</small><span class="spacer"></span><button class="ib" type="button" data-fn="ren" title="이름 바꾸기" aria-label="이름 바꾸기">${ico('pencil')}</button><button class="ib" type="button" data-fn="del" title="삭제" aria-label="삭제">${ico('trash')}</button></div>`});
+    (it.pf||[]).forEach(f=>{const n=pfCountAll(f.id);c+=`<div class="srow pfrow${f.id===pfSel?' on':''}" data-pf="${f.id}" draggable="true" title="${esc(_t('프리팹 · 더블클릭: 씬에 배치 · 씬으로 끌어다 놓기'))}">${pfThumbHTML(f,20)}<b>${enm(f.name)}</b><small>${esc(_t('프리팹'))}${n?' · '+esc(_t('인스턴스'))+' '+n:''}</small></div>`});
     it.scripts.forEach(s=>{const r=scriptInfo(s);c+=`<div class="srow${r.errs?' err':''}" data-sid="${s.id}" draggable="true">${ico('script')}<b>${enm(s.name)}.cs</b><small>${r.errs?'오류 '+r.errs:r.use?r.use+'개 오브젝트':'미사용'}</small><span class="spacer"></span><button class="ib" data-sact="edit" title="편집" aria-label="편집">${ico('gear')}</button><button class="ib" data-sact="del" title="삭제" aria-label="삭제">${ico('x')}</button></div>`});
   }
-  if(!it.folders.length&&!it.assets.length&&!it.scripts.length&&!(it.audio||[]).length&&!(it.font||[]).length)c+=`<p class="empty-note">${aMode==='scripts'?(sFol?'비어 있는 폴더입니다. 스크립트를 끌어다 놓거나 우클릭 → 새 C# 스크립트로 만드세요.':'스크립트가 없습니다. 우클릭 → 새 C# 스크립트·새 폴더를 만들 수 있습니다.'):it.search?'조건에 맞는 에셋이 없습니다.':'비어 있는 폴더입니다. PNG를 가져오거나 직접 그리기로 만들어 보세요.'}</p>`;
+  if(!it.folders.length&&!it.assets.length&&!it.scripts.length&&!(it.audio||[]).length&&!(it.font||[]).length&&!(it.pf||[]).length)c+=`<p class="empty-note">${aMode==='scripts'?(sFol?'비어 있는 폴더입니다. 스크립트를 끌어다 놓거나 우클릭 → 새 C# 스크립트로 만드세요.':'스크립트가 없습니다. 우클릭 → 새 C# 스크립트·새 폴더를 만들 수 있습니다.'):it.search?'조건에 맞는 에셋이 없습니다.':'비어 있는 폴더입니다. PNG를 가져오거나 직접 그리기로 만들어 보세요.'}</p>`;
   const sa=grid&&aMode!=='scripts'&&aSelId&&byId.get(aSelId);
-  const det=sa?`<div class="pjdet">${assetRow(sa,0,true)}</div>`:'';
+  const spf=aMode!=='scripts'&&pfSel&&pfOf(pfSel);if(pfSel&&!spf)pfSel=null;
+  const det=spf?`<div class="pjdet">${pfDetHTML(spf)}</div>`:sa?`<div class="pjdet">${assetRow(sa,0,true)}</div>`:'';
   box.innerHTML=`<div class="pj${pjWide?' wide':''}" style="--tw:${pjTreeW}px">`+(pjWide?`<nav class="pjtree" aria-label="프로젝트 폴더">${pjTree()}</nav><div class="pjsplit" role="separator" aria-label="폴더 트리 너비"></div>`:'')+
     `<div class="pjmain">${pjCrumb()}<div class="pjbody">${c}</div>${det}</div></div>`;
   const dpr=window.devicePixelRatio||1;
@@ -5219,6 +5364,7 @@ function renderAssets(){
     const r=cv.dataset.sl?(a.slices||[]).find(q=>q.id===cv.dataset.sl):{x:0,y:0,w:a.w,h:a.h};if(!r)return;
     drawThumb(cv,a.img,r,W);
   });
+  pfThumbs(box,gs);
   if(!$('#themeDl')){const dl=document.createElement('datalist');dl.id='themeDl';document.body.append(dl)}
   $('#themeDl').innerHTML=[...new Set([...themeList(),...P.maps.map(m=>m.theme)])].map(t=>`<option value="${esc(t)}">`).join('');
 }
@@ -5387,6 +5533,7 @@ $('#aList').addEventListener('drop',e=>{
   else if(d.t==='a'){const a=byId.get(d.id);if(a)moveAsset(a,tgt)}
   else if(d.t==='au'){const a=audOf(d.id);if(a)moveAsset(a,tgt)}
   else if(d.t==='fn'){const a=fntOf(d.id);if(a)moveAsset(a,tgt)}
+  else if(d.t==='pf'){const a=pfOf(d.id);if(a)moveAsset(a,tgt)}
   else{const f=P.afolders.find(x=>x.id===d.id);if(f)moveFolder(f,tgt)}
 });
 $('#aList').addEventListener('dragend',()=>{adrag=null;clearAdrop()});
@@ -5416,7 +5563,7 @@ let uiSel=new Set(),uiSelSync=null,uiAnchor=null,uiRows=[];
 let hForce=null;  /* 포커스 모드 중 억지로 펼칠 폴더 키 */
 const isOpen=(k,d)=>hForce&&hForce.has(k)?true:k in fold?fold[k]:d;
 function syncHsel(){if(syncSel!==sel){hsel=new Set(sel?[sel]:[]);syncSel=sel}}
-function setHsel(set,primary){hsel=set;sel=primary||null;syncSel=sel}
+function setHsel(set,primary){hsel=set;sel=primary||null;syncSel=sel;if(set&&set.size&&(hierPick==='mgr'||hierPick==='mgrfolder'))hierPick='layer'}
 function tr(o){
   foldKeys.add(o.key||'');
   return`<div class="tr${o.on?' on':''}${o.start?' start':''}${o.off?' off':''}" style="--d:${o.d}" ${o.data}${o.drag?' draggable="true"':''}>`+
@@ -5426,7 +5573,8 @@ function tr(o){
 function objRow(m,o,d,flat,n){
   visRows.push({rk:o.id,s:m.id});n=n||0;
   const kids=flat?[]:m.objs.filter(k=>k.parent===o.id&&k!==o),key='o:'+o.id,open=isOpen(key,true);
-  let h=tr({d,key:kids.length?key:undefined,foldable:kids.length>0,open,icon:ico(o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':'cube')),color:TYPES[o.type].color,label:enm(o.name)+(o.type==='spawn'&&m.objs.filter(q=>q.type==='spawn').length>1&&startSpawn(m)===o?' <span class="wbadge">시작</span>':'')+(o.props&&o.props.camera&&o.props.camera.start?' <span class="wbadge">시작 카메라</span>':''),sub:`${o.x},${o.y}`,on:m.id===curId&&hsel.has(o.id),off:!objOn(m,o),data:`data-t="obj" data-s="${m.id}" data-rk="${o.id}"`,drag:true,
+  const pfl=isPfLinked(o);
+  let h=tr({d,key:kids.length?key:undefined,foldable:kids.length>0,open,icon:ico(o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':'cube')),color:pfl?PF_COL:TYPES[o.type].color,label:pfHierLabel(m,o,enm(o.name))+(o.type==='spawn'&&m.objs.filter(q=>q.type==='spawn').length>1&&startSpawn(m)===o?' <span class="wbadge">시작</span>':'')+(o.props&&o.props.camera&&o.props.camera.start?' <span class="wbadge">시작 카메라</span>':''),on:m.id===curId&&hsel.has(o.id),off:!objOn(m,o),data:`data-t="obj" data-s="${m.id}" data-rk="${o.id}"`,drag:true,
     acts:`<button class="ib" data-act="odel" title="삭제" aria-label="삭제">${ico('x')}</button>`});
   if(kids.length&&open&&n<30)kids.forEach(k=>{h+=objRow(m,k,d+1,flat,n+1)});
   return h;
@@ -5526,7 +5674,7 @@ function renderHier(){
         h+=tr({d:2,key:tk,foldable:true,open:tOpen,on:m.id===curId&&hsel.size===0&&hierPick==='tmfolder',icon:ico('folder'),label:'타일맵',sub:m.l.length,data:`data-t="folder" data-s="${m.id}" data-k="tm"`});
         if(tOpen)[...m.l.map((_,i)=>'l'+i),'col'].forEach(lk=>{
           const cnt=lk==='col'?m.col.filter(v=>v).length:m.l[lIdx(lk)].filter(v=>v).length,wl=lk!=='col'&&m.lm[lIdx(lk)].wall;
-          h+=tr({d:3,icon:ico(lk==='col'?'rect':'tilemap'),label:(lk==='col'?esc(layerName(m,lk)):enm(layerName(m,lk)))+(wl?' <span class="wbadge">벽</span>':''),sub:cnt,on:m.id===curId&&layerSel===lk&&hsel.size===0&&hierPick==='layer',data:`data-t="layer" data-s="${m.id}" data-id="${lk}"`});
+          h+=tr({d:3,icon:ico(lk==='col'?'rect':'tilemap'),label:(lk==='col'?esc(layerName(m,lk)):enm(layerName(m,lk)))+(wl?' <span class="wbadge">벽</span>':''),sub:cnt,on:m.id===curId&&layerSel===lk&&hsel.size===0&&hierPick==='layer',data:`data-t="layer" data-s="${m.id}" data-id="${lk}"`,drag:lk!=='col'});
         });
       }
       const gk='go:'+m.id,gOpen=q?true:isOpen(gk,true);
@@ -5651,7 +5799,7 @@ $('#hExpand').onclick=()=>{foldKeys.forEach(k=>{if(k)fold[k]=true});P.maps.forEa
 $('#hAdd').onclick=e=>showMenu(e.currentTarget,hierCreateMenu(curId,hfOnly()));
 /* 목록 아래 빈 곳 우클릭도 만들기 메뉴 (목록이 패널 끝까지 차지 않음) */
 $('#hier').parentElement.addEventListener('contextmenu',e=>{if(e.defaultPrevented||e.target.closest('#hier,.ptool'))return;e.preventDefault();if(hFocus&&hFocusInfo()){showMenuAt(e.clientX,e.clientY,[{label:'포커스 해제',ic:'collapse',col:'#e9bd0c',fn:clearHFocus},{sep:1},...hierCreateMenu(curId,hfOnly())]);return}showMenuAt(e.clientX,e.clientY,[...hierCreateMenu(curId),{sep:1},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste},{label:'새 씬',fn:addScene}])});
-function switchMap(id){curId=id;sel=null;selUi=null;uiSel=new Set();uiSelSync=null;syncSel=null;hsel=new Set();pickActiveForMap();resetHistory();renderAll();fitView()}
+function switchMap(id){curId=id;sel=null;selUi=null;uiSel=new Set();uiSelSync=null;syncSel=null;hsel=new Set();pickActiveForMap();renderAll();fitView()}
 function addScene(){
   const n=P.maps.length+1;
   openModal('새 씬',
@@ -5724,6 +5872,9 @@ function selMenu(){
   if(objs.length)it.push({label:'복제',key:kb('edit.duplicate'),fn:duplicateSel});
   it.push({label:'복사',key:kb('edit.copy'),fn:hierCopy},{label:'붙여넣기',key:kb('edit.paste'),disabled:!hClip,fn:hierPaste});
   it.push({sep:1});
+  if(objs.length&&!play){it.push({label:'프리팹 만들기',ic:'cube',col:PF_COL,fn:()=>pfCreate(objs.map(o=>o.id))});
+    const pi=objs.length===1&&isPfLinked(objs[0])?pfMenuItems(m,objs[0]):[];if(pi.length)it.push({label:'프리팹',ic:'cube',col:PF_COL,kind:'gen',fn:()=>showMenuAt(pfMx,pfMy,pi)});
+    it.push({sep:1})}
   if(objs.length)it.push({label:'그룹으로 묶기…',key:kb('edit.group'),fn:groupSelected});
   if(objs.some(o=>o.group))it.push({label:'그룹에서 꺼내기',fn:ungroupObjs});
   if(grps.length)it.push({label:'그룹 해제 (오브젝트 유지)',fn:()=>dissolveGroups(grps.map(g=>g.id))});
@@ -5771,6 +5922,7 @@ $('#hier').addEventListener('dragstart',e=>{
   const r=e.target.closest('.tr[draggable="true"]');if(!r)return;
   if(r.dataset.s!==curId){e.preventDefault();toast('먼저 씬 행을 눌러 이 씬을 선택하세요');return}
   const rk=r.dataset.rk,t=r.dataset.t,m=cur();
+  if(t==='layer'){if(r.dataset.id==='col'){e.preventDefault();return}dnd={kind:'layer',ids:[r.dataset.id],sid:curId};e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',r.dataset.id);return}
   if(t==='uiel'||t==='uig'){syncUiSel();const ids=t==='uig'?[rk]:(uiSel.has(rk)?[...uiSel].filter(id=>(m.ui||[]).some(u=>u.id===id)):[rk]);dnd={kind:t==='uig'?'uigroup':'ui',ids,sid:curId};e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',ids.join(','));return}
   const ids=t==='group'?[rk]:(hsel.has(rk)?[...hsel].filter(id=>m.objs.some(o=>o.id===id)):[rk]);
   dnd={kind:t==='group'?'group':'obj',ids,sid:curId};
@@ -5787,6 +5939,7 @@ function dropInfo(e){
     return null;
   }
   if(dnd.kind==='uigroup'){if(t==='uig'&&!dnd.ids.includes(rk))return{r,mode:top?'before':'after',rk,t};return null}
+  if(dnd.kind==='layer'){const lid=r.dataset.id;if(t==='layer'&&lid!=='col'&&lid!==dnd.ids[0])return{r,mode:top?'before':'after',rk:lid,t};if(t==='layer'&&lid==='col')return{r,mode:'before',rk:'end',t};return null}
   if(dnd.kind==='obj'){
     if(t==='obj'){if(dnd.ids.includes(rk))return null;const mm=cur();let zc=mm.objs.find(o=>o.id===rk),zn=0;while(zc&&zn++<50){if(dnd.ids.includes(zc.id))return null;zc=zc.parent?mm.objs.find(o=>o.id===zc.parent):null}const fy=(e.clientY-rect.top)/rect.height;return{r,mode:fy<.28?'before':fy>.72?'after':'into',rk,t}}
     if(t==='group')return{r,mode:'into',rk,t};
@@ -5808,6 +5961,13 @@ $('#hier').addEventListener('drop',e=>{
     if(d.mode==='into'||d.mode==='root'){mv.forEach(u=>u.group=d.mode==='into'?d.rk:null);if(d.mode==='into')fold['ug:'+d.rk]=true}
     else{const tg=m.ui.find(u=>u.id===d.rk);m.ui=m.ui.filter(u=>!mv.includes(u));const i=m.ui.indexOf(tg)+(d.mode==='after'?1:0);mv.forEach(u=>u.group=tg.group||null);m.ui.splice(i,0,...mv)}
     dnd=null;commit();renderHier();renderInsp();need();return;
+  }
+  if(dnd.kind==='layer'){
+    /* 타일맵 순서 바꾸기 (아래에 있을수록 위에 그려짐) — 타일 배열 · 설정을 함께 옮김 */
+    const from=lIdx(dnd.ids[0]);let to=d.rk==='end'?m.l.length:lIdx(d.rk)+(d.mode==='after'?1:0);
+    if(from>=0&&from<m.l.length){if(to>from)to--;if(to!==from){const [L0]=m.l.splice(from,1),[M0]=m.lm.splice(from,1);m.l.splice(to,0,L0);m.lm.splice(to,0,M0);
+      const was=layerSel;if(was===dnd.ids[0])layerSel='l'+to;else if(was[0]==='l'){let i=lIdx(was);if(i>from)i--;if(i>=to)i++;layerSel='l'+i}}}
+    dnd=null;commit();setLayer(layerSel);renderLayerBar();renderHier();renderInsp();need();return;
   }
   if(dnd.kind==='uigroup'){
     const mv=m.uiGroups.filter(g=>ids.includes(g.id));m.uiGroups=m.uiGroups.filter(g=>!mv.includes(g));
@@ -5879,7 +6039,7 @@ function duplicateSel(){
       const n=JSON.parse(JSON.stringify(q));n.id=uid();idm[q.id]=n.id;
       n.x=q===o?c.x:q.x+dx;n.y=q===o?c.y:q.y+dy;
       n.group=q.group||null;n.parent=q===o?(q.parent||null):(idm[q.parent]||null);(n.scripts||[]).forEach(x=>x.id=uid());
-      n.name=base+' ('+m.objs.filter(z=>z.name.startsWith(base)).length+')';
+      if(q===o||!q.pf)n.name=base+' ('+m.objs.filter(z=>z.name.startsWith(base)).length+')';
       if(n.type==='spawn')n.props.start=false;
       if(n.props&&n.props.camera)n.props.camera.start=false;
       m.objs.push(n);if(q===o)made.push(n.id);
@@ -5958,6 +6118,7 @@ function renderInsp(){renderInsp0();try{anSync()}catch(e){console.error(e)}try{s
 function renderInsp0(){
   syncHsel();
   const m=cur(),box=$('#insp');
+  if((hierPick==='mgr'||hierPick==='mgrfolder')&&(sel||hsel.size)&&m&&m.objs.some(o=>o.id===sel||hsel.has(o.id)))hierPick='layer';
   if(hierPick==='mgr'||hierPick==='mgrfolder'){box.innerHTML=mgrInspHtml();return}
   if(layerSel==='ui'&&hierPick!=='scene'&&hierPick!=='tmfolder'&&hierPick!=='gofolder'){box.innerHTML=uiInspHtml(m);return}
   const objsSel=m.objs.filter(o=>hsel.has(o.id)),grpSel=(m.groups||[]).filter(g=>hsel.has(g.id));
@@ -6017,7 +6178,7 @@ function renderInsp0(){
     return;
   }
   const T=TYPES[o.type],p=o.props;
-  let h=`<div class="ihead"><span class="ibadge" style="background:${T.color}">${ico('cube')}</span><input type="checkbox" class="iact" data-p="active"${o.active!==false?' checked':''} title="활성화 (SetActive) · 끄면 씬과 플레이에서 숨겨지고 스크립트도 멈춥니다" aria-label="활성화"><input type="text" class="iname" data-p="name" maxlength="24" value="${esc(o.name)}" aria-label="이름"><span class="tag">${T.label}</span><button class="ib del" type="button" id="delObj" title="게임 오브젝트 삭제 (Delete)" aria-label="게임 오브젝트 삭제">${ico('trash')}</button></div>`;
+  let h=`<div class="ihead"><span class="ibadge" style="background:${T.color}">${ico('cube')}</span><input type="checkbox" class="iact" data-p="active"${o.active!==false?' checked':''} title="활성화 (SetActive) · 끄면 씬과 플레이에서 숨겨지고 스크립트도 멈춥니다" aria-label="활성화"><input type="text" class="iname" data-p="name" maxlength="24" value="${esc(o.name)}" aria-label="이름"><span class="tag">${T.label}</span><button class="ib del" type="button" id="delObj" title="게임 오브젝트 삭제 (Delete)" aria-label="게임 오브젝트 삭제">${ico('trash')}</button></div>`+pfBarHTML(m,o);
   h+=comp('transform','select','변환'+compEn('Transform'),
     `<div class="fr"><label class="scl" data-scrub="pos">${lb('위치','position','씬 안에서의 칸 좌표입니다. 왼쪽 위가 (0, 0)입니다. 「위치」 글자를 잡고 마우스를 좌우로 움직이면 X, 위아래로 움직이면 Y가 0.01칸 단위로 바뀝니다 (Shift: 0.1칸 · Alt: 0.001칸). X·Y 글자를 끌어도 됩니다.')}</label><div class="fv">${num('X','data-p="x" data-step="0.01"',insPos(m,o).x,-99999,99999)+num('Y','data-p="y" data-step="0.01"',insPos(m,o).y,-99999,99999)}</div></div>`+
     fr('배치 순서',num('#','data-p="order"',o.order==null?ordOf(m,o):o.order,-999,999)+smBtn('obj','끌어서 배치 순서를 바꾸는 창을 엽니다 (위쪽일수록 앞에 그려집니다)'),false,'sortingOrder','값이 클수록 위에 그려집니다. 타일맵은 10, 20, 30… 순서이므로, 값이 작으면 해당 타일맵 뒤에 그려집니다.')+
@@ -6073,6 +6234,7 @@ function renderInsp0(){
   h+=scriptComps(o);
   h+='<div class="irow"><div class="addsplit"><button class="btn pri" id="iAddComp">컴포넌트 추가</button><span class="bar" aria-hidden="true"></span><button class="btn pri" id="iAddScript">스크립트 추가</button></div></div>';
   box.innerHTML=h;
+  try{pfMarkInsp(m,o,box)}catch(e){console.error(e)}
 }
 if(window.TI18N)TI18N.add({
 '주인공 이동 (타일형)':['Hero Movement (tile)','主人公移動（タイル型）','主角移动（格子型）'],'주인공 이동 (픽셀형)':['Hero Movement (pixel)','主人公移動（ピクセル型）','主角移动（像素型）'],
@@ -6359,6 +6521,7 @@ const scPath=s=>'Assets/Scripts/'+s.name+'.cs';
 let conLog=[],conFilter={info:true,warn:true,error:true};
 let conSeq=0;
 function clog(type,msg,sid,det){
+  if(LEARN_EMBED&&play)learnEmit('log:'+type+':'+msg);
   const last=conLog[conLog.length-1];
   /* 메시지 속 줄 번호: 컴파일 “파일.cs(12,1)” · 실행 “12번째 줄” */
   const lm=/\.cs\((\d+),\d+\)/.exec(msg)||/(\d+)번째 줄/.exec(msg);
@@ -7698,6 +7861,162 @@ public class HeroTileMovement : MonoBehaviour
 
     [Tooltip("이 시간(초)보다 오래 누르고 있으면 계속 걷습니다. 그보다 짧게 누르면 한 칸만 갑니다")]
     [Range(0, 1)]
+    public float holdDelay = 0.15f;
+
+    [Header("달리기")]
+    [Tooltip("Shift를 누르고 있는 동안 곱해지는 속도 배율입니다")]
+    [Range(1, 3)]
+    public float runMultiplier = 1.6f;
+
+    private Hero hero;
+    private Animator animator;
+    private bool stepping = false;     // 한 칸을 걷는 중인지
+    private Vector2 target;            // 이번 걸음의 도착 칸
+    private Vector2 dir;               // 마지막으로 걸은 방향
+    private float lastH = 0f;          // 지난 프레임의 입력
+    private float lastV = 0f;
+    private float holdTime = 0f;       // 같은 방향을 누르고 있는 시간
+    private bool queued = false;       // 걷는 도중 새로 누른 입력 (도착하면 그 방향으로 한 칸 더)
+    private float queuedH = 0f;
+    private float queuedV = 0f;
+
+    void Start()
+    {
+        hero = GetComponent<Hero>();
+        animator = GetComponent<Animator>();     // 애니메이터 컴포넌트 (없으면 null)
+        hero.position = Snap(hero.position);     // 칸 가운데에서 시작
+    }
+
+    void Update()
+    {
+        // 왼쪽 -1 · 오른쪽 +1 / 위 -1 · 아래 +1
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        // 두 방향을 함께 누르면 지금 걷던 축을 그대로 (대각선 없음)
+        if (h != 0 && v != 0)
+        {
+            if (dir.x != 0)
+                v = 0;
+            else
+                h = 0;
+        }
+        bool pressing = h != 0 || v != 0;
+        bool fresh = pressing && (h != lastH || v != lastV);   // 방금 눌렀거나 방향을 바꿈
+        lastH = h;
+        lastV = v;
+        if (fresh)
+            holdTime = 0f;
+        if (pressing)
+            holdTime += Time.deltaTime;
+        else
+            holdTime = 0f;
+
+        if (!stepping)
+        {
+            // 새로 누르면 한 칸 · 오래 누르고 있으면 계속
+            if (fresh || (pressing && holdTime >= holdDelay))
+                StartStep(h, v);
+        }
+        else if (fresh)
+        {
+            queued = true;
+            queuedH = h;
+            queuedV = v;
+        }
+
+        if (stepping)
+        {
+            float s = speed;
+            if (Input.GetKey(KeyCode.LeftShift))
+                s = s * runMultiplier;
+
+            // 이번 프레임에 걸을 거리 — 칸에 도착하고 남은 거리는 다음 칸으로 이어서 씁니다 (칸마다 끊기지 않게)
+            float budget = s * Time.deltaTime;
+            Vector2 next = Vector2.MoveTowards(hero.position, target, budget);
+            budget = budget - Vector2.Distance(hero.position, next);
+            if (!hero.Move(next - hero.position))
+            {
+                // 걷는 도중 길이 막히면(몬스터가 끼어듦 등) 가까운 칸 가운데로 돌아갑니다
+                target = Snap(hero.position);
+                budget = 0f;
+            }
+            if (Vector2.Distance(hero.position, target) < 0.01f)
+            {
+                hero.position = target;          // 칸 가운데에 딱 맞춤
+                stepping = false;
+                // 걷는 도중 다시 눌렀거나 오래 누르고 있으면 멈추지 않고 다음 칸으로
+                if (queued)
+                    StartStep(queuedH, queuedV);
+                else if (pressing && holdTime >= holdDelay)
+                    StartStep(h, v);
+                queued = false;
+                // 남은 거리만큼 다음 칸으로 바로 출발
+                if (stepping && budget > 0f)
+                {
+                    Vector2 more = Vector2.MoveTowards(hero.position, target, budget);
+                    hero.Move(more - hero.position);
+                }
+            }
+        }
+
+        // 애니메이터 창의 상태(대기_아래, 걷기_오른쪽 …)가 이 파라미터로 바뀝니다
+        if (animator != null)
+            animator.SetBool("IsMoving", stepping);
+    }
+
+    // 옆 칸으로 한 걸음을 시작합니다 (막혀 있으면 바라보기만)
+    void StartStep(float h, float v)
+    {
+        dir = new Vector2(h, v);
+        hero.Face(dir);                          // 바라보는 방향 (공격·손전등 방향에 쓰임)
+        if (animator != null)
+            animator.SetInteger("Dir", DirIndex(h, v));
+
+        if (!hero.canMove)                       // 대화 중에는 움직이지 않음
+            return;
+        if (!hero.CanMove(dir))                  // 막힌 칸이면 바라보기만
+            return;
+
+        target = Snap(hero.position) + dir;
+        stepping = true;
+    }
+
+    // 가장 가까운 칸 가운데 좌표
+    Vector2 Snap(Vector2 p)
+    {
+        return new Vector2(Mathf.Round(p.x), Mathf.Round(p.y));
+    }
+
+    // 입력 방향 → 애니메이터 Dir 값
+    int DirIndex(float h, float v)
+    {
+        if (Mathf.Abs(h) > Mathf.Abs(v))
+            return h < 0 ? 2 : 3;
+        return v < 0 ? 1 : 0;
+    }
+}
+`;
+/* 두 번째 타일형 코드 (칸마다 아주 살짝 멈칫하던 것) · 고치지 않았으면 새 코드로 바꿈 */
+const HERO_TILE_V2=`using UnityEngine;
+
+// 주인공 이동 스크립트 (타일형)
+// 주인공 컴포넌트를 추가하면 기본으로 붙습니다. 방향키/WASD를 누르면 칸 가운데에서 옆 칸 가운데로 한 칸씩 걸어갑니다 (좀비고처럼).
+// 짧게 누르면 딱 한 칸, holdDelay(초)보다 오래 누르고 있으면 멈추지 않고 칸 단위로 이어서 걷습니다.
+// 대각선 없이 상하좌우로만 움직입니다.
+// 막힌 칸(벽 · NPC · 박스 콜라이더)으로는 가지 않고 그쪽을 바라보기만 합니다.
+// 칸에 묶이지 않고 픽셀 단위로 부드럽게 움직이려면 컴포넌트 추가에서 「주인공 이동 (픽셀형)」으로 바꾸세요.
+// 걷기·대기 그림은 애니메이터 컴포넌트가 정합니다. 이 스크립트는 애니메이터 파라미터
+// IsMoving(걷는 중인지)과 Dir(0 아래 · 1 위 · 2 왼쪽 · 3 오른쪽)만 바꿔 줍니다.
+// 좌표: 오른쪽이 +x, 아래쪽이 +y 입니다 (단위: 칸 · 정수 좌표가 칸 가운데).
+public class HeroTileMovement : MonoBehaviour
+{
+    [Header("이동")]
+    [Tooltip("1초에 이동하는 칸 수입니다")]
+    public float speed = 5f;
+
+    [Tooltip("이 시간(초)보다 오래 누르고 있으면 계속 걷습니다. 그보다 짧게 누르면 한 칸만 갑니다")]
+    [Range(0, 1)]
     public float holdDelay = 0.3f;
 
     [Header("달리기")]
@@ -7939,7 +8258,7 @@ public class HeroTileMovement : MonoBehaviour
 }
 `;
 /* 주인공 이동 스크립트 두 가지: tile(타일형 · 기본) / free(픽셀형) — p.heroScripts={tile:id, free:id} · p.heroScript는 예전 저장 호환(픽셀형) */
-const HERO_KINDS={tile:{name:'HeroTileMovement',label:'주인공 이동 (타일형)',codes:()=>[HERO_TILE_CODE,HERO_TILE_V1]},free:{name:HERO_SCRIPT,label:'주인공 이동 (픽셀형)',codes:()=>[HERO_CODE,HERO_CODE_V2]}};
+const HERO_KINDS={tile:{name:'HeroTileMovement',label:'주인공 이동 (타일형)',codes:()=>[HERO_TILE_CODE,HERO_TILE_V2,HERO_TILE_V1]},free:{name:HERO_SCRIPT,label:'주인공 이동 (픽셀형)',codes:()=>[HERO_CODE,HERO_CODE_V2]}};
 const heroKindCode=k=>{const c=HERO_KINDS[k].codes()[0];return typeof setv!=='undefined'&&setv.ko?enToKo(c):c};
 function heroScriptK(kind,p,create){
   p=p||P;if(!p)return null;if(!Array.isArray(p.scripts))p.scripts=[];
@@ -8872,6 +9191,301 @@ stage.addEventListener('dragover',e=>{if(!isSprDrag(e))return;e.preventDefault()
 stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('filedrag')});
 stage.addEventListener('drop',e=>{if(!isSprDrag(e))return;e.preventDefault();e.stopPropagation();stage.classList.remove('filedrag');if(play){playLockToast();return}const ref=e.dataTransfer.getData(SPR_MIME);if(ref)placeSprite(ref,cellAt(e))});
 document.addEventListener('dragend',()=>stage.classList.remove('filedrag'));
+/* ===================== 프리팹 (Unity Prefab) =====================
+   P.prefabs = [{id,name,rk,objs:[{...게임 오브젝트, id:k, x·y = 루트 기준 칸, parent: 템플릿 안 부모 k}]}] — 루트(objs[0])는 x·y 0
+   씬의 인스턴스: 오브젝트마다 o.pf = {id: 프리팹 id, k: 템플릿 오브젝트 k} (루트는 k === 프리팹 rk)
+   · 만들기: 계층 구조의 오브젝트를 프로젝트 창으로 끌어다 놓기 · 우클릭 「프리팹 만들기」
+   · 배치: 프로젝트의 프리팹을 씬 뷰(또는 계층 구조)로 끌어다 놓기 · 우클릭 「씬에 배치」
+   · 인스턴스(계층 구조에서 파란색): 인스펙터 맨 위 프리팹 막대 — 오버라이드 · 모두 적용 · 모두 되돌리기 · 연결 끊기
+   · 오버라이드 = 템플릿과 다른 값 (루트의 이름 · 위치 · 그룹 · 부모는 늘 인스턴스마다 따로라 오버라이드가 아님)
+   · 적용하면 다른 인스턴스는 자기 오버라이드만 남기고 나머지를 새 템플릿으로 맞춤 */
+const PF_MIME='application/x-thaniya-prefab',PF_COL='#5aa9ff';
+let pfSel=null,pfMx=0,pfMy=0,pfClk=null;
+document.addEventListener('contextmenu',e=>{pfMx=e.clientX;pfMy=e.clientY},true);
+const PFS=()=>(P.prefabs||(P.prefabs=[]));
+const pfOf=id=>id?PFS().find(p=>p.id===id)||null:null;
+const isPfLinked=o=>!!(o&&o.pf&&pfOf(o.pf.id));
+function pfNorm(p){
+  if(!Array.isArray(p.prefabs)){p.prefabs=[];return}
+  p.prefabs=p.prefabs.filter(f=>f&&f.id&&Array.isArray(f.objs)&&f.objs.length&&f.objs[0]&&f.objs[0].id);
+  p.prefabs.forEach(f=>{f.name=String(f.name||'Prefab').slice(0,30);f.rk=f.objs[0].id;f.objs[0].x=0;f.objs[0].y=0;f.objs[0].parent=null;
+    f.objs.forEach(o=>{if(!o.props||typeof o.props!=='object')o.props={};delete o.pf;delete o.group;if(o.scripts&&!Array.isArray(o.scripts))delete o.scripts})});
+}
+/* 인스턴스 루트 (오브젝트가 프리팹의 일부면 그 프리팹 인스턴스의 맨 위) */
+function pfRoot(m,o){
+  if(!isPfLinked(o))return null;const id=o.pf.id,pf=pfOf(id);let c=o,n=0;
+  while(c&&n++<60){if(c.pf&&c.pf.id===id&&c.pf.k===pf.rk)return c;const p=c.parent&&m.objs.find(q=>q.id===c.parent);if(!p||!p.pf||p.pf.id!==id)break;c=p}
+  return c&&c.pf&&c.pf.id===id?c:null;
+}
+/* 인스턴스에 속한 오브젝트 (루트 + 같은 프리팹 자손 + 인스턴스에서 새로 붙인 자식) */
+function pfMembers(m,R){return[R,...descOf(m,R)]}
+const pfInstances=(m,id)=>m.objs.filter(o=>o.pf&&o.pf.id===id&&pfOf(id)&&o.pf.k===pfOf(id).rk);
+const pfCountAll=id=>P.maps.reduce((n,m)=>n+pfInstances(m,id).length,0);
+/* 비교용 정리: 아이디 · 위치 · 부모 · 그룹 · 연결 정보 빼기, 루트는 이름도 빼기, 자식은 루트 기준 위치(dx · dy) */
+function pfClean(o,root,isRoot){
+  const c=JSON.parse(JSON.stringify(o));['id','x','y','parent','group','pf','_tlRec'].forEach(k=>delete c[k]);
+  if(isRoot)delete c.name;else{c.dx=+((+o.x||0)-(+root.x||0)).toFixed(3);c.dy=+((+o.y||0)-(+root.y||0)).toFixed(3)}
+  if(Array.isArray(c.scripts))c.scripts=c.scripts.map(s=>{const t=Object.assign({},s);delete t.id;return t});
+  if(c.active===true)delete c.active;
+  return c;
+}
+const pfJ=v=>JSON.stringify(v===undefined?null:v);
+function pfDiff(a,b){
+  const out=[];new Set([...Object.keys(a),...Object.keys(b)]).forEach(k=>{
+    if(k==='props'){const pa=a.props||{},pb=b.props||{};new Set([...Object.keys(pa),...Object.keys(pb)]).forEach(q=>{if(pfJ(pa[q])!==pfJ(pb[q]))out.push('props.'+q)});return}
+    if(pfJ(a[k])!==pfJ(b[k]))out.push(k)});
+  return out;
+}
+/* 인스턴스의 오버라이드: {byK:{k:[키…]}, keys:[모든 키], added:[템플릿에 없는 오브젝트], removed:[없어진 템플릿 k]} */
+function pfOverrides(m,R){
+  const pf=pfOf(R.pf&&R.pf.id),res={byK:{},keys:[],added:[],removed:[]};if(!pf)return res;
+  const mem=pfMembers(m,R),t0=pf.objs[0];
+  pf.objs.forEach(t=>{
+    const o=mem.find(q=>q.pf&&q.pf.id===pf.id&&q.pf.k===t.id);
+    if(!o){res.removed.push(t.id);return}
+    const isR=t.id===pf.rk,d=pfDiff(pfClean(o,R,isR),pfClean(t,t0,isR));
+    if(d.length){res.byK[t.id]=d;d.forEach(k=>{const kk=isR?k:'자식:'+k;if(!res.keys.includes(kk))res.keys.push(kk)})}
+  });
+  mem.forEach(o=>{if(!(o.pf&&o.pf.id===pf.id&&pf.objs.some(t=>t.id===o.pf.k)))res.added.push(o)});
+  if(res.added.length||res.removed.length)res.keys.push('children');
+  return res;
+}
+const PF_KEYN={name:'이름',active:'활성화',order:'배치 순서',type:'역할 컴포넌트',scripts:'스크립트',vs:'비주얼 스크립트',dx:'위치',dy:'위치',children:'자식 오브젝트',
+  'props.sprite':'스프라이트','props.sx':'크기','props.sy':'크기','props.rot':'방향','props.hp':'체력','props.speed':'이동 속도','props.range':'감지 범위','props.text':'대사 · 메시지','props.lines':'대사','props.qty':'수량',
+  'props.light':'빛','props.box':'박스 콜라이더 2D','props.animator':'애니메이터','props.director':'플레이어블 디렉터','props.audio':'오디오 소스','props.camera':'카메라','props.shadow2d':'그림자 캐스터 2D','props.memo':'메모','props.map':'대상 씬','props.once':'한 번만 실행'};
+const pfKeyName=k=>{const ch=k.startsWith('자식:'),b=ch?k.slice(3):k;const n=PF_KEYN[b]||(b.startsWith('props.')?b.slice(6):b);return ch?_t('자식의 {n}',{n:_t(n)}):_t(n)};
+/* 템플릿 오브젝트 → 씬 오브젝트 (새 아이디) */
+function pfFromT(t,pfid,R){const o=JSON.parse(JSON.stringify(t));o.pf={id:pfid,k:t.id};o.id=uid();return o}
+/* 인스턴스 하나를 템플릿에 맞춤: ovByK에 있는 키는 인스턴스 값을 그대로 둠 (없으면 = 모두 되돌리기) */
+function pfSync(m,R,ovByK,keepAdded){
+  const pf=pfOf(R.pf.id);if(!pf)return;const mem=pfMembers(m,R),idOf={},t0=pf.objs[0];
+  /* 기존 오브젝트를 k로 찾기 */
+  const byK={};mem.forEach(o=>{if(o.pf&&o.pf.id===pf.id)byK[o.pf.k]=o});
+  pf.objs.forEach(t=>{const o=byK[t.id];idOf[t.id]=o?o.id:uid()});
+  const made=[];
+  pf.objs.forEach(t=>{
+    const isR=t.id===pf.rk,old=byK[t.id],ov=(ovByK&&ovByK[t.id])||[];
+    const n=JSON.parse(JSON.stringify(t));n.id=idOf[t.id];n.pf={id:pf.id,k:t.id};
+    if(isR){n.x=R.x;n.y=R.y;n.name=R.name;n.group=R.group||null;n.parent=R.parent||null}
+    else{n.x=+((+R.x||0)+(+t.x||0)).toFixed(3);n.y=+((+R.y||0)+(+t.y||0)).toFixed(3);n.parent=t.parent?idOf[t.parent]:R.id;n.group=R.group||null}
+    if(old){
+      ov.forEach(k=>{
+        if(k.startsWith('props.')){const q=k.slice(6);if(old.props&&q in old.props)n.props[q]=JSON.parse(JSON.stringify(old.props[q]));else delete n.props[q]}
+        else if(k==='dx')n.x=old.x;else if(k==='dy')n.y=old.y;
+        else if(k in old)n[k]=JSON.parse(JSON.stringify(old[k]));else delete n[k];
+      });
+      /* 스크립트 인스턴스 아이디는 같은 자리면 유지 */
+      if(Array.isArray(n.scripts)&&Array.isArray(old.scripts))n.scripts.forEach((s,i)=>{const os=old.scripts[i];s.id=os&&os.sid===s.sid?os.id:uid()});
+      else if(Array.isArray(n.scripts))n.scripts.forEach(s=>s.id=uid());
+      const i=m.objs.indexOf(old);m.objs[i]=n;
+    }else{if(Array.isArray(n.scripts))n.scripts.forEach(s=>s.id=uid());if(n.type==='spawn')n.props.start=false;if(n.props.camera)n.props.camera.start=false;m.objs.push(n)}
+    made.push(n);
+  });
+  /* 템플릿에서 없어진 오브젝트는 지우고, 인스턴스에서 새로 붙인 자식은 (되돌리기면) 지움 */
+  const keep=new Set(made.map(o=>o.id));
+  const drop=mem.filter(o=>!keep.has(o.id)&&(o.pf&&o.pf.id===pf.id?true:!keepAdded));
+  if(drop.length)removeObjCascade(m,drop.map(o=>o.id));
+  /* 남긴 새 자식의 부모가 바뀐 아이디를 가리키면 맞춤 */
+  m.objs.forEach(o=>{if(o.parent&&!m.objs.some(q=>q.id===o.parent)){const t=mem.find(q=>q.id===o.parent);o.parent=t&&t.pf?idOf[t.pf.k]||null:null}});
+  fixCamStart(m);
+  return made[0];
+}
+/* 오브젝트(+자손) → 템플릿 목록 (k 새로 · 위치는 루트 기준) */
+function pfTemplate(m,R,keepK,pfid){
+  const mem=pfMembers(m,R),kOf={};
+  mem.forEach(o=>{kOf[o.id]=keepK&&o.pf&&o.pf.id===pfid?o.pf.k:uid()});
+  return mem.map(o=>{const t=JSON.parse(JSON.stringify(o));['pf','group','_tlRec'].forEach(k=>delete t[k]);
+    t.id=kOf[o.id];t.x=o===R?0:+((+o.x||0)-(+R.x||0)).toFixed(3);t.y=o===R?0:+((+o.y||0)-(+R.y||0)).toFixed(3);
+    t.parent=o===R?null:(kOf[o.parent]||kOf[R.id]);if(Array.isArray(t.scripts))t.scripts=t.scripts.map(s=>Object.assign({},s,{id:uid()}));
+    if(t.type==='spawn'&&t.props)t.props.start=false;if(t.props&&t.props.camera)t.props.camera.start=false;
+    return t});
+}
+const pfUniq=n=>{const used=new Set(PFS().map(p=>p.name));if(!used.has(n))return n;let i=1;while(used.has(n+' '+i))i++;return n+' '+i};
+/* 프리팹 만들기: 고른 오브젝트(맨 위만) 하나마다 프리팹 하나 · fid = 넣을 프로젝트 폴더 */
+function pfCreate(ids,fid){
+  if(play){playLockToast();return}
+  const m=cur();if(!m)return;const set=new Set(ids);
+  const tops=m.objs.filter(o=>set.has(o.id)&&!o.mgr).filter(o=>{let c=o,n=0;while(c&&c.parent&&n++<50){c=m.objs.find(q=>q.id===c.parent);if(c&&set.has(c.id))return false}return true});
+  if(!tops.length){toast('프리팹으로 만들 게임 오브젝트를 고르세요');return}
+  const made=[];
+  tops.forEach(R=>{
+    const pf={id:uid(),name:pfUniq(String(R.name||'Prefab').replace(/ \(\d+\)$/,'').slice(0,30)),objs:[]};
+    pf.objs=pfTemplate(m,R,false);pf.rk=pf.objs[0].id;pf.objs[0].name=pf.name;PFS().push(pf);
+    if(fid===undefined)fid=aMode?null:aFol;if(fid)P.afmap[pf.id]=fid;
+    const mem=pfMembers(m,R);mem.forEach((o,i)=>{o.pf={id:pf.id,k:pf.objs[i].id}});
+    made.push(pf);
+  });
+  pfSel=made[made.length-1].id;aSelId=null;sSel=null;slSel=null;auSel=null;
+  commit();markDirty();renderHier();renderAssets();renderInsp();need();
+  toast(made.length>1?_t('프리팹 {n}개를 만들었습니다',{n:made.length}):_t('「{name}」 프리팹을 만들었습니다 · 프로젝트 창에서 씬으로 끌어다 놓으면 더 배치할 수 있어요',{name:made[0].name}));
+  try{learnEmit('pf:create:'+made[0].name)}catch(e){}
+  return made;
+}
+/* 배치: 프리팹 → 지금 씬의 칸 (cell 없으면 씬 뷰 가운데 근처 빈칸) */
+function pfInstantiate(id,cell,silent){
+  if(play){playLockToast();return null}
+  const pf=pfOf(id),m=cur();if(!pf||!m)return null;
+  if(m.objs.length+pf.objs.length>MAXOBJ){toast('게임 오브젝트는 씬당 '+MAXOBJ+'개까지 만들 수 있습니다');return null}
+  const cx=cell?cell.x:Math.floor((stage.clientWidth/2-cam.x)/cam.z/TS),cy=cell?cell.y:Math.floor((stage.clientHeight/2-cam.y)/cam.z/TS);
+  const c=cell&&!silent?{x:cx,y:cy}:freeCellNear(m,cx,cy);if(!c){toast('빈 칸이 없습니다');return null}
+  const n0=m.objs.filter(o=>o.pf&&o.pf.id===id&&o.pf.k===pf.rk).length;
+  const R={id:uid(),name:n0?pf.name+' ('+n0+')':pf.name,x:c.x,y:c.y,group:null,parent:null,pf:{id,k:pf.rk},props:{}};
+  m.objs.push(R);const r=pfSync(m,R,{},false);
+  if(layerSel!=='obj')setLayer('obj');setHsel(new Set([r.id]),r.id);anchorKey=r.id;
+  commit();renderInsp();renderHier();need();
+  try{learnEmit('pf:place:'+pf.name)}catch(e){}
+  return r;
+}
+/* 인스턴스의 지금 모습을 프리팹에 적용 → 다른 모든 인스턴스(모든 씬)도 맞춤 */
+function pfApply(m,R){
+  const pf=pfOf(R.pf.id);if(!pf)return;
+  /* 다른 인스턴스들의 오버라이드를 먼저 기억 (예전 템플릿 기준) */
+  const others=[];P.maps.forEach(mm=>pfInstances(mm,pf.id).forEach(I=>{if(I!==R)others.push({m:mm,I,ov:pfOverrides(mm,I).byK})}));
+  const nm=pf.name;pf.objs=pfTemplate(m,R,true,pf.id);pf.rk=pf.objs[0].id;pf.objs[0].name=nm;
+  pfMembers(m,R).forEach((o,i)=>{o.pf={id:pf.id,k:pf.objs[i].id}});
+  others.forEach(({m:mm,I,ov})=>pfSync(mm,I,ov,true));
+  commit();markDirty();renderHier();renderInsp();renderAssets();need();
+  toast(_t('「{name}」 프리팹에 적용했습니다 · 인스턴스 {n}개가 함께 바뀌었어요',{name:pf.name,n:others.length}));
+  try{learnEmit('pf:apply:'+pf.name)}catch(e){}
+}
+function pfRevert(m,R){const pf=pfOf(R.pf.id);if(!pf)return;const r=pfSync(m,R,{},false);setHsel(new Set([r.id]),r.id);commit();renderHier();renderInsp();need();toast(_t('「{name}」 프리팹 값으로 되돌렸습니다',{name:pf.name}));try{learnEmit('pf:revert:'+pf.name)}catch(e){}}
+function pfUnpack(m,R){const id=R.pf&&R.pf.id;pfMembers(m,R).forEach(o=>{if(o.pf&&o.pf.id===id)delete o.pf});commit();renderHier();renderInsp();need();toast('프리팹 연결을 끊었습니다 · 이제 보통 게임 오브젝트예요')}
+function pfDelete(pf){
+  const n=pfCountAll(pf.id);
+  const run=()=>{P.maps.forEach(mm=>mm.objs.forEach(o=>{if(o.pf&&o.pf.id===pf.id)delete o.pf}));P.prefabs=PFS().filter(x=>x!==pf);delete P.afmap[pf.id];if(pfSel===pf.id)pfSel=null;commit();markDirty();renderAssets();renderHier();renderInsp();need()};
+  if(!n){run();return}
+  openModal('프리팹 삭제',`<p style="margin-top:0">${esc(_t('「{name}」 프리팹을 삭제합니다.',{name:pf.name}))}</p><p class="hint">${esc(_t('씬에 있는 인스턴스 {n}개는 지워지지 않고 보통 게임 오브젝트로 남습니다.',{n}))}</p>`,[{t:'취소'},{t:'삭제',cls:'danger',fn:run}]);
+}
+function pfRename(pf){askName('프리팹 이름 바꾸기',pf.name,v=>{pf.name=String(v).slice(0,30);pf.objs[0].name=pf.name;markDirty();renderAssets();renderInsp()})}
+function pfSelectAll(pf){const m=cur(),ins=pfInstances(m,pf.id);if(!ins.length){toast('이 씬에는 인스턴스가 없습니다');return}if(layerSel!=='obj')setLayer('obj');setHsel(new Set(ins.map(o=>o.id)),ins[ins.length-1].id);hierPick='layer';renderHier();renderInsp();need()}
+function pfShow(id){pfSel=id;aSelId=null;sSel=null;slSel=null;auSel=null;const f=P.afmap[id];if(f&&P.afolders.some(x=>x.id===f)){aMode=null;aFol=f}else if(aMode&&aMode!=='prefab'){aMode=null;aFol=null}
+  try{focusPanel('assets')}catch(e){}renderAssets();requestAnimationFrame(()=>{const el=AP.querySelector(`[data-pf="${id}"]`);if(el){el.scrollIntoView({block:'nearest'});el.classList.remove('pfflash');void el.offsetWidth;el.classList.add('pfflash')}})}
+/* 썸네일: 루트 스프라이트 → 그림, 없으면 역할 색 큐브 */
+function pfThumbHTML(pf,sz){const t=pf.objs[0],sp=t.props&&t.props.sprite,sr=sp?spriteRef(sp):null;
+  return sr?`<canvas data-pfth="${pf.id}"${sz?` data-sz="${sz}"`:''}></canvas>`:`<span class="pfcube" style="--tc:${(TYPES[t.type]||TYPES.empty).color}">${ico('cube')}</span>`}
+function pfThumbs(box,gs){const dpr=window.devicePixelRatio||1;box.querySelectorAll('canvas[data-pfth]').forEach(cv=>{const pf=pfOf(cv.dataset.pfth),sr=pf&&spriteRef(pf.objs[0].props.sprite);if(!sr||!sr.a.img)return;const W=cv.closest('.gth')?Math.round(gs*dpr):Math.round((+cv.dataset.sz||26)*dpr);drawThumb(cv,sr.a.img,sr.r,W)})}
+const PF_COMPN={sprite:'스프라이트 렌더러',light:'빛',box:'박스 콜라이더 2D',animator:'애니메이터',director:'플레이어블 디렉터',audio:'오디오 소스',camera:'카메라',shadow2d:'그림자 캐스터 2D'};
+function pfCompList(t){const out=[TYPES[t.type]?_t(TYPES[t.type].label):t.type];Object.keys(PF_COMPN).forEach(k=>{if(t.props&&t.props[k])out.push(_t(PF_COMPN[k]))});(t.scripts||[]).forEach(s=>{const sc=scriptOf(s.sid);if(sc)out.push(sc.name+'.cs')});return out}
+/* 프로젝트 창: 고른 프리팹의 자세히 보기 */
+function pfDetHTML(pf){
+  const m=cur(),here=pfInstances(m,pf.id).length,all=pfCountAll(pf.id),t=pf.objs[0];
+  return`<div class="pfdet"><div class="pfdh">${pfThumbHTML(pf,30)}<div class="pfdn"><b data-i18n-skip>${esc(pf.name)}</b><small>${esc(_t('프리팹'))} · ${esc(_t('오브젝트 {n}개',{n:pf.objs.length}))}</small></div>`+
+    `<button class="btn sm pri" type="button" data-pfa="place" data-pid="${pf.id}">${ico('plus')} ${esc(_t('씬에 배치'))}</button><button class="ib" type="button" data-pfa="ren" data-pid="${pf.id}" title="이름 바꾸기" aria-label="이름 바꾸기">${ico('pencil')}</button><button class="ib" type="button" data-pfa="del" data-pid="${pf.id}" title="삭제" aria-label="삭제">${ico('x')}</button></div>`+
+    `<div class="pfdb"><div class="pfdl"><span>${esc(_t('구성'))}</span><span>${pfCompList(t).map(x=>`<i class="pfchip">${esc(x)}</i>`).join('')}${pf.objs.length>1?`<i class="pfchip">${esc(_t('자식 {n}개',{n:pf.objs.length-1}))}</i>`:''}</span></div>`+
+    `<div class="pfdl"><span>${esc(_t('인스턴스'))}</span><span>${esc(_t('이 씬 {a}개 · 모든 씬 {b}개',{a:here,b:all}))} <button class="btn sm" type="button" data-pfa="selall" data-pid="${pf.id}"${here?'':' disabled'}>${esc(_t('이 씬에서 모두 선택'))}</button></span></div>`+
+    `<p class="hint">${esc(_t('씬 뷰나 계층 구조로 끌어다 놓으면 같은 오브젝트가 하나 더 생겨요(인스턴스). 인스턴스를 고쳐서 인스펙터의 「모두 적용」을 누르면 모든 인스턴스가 함께 바뀝니다.'))}</p></div></div>`;
+}
+/* 계층 구조 줄 · 인스펙터 막대 */
+function pfHierLabel(m,o,label){if(!isPfLinked(o))return label;const R=pfRoot(m,o);return`<span class="pfn${R===o?' pfr':''}">${label}</span>`}
+function pfBarHTML(m,o){
+  if(!o||!o.pf)return'';
+  const pf=pfOf(o.pf.id);
+  if(!pf)return`<div class="pfbar miss"><span class="pfbi">${ico('cube')}</span><span class="pfbt">${esc(_t('프리팹을 찾을 수 없음'))}</span><span class="spacer"></span><button class="btn sm" type="button" data-pfa="unpack">${esc(_t('연결 끊기'))}</button></div>`;
+  const R=pfRoot(m,o)||o,ov=pfOverrides(m,R),n=ov.keys.length,isR=R===o,dis=play?' disabled':'';learnEmitOnce('pf:inspect:'+pf.name+':'+o.id);learnEmitOnce('pf:inspect:'+pf.name);
+  const names=[...new Set(ov.keys.map(pfKeyName))];
+  return`<div class="pfbar${n?' ov':''}"><div class="pfbr"><span class="pfbi">${ico('cube')}</span><span class="pfbt"><small>${esc(_t('프리팹'))}</small><b data-i18n-skip>${esc(pf.name)}</b>${isR?'':`<small>· ${esc(_t('{name}의 일부',{name:R.name}))}</small>`}</span><span class="spacer"></span>`+
+    `<button class="btn sm" type="button" data-pfa="show" title="${esc(_t('프로젝트 창에서 이 프리팹 보기'))}">${esc(_t('선택'))}</button><button class="ib" type="button" data-pfa="more" title="${esc(_t('프리팹 메뉴'))}" aria-label="${esc(_t('프리팹 메뉴'))}">${ico('more')}</button></div>`+
+    `<div class="pfbr pfov"><span class="pfovn">${n?esc(_t('오버라이드 {n}개',{n:names.length})):esc(_t('프리팹과 같음'))}</span>${n?`<span class="pfovk">${names.slice(0,6).map(x=>`<i>${esc(x)}</i>`).join('')}${names.length>6?'<i>…</i>':''}</span>`:''}<span class="spacer"></span>`+
+    `<button class="btn sm" type="button" data-pfa="revert"${n&&!play?'':' disabled'} title="${esc(_t('이 인스턴스를 프리팹 값으로 되돌립니다 (이름 · 위치는 그대로)'))}">${esc(_t('모두 되돌리기'))}</button><button class="btn sm pri" type="button" data-pfa="apply"${n&&!play?'':' disabled'} title="${esc(_t('바꾼 값을 프리팹에 저장하고, 다른 모든 인스턴스도 함께 바꿉니다'))}">${esc(_t('모두 적용'))}</button></div></div>`;
+}
+/* 인스펙터에서 오버라이드된 칸에 파란 표시 (Unity처럼 왼쪽 막대) */
+const PF_COMPK={light:'cl',camera:'cc',box:'cb',shadow2d:'cs',animator:'ca',director:'cd',audio:'cau',memo:'cm'};
+function pfMarkInsp(m,o,box){
+  if(!o||!isPfLinked(o))return;const R=pfRoot(m,o)||o,ov=pfOverrides(m,R).byK[o.pf.k]||[];
+  ov.forEach(k=>{
+    if(k.startsWith('props.')){const q=k.slice(6);const el=box.querySelector(`[data-p="${q}"]`);if(el){const r=el.closest('.fr');if(r)r.classList.add('pfov')}
+      if(PF_COMPK[q]){const c=box.querySelector(`.comp[data-comp="${PF_COMPK[q]}"]`);if(c)c.classList.add('pfovc')}return}
+    if(k==='dx'||k==='dy'){const el=box.querySelector('[data-p="x"]');if(el){const r=el.closest('.fr');if(r)r.classList.add('pfov')}return}
+    if(k==='scripts'){box.querySelectorAll('.comp[data-comp^="s"]').forEach(c=>{if(/^s[:_]/.test(c.dataset.comp))c.classList.add('pfovc')});return}
+    const el=box.querySelector(`[data-p="${k}"]`);if(el){const r=el.closest('.fr');if(r)r.classList.add('pfov');else el.classList.add('pfov')}
+  });
+}
+/* 인스펙터에서 값을 바꾼 뒤(commit) 프리팹 막대 · 오버라이드 표시만 새로 */
+function pfLive(){const box=$('#insp'),b=box&&box.querySelector('.pfbar');if(!b)return;const m=cur(),o=getSel();if(!o||!o.pf)return;
+  const t=document.createElement('div');t.innerHTML=pfBarHTML(m,o);if(t.firstElementChild)b.replaceWith(t.firstElementChild);
+  box.querySelectorAll('.pfov,.pfovc').forEach(x=>{if(!x.classList.contains('pfbr'))x.classList.remove('pfov','pfovc')});pfMarkInsp(m,o,box)}
+function pfMenuItems(m,o){
+  const R=pfRoot(m,o)||o,pf=pfOf(R.pf&&R.pf.id);if(!pf)return[];const n=pfOverrides(m,R).keys.length;
+  return[{label:'프로젝트 창에서 프리팹 보기',fn:()=>pfShow(pf.id)},{label:'모두 적용',disabled:!n||!!play,fn:()=>pfApply(m,R)},{label:'모두 되돌리기',disabled:!n||!!play,fn:()=>pfRevert(m,R)},{label:'이 씬의 인스턴스 모두 선택',fn:()=>pfSelectAll(pf)},{sep:1},{label:'프리팹 연결 끊기 (Unpack)',disabled:!!play,fn:()=>pfUnpack(m,R)}];
+}
+(function(){
+  /* 인스펙터 막대 버튼 */
+  $('#insp').addEventListener('click',e=>{
+    const b=e.target.closest('[data-pfa]');if(!b||b.closest('#aList'))return;
+    const m=cur(),o=getSel();if(!o)return;const R=pfRoot(m,o)||o;
+    const a=b.dataset.pfa;
+    if(a==='unpack'){if(!o.pf)return;if(!pfOf(o.pf.id)){pfMembers(m,o).forEach(q=>delete q.pf);commit();renderHier();renderInsp();return}pfUnpack(m,R);return}
+    if(!R.pf||!pfOf(R.pf.id))return;
+    if(a==='show')pfShow(R.pf.id);else if(a==='apply')pfApply(m,R);else if(a==='revert')pfRevert(m,R);
+    else if(a==='more'){const r=b.getBoundingClientRect();showMenuAt(r.left,r.bottom+2,pfMenuItems(m,o))}
+  });
+  /* 프로젝트 창: 프리팹 줄 · 자세히 보기 버튼 */
+  $('#aList').addEventListener('click',e=>{
+    const b=e.target.closest('[data-pfa]');
+    if(b){const pf=pfOf(b.dataset.pid);if(!pf)return;const a=b.dataset.pfa;
+      if(a==='place')pfInstantiate(pf.id);else if(a==='ren')pfRename(pf);else if(a==='del')pfDelete(pf);else if(a==='selall')pfSelectAll(pf);
+      e.stopPropagation();return}
+    /* 더블클릭: 첫 클릭으로 아래 자세히 보기가 나타나 프리팹 칸을 가려도, 같은 자리를 금방 다시 누르면 배치 */
+    {const L=pfClk;pfClk=null;if(L&&performance.now()-L.t<450&&Math.abs(e.clientX-L.x)<8&&Math.abs(e.clientY-L.y)<8&&pfOf(L.id)){e.stopPropagation();pfInstantiate(L.id);return}}
+    if(e.target.closest('.pfdet'))return;
+    const g=e.target.closest('.gpf,.pfrow');
+    if(!g){if(pfSel&&!e.target.closest('.pfdet')){pfSel=null;if(!e.target.closest('.gi,.srow,.asset,.afolder,.tnode,.crumb,.crm2,[data-favtoggle],[data-tfold]'))renderAssets()}return}
+    e.stopPropagation();const pf=pfOf(g.dataset.pf);if(!pf)return;
+    pfClk={id:pf.id,t:performance.now(),x:e.clientX,y:e.clientY};
+    pfSel=pf.id;aSelId=null;sSel=null;slSel=null;auSel=null;try{fnSel=null}catch(er){}if(palScript){palScript=null;renderPal()}renderAssets();learnEmit('pf:select:'+pf.name);
+  },true);
+  $('#aList').addEventListener('contextmenu',e=>{
+    const g=e.target.closest('.gpf,.pfrow,.pfdet');if(!g)return;e.preventDefault();e.stopPropagation();
+    const pf=pfOf(g.dataset.pf||(g.querySelector('[data-pid]')||{}).dataset?.pid);if(!pf)return;pfSel=pf.id;renderAssets();
+    showMenuAt(e.clientX,e.clientY,[{label:'씬에 배치',key:'더블클릭',fn:()=>pfInstantiate(pf.id)},{label:'이 씬의 인스턴스 모두 선택',fn:()=>pfSelectAll(pf)},{sep:1},{label:'이름 바꾸기',fn:()=>pfRename(pf)},{label:'새 폴더',fn:()=>newFolder(aMode?null:aFol)},{label:'상위 폴더로 이동',disabled:!P.afmap[pf.id],fn:()=>{const f=P.afolders.find(x=>x.id===P.afmap[pf.id]);moveAsset(pf,f?f.parent||null:null)}},{sep:1},{label:'삭제',fn:()=>pfDelete(pf)}]);
+  },true);
+  /* 프리팹 끌기 시작 (프로젝트 창 → 씬 뷰 · 계층 구조 · 폴더) */
+  $('#aList').addEventListener('dragstart',e=>{
+    const g=e.target.closest&&e.target.closest('.gpf,.pfrow');if(!g)return;e.stopPropagation();
+    adrag={t:'pf',id:g.dataset.pf};e.dataTransfer.effectAllowed='copyMove';e.dataTransfer.setData(PF_MIME,g.dataset.pf);e.dataTransfer.setData('text/plain',g.dataset.pf);
+  },true);
+  const isPf=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes(PF_MIME);
+  stage.addEventListener('dragover',e=>{if(!isPf(e))return;e.preventDefault();e.dataTransfer.dropEffect='copy';stage.classList.add('filedrag')});
+  stage.addEventListener('drop',e=>{if(!isPf(e))return;e.preventDefault();e.stopPropagation();stage.classList.remove('filedrag');if(play){playLockToast();return}const id=e.dataTransfer.getData(PF_MIME);if(id)pfInstantiate(id,cellAt(e))});
+  const hb=$('#hier');
+  hb.addEventListener('dragover',e=>{if(!isPf(e))return;e.preventDefault();e.dataTransfer.dropEffect='copy';hb.classList.add('pfdrop')});
+  hb.addEventListener('dragleave',e=>{if(!hb.contains(e.relatedTarget))hb.classList.remove('pfdrop')});
+  hb.addEventListener('drop',e=>{if(!isPf(e))return;e.preventDefault();e.stopPropagation();hb.classList.remove('pfdrop');if(play){playLockToast();return}
+    const r=e.target.closest('.tr'),sid=r&&r.dataset.s;if(sid&&sid!==curId)selectScene(sid);const id=e.dataTransfer.getData(PF_MIME);if(!id)return;
+    const o=pfInstantiate(id);if(o&&r&&r.dataset.t==='group'){o.group=r.dataset.rk;pfMembers(cur(),o).forEach(q=>q.group=r.dataset.rk);commit();renderHier()}});
+  document.addEventListener('dragend',()=>{hb.classList.remove('pfdrop');AP.classList.remove('pfmk')});
+  /* 계층 구조의 오브젝트 → 프로젝트 창 = 프리팹 만들기 (폴더 위에 놓으면 그 폴더에) */
+  AP.addEventListener('dragover',e=>{if(!dnd||dnd.kind!=='obj'||adrag)return;e.preventDefault();e.dataTransfer.dropEffect='move';AP.classList.add('pfmk');
+    $$('#aList .drop-into').forEach(x=>x.classList.remove('drop-into'));const fo=e.target.closest&&e.target.closest(DROPSEL);if(fo&&!isScriptFid(fo.dataset.fid||null))fo.classList.add('drop-into')});
+  AP.addEventListener('dragleave',e=>{if(!AP.contains(e.relatedTarget)){AP.classList.remove('pfmk');$$('#aList .drop-into').forEach(x=>x.classList.remove('drop-into'))}});
+  AP.addEventListener('drop',e=>{if(!dnd||dnd.kind!=='obj'||adrag)return;e.preventDefault();e.stopPropagation();AP.classList.remove('pfmk');$$('#aList .drop-into').forEach(x=>x.classList.remove('drop-into'));
+    const fo=e.target.closest&&e.target.closest(DROPSEL);let fid=fo?fo.dataset.fid||null:undefined;if(fid&&isScriptFid(fid))fid=undefined;
+    if(aMode==='scripts'&&fid===undefined){aMode=null}
+    const ids=dnd.ids;dnd=null;pfCreate(ids,fid)},true);
+})();
+if(window.TI18N)TI18N.add({
+'프리팹':['Prefab','プレハブ','预制体'],'프리팹 만들기':['Create Prefab','プレハブを作成','创建预制体'],'모든 프리팹':['All Prefabs','すべてのプレハブ','所有预制体'],
+'씬에 배치':['Place in Scene','シーンに配置','放置到场景'],'구성':['Contents','構成','组成'],'인스턴스':['Instances','インスタンス','实例'],
+'오브젝트 {n}개':['{n} objects','オブジェクト {n} 個','{n} 个对象'],'자식 {n}개':['{n} children','子 {n} 個','{n} 个子对象'],'이 씬 {a}개 · 모든 씬 {b}개':['{a} in this scene · {b} in all scenes','このシーン {a} 個 · 全シーン {b} 個','本场景 {a} 个 · 所有场景 {b} 个'],
+'이 씬에서 모두 선택':['Select all in scene','このシーンですべて選択','在本场景中全选'],'이 씬의 인스턴스 모두 선택':['Select all instances in this scene','このシーンのインスタンスをすべて選択','选择本场景中的所有实例'],
+'씬 뷰나 계층 구조로 끌어다 놓으면 같은 오브젝트가 하나 더 생겨요(인스턴스). 인스턴스를 고쳐서 인스펙터의 「모두 적용」을 누르면 모든 인스턴스가 함께 바뀝니다.':['Drag it into the Scene view or Hierarchy to add another copy (an instance). Edit an instance and press “Apply All” in the Inspector to change every instance at once.','シーンビューや階層にドラッグすると同じオブジェクトがもう1つ増えます（インスタンス）。インスタンスを直してインスペクターの「すべて適用」を押すと、すべてのインスタンスが一緒に変わります。','拖到场景视图或层级中即可再添加一个相同的对象（实例）。修改实例后点击检查器中的“全部应用”，所有实例会一起改变。'],
+'프리팹을 찾을 수 없음':['Missing prefab','プレハブが見つかりません','找不到预制体'],'연결 끊기':['Unpack','接続を解除','解除关联'],'{name}의 일부':['part of {name}','{name} の一部','{name} 的一部分'],
+'프로젝트 창에서 이 프리팹 보기':['Show this prefab in the Project window','プロジェクトウィンドウでこのプレハブを表示','在项目窗口中显示此预制体'],'선택':['Select','選択','选择'],'프리팹 메뉴':['Prefab menu','プレハブメニュー','预制体菜单'],
+'오버라이드 {n}개':['{n} overrides','オーバーライド {n} 個','{n} 个覆盖'],'프리팹과 같음':['Same as prefab','プレハブと同じ','与预制体相同'],'모두 되돌리기':['Revert All','すべて元に戻す','全部还原'],'모두 적용':['Apply All','すべて適用','全部应用'],
+'이 인스턴스를 프리팹 값으로 되돌립니다 (이름 · 위치는 그대로)':['Revert this instance to the prefab values (name and position stay)','このインスタンスをプレハブの値に戻します（名前・位置はそのまま）','将此实例还原为预制体的值（名称和位置不变）'],
+'바꾼 값을 프리팹에 저장하고, 다른 모든 인스턴스도 함께 바꿉니다':['Save the changes to the prefab and update every other instance','変更をプレハブに保存し、ほかのすべてのインスタンスも一緒に変えます','将修改保存到预制体，并同时更新所有其他实例'],
+'프로젝트 창에서 프리팹 보기':['Show prefab in Project window','プロジェクトウィンドウでプレハブを表示','在项目窗口中显示预制体'],'프리팹 연결 끊기 (Unpack)':['Unpack Prefab','プレハブを解除 (Unpack)','解除预制体 (Unpack)'],
+'프리팹 이름 바꾸기':['Rename prefab','プレハブ名を変更','重命名预制体'],'프리팹 삭제':['Delete prefab','プレハブを削除','删除预制体'],'「{name}」 프리팹을 삭제합니다.':['Delete the prefab “{name}”.','「{name}」プレハブを削除します。','将删除预制体“{name}”。'],
+'씬에 있는 인스턴스 {n}개는 지워지지 않고 보통 게임 오브젝트로 남습니다.':['The {n} instances in scenes stay as normal GameObjects.','シーンにあるインスタンス {n} 個は消えず、普通のゲームオブジェクトとして残ります。','场景中的 {n} 个实例不会被删除，会保留为普通游戏对象。'],
+'프리팹으로 만들 게임 오브젝트를 고르세요':['Select a GameObject to turn into a prefab','プレハブにするゲームオブジェクトを選んでください','请选择要做成预制体的游戏对象'],'프리팹 {n}개를 만들었습니다':['Created {n} prefabs','プレハブを {n} 個作りました','已创建 {n} 个预制体'],
+'「{name}」 프리팹을 만들었습니다 · 프로젝트 창에서 씬으로 끌어다 놓으면 더 배치할 수 있어요':['Created prefab “{name}” · drag it from the Project window into the scene to place more','「{name}」プレハブを作りました · プロジェクトウィンドウからシーンへドラッグするともっと配置できます','已创建预制体“{name}” · 从项目窗口拖到场景即可放置更多'],
+'「{name}」 프리팹에 적용했습니다 · 인스턴스 {n}개가 함께 바뀌었어요':['Applied to prefab “{name}” · {n} instances updated','「{name}」プレハブに適用しました · インスタンス {n} 個が一緒に変わりました','已应用到预制体“{name}” · {n} 个实例已同步更新'],
+'「{name}」 프리팹 값으로 되돌렸습니다':['Reverted to prefab “{name}”','「{name}」プレハブの値に戻しました','已还原为预制体“{name}”的值'],'프리팹 연결을 끊었습니다 · 이제 보통 게임 오브젝트예요':['Unpacked · it is now a normal GameObject','プレハブの接続を解除しました · 今は普通のゲームオブジェクトです','已解除预制体关联 · 现在是普通游戏对象'],
+'이 씬에는 인스턴스가 없습니다':['No instances in this scene','このシーンにはインスタンスがありません','本场景中没有实例'],'자식의 {n}':['child {n}','子の {n}','子对象的 {n}'],'자식 오브젝트':['Child objects','子オブジェクト','子对象'],
+'이동 속도':['Move speed','移動速度','移动速度'],'감지 범위':['Detect range','検知範囲','侦测范围'],'대사 · 메시지':['Line · message','セリフ・メッセージ','台词 · 消息'],'한 번만 실행':['Run once','一度だけ実行','仅执行一次'],'역할 컴포넌트':['Role component','役割コンポーネント','角色组件'],
+'계층 구조의 게임 오브젝트를 이 창으로 끌어다 놓으면 프리팹이 됩니다':['Drag a GameObject from the Hierarchy into this window to make a prefab','階層のゲームオブジェクトをこのウィンドウにドラッグするとプレハブになります','把层级中的游戏对象拖到此窗口即可成为预制体'],
+'프리팹 · 더블클릭: 씬에 배치 · 씬으로 끌어다 놓기':['Prefab · double-click: place in scene · drag into scene','プレハブ · ダブルクリック: シーンに配置 · シーンへドラッグ','预制体 · 双击：放置到场景 · 拖入场景']
+});
 
 /* ===================== 스프라이트 에디터 (Unity Sprite Editor 방식) ===================== */
 const PIV={center:['중앙',.5,.5],bottom:['아래 중앙',.5,1],top:['위 중앙',.5,0],left:['왼쪽 가운데',0,.5],right:['오른쪽 가운데',1,.5],bl:['왼쪽 아래',0,1],br:['오른쪽 아래',1,1],tl:['왼쪽 위',0,0],tr:['오른쪽 위',1,0]};
@@ -9262,10 +9876,11 @@ function loadLayout(){
   Object.keys(l.active||{}).forEach(r=>{if(PANELS[r]&&PANELS[l.active[r]])out.active[r]=l.active[r]});
   return out;
 }
-function saveLayout(){try{localStorage.setItem(LKEY,JSON.stringify(L))}catch(e){}}
+function saveLayout(){try{localStorage.setItem(LKEY,JSON.stringify(L))}catch(e){}try{histLater()}catch(e){}}
 const kidsOf=id=>Object.keys(L.tabs).filter(k=>L.tabs[k]===id);
 const rootOf=id=>L.tabs[id]||id;
-const groupMembers=root=>[root,...kidsOf(root)].filter(x=>!L.hidden[x]&&!POPPED.has(x));
+/* 탭 순서: L.torder[root] = 사용자가 끌어서 정한 순서 (없으면 원래 순서) */
+const groupMembers=root=>{const m=[root,...kidsOf(root)].filter(x=>!L.hidden[x]&&!POPPED.has(x)),o=L.torder&&L.torder[root];if(!Array.isArray(o))return m;const ix=x=>{const i=o.indexOf(x);return i<0?999:i};return m.map((x,i)=>[x,i]).sort((a,b)=>(ix(a[0])-ix(b[0]))||(a[1]-b[1])).map(a=>a[0])};
 function activeOf(root){const mem=groupMembers(root);if(!mem.length)return null;return mem.includes(L.active[root])?L.active[root]:mem[0]}
 function detach(id){
   if(L.tabs[id]){delete L.tabs[id];return}
@@ -9540,12 +10155,32 @@ Object.entries(panelEl).forEach(([id,el])=>{
         if(ghostMode){const g=document.createElement('div');g.className='ghost';g.textContent=PANELS[did];document.body.append(g);st.ghost=g;if(!solo)el.style.opacity='.45'}}
       if(!ghostMode){el.style.left=clamp(st.ox+dx,-el.offsetWidth+80,innerWidth-80)+'px';el.style.top=clamp(st.oy+dy,0,innerHeight-30)+'px'}
       else{st.ghost.style.left=(ev.clientX+12)+'px';st.ghost.style.top=(ev.clientY+8)+'px'}
+      /* 같은 탭 목록 안에서 끌면 = 탭 순서 바꾸기 (크롬처럼 탭이 마우스를 따라오고 다른 탭이 비켜남) · 목록 밖으로 나가면 원래처럼 패널 옮기기 */
+      const strip=tb&&tb.isConnected&&tb.closest('.tabstrip');
+      /* 목록 안에서 시작하면, 위아래로 크게(30px) 벗어나기 전까지는 좌우 어디로 가도 순서 바꾸기 (크롬처럼) */
+      if(strip){const sr=strip.getBoundingClientRect(),cy=(sr.top+sr.bottom)/2,inS=st.tabs?Math.abs(ev.clientY-cy)<=sr.height/2+30:(ev.clientY>=sr.top-10&&ev.clientY<=sr.bottom+10&&ev.clientX>=sr.left-16&&ev.clientX<=sr.right+16);
+        if(inS){
+          if(!st.tabs){const bs=[...strip.querySelectorAll('.ptabbtn')];st.tabs=bs.map(x=>({b:x,r:x.getBoundingClientRect()}));st.ci=bs.indexOf(tb);strip.classList.add('treo');tb.classList.add('tdragging')}
+          if(st.ghost)st.ghost.style.display='none';showTarget(null);st.target=null;el.style.opacity='';
+          const T=st.tabs,me=T[st.ci].r,gap=T.length>1?Math.max(0,(T[1].r.left-T[0].r.right)):2,W=me.width+gap;
+          const dxx=clamp(ev.clientX-st.sx,T[0].r.left-me.left,T[T.length-1].r.right-me.right);tb.style.transform=`translateX(${dxx}px)`;
+          /* 놓을 자리 = 마우스가 어느 탭의 가운데를 지났는지 (탭 폭이 같아서 끝까지 쉽게 감) */
+          const c=ev.clientX,others=T.filter((_,j)=>j!==st.ci),ni=others.filter(o=>o.r.left+o.r.width/2<c).length;
+          T.forEach((o,j)=>{if(j===st.ci)return;const k=j<st.ci?j:j-1,fp=k<ni?k:k+1;o.b.style.transform=fp===j?'':`translateX(${(fp-j)*W}px)`});
+          st.reorder={ids:T.map(o=>o.b.dataset.id),from:st.ci,to:ni};
+          return}
+        if(st.tabs){st.tabs.forEach(o=>o.b.style.transform='');strip.classList.remove('treo');tb.classList.remove('tdragging');st.tabs=null}
+        st.reorder=null;if(st.ghost)st.ghost.style.display='';if(!solo)el.style.opacity='.45'}
       st.target=findTarget(ev.clientX,ev.clientY,did,solo);showTarget(st.target);
     };
     const up=ev=>{
       head.removeEventListener('pointermove',mv);head.removeEventListener('pointerup',up);head.removeEventListener('pointercancel',up);
       if(!st.on){if(tb&&ev.type==='pointerup'){L.active[rootOf(id)]=did;saveLayout();renderLayout()}return}
       document.body.classList.remove('dock-drag');showTarget(null);if(st.ghost)st.ghost.remove();el.style.opacity='';
+      if(tb&&st.tabs){st.tabs.forEach(o=>o.b.style.transform='');const sp=tb.closest('.tabstrip');if(sp)sp.classList.remove('treo');tb.classList.remove('tdragging')}
+      if(tb&&st.tabs&&(ev.type==='pointerup'||ev.type==='pointercancel')){
+        if(st.reorder&&st.reorder.to!==st.reorder.from){const R=st.reorder,ids=R.ids.slice(),[m0]=ids.splice(R.from,1);ids.splice(R.to,0,m0);(L.torder||(L.torder={}))[rootOf(id)]=ids}
+        L.active[rootOf(id)]=did;saveLayout();renderLayout();return}
       const t=ev.type==='pointercancel'?null:st.target;
       /* 브라우저 창 밖에서 놓으면 그 자리에 새 창으로 꺼냄 */
       const outside=ev.type==='pointerup'&&(ev.clientX<0||ev.clientY<0||ev.clientX>innerWidth||ev.clientY>innerHeight);
@@ -9560,6 +10195,15 @@ Object.entries(panelEl).forEach(([id,el])=>{
     head.addEventListener('pointermove',mv);head.addEventListener('pointerup',up);head.addEventListener('pointercancel',up);
   });
 });
+/* 탭 · 패널 제목 우클릭 = 숨기기 (메뉴 막대 「창」에서 다시 띄움) */
+document.addEventListener('contextmenu',e=>{
+  const t=e.target.closest&&e.target.closest('.ptabbtn,.phead .ptab');if(!t||!t.closest('.panel'))return;
+  const id=t.classList.contains('ptabbtn')?t.dataset.id:t.closest('.panel').dataset.id;if(!PANELS[id]||POPPED.has(id))return;
+  e.preventDefault();e.stopPropagation();
+  showMenuAt(e.clientX,e.clientY,[{head:_t(PANELS[id]),sub:_t('탭'),kind:'gen'},{label:_t('「{n}」 탭 숨기기',{n:_t(PANELS[id])}),fn:()=>{L.hidden[id]=true;saveLayout();renderLayout();toast(_t('「{n}」을(를) 숨겼어요 · 메뉴 막대의 「창」에서 다시 띄울 수 있어요',{n:_t(PANELS[id])}))}},
+    {label:_t('메뉴 막대 「창」에서 다시 띄울 수 있어요'),disabled:true}]);
+},true);
+if(window.TI18N)TI18N.add({'타일맵 · 지금 칠할 곳: {n}':['Tilemap · painting on: {n}','タイルマップ · 塗る場所: {n}','瓦片地图 · 当前绘制：{n}'],'「{n}」 탭 숨기기':['Hide “{n}” tab','「{n}」タブを隠す','隐藏“{n}”标签'],'「{n}」을(를) 숨겼어요 · 메뉴 막대의 「창」에서 다시 띄울 수 있어요':['Hid “{n}” · reopen it from the Window menu','「{n}」を隠しました · メニューバーの「ウィンドウ」から再表示できます','已隐藏“{n}” · 可在菜单栏“窗口”中重新打开'],'메뉴 막대 「창」에서 다시 띄울 수 있어요':['You can reopen it from the Window menu','メニューバーの「ウィンドウ」から再表示できます','可在菜单栏“窗口”中重新打开'],'탭':['Tab','タブ','标签']});
 let szT=0;
 const ro=new ResizeObserver(es=>{es.forEach(en=>{const el=en.target,id=rootOf(el.dataset.id);if(!el.classList.contains('float')||L.collapsed[el.dataset.id]||!L.float[id])return;
   const w=Math.round(el.offsetWidth),h=Math.round(el.offsetHeight);if(Math.abs(w-L.float[id].w)>1||Math.abs(h-L.float[id].h)>1){L.float[id].w=w;L.float[id].h=h;kidsOf(id).forEach(k=>{if(L.float[k]){L.float[k].w=w;L.float[k].h=h}});clearTimeout(szT);szT=setTimeout(saveLayout,300)}})});
@@ -9755,7 +10399,7 @@ function startPlay(){
   plast=performance.now();playRaf=requestAnimationFrame(loop);
   try{UIB.playStart()}catch(e){console.error(e)}
   vsCall('playStart');
-  clog('info','▶ 플레이 시작 · '+play.m.name);
+  clog('info','▶ 플레이 시작 · '+play.m.name);learnEmit('play');
   document.documentElement.classList.add('is-playing');liveSig='';
   if(sel&&!play.m.objs.some(o=>o.id===sel))sel=null;
   renderHier();renderInsp();
@@ -9766,7 +10410,7 @@ function stopPlay(){
   if(prjRunExit&&play){prjRunExit=false;try{if(dirty)localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}location.href='mypage.html';return}
   const T=fn=>{try{fn()}catch(e){console.error(e)}};
   const p=play,wasEmbed=!!(p&&p.view==='embed');
-  if(p){T(()=>clog('info','■ 플레이 종료 · 플레이 중 바꾼 값은 원래대로 되돌렸습니다'))}
+  if(p){T(()=>clog('info','■ 플레이 종료 · 플레이 중 바꾼 값은 원래대로 되돌렸습니다'));learnEmit('stop')}
   /* 소리 먼저 모두 끔 (오디오 소스 · 매니저 · 배경 음악 · 효과음) — 하나가 실패해도 나머지는 계속 */
   T(()=>UIB.playStop());T(()=>vsCall('playStop'));
   T(()=>audStopAll());T(()=>musicStop());
@@ -9799,7 +10443,7 @@ function standable(x,y,r){
 /* 박스 콜라이더 2D 공용: 움직이는 주인공·몬스터 자신은 막는 대상에서 뺍니다 */
 function boxSolid(m,o){const b=o.props&&o.props.box;return !!b&&!b.trigger&&o.type!=='monster'&&!(o.type==='spawn'&&startSpawn(m)===o)&&objOn(m,o)}
 function boxOver(m,o,x,y,r){const b=o.props.box,w=objWorld(m,o,play),cx=w.x+(+b.ox||0)*TS,cy=w.y+(+b.oy||0)*TS,hw=(+b.w||1)*TS/2,hh=(+b.h||1)*TS/2;return x+r>cx-hw&&x-r<cx+hw&&y+r>cy-hh&&y-r<cy+hh}
-function say(name,text,queue){play.dialog={name,text:text||'...',queue:Array.isArray(queue)?queue.slice():[]}}
+function say(name,text,queue){learnEmit('say:'+name+':'+(text||''));play.dialog={name,text:text||'...',queue:Array.isArray(queue)?queue.slice():[]}}
 /* 엔진 기본 대화창: 다음 대사로 · 마지막이면 닫기 (화면 클릭 · Space/Z/Enter · 행동 버튼) */
 function dialogNext(){const d=play&&play.dialog;if(!d)return;if(d.queue&&d.queue.length)play.dialog={name:d.name,text:d.queue.shift()||'...',queue:d.queue};else play.dialog=null}
 /* 대화 중 이동 봉쇄: 스크립트가 Hero.main.canMove = false로 막았거나, 씬의 대화창 UI 그룹이 열려 있으면 */
@@ -9926,6 +10570,7 @@ function update(dt){
      const inside=objOn(m,o)&&boxOver(m,o,p.px,p.py,hr),was=p.trig.has(o.id);
      if(inside===was)continue;const fn=inside?'OnTriggerEnter2D':'OnTriggerExit2D';
      if(inside)p.trig.add(o.id);else p.trig.delete(o.id);
+     if(inside)learnEmit('trig:'+o.name);
      csRunMethods(m,o,[fn]);if(!play||play.m!==m)return;
      if(hero&&(hero.scripts&&hero.scripts.length||hero.vs&&hero.vs.length)){csRunMethods(m,hero,[fn]);if(!play||play.m!==m)return}
    }}
@@ -10952,15 +11597,15 @@ document.getElementById('bLearn').onclick=learnToggle;
    창 머리글의 「학습」 버튼: 그 창과 관련된 레슨으로 학습 창을 바로 열어 줍니다 (레슨이 둘 이상이면 고르기).
    상황별 안내: 주인공 스크립트를 만들었을 때 · 처음 Debug.Log가 콘솔에 찍힐 때 · 애니메이터/애니메이션 탭을 처음 열 때 (각각 한 번만).
    새 레슨을 만들면 LEARN_LESSONS(해시 → 제목)와 LEARN_PANEL(창 → 해시들)에 한 줄만 더하면 됩니다. */
-const LEARN_LESSONS={'lesson-1':'타일맵 · 게임 오브젝트 · UI','lesson-2':'콘솔 출력','lesson-3':'컴포넌트 활용','lesson-4':'변수 · 캐릭터 · 아이템 · UI','lesson-5':'주인공 스크립트 만들기','lesson-6':'애니메이션 다루기','lesson-7':'특수 타일 (룰 · 애니메이션)','lesson-8':'씬과 매니저','lesson-9':'UI 빌더로 화면 만들기','lesson-10':'대화창 UI 스크립트','lesson-11':'비주얼 스크립트 첫걸음','lesson-12':'오브젝트 · UI 상호작용'};
-const LEARN_PANEL={hier:['lesson-1','lesson-8'],insp:['lesson-3','lesson-4'],console:['lesson-2'],script:['lesson-2','lesson-5','lesson-10'],palette:['lesson-1','lesson-7'],animator:['lesson-6'],anim:['lesson-6'],uib:['lesson-9'],vs:['lesson-11','lesson-12']};
+const LEARN_LESSONS={'lesson-1':'타일맵 · 게임 오브젝트 · UI','lesson-2':'콘솔 출력','lesson-3':'컴포넌트 활용','lesson-4':'변수 · 캐릭터 · 아이템 · UI','lesson-5':'주인공 스크립트 만들기','lesson-6':'애니메이션 다루기','lesson-7':'특수 타일 (룰 · 애니메이션)','lesson-8':'씬과 매니저','lesson-9':'UI 빌더로 화면 만들기','lesson-10':'대화창 UI 스크립트','lesson-11':'비주얼 스크립트 첫걸음','lesson-12':'오브젝트 · UI 상호작용','lesson-13':'프리팹으로 몬스터 배치','lesson-14':'타임라인으로 컷씬 만들기'};
+const LEARN_PANEL={assets:['lesson-13'],tl:['lesson-14'],hier:['lesson-1','lesson-8','lesson-13'],insp:['lesson-3','lesson-4'],console:['lesson-2'],script:['lesson-2','lesson-5','lesson-10'],palette:['lesson-1','lesson-7'],animator:['lesson-6'],anim:['lesson-6'],uib:['lesson-9'],vs:['lesson-11','lesson-12']};
 const LEARN_NUDGES={
   console:{h:'lesson-2',t:'콘솔 출력 배우기',d:'Debug.Log로 콘솔에 값을 찍어 보는 방법을 연습해 볼까요?'},
   anim:{h:'lesson-6',t:'애니메이션 다루기 배우기',d:'애니메이터의 상태 · 전환과 애니메이션 클립을 직접 만져 보며 익혀요.'},
   hero:{h:'lesson-5',t:'주인공 스크립트 만들기 배우기',d:'키 입력으로 주인공을 움직이는 이동 스크립트를 처음부터 만들어 봐요.'}
 };
 /* 레슨 소개 창: 간단한 내용을 보여 주고 「배우기」를 누르면 학습 창이 그 레슨으로 열립니다 */
-const LEARN_LV=['','입문','초급','중급'];
+const LEARN_LV=['','입문','초급','중급','중상급','상급'];
 const LEARN_INFO={
   'lesson-1':{lv:1,s:'타일맵으로 바닥과 벽을 칠하고, 콜라이더로 막을 곳을 정하고, 게임 오브젝트와 UI 텍스트 · 버튼을 다뤄요.',kw:['타일맵','콜라이더','UI 텍스트'],steps:['타일맵 칠하기','콜라이더 타일맵으로 막기','비밀 통로 만들기','게임 오브젝트 만들고 정리하기','박스 콜라이더 2D로 막기','트리거로 출구 만들기','UI 텍스트로 체력 보여 주기','UI 버튼 달기']},
   'lesson-2':{lv:1,s:'콘솔은 프로그램이 개발자에게 말을 거는 창이에요. Debug.Log로 값을 찍어 보면서 코드가 제대로 움직이는지 확인해요.',kw:['Debug.Log','콘솔','Start()'],steps:['인사 한 줄 출력하기','변수 값 출력하기','여러 줄 출력하기','경고와 오류 구분하기','계산 결과 출력하기']},
@@ -10973,9 +11618,18 @@ const LEARN_INFO={
   'lesson-9':{lv:2,s:'UI 빌더로 메인 화면과 게임 UI를 끌어다 놓아 만들고, 씬의 UI 그룹으로 저장한 뒤, 「게임 시작」 버튼 하나로 화면을 바꿔요.',kw:['UI 빌더','UI 그룹','버튼 동작'],steps:['메인 화면 만들고 저장하기','게임 화면 만들고 저장하기','게임 시작을 누르면 화면 닫기','화면이 닫히면 게임 UI 띄우기']},
   'lesson-10':{lv:3,s:'NPC 스크립트(NpcTalk.cs)로 대화창 UI 그룹을 찾고, UIScreen으로 이름과 대사를 넣어 열고 닫고, 대사를 넘기고, 멀어지면 닫히게 만들어요.',kw:['UIScreen','UIGroup','OnInteract'],steps:['대화창 UI 그룹 찾기','말을 걸면 대화창 열기','다시 말 걸면 닫기','두 마디 대화','멀어지면 닫기']},
   'lesson-11':{lv:1,s:'코드 대신 노드를 선으로 이어 주인공 그래프를 만들어요. 이벤트 · 흐름 · 변수 · 조건 · 반복 노드를 하나씩 써 봐요.',kw:['비주얼 스크립트','노드','이벤트'],steps:['시작하면 콘솔에 인사하기','키를 누르면 알림 띄우기','변수로 점수 세기','점수가 5가 되면 목표 달성','반복하고 기다렸다가 출발']},
-  'lesson-12':{lv:2,s:'상자 · 문 · 게임 매니저 · UI가 엔진 메시지와 커스텀 이벤트로 이야기하게 하고, 메뉴 버튼으로 게임을 시작하는 흐름을 비주얼 스크립트로 만들어요.',kw:['오브젝트 상호작용','커스텀 이벤트','UI 버튼'],steps:['상자를 열면 열쇠 얻기','열쇠가 있어야 열리는 문','이벤트를 받아 UI 바꾸기','시작 버튼으로 게임 시작']}
+  'lesson-12':{lv:2,s:'상자 · 문 · 게임 매니저 · UI가 엔진 메시지와 커스텀 이벤트로 이야기하게 하고, 메뉴 버튼으로 게임을 시작하는 흐름을 비주얼 스크립트로 만들어요.',kw:['오브젝트 상호작용','커스텀 이벤트','UI 버튼'],steps:['상자를 열면 열쇠 얻기','열쇠가 있어야 열리는 문','이벤트를 받아 UI 바꾸기','시작 버튼으로 게임 시작']},
+  'lesson-13':{lv:2,s:'슬라임을 프리팹으로 만들어 숲 곳곳에 배치하고, 한 마리를 고쳐 「모두 적용」으로 전부 바꾸고, 대장 슬라임만 오버라이드로 다르게 만들어요. 진짜 엔진 화면에서 실습해요.',kw:['프리팹','인스턴스','오버라이드'],steps:['슬라임을 프리팹으로 만들기','숲에 슬라임 여러 마리 배치하기','한 마리를 고쳐 모두에게 적용하기','대장 슬라임만 다르게 (오버라이드)','망가진 슬라임 되돌리기']},
+  'lesson-14':{lv:3,s:'플레이어블 디렉터와 타임라인으로 주인공 · 촌장 · 선물 상자 · 음악 · 대사가 시간에 맞춰 움직이는 컷씬을 만들고, 광장 입구에 들어서면 재생되도록 스크립트를 짜요.',kw:['타임라인','플레이어블 디렉터','컷씬'],steps:['컷씬 감독 붙이기 (플레이어블 디렉터)','주인공 걸어 들어오기 (녹화)','촌장 마중 · 선물 상자 나타나기','음악과 대사 넣기 (오디오 · 시그널)','광장 입구에 들어서면 컷씬 시작 (스크립트)']},
 };
-if(window.TI18N)TI18N.add({"씬과 매니저": ["Scenes and Managers", "シーンとマネージャー", "场景与管理器"], "게임을 여러 씬으로 나눠 포탈로 잇고 시작 씬을 정하고, 씬이 바뀌어도 살아 있는 매니저(BGM 매니저 · 게임 매니저)로 음악과 목숨을 이어 가요.": ["Split a game into scenes, connect them with portals, set the start scene, and keep music and lives going with managers (BGM manager, game manager) that survive scene changes.", "ゲームを複数のシーンに分けてポータルでつなぎ、開始シーンを決め、シーンが変わっても生き続けるマネージャー（BGMマネージャー・ゲームマネージャー）で音楽と残機を引き継ぎます。", "把游戏拆成多个场景并用传送门连接、设定起始场景，再用切换场景后依然存在的管理器（BGM 管理器 · 游戏管理器）延续音乐和生命数。"], "씬 전환": ["Scene switching", "シーン切り替え", "场景切换"], "새 씬 만들고 포탈로 잇기": ["Create a scene and link it with a portal", "新しいシーンを作ってポータルでつなぐ", "新建场景并用传送门连接"], "시작 씬 바꾸기": ["Change the start scene", "開始シーンを変える", "更换起始场景"], "BGM 매니저 · 이어지는 음악": ["BGM manager · continuous music", "BGMマネージャー・途切れない音楽", "BGM 管理器 · 连续的音乐"], "게임 매니저 만들기": ["Create a game manager", "ゲームマネージャーを作る", "创建游戏管理器"], "지금 씬 알아내기": ["Find the current scene", "現在のシーンを調べる", "获取当前场景"], "다음 씬 불러오기": ["Load the next scene", "次のシーンを読み込む", "加载下一个场景"], "BGM 매니저 스크립트": ["BGM manager script", "BGMマネージャーのスクリプト", "BGM 管理器脚本"], "게임 매니저 · 목숨과 다시 시작": ["Game manager · lives and restart", "ゲームマネージャー・残機とリスタート", "游戏管理器 · 生命数与重新开始"], "「씬과 매니저」 학습하기": ["Learn “Scenes and Managers”", "「シーンとマネージャー」を学ぶ", "学习“场景与管理器”"], "학습하기": ["Learn", "学ぶ", "学习"]});
+if(window.TI18N)TI18N.add({"중상급":["Upper-intermediate","中上級","中高级"],"상급":["Advanced","上級","高级"],
+"프리팹으로 몬스터 배치":["Placing Monsters with Prefabs","プレハブでモンスター配置","用预制体放置怪物"],"타임라인으로 컷씬 만들기":["Making Cutscenes with Timeline","タイムラインでカットシーン作成","用时间轴制作过场动画"],
+"슬라임을 프리팹으로 만들어 숲 곳곳에 배치하고, 한 마리를 고쳐 「모두 적용」으로 전부 바꾸고, 대장 슬라임만 오버라이드로 다르게 만들어요. 진짜 엔진 화면에서 실습해요.":["Turn a slime into a prefab, place it around the forest, edit one and “Apply All” to change them all, and make a boss slime different with overrides. You practice in the real engine.","スライムをプレハブにして森のあちこちに配置し、1匹を直して「すべて適用」で全部を変え、ボススライムだけオーバーライドで違うものにします。本物のエンジン画面で練習します。","把史莱姆做成预制体放到森林各处，修改一只并“全部应用”让所有都改变，再用覆盖让史莱姆首领与众不同。在真正的引擎界面中练习。"],
+"플레이어블 디렉터와 타임라인으로 주인공 · 촌장 · 선물 상자 · 음악 · 대사가 시간에 맞춰 움직이는 컷씬을 만들고, 광장 입구에 들어서면 재생되도록 스크립트를 짜요.":["Use a Playable Director and a Timeline to build a cutscene where the hero, the elder, a gift chest, music and dialogue move in time, then script it to play when the hero enters the plaza.","プレイアブルディレクターとタイムラインで、主人公・村長・贈り物の箱・音楽・セリフが時間に合わせて動くカットシーンを作り、広場の入口に入ると再生されるようにスクリプトを書きます。","用可播放导演和时间轴制作主角、村长、礼物箱、音乐和台词按时间运动的过场动画，并编写脚本让主角进入广场入口时播放。"],
+"프리팹":["Prefab","プレハブ","预制体"],"인스턴스":["Instance","インスタンス","实例"],"오버라이드":["Override","オーバーライド","覆盖"],"타임라인":["Timeline","タイムライン","时间轴"],"플레이어블 디렉터":["Playable Director","プレイアブルディレクター","可播放导演"],"컷씬":["Cutscene","カットシーン","过场动画"],
+"슬라임을 프리팹으로 만들기":["Make the slime a prefab","スライムをプレハブにする","把史莱姆做成预制体"],"숲에 슬라임 여러 마리 배치하기":["Place many slimes in the forest","森にスライムをたくさん配置","在森林中放置多只史莱姆"],"한 마리를 고쳐 모두에게 적용하기":["Edit one and apply to all","1匹を直して全部に適用","修改一只并应用到全部"],"대장 슬라임만 다르게 (오버라이드)":["Only the boss slime differs (override)","ボススライムだけ違う（オーバーライド）","只有史莱姆首领不同（覆盖）"],"망가진 슬라임 되돌리기":["Revert a broken slime","壊れたスライムを元に戻す","还原被改乱的史莱姆"],
+"컷씬 감독 붙이기 (플레이어블 디렉터)":["Add the director (Playable Director)","監督を付ける（プレイアブルディレクター）","添加导演（可播放导演）"],"주인공 걸어 들어오기 (녹화)":["Hero walks in (recording)","主人公が歩いて入る（録画）","主角走进来（录制）"],"촌장 마중 · 선물 상자 나타나기":["Elder greets · gift chest appears","村長の出迎え・贈り物の箱が現れる","村长迎接 · 礼物箱出现"],"음악과 대사 넣기 (오디오 · 시그널)":["Add music and dialogue (audio · signal)","音楽とセリフを入れる（オーディオ・シグナル）","加入音乐和台词（音频 · 信号）"],"광장 입구에 들어서면 컷씬 시작 (스크립트)":["Start the cutscene at the plaza entrance (script)","広場の入口でカットシーン開始（スクリプト）","进入广场入口时开始过场（脚本）"],
+"씬과 매니저": ["Scenes and Managers", "シーンとマネージャー", "场景与管理器"], "게임을 여러 씬으로 나눠 포탈로 잇고 시작 씬을 정하고, 씬이 바뀌어도 살아 있는 매니저(BGM 매니저 · 게임 매니저)로 음악과 목숨을 이어 가요.": ["Split a game into scenes, connect them with portals, set the start scene, and keep music and lives going with managers (BGM manager, game manager) that survive scene changes.", "ゲームを複数のシーンに分けてポータルでつなぎ、開始シーンを決め、シーンが変わっても生き続けるマネージャー（BGMマネージャー・ゲームマネージャー）で音楽と残機を引き継ぎます。", "把游戏拆成多个场景并用传送门连接、设定起始场景，再用切换场景后依然存在的管理器（BGM 管理器 · 游戏管理器）延续音乐和生命数。"], "씬 전환": ["Scene switching", "シーン切り替え", "场景切换"], "새 씬 만들고 포탈로 잇기": ["Create a scene and link it with a portal", "新しいシーンを作ってポータルでつなぐ", "新建场景并用传送门连接"], "시작 씬 바꾸기": ["Change the start scene", "開始シーンを変える", "更换起始场景"], "BGM 매니저 · 이어지는 음악": ["BGM manager · continuous music", "BGMマネージャー・途切れない音楽", "BGM 管理器 · 连续的音乐"], "게임 매니저 만들기": ["Create a game manager", "ゲームマネージャーを作る", "创建游戏管理器"], "지금 씬 알아내기": ["Find the current scene", "現在のシーンを調べる", "获取当前场景"], "다음 씬 불러오기": ["Load the next scene", "次のシーンを読み込む", "加载下一个场景"], "BGM 매니저 스크립트": ["BGM manager script", "BGMマネージャーのスクリプト", "BGM 管理器脚本"], "게임 매니저 · 목숨과 다시 시작": ["Game manager · lives and restart", "ゲームマネージャー・残機とリスタート", "游戏管理器 · 生命数与重新开始"], "「씬과 매니저」 학습하기": ["Learn “Scenes and Managers”", "「シーンとマネージャー」を学ぶ", "学习“场景与管理器”"], "학습하기": ["Learn", "学ぶ", "学习"]});
 function learnIntro(h){
   const I=LEARN_INFO[h];if(!I){learnGo(h);return}
   const body=`<div class="linfo"><p class="li-s">${esc(_t(I.s))}</p>`+
@@ -11019,6 +11673,7 @@ try{nudgeSeen=JSON.parse(localStorage.getItem(LEARN_NUDGE_KEY))||{}}catch(e){}
 function nudgeHide(){clearTimeout(nudgeT);if(nudgeEl)nudgeEl.classList.remove('on')}
 function nudgeLater(ms){clearTimeout(nudgeT);nudgeT=setTimeout(nudgeHide,ms)}
 function learnNudge(k){
+  if(LEARN_EMBED)return;
   const n=LEARN_NUDGES[k];if(!n||nudgeSeen[k]||(learn.el&&!learn.min)||(learn.pop&&!learn.pop.closed))return;
   nudgeSeen[k]=1;try{localStorage.setItem(LEARN_NUDGE_KEY,JSON.stringify(nudgeSeen))}catch(e){}
   if(!nudgeEl){
@@ -11080,7 +11735,7 @@ const AUD_MIME='application/x-thaniya-audio';
 const AUD_DEF=()=>({clip:'',vol:1,pitch:1,loop:false,awake:true,mute:false,spatial:false,range:8});
 const audOf=id=>id?audios.find(a=>a.id===id)||null:null;
 const audRec=a=>({id:a.id,n:-1,kind:'audio',name:a.name,src:a.src,size:a.size||0,dur:a.dur||0,mime:a.mime||''});
-async function audSave(a){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').put(audRec(a));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+async function audSave(a){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').put(ascoped(audRec(a)));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
 const AUD_EXT=/\.(mp3|wav|ogg|oga|m4a|aac|flac|webm|opus)$/i;
 const isAudFile=f=>/^audio\//.test(f.type||'')||AUD_EXT.test(f.name||'');
 const audFmtDur=s=>{s=Math.max(0,Math.round(+s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
@@ -11141,7 +11796,7 @@ const FONT_EXT=/\.(ttf|otf|woff2?)$/i;
 const isFontFile=f=>FONT_EXT.test(f.name||'')||/^font\//.test(f.type||'');
 const fntOf=id=>id?fonts.find(a=>a.id===id)||null:null;
 const fntRec=a=>({id:a.id,n:-1,kind:'font',name:a.name,src:a.src,size:a.size||0});
-async function fntSave(a){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').put(fntRec(a));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+async function fntSave(a){const db=await idb();return new Promise((res,rej)=>{const tx=db.transaction('assets','readwrite');tx.objectStore('assets').put(ascoped(fntRec(a)));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
 const fntFam=a=>'tfnt_'+a.id;
 const FNT_FALL='"IBM Plex Sans KR",sans-serif';
 /* 글꼴 키 → CSS font-family (처음 쓰일 때 내려받고, 받으면 화면을 다시 그림) */
@@ -11525,6 +12180,64 @@ function soundHook(kind,n,a){
   throw csUnsup('Sound.'+n+'()');
 }
 
+/* ===================== 학습 실습장 연결 (LEARN_EMBED) =====================
+   learning.html이 iframe으로 이 엔진을 띄우고, 할 일 확인은 postMessage로:
+   엔진 → 학습: {thaniyaLab:1,t:'ready'|'state'|'ev'} — state = 프로젝트 JSON(바뀔 때만) · 플레이 상태, ev = 일어난 일(play · stop · log · say · trig · tl:… · pf:…)
+   학습 → 엔진: {thaniyaLab:1,t:'load',proj} = 이 프로젝트로 바꾸기 · {t:'ping'} = 지금 상태 다시 보내기 */
+function learnPost(d){if(!LEARN_EMBED)return;try{d.thaniyaLab=1;parent.postMessage(d,'*')}catch(e){}}
+function learnEmit(k){if(LEARN_EMBED)learnPost({t:'ev',k:String(k).slice(0,300)})}
+const learnOnce=new Set();function learnEmitOnce(k){if(!LEARN_EMBED||learnOnce.has(k))return;learnOnce.add(k);learnEmit(k)}
+/* 「위치 보기」: 학습 화면이 가리킨 창을 앞으로 꺼내고 잠깐 반짝임 */
+function learnFlash(k){
+  let el=null;if(k==='scene')el=$('#vsplit')||stage;else if(k==='play')el=$('#bPlay');else if(panelEl[k]){try{focusPanel(k)}catch(e){}el=panelEl[k]}
+  if(!el)return;el.classList.remove('lflash');void el.offsetWidth;el.classList.add('lflash');setTimeout(()=>el.classList.remove('lflash'),1900);
+}
+let learnLastP='';
+function learnPlayInfo(){const p=play;if(!p)return null;const dirs=[];try{if(p.tl&&p.tl.dirs)p.tl.dirs.forEach((d,id)=>{const o=p.m.objs.find(q=>q.id===id);dirs.push({o:o?o.name:'',st:d.st,t:+(d.t||0).toFixed(2)})})}catch(e){}
+  return{scene:p.m.name,px:p.px!=null?+(p.px/TS).toFixed(2):null,py:p.py!=null?+(p.py/TS).toFixed(2):null,dirs,dialog:p.dialog?{name:p.dialog.name,text:p.dialog.text}:null}}
+function learnSync(force){if(!LEARN_EMBED||!P)return;let s='';try{s=JSON.stringify(P)}catch(e){return}
+  const d={t:'state',play:learnPlayInfo(),cur:curId,sel:sel||null};if(force||s!==learnLastP){learnLastP=s;d.P=s}learnPost(d)}
+/* 학습 프로젝트의 타일은 「에셋id:칸번호」 글자로 옴 → 이 브라우저의 에셋 번호로 바꿈 (기본 에셋이 지워졌으면 다시 넣고) */
+/* 실습장은 문제마다 그 씬에 쓰인 기본 에셋만: 이전 문제의 에셋을 지우고, 프로젝트에 나오는 base_… 에셋(+ 주인공이 있으면 고양이 시트)만 넣음 */
+async function learnAssetsReset(proj){
+  try{const all=await idbAll();await idbDelKeys(all.filter(r=>r&&r.pj===ASCOPE).map(r=>r.id))}catch(e){}
+  assets=[];reindex();audios=[];fonts=[];activeN=null;stamp=null;aSelId=null;auSel=null;try{fnSel=null}catch(e){}
+  try{localStorage.removeItem(BASE_DEL)}catch(e){}
+  const need=new Set((JSON.stringify(proj).match(/base_[a-z0-9_]+/g)||[]).filter(id=>(window.THANIYA_BASE_ASSETS||[]).some(b=>b.id===id)));
+  if((proj.maps||[]).some(m=>(m.objs||[]).some(o=>o.type==='spawn')))need.add('base_hero');
+  if(need.size){try{await ensureBaseAssets(false,[...need])}catch(e){}}
+}
+async function learnTiles(proj){
+  await learnAssetsReset(proj);
+  (proj.maps||[]).forEach(m=>(m.l||[]).forEach(a=>{for(let i=0;i<a.length;i++){const v=a[i];if(typeof v!=='string')continue;const k=v.lastIndexOf(':'),as=byId.get(v.slice(0,k));a[i]=as?encode(as.n,+v.slice(k+1)||0):0}}));
+  proj.nextN=Math.max(+proj.nextN||0,...assets.map(a=>(+a.n||0)+1));
+}
+async function learnLoad(proj){
+  try{if(play)stopPlay()}catch(e){}
+  try{await learnReady}catch(e){}
+  await learnTiles(proj);
+  if(!validProject(proj)){learnPost({t:'error',msg:'invalid project'});return}
+  P=normProject(proj);curId=P.maps.some(m=>m.id===P.start)?P.start:P.maps[0].id;sel=null;hsel=new Set();selUi=null;
+  /* 학습용 프리팹(fromInst): 템플릿을 첫 인스턴스(엔진이 역할 스크립트 등을 채운 뒤)에서 만듦 */
+  (P.prefabs||[]).forEach(pf=>{if(!pf.fromInst)return;delete pf.fromInst;
+    for(const m of P.maps){const R=m.objs.find(o=>o.pf&&o.pf.id===pf.id&&o.pf.k===pf.rk);if(R){const nm=pf.name;pf.objs=pfTemplate(m,R,true,pf.id);pf.rk=pf.objs[0].id;pf.objs[0].name=nm;break}}});
+  try{if(!P.afolders.length)baseFolders(true)}catch(e){}
+  try{if(TLH&&TLH.TL){TLH.TL.obj=null;TLH.TL.sel=null;TLH.TL.t=0}}catch(e){}
+  try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}
+  resetHistory();setLayer('l0');try{setView('scene')}catch(e){}renderAll();try{anRenderAll(true)}catch(e){}
+  requestAnimationFrame(()=>{fitView();need();requestAnimationFrame(()=>{fitView();need()})});setTimeout(()=>{if(!play){fitView();need()}},350);
+  learnLastP='';learnOnce.clear();learnSync(true);
+}
+let learnReadyOk;const learnReady=new Promise(r=>learnReadyOk=r);
+if(LEARN_EMBED){
+  addEventListener('message',e=>{const d=e.data;if(!d||d.thaniyaLab!==1||e.source!==parent)return;
+    if(d.t==='load'&&d.proj){let pj=d.proj;if(typeof pj==='string'){try{pj=JSON.parse(pj)}catch(er){return}}learnLoad(pj)}
+    else if(d.t==='ping')learnSync(true);
+    else if(d.t==='stop'){try{if(play)stopPlay()}catch(er){}}
+    else if(d.t==='flash')(Array.isArray(d.k)?d.k:[d.k]).forEach(learnFlash);
+    else if(d.t==='select'){const m=cur(),o=m&&m.objs.find(q=>q.id===d.id);if(o&&!play){if(layerSel!=='obj')setLayer('obj');hierPick='layer';setHsel(new Set([o.id]),o.id);anchorKey=o.id;renderHier();renderInsp();need()}}});
+  setInterval(()=>learnSync(false),700);
+}
 /* ===================== 시작 ===================== */
 P=load();curId=P.maps.some(m=>m.id===P.start)?P.start:P.maps[0].id;P.start=P.maps.some(m=>m.id===P.start)?P.start:curId;
 L=loadLayout();
@@ -11537,12 +12250,15 @@ let prjFresh=false;try{prjFresh=!localStorage.getItem(KEY)}catch(e){}
 if(prjFresh&&PRJ_ID!=='default'){const nm=(PRJ_Q.get('name')||'').trim().slice(0,60);if(nm)P.name=nm;renderAll()}
 const prjRun=PRJ_Q.get('play')==='1';
 if(PRJ_Q.has('play')||PRJ_Q.has('name')){try{const u=new URL(location.href);u.searchParams.delete('play');u.searchParams.delete('name');history.replaceState(null,'',u)}catch(e){}}
-loadSavedAssets().then(()=>ensureBaseAssets()).then(()=>{pickActiveForMap();renderAll();need();
+loadSavedAssets().then(()=>LEARN_EMBED?0:ensureBaseAssets()).then(()=>{pickActiveForMap();renderAll();need();
+  /* 시작할 때 저절로 정리된 것(기본 에셋 폴더 등)은 실행 취소 기록에 남기지 않음 */
+  setTimeout(()=>{clearTimeout(histT2);resetHistory()},700);
   /* 새 게임: 레이아웃이 다 잡힌 뒤 주인공을 씬 뷰 가운데에 크게 */
   if(prjFresh)requestAnimationFrame(()=>{const sp=startSpawn(cur());fitView();if(sp){focusObj(sp);need()}});
   if(prjFresh&&PRJ_ID!=='default')save(true);else prjTouch(true);
   /* 마이페이지의 「실행」: 열자마자 창 가득 채우기로 플레이 (저장된 플레이 모드 설정은 바꾸지 않음) */
   if(prjRun&&!play){const pm=playMode;playMode='window';startPlay();playMode=pm;if(play)prjRunExit=true}
+  if(LEARN_EMBED){learnReadyOk();learnPost({t:'ready',sig:P.learnSig||''});learnSync(true)}
 });
 })();
 </script>

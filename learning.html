@@ -178,6 +178,13 @@ a.brand.nolink{cursor:default}a.brand.nolink:hover{color:inherit}
 .hwrap{position:absolute;inset:34px 0 0 0;display:flex;flex-direction:column}
 .tree{flex:1;min-height:0;overflow:auto;padding:2px 0 8px}
 .tr{display:flex;align-items:center;gap:4px;height:28px;margin:1px 6px;padding:0 6px 0 calc(var(--d)*14px + 4px);border-radius:10px;white-space:nowrap;cursor:default}
+/* 엔진과 같은 계층 구조: 조금 좁은 줄 · 같은 깊이 안내선(연한 회색 · 폴더 안은 연한 초록 · 1.5px) */
+#hier .tr{height:25px;margin:0 6px 1px;position:relative}
+#hier{--hguide:rgba(255,255,255,.09);--hg2:rgba(120,210,150,.24)}
+html[data-theme="light"] #hier{--hguide:rgba(0,0,0,.11);--hg2:rgba(30,150,80,.26)}
+#hier .tr::before{content:"";position:absolute;left:calc(4px + 7px - .75px);top:-1px;bottom:-1px;width:calc(var(--d)*14px);pointer-events:none;
+  background-image:linear-gradient(var(--hg2),var(--hg2)),repeating-linear-gradient(to right,var(--hguide) 0 1.5px,transparent 1.5px 14px);
+  background-size:1.5px 100%,100% 100%;background-repeat:no-repeat;background-position:var(--hgx,14px) 0,0 0}
 .tr:hover{background:var(--hover)}
 .tr.on{background:var(--sel);color:var(--sel-fg);box-shadow:0 2px 10px rgba(233,189,12,.3)}
 .tr.on .ts,.tr.on .ti,.tr.on .fold{color:inherit!important}
@@ -451,7 +458,9 @@ html[data-theme="light"] .anhs{background:rgba(0,0,0,.06)}html[data-theme="light
 .projpanel{display:flex}
 .an-pn .anpanel{flex:1;min-height:0;display:flex;flex-direction:column}
 .an-pn .anpanel>.pbody{flex:1;min-height:0}
-.antabs{display:inline-flex;gap:4px}
+.antabs{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px}
+.antabs .antab{justify-content:center}
+.antabs.treo .antab{transition:transform .16s ease;position:relative}.antabs.treo .antab.tdragging{transition:none;z-index:3;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:grabbing}
 .antab{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:999px;border:0;background:none;color:var(--mute);font-weight:500;white-space:nowrap}
 .antab:hover{background:var(--hover);color:var(--fg)}
 .antab.on{background:rgba(233,189,12,.18);color:var(--accent)}
@@ -583,10 +592,12 @@ html[data-theme="light"] .card.soon.empty-cat .ec-ic{color:#0b7a3a}
 .card p{margin:0;color:rgba(235,235,245,.68);font-size:13.5px}
 .card pre{margin:0;padding:11px 13px;border-radius:16px;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.1);box-shadow:inset 0 1px 2px rgba(0,0,0,.25);font:12.5px/1.6 "IBM Plex Mono",ui-monospace,monospace;color:#e6e6ea;overflow:hidden;white-space:pre}
 /* 레슨 난이도 · 키워드 */
-.card .chip.lv{gap:8px}
+.card .chip.lv{gap:7px}
+.card .ctop .chip{white-space:nowrap;flex:none}.card .ctop{flex-wrap:wrap;row-gap:6px}.card .ctop .state{white-space:nowrap}
+.dots i{flex:none}
 .dots{display:inline-flex;gap:3px}
 .dots i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.3}
-.lv1 .dots i:nth-child(-n+1),.lv2 .dots i:nth-child(-n+2),.lv3 .dots i{opacity:1}
+.lv1 .dots i:nth-child(-n+1),.lv2 .dots i:nth-child(-n+2),.lv3 .dots i:nth-child(-n+3),.lv4 .dots i:nth-child(-n+4),.lv5 .dots i{opacity:1}
 .kws{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}
 .kws li{padding:2px 9px;border-radius:8px;font:500 12px/1.6 "IBM Plex Mono",ui-monospace,monospace;color:rgba(235,235,245,.8);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
 .kws li::before{content:"#";opacity:.5;margin-right:1px}
@@ -781,7 +792,7 @@ code.rc-sig{display:block;margin:5px 0 0;padding:0;border:0;background:none;font
 .rv-lv{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--mut);white-space:nowrap}
 .rv-lv .dots{display:inline-flex;gap:3px}
 .rv-lv .dots i{width:6px;height:6px;border-radius:50%;background:var(--mut);opacity:.35}
-.rv-lv .dots.lv1 i:nth-child(-n+1),.rv-lv .dots.lv2 i:nth-child(-n+2),.rv-lv .dots.lv3 i{background:var(--y);opacity:1}
+.rv-lv .dots.lv1 i:nth-child(-n+1),.rv-lv .dots.lv2 i:nth-child(-n+2),.rv-lv .dots.lv3 i:nth-child(-n+3),.rv-lv .dots.lv4 i:nth-child(-n+4),.rv-lv .dots.lv5 i{background:var(--y);opacity:1}
 .rv-sh .chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mut)}
 .rv-sh .chip .dots{display:inline-flex;gap:2px}
 .rv-none{margin:10px 0 0;padding:10px 12px;border-radius:10px;border:1px dashed var(--line);color:var(--mut);font-size:13px}
@@ -1146,6 +1157,24 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 }
 @media (max-width:1180px){.ws.vs11{grid-template-areas:"brief view" "brief code" "brief vs"}.ws.vs11 .view-pn{min-height:560px}.ws.vs11 .vs-pn{min-height:420px}}
 @media (max-width:860px){.ws.vs11{grid-template-areas:"brief" "code" "view" "vs"}.vsmain{grid-template-columns:1fr}.vsside{border-right:0;border-bottom:1px solid var(--line);max-height:180px}}
+/* ---- 레슨 13 · 14: 엔진 실습장 (오른쪽 전체 = 진짜 엔진 iframe · 왼쪽 = 문제 · 할 일) ---- */
+.ws.enlab #views,.ws.enlab #sTools,.ws.enlab .view-pn .vtabs,.ws.enlab .view-pn .vtitle,.ws.enlab #playBtn,.ws.enlab .hier-pn,.ws.enlab .insp-pn,.ws.enlab .con-pn,.ws.enlab .wsz,.ws.enlab .an-pn,.ws.enlab .vs-pn,.ws.enlab .ub-pn{display:none!important}
+.entitle{display:none;font-size:12px;font-weight:600}.ws.enlab .entitle{display:inline-flex;align-items:center;gap:6px}.entitle small{font-weight:400;color:var(--mute)}
+.ws.enlab .view-pn>.phead{display:none}
+.enview{flex:1;min-height:0;display:flex;flex-direction:column}.enview[hidden]{display:none}
+.enbar{display:flex;align-items:center;gap:6px;padding:6px 8px;border-bottom:1px solid var(--line)}.enbar .btn{height:24px}
+.entl{font-size:12px;font-weight:600}.ensub{font-size:11px;color:var(--mute)}
+.enwrap{flex:1;min-height:0;position:relative;background:#0b0b0e}
+.enwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#0b0b0e}
+.enload{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(11,11,14,.92);color:#cfd0d8;font-size:13px;z-index:2}
+.enload[hidden]{display:none}
+.enload .spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.2);border-top-color:var(--y,#f6cd2a);animation:enspin .8s linear infinite}@keyframes enspin{to{transform:rotate(360deg)}}
+.view-pn:fullscreen{padding:0;border-radius:0}
+@media (min-width:1181px) and (min-height:620px){
+  #lessonView>.ws.enlab{grid-template-areas:"brief view view view view" "code view view view view";--rt:1fr;--rb:1fr}
+}
+@media (max-width:1180px){.ws.enlab{grid-template-areas:"brief" "view" "code";grid-template-columns:minmax(0,1fr)}.ws.enlab .view-pn{min-height:720px}}
+@media (max-width:860px){.ws.enlab .view-pn{min-height:640px}}
 /* ---- 레슨 8: 씬 · 매니저 실습장 (씬 뷰 자리) · 계층 구조 줄 버튼 ---- */
 .ws.sm8 #views,.ws.sm8 #sTools,.ws.sm8 .view-pn .vtabs,.ws.sm8 .view-pn .vtitle{display:none!important}
 .smtitle{display:none;font-size:12px;font-weight:600}.ws.sm8 .smtitle{display:inline-flex;align-items:center;gap:6px}
@@ -1249,10 +1278,10 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
     <div class="phead">
       <span class="vtabs" role="tablist" aria-label="뷰 전환"><button class="vtab on" type="button" role="tab" aria-selected="true" data-v="pScene" data-ic="scene">씬</button><button class="vtab" type="button" role="tab" aria-selected="false" data-v="pGame" data-ic="game">게임</button></span>
       <span class="vtitle"><span class="vtab on" data-ic="scene">씬</span><span class="vtab on" data-ic="game">게임</span></span>
-      <span class="sttitle">특수 타일 실습장</span><span class="smtitle">씬 · 매니저 실습장</span><span class="ubtitle">UI 빌더 실습장 · 엔진과 같은 창</span><span class="vstitle">비주얼 스크립트 실습장 · 엔진과 같은 창</span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
+      <span class="sttitle">특수 타일 실습장</span><span class="smtitle">씬 · 매니저 실습장</span><span class="ubtitle">UI 빌더 실습장 · 엔진과 같은 창</span><span class="vstitle">비주얼 스크립트 실습장 · 엔진과 같은 창</span><span class="entitle">엔진 실습장 · 진짜 Thaniya Engine <small>(실습 전용 프로젝트 · 내 프로젝트는 그대로)</small></span><span class="spacer"></span><button class="btn sm pri playbtn" id="playBtn" type="button" hidden>▶ 플레이</button><span class="badge" id="badge"></span>
     </div>
     <div class="ptool stools" id="sTools" hidden>
-      <span class="sg" role="group" aria-label="칠할 곳"><b>칠할 곳</b><button type="button" data-layer="t">타일맵 1</button><button type="button" data-layer="c">콜라이더</button></span>
+      <span class="sg" role="group" aria-label="칠할 곳"><b>칠할 곳</b><button type="button" data-layer="t" title="타일맵 1에 칠해요">타일맵</button><button type="button" data-layer="c">콜라이더</button></span>
       <span class="sg" id="sPal" role="group" aria-label="팔레트"></span>
     </div>
     <div class="vwrap views tabs-mode" id="views">
@@ -1270,6 +1299,7 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
     <div class="smview" id="smView" hidden><div class="smbar" id="smBar"></div><div class="smmain"><div class="smstage" id="smStage"><div class="smcvw"><canvas id="smCv" aria-label="씬 그림: 플레이 중에는 지금 씬을 보여 줘요"></canvas></div><div class="smacts" id="smActs" hidden></div></div><aside class="smside" id="smSide" aria-live="polite"></aside></div></div>
     <div class="ubview" id="ubView" hidden><div class="panel" data-id="uib" id="ubPanel"><div class="pbody"><div id="uibBox"></div></div></div></div>
     <div class="vsview" id="vsView" hidden><div class="panel" data-id="vs" id="vsPanel"><div class="pbody"><div id="vsBox" tabindex="-1"></div></div></div></div>
+    <div class="enview" id="enView" hidden><div class="enbar"><span class="entl">엔진 실습장 · 진짜 Thaniya Engine</span><small class="ensub">실습 전용 프로젝트 · 내 프로젝트는 그대로예요</small><span class="spacer"></span><button class="btn sm" type="button" data-ena="reload" title="엔진이 멈췄거나 이상하면 다시 불러와요 (지금 문제의 처음 상태로)">엔진 다시 불러오기</button><button class="btn sm" type="button" data-ena="full" title="실습장을 화면 가득 (Esc로 돌아와요)">화면 가득</button></div><div class="enwrap"><iframe id="enFr" title="Thaniya Engine 실습장" allow="fullscreen; autoplay"></iframe><div class="enload" id="enLoad"><span class="spin"></span>엔진을 불러오는 중…</div></div></div>
     <div class="stview" id="stView" hidden><div class="stpal" id="stPal"></div><div class="stgrid"><canvas id="stCv" aria-label="특수 타일을 칠해 보는 격자"></canvas></div></div>
   </section>
 
@@ -1375,12 +1405,12 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 </main>
 </div>
 
-<script src="script-engine.js?v=20261104u"></script>
+<script src="script-engine.js?v=20261110a"></script>
 <script src="script-editor.js?v=20261107a"></script>
 <script src="anim-editor.js?v=20261107f"></script>
 <script src="ui-builder.js?v=20261105d"></script>
 <script src="visual-script.js?v=20261108d"></script>
-<script src="learn-preview.js?v=20261108b"></script>
+<script src="learn-preview.js?v=20261110a"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
@@ -2958,6 +2988,197 @@ const L12P=[
  hint:'컴포넌트 값 바꾸기의 「값」 단추를 누르면 대상에 붙은 컴포넌트가 펼쳐 볼 수 있게 나와요. 주인공 › 움직일 수 있음.\n버튼은 게임 화면에서 마우스로 눌러요.'}
 ];
 
+/* ===================== 레슨 13 · 14 실습 프로젝트 (엔진 실습장에 보낼 프로젝트) =====================
+   타일은 「기본 에셋 id:칸 번호」 글자로 → 엔진(learnLoad)이 이 브라우저의 에셋 번호로 바꿈.
+   스크립트 · 주인공 애니메이터 · 카메라 · 역할 스크립트는 엔진이 처음 열 때 채워 줌(normProject). BGM 매니저는 만들지 않음(컷씬 음악과 겹치지 않게). */
+function labMap(id,name,W,H,paint){
+  const g=[],d=[],w=[],c=[];
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){g.push('base_grass:'+((x*7+y*5+(x*y)%3)%3));d.push(0);w.push(0);c.push(0)}
+  const P={set:(L,x,y,v)=>{if(x<0||y<0||x>=W||y>=H)return;(L===0?g:L===2?d:w)[y*W+x]=v},rect:(L,x0,y0,x1,y1,v)=>{for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)P.set(L,x,y,typeof v==='function'?v(x,y):v)}};
+  /* 둘레 돌 벽 */
+  for(let x=0;x<W;x++){P.set(1,x,0,'base_stone_wall:0');P.set(1,x,H-1,'base_stone_wall:0')}
+  for(let y=0;y<H;y++){P.set(1,0,y,'base_stone_wall:0');P.set(1,W-1,y,'base_stone_wall:0')}
+  if(paint)paint(P);
+  return{id,name,w:W,h:H,ox:0,oy:0,theme:'기본',bg:'',l:[g,d,w],lm:[{name:'바닥',wall:false},{name:'풀',wall:false},{name:'벽',wall:true}],dark:{on:false,color:'#05060d',level:.88},col:c,objs:[],groups:[],ui:[],uiGroups:[],uiCv:{w:640,h:360,mode:'expand',match:.5},camInit:true};
+}
+const labProj=(name,maps,extra)=>Object.assign({name,start:maps[0].id,maps,nextN:0,playerSprite:'',afolders:[],afmap:{},sfmap:{},mgrs:[],mgrInit:true,mgrV2:true,prefabs:[]},extra||{});
+const labObj=(id,type,name,x,y,props,more)=>Object.assign({id,type,name,x,y,props:props||{},group:null,parent:null},more||{});
+const labDeco=(id,name,spr,x,y,g,more)=>labObj(id,'empty',name,x,y,Object.assign({sprite:spr},more||{}),{group:g});
+/* ---- 레슨 13 · 슬라임 숲 (18×11) ---- */
+function labForest(){
+  const m=labMap('forest','슬라임 숲',18,11,P=>{
+    P.rect(0,1,5,16,5,'base_dirt:0');P.rect(0,9,2,9,8,'base_dirt:0');
+    P.rect(1,13,1,16,3,(x,y)=>'base_water:0');
+    P.rect(2,2,7,4,9,'base_tall_grass:0');
+  });
+  m.groups=[{id:'gdeco',name:'숲 장식'}];
+  m.objs=[
+    labObj('hero','spawn','주인공',2,5,{start:true}),
+    labObj('slime','monster','슬라임',8,5,{hp:3,speed:55,range:5}),
+    labDeco('d1','나무','base_tree',3,2,'gdeco'),labDeco('d2','소나무','base_pine',6,8,'gdeco'),labDeco('d3','나무 2','base_tree',11,8,'gdeco'),
+    labDeco('d4','큰 바위','base_big_rock',14,8,'gdeco'),labDeco('d5','꽃','base_flowers',5,3,'gdeco'),labDeco('d6','버섯','base_mushroom',12,4,'gdeco'),
+    labDeco('d7','덤불','base_bush',15,6,'gdeco'),labDeco('d8','표지판','base_sign',4,4,'gdeco'),labDeco('d9','꽃 2','base_flowers',10,2,'gdeco')
+  ];
+  return labProj('슬라임 숲 실습',[m]);
+}
+/* 슬라임 프리팹 + 인스턴스 (pos = [[x,y,이름,props]…]) — 템플릿은 엔진이 첫 인스턴스에서 채움(fromInst) */
+function labSlimes(p,list){
+  const m=p.maps[0];m.objs=m.objs.filter(o=>o.id!=='slime');
+  p.prefabs=[{id:'pf_slime',name:'슬라임',fromInst:true,objs:[{id:'pk_slime',type:'monster',name:'슬라임',x:0,y:0,props:{hp:3,speed:55,range:5},parent:null}]}];
+  list.forEach((s,i)=>m.objs.splice(1+i,0,labObj('sl'+i,'monster',s[2]||(i?'슬라임 ('+i+')':'슬라임'),s[0],s[1],Object.assign({hp:3,speed:55,range:5},s[3]||{}),{pf:{id:'pf_slime',k:'pk_slime'}})));
+  if(list.base)p.prefabs[0].objs[0].props=Object.assign(p.prefabs[0].objs[0].props,list.base);
+  return p;
+}
+/* ---- 레슨 14 · 햇살 마을 (20×12) ---- */
+const LAB_ELDER_CS='using UnityEngine;\n\n// 촌장 스크립트\n// 타임라인의 「시그널 트랙」이 정해진 시간에 이 오브젝트의 메서드를 이름으로 부릅니다.\npublic class VillageElder : MonoBehaviour\n{\n    // 시그널 → Greet : 촌장이 주인공에게 말을 겁니다\n    void Greet()\n    {\n        Dialog.Show("촌장", "어서 오게, 젊은이! 햇살 마을에 온 걸 환영하네. 이 상자는 내 선물일세.");\n    }\n}\n';
+function labVillage(){
+  const m=labMap('village','햇살 마을',20,12,P=>{
+    P.rect(0,1,6,8,6,'base_dirt:0');
+    P.rect(0,8,3,15,9,'base_cobble:0');
+    P.rect(1,16,1,18,3,'base_water:0');
+    P.rect(2,2,1,5,2,'base_tall_grass:0');
+  });
+  m.groups=[{id:'gdeco',name:'마을 장식'}];
+  m.objs=[
+    labObj('hero','spawn','주인공',2,6,{start:true}),
+    labObj('elder','npc','촌장',14,6,{text:'오늘도 좋은 날이군.'},{scripts:[{id:'se1',sid:'sc_elder',vals:{}}]}),
+    labDeco('gift','선물 상자','base_chest',10,6,null),
+    labObj('cut','empty','컷씬',1,1,{}),
+    labDeco('v1','우물','base_well',11,4,'gdeco'),labDeco('v2','나무','base_tree',3,3,'gdeco'),labDeco('v3','소나무','base_pine',17,8,'gdeco'),
+    labDeco('v4','나무통','base_barrel',9,8,'gdeco'),labDeco('v5','나무 상자','base_crate',10,8,'gdeco'),labDeco('v6','횃불','base_torch',8,3,'gdeco'),
+    labDeco('v7','횃불 2','base_torch',15,3,'gdeco'),labDeco('v8','표지판','base_sign',6,5,'gdeco'),labDeco('v9','꽃','base_flowers',5,9,'gdeco'),
+    labDeco('v10','꽃 2','base_flowers',13,10,'gdeco'),labDeco('v11','울타리','base_fence',2,9,'gdeco'),labDeco('v12','항아리','base_pot',16,5,'gdeco')
+  ];
+  m.objs.find(o=>o.id==='gift').active=false;
+  return labProj('햇살 마을 컷씬',[m],{scripts:[{id:'sc_elder',name:'VillageElder',code:LAB_ELDER_CS}]});
+}
+/* 컷씬 단계별 처음 상태: n = 문제 번호(1~6) — n번 문제를 시작할 때 앞 문제까지의 정답이 들어 있음 */
+function labCut(n){
+  const p=labVillage(),m=p.maps[0],cut=m.objs.find(o=>o.id==='cut');
+  if(n<2)return p;
+  const tl={id:'tl_gift',name:'촌장의 선물',fps:60,fixed:false,len:5,tracks:[]};
+  p.anim={tls:[tl],clips:[]};cut.props.director={tl:tl.id,awake:true,wrap:'none',binds:{}};
+  const rec=(id,name,trid,oid,keys)=>{/* keys = [[초, x, y]…] */
+    const fps=60,T=p=>({p,keys:keys.map(k=>({f:Math.round(k[0]*fps),v:p==='x'?k[1]:p==='y'?k[2]:p==='rot'?0:1}))});
+    p.anim.clips.push({id,name,fps,loop:false,smooth:true,tracks:['x','y','rot','sx','sy'].map(T)});
+    const d=keys[keys.length-1][0]||1/60;
+    tl.tracks.push({id:trid,type:'anim',name:'애니메이션 트랙',mute:false,clips:[{id:trid+'c',s:0,d,k:id,spd:1,in:0,rec:true}],marks:[]});cut.props.director.binds[trid]=oid};
+  if(n>=3)rec('k_hero','주인공 녹화','tr_hero','hero',[[0,0,0],[2,4,0]]);
+  if(n>=4){rec('k_elder','촌장 녹화','tr_elder','elder',[[0,0,0],[2,0,0],[3,-2,0]]);
+    tl.tracks.push({id:'tr_gift',type:'act',name:'활성화 트랙',mute:false,post:'active',clips:[{id:'tr_giftc',s:3,d:2}],marks:[]});cut.props.director.binds.tr_gift='gift'}
+  if(n>=5){tl.tracks.push({id:'tr_bgm',type:'audio',name:'오디오 트랙',mute:false,clips:[{id:'tr_bgmc',s:0,d:5,a:'base_bgm_morning',vol:.8,in:0}],marks:[]});
+    tl.tracks.push({id:'tr_sig',type:'sig',name:'시그널 트랙',mute:false,clips:[],marks:[{id:'mk_greet',t:3.5,m:'Greet'}]});cut.props.director.binds.tr_sig='elder'}
+  if(n>=5)m.objs.push(labObj('gate','empty','광장 입구',5,6,{}));
+  return p;
+}
+
+/* ===== 레슨 13: 프리팹으로 몬스터 배치 (초급) — 진짜 엔진(edit.html?learn=1)을 실습장으로 =====
+   슬라임 숲(18×11) · 주인공 · 슬라임 1마리 · 숲 장식. 할 일은 엔진이 보내 주는 프로젝트(EN.P)와 일어난 일(TASK.ev의 en:…)로 확인 */
+const L13={no:13,title:'프리팹으로 몬스터 배치',clear:'통과했어요. 레슨 13 완료! 슬라임을 프리팹으로 만들어 숲 곳곳에 배치하고, 한 마리를 고쳐 「모두 적용」으로 전부 바꾸고, 대장 슬라임만 오버라이드로 다르게 만들고, 망가진 인스턴스를 되돌렸어요. 내 프로젝트에서도 계층 구조의 오브젝트를 프로젝트 창으로 끌어다 놓기만 하면 프리팹이 돼요.',
+ lead:'같은 몬스터를 여러 마리 둘 때 하나씩 만들고 하나씩 고치면 힘들어요. 프리팹(Prefab)은 게임 오브젝트를 「틀」로 저장해 두고 도장처럼 찍어 내는 기능이에요. 틀을 고치면 찍어 낸 오브젝트(인스턴스)가 한꺼번에 바뀌어요. 이 레슨은 진짜 엔진 화면에서 실습해요.'};
+const L13P=[
+{id:'pf-make',task:true,en:{proj:()=>labForest(),sel:'slime'},title:'슬라임을 프리팹으로 만들기',
+ desc:'오른쪽 큰 화면은 <b>진짜 Thaniya Engine</b>이에요. 실습 전용 프로젝트라서 내 프로젝트는 바뀌지 않아요. <b>프리팹</b>은 게임 오브젝트를 컴포넌트 · 값 · 스크립트까지 통째로 저장한 에셋이에요. 계층 구조의 오브젝트를 <b>프로젝트 창</b>으로 끌어다 놓으면 프리팹이 생기고, 원래 오브젝트는 그 프리팹의 <b>인스턴스</b>가 되어 계층 구조에서 <b>파란색</b>으로 보여요.',
+ goal:'숲에 있는 「슬라임」을 프리팹으로 만들고, 프로젝트 창과 인스펙터에서 확인해 보세요.',
+ checks:[
+  {t:'<b>계층 구조</b>의 <b>슬라임</b>을 아래 <b>프로젝트 창</b>으로 끌어다 놓기 (우클릭 › <b>프리팹 만들기</b>도 돼요)',ok:()=>!!enPf('슬라임')},
+  {t:'<b>계층 구조</b>에서 슬라임 줄이 <b>파란색</b>이 된 것 보기 (프리팹 인스턴스)',ok:()=>enIns(enPf('슬라임')).length>=1},
+  {t:'<b>프로젝트 창</b>의 <b>슬라임</b> 프리팹을 한 번 눌러 아래 자세히 보기의 <b>구성</b> 확인하기',ok:()=>enEv('pf:select:슬라임')},
+  {t:'계층 구조의 슬라임을 고르고 <b>인스펙터</b> 맨 위 파란 <b>프리팹 막대</b> 보기',ok:()=>enEv('pf:inspect:슬라임')}],
+ hint:'끌어다 놓을 때 프로젝트 창이 파란 테두리로 빛나면 놓으면 돼요.\n프리팹 이름은 오브젝트 이름을 따라가요. 이름은 프로젝트 창에서 우클릭 › 이름 바꾸기로 바꿀 수 있어요.\n유니티에서도 똑같이 Hierarchy의 오브젝트를 Project 창으로 끌어다 놓아 프리팹을 만들어요.'},
+{id:'pf-place',task:true,en:{proj:()=>labSlimes(labForest(),[[8,5]])},title:'숲에 슬라임 여러 마리 배치하기',
+ desc:'프로젝트 창의 프리팹을 <b>씬 뷰</b>로 끌어다 놓으면 놓은 칸에 인스턴스가 하나 더 생겨요. 이름 뒤에 (1), (2)…가 붙고 모두 파란색이에요. 프리팹을 <b>더블클릭</b>하면 씬 뷰 가운데 근처 빈칸에 놓여요. 인스턴스는 보통 게임 오브젝트와 똑같이 이동 도구로 옮길 수 있어요.',
+ goal:'슬라임이 4마리 이상 되도록 숲 곳곳에 배치하고 플레이해 보세요.',
+ checks:[
+  {t:'<b>프로젝트 창</b>의 <b>슬라임</b> 프리팹을 <b>씬 뷰</b>로 끌어다 놓아 한 마리 더 놓기',ok:()=>enIns(enPf('슬라임')).length>=2},
+  {t:'같은 방법으로 슬라임을 모두 <b>4마리 이상</b>으로',ok:()=>enIns(enPf('슬라임')).length>=4},
+  {t:'슬라임끼리 <b>같은 칸에 겹치지 않게</b> 놓기 (겹쳤으면 씬 뷰에서 끌어 옮겨요)',ok:()=>{const L=enIns(enPf('슬라임'));return L.length>=4&&new Set(L.map(o=>Math.round(o.x)+','+Math.round(o.y))).size===L.length}},
+  {t:'<b>▶ 플레이</b>로 슬라임 떼가 주인공을 쫓아오는 것 보기',ok:()=>enEv('play')&&enIns(enPf('슬라임')).length>=4}],
+ hint:'씬 뷰에 놓을 때 마우스를 놓은 칸에 생겨요.\n계층 구조로 끌어다 놓아도 돼요(빈칸에 놓여요).\n플레이를 멈추려면 Esc 또는 ■ 정지.'},
+{id:'pf-apply',task:true,en:{proj:()=>labSlimes(labForest(),[[8,5],[11,7],[13,5],[6,3]])},title:'한 마리를 고쳐 모두에게 적용하기',
+ desc:'인스턴스를 고르고 인스펙터에서 값을 바꾸면 그 칸 왼쪽에 파란 줄이 생기고, 프리팹 막대에 <b>오버라이드</b>(프리팹과 다른 값)가 보여요. 이대로 두면 그 한 마리만 달라요. 프리팹 막대의 <b>모두 적용</b>을 누르면 바꾼 값이 프리팹(틀)에 저장되고, <b>다른 인스턴스도 모두</b> 같은 값으로 바뀌어요.',
+ goal:'슬라임 한 마리의 체력을 5, 이동 속도를 80으로 바꾼 뒤 모든 슬라임에 적용하세요.',
+ checks:[
+  {t:'슬라임 한 마리를 고르고 <b>인스펙터</b> 몬스터의 <b>체력</b>을 <b>5</b>로',ok:()=>enIns(enPf('슬라임')).some(o=>+o.props.hp===5)},
+  {t:'같은 슬라임의 <b>이동 속도</b>를 <b>80</b>으로 (프리팹 막대에 「오버라이드 2개」)',ok:()=>enIns(enPf('슬라임')).some(o=>+o.props.hp===5&&+o.props.speed===80)},
+  {t:'<b>인스펙터</b> 프리팹 막대의 <b>모두 적용</b> 누르기',ok:()=>{const t=enPfRoot('슬라임');return !!t&&+t.props.hp===5&&+t.props.speed===80}},
+  {t:'다른 슬라임을 눌러 보고 모두 체력 5 · 속도 80인지 확인',ok:()=>{const L=enIns(enPf('슬라임'));return L.length>=4&&L.every(o=>+o.props.hp===5&&+o.props.speed===80)&&enSelCount()>=2}}],
+ hint:'숫자 칸에 값을 넣고 Enter를 누르거나 다른 곳을 누르면 바뀌어요.\n프리팹 막대의 「모두 되돌리기」는 반대로 그 인스턴스를 프리팹 값으로 돌려놔요.'},
+{id:'pf-boss',task:true,en:{proj:()=>{const l=[[8,5],[11,7],[13,5],[6,3]];l.forEach(s=>s[3]={hp:5,speed:80});return labSlimes(labForest(),l)}},title:'대장 슬라임만 다르게 (오버라이드)',
+ desc:'모든 인스턴스가 똑같을 필요는 없어요. 한 마리만 바꾸고 <b>적용하지 않으면</b> 그 인스턴스의 <b>오버라이드</b>로 남고, 나중에 프리팹을 고쳐 적용해도 오버라이드한 값은 그대로 지켜져요. 이름과 위치는 원래 인스턴스마다 따로라서 오버라이드로 세지 않아요.',
+ goal:'한 마리만 크고 튼튼한 「대장 슬라임」으로 바꾸세요. 다른 슬라임과 프리팹은 그대로여야 해요.',
+ checks:[
+  {t:'슬라임 한 마리를 고르고 <b>인스펙터</b> 맨 위 이름을 <b>대장 슬라임</b>으로',ok:()=>!!enBoss()},
+  {t:'대장 슬라임의 변환 <b>크기</b> X · Y를 <b>2</b>로',ok:()=>{const b=enBoss();return !!b&&+b.props.sx===2&&+b.props.sy===2}},
+  {t:'대장 슬라임의 <b>체력</b>을 <b>12</b>로',ok:()=>{const b=enBoss();return !!b&&+b.props.hp===12}},
+  {t:'<b>모두 적용은 누르지 않기</b> — 프리팹과 다른 슬라임은 체력 5 · 크기 1 그대로',ok:()=>{const b=enBoss(),t=enPfRoot('슬라임'),L=enIns(enPf('슬라임')).filter(o=>o!==b);return !!b&&!!t&&+t.props.hp===5&&!(+t.props.sx>1)&&L.length>=3&&L.every(o=>+o.props.hp===5&&!(+o.props.sx>1))}},
+  {t:'<b>▶ 플레이</b>로 커다란 대장 슬라임 보기',ok:()=>enEv('play')&&!!enBoss()&&+enBoss().props.hp===12}],
+ hint:'크기는 변환(Transform)의 「크기」 칸이에요. 라벨을 좌우로 끌어도 X · Y가 함께 바뀌어요.\n오버라이드한 칸은 인스펙터에서 왼쪽에 파란 줄이 생겨요.'},
+{id:'pf-revert',task:true,en:{proj:()=>{const l=[[8,5],[11,7],[13,5,'슬라임 (2)',{hp:99,speed:200,sprite:'base_mushroom'}],[6,3]];l.forEach(s=>s[3]=Object.assign({hp:5,speed:80},s[3]||{}));return labSlimes(labForest(),l)}},title:'망가진 슬라임 되돌리기',
+ desc:'누군가 「슬라임 (2)」의 값을 잔뜩 바꿔 놓았어요. 인스턴스를 고르면 프리팹 막대에 어떤 값이 다른지(오버라이드) 나와요. <b>모두 되돌리기</b>를 누르면 이름 · 위치만 남기고 나머지는 프리팹 값으로 돌아가요. 프리팹 막대의 ⋯ 메뉴에는 프리팹과의 연결을 끊는 <b>연결 끊기</b>도 있어요.',
+ goal:'「슬라임 (2)」를 프리팹대로 되돌리고, 슬라임을 한 마리 더 배치해 보세요.',
+ checks:[
+  {t:'<b>계층 구조</b>에서 <b>슬라임 (2)</b>를 골라 프리팹 막대의 오버라이드(체력 · 이동 속도 · 스프라이트) 보기',ok:()=>enEv('pf:inspect:슬라임')&&enSelHad('슬라임 (2)')},
+  {t:'프리팹 막대의 <b>모두 되돌리기</b> 누르기',ok:()=>{const o=enIns(enPf('슬라임')).find(x=>x.name==='슬라임 (2)');return enEv('pf:revert:슬라임')&&!!o&&+o.props.hp===5&&+o.props.speed===80&&!o.props.sprite}},
+  {t:'프로젝트 창의 프리팹으로 슬라임을 <b>한 마리 더</b> (모두 5마리)',ok:()=>enIns(enPf('슬라임')).length>=5},
+  {t:'<b>▶ 플레이</b>로 확인',ok:()=>enEv('play')&&enIns(enPf('슬라임')).length>=5}],
+ hint:'스프라이트를 바꾼 것도 오버라이드예요. 되돌리면 원래 모습(기본 몬스터)으로 돌아와요.\n연결 끊기를 하면 파란색이 사라지고 보통 게임 오브젝트가 돼요. 이 실습에서는 누르지 마세요.'}
+];
+
+/* ===== 레슨 14: 타임라인으로 컷씬 만들기 (중급) — 햇살 마을(20×12) · 주인공 · 촌장(VillageElder.cs) · 선물 상자(꺼짐) · 빈 오브젝트 「컷씬」 ===== */
+const L14={no:14,title:'타임라인으로 컷씬 만들기',clear:'통과했어요. 레슨 14 완료! 플레이어블 디렉터와 타임라인으로 주인공이 걸어 들어오고, 촌장이 마중 나오고, 선물 상자가 나타나고, 음악과 대사가 흐르는 컷씬을 만들었어요. 마지막으로 OnTriggerEnter2D 스크립트로 광장 입구에 들어설 때 컷씬이 시작되게 했어요.',
+ lead:'게임이 잠깐 플레이어 손을 떠나 캐릭터들이 정해진 대로 움직이며 이야기가 펼쳐지는 장면을 컷씬이라고 해요. 타임라인 창에 트랙을 쌓아 주인공 · 촌장 · 선물 상자 · 음악 · 대사를 시간에 맞춰 연출하고, 마지막에는 광장 입구에 들어서면 컷씬이 시작되도록 스크립트를 짜요.'};
+const L14P=[
+{id:'c-dir',task:true,en:{proj:()=>labCut(1),sel:'cut'},title:'컷씬 감독 붙이기 (플레이어블 디렉터)',
+ desc:'컷씬은 <b>플레이어블 디렉터</b>(감독) 컴포넌트가 <b>타임라인</b>(대본)을 재생해서 만들어요. 타임라인에는 트랙을 여러 줄 쌓고, 트랙마다 어떤 오브젝트를 움직일지 정해요(<b>바인딩</b>). 감독은 보통 화면에 보이지 않는 빈 오브젝트에 붙여요. 이 마을에는 그런 빈 오브젝트 「컷씬」이 준비되어 있어요.',
+ goal:'「컷씬」 오브젝트에 플레이어블 디렉터를 붙이고, 타임라인 이름을 「촌장의 선물」로 바꾸세요.',
+ checks:[
+  {t:'<b>계층 구조</b>에서 <b>컷씬</b>을 고르고 <b>인스펙터</b> 아래 <b>컴포넌트 추가</b> › <b>플레이어블 디렉터</b>',ok:()=>{const o=enO('컷씬');return !!(o&&o.props.director&&o.props.director.tl)}},
+  {t:'아래 <b>타임라인</b> 탭을 열고 ⋯ 메뉴 › <b>이름 바꾸기</b>로 타임라인 이름을 <b>촌장의 선물</b>로',ok:()=>{const o=enO('컷씬'),t=o&&o.props.director&&enTlId(o.props.director.tl);return !!t&&enIs(t.name,'촌장의 선물')}},
+  {t:'<b>인스펙터</b>의 디렉터에서 <b>시작할 때 재생</b>이 켜져 있는지 · <b>바인딩</b>을 눌러 펼쳐 보기',ok:()=>{const o=enO('컷씬');return !!(o&&o.props.director&&o.props.director.awake!==false)&&enEv('tlbind:open')}},
+  {t:'<b>▶ 플레이</b>로 디렉터가 재생되는지 보기 (아직 빈 타임라인이라 바로 끝나요)',ok:()=>enEv('tl:play:컷씬')}],
+ hint:'컴포넌트 추가 창에서 「플레이어블 디렉터」를 고르면 「컷씬 타임라인」이 함께 만들어져요.\n타임라인 창은 아래쪽 「게임 오브젝트 · 애니메이션」 옆 탭이에요. 디렉터가 붙은 오브젝트를 고르면 그 타임라인이 보여요.\n이름은 타임라인 창 위 ⋯ 메뉴에 있어요.'},
+{id:'c-hero',task:true,en:{proj:()=>labCut(2),sel:'cut'},title:'주인공 걸어 들어오기 (녹화)',
+ desc:'<b>애니메이션 트랙</b>은 바인딩한 오브젝트를 움직여요. 트랙 머리의 빨간 <b>● 녹화</b>를 누르고 <b>재생 위치</b>(빨간 선)를 옮긴 뒤 씬 뷰나 인스펙터에서 오브젝트를 옮기면 그 시간에 <b>키(◆)</b>가 생겨요. 0초에는 출발 자리가 저절로 키가 되고, 키와 키 사이는 부드럽게 이어져요.',
+ goal:'주인공이 2초 동안 오른쪽으로 4칸 걸어 들어오게 녹화하세요.',
+ checks:[
+  {t:'<b>타임라인</b> 창 <b>＋ 트랙</b> › <b>애니메이션 트랙</b>',ok:()=>enTracks('anim').length>=1},
+  {t:'트랙 머리의 바인딩을 <b>주인공</b>으로 (계층 구조의 주인공을 트랙 머리로 끌어다 놓아도 돼요)',ok:()=>enTracks('anim').some(t=>enBound(t)==='주인공')},
+  {t:'<b>● 녹화</b> → 위쪽 프레임 칸에 <b>120</b>(=2초) → <b>인스펙터</b> 위치 <b>X</b>를 <b>6</b>으로(4칸 오른쪽) → <b>녹화 끝</b>',ok:()=>enRecHas('주인공',k=>k.t>=1.5&&k.t<=2.6&&k.x>=3.5)},
+  {t:'<b>▶ 플레이</b>로 주인공이 걸어 들어오고 컷씬이 끝나는 것 보기',ok:()=>enEv('tl:end:컷씬')&&enRecHas('주인공',k=>k.x>=3.5)}],
+ hint:'프레임 칸은 타임라인 창 위 ▶ 버튼 옆 숫자 칸이에요(60프레임 = 1초). 위쪽 눈금자를 눌러도 재생 위치가 옮겨져요.\n녹화 중에는 씬 뷰에 빨간 테두리가 생겨요. 씬 뷰에서 주인공을 이동 도구(W)로 끌어도 돼요.\n잘못 찍은 키는 ◆를 눌러 Delete로 지워요.'},
+{id:'c-elder',task:true,en:{proj:()=>labCut(3),sel:'cut'},title:'촌장 마중 · 선물 상자 나타나기',
+ desc:'트랙은 여러 줄 쌓을 수 있어요. 촌장이 2초까지 가만히 있다가 움직이게 하려면, 녹화 중에 2초에서 <b>◆ 키 남기기</b>로 제자리 키를 먼저 찍고 3초에서 옮기면 돼요. <b>활성화 트랙</b>은 바인딩한 오브젝트를 클립이 있는 동안만 켜요. 트랙 ⋯ 메뉴의 <b>끝난 뒤 상태</b>로 컷씬이 끝난 뒤에도 켜 둘 수 있어요.',
+ goal:'촌장이 2~3초에 왼쪽으로 2칸 다가오고, 3초부터 선물 상자가 나타나 컷씬이 끝나도 남아 있게 하세요.',
+ checks:[
+  {t:'<b>애니메이션 트랙</b>을 하나 더 추가하고 바인딩을 <b>촌장</b>으로',ok:()=>enTracks('anim').some(t=>enBound(t)==='촌장')},
+  {t:'<b>● 녹화</b> → 프레임 <b>120</b>에서 <b>◆ 키 남기기</b> → 프레임 <b>180</b>에서 촌장 위치 <b>X</b>를 <b>12</b>로 → <b>녹화 끝</b>',ok:()=>enRecHas('촌장',k=>k.t>=1.7&&k.t<=2.3&&Math.abs(k.x)<.3)&&enRecHas('촌장',k=>k.t>=2.5&&k.t<=3.6&&k.x<=-1.5)},
+  {t:'<b>활성화 트랙</b>을 추가하고 바인딩을 <b>선물 상자</b>로 → 프레임 <b>180</b>(3초)에서 트랙 머리 ⋯ › <b>활성 클립 추가</b> (트랙의 빈 곳을 더블클릭해도 돼요)',ok:()=>enTracks('act').some(t=>enBound(t)==='선물 상자'&&t.clips.some(c=>c.s>=2.5&&c.s<=3.6))},
+  {t:'활성화 트랙 머리 ⋯ › 끝난 뒤 상태 = <b>켜 두기</b>',ok:()=>enTracks('act').some(t=>enBound(t)==='선물 상자'&&t.post==='active')},
+  {t:'<b>▶ 플레이</b>로 촌장이 마중 나오고 상자가 나타나 남아 있는 것 보기',ok:()=>enEv('tl:end:컷씬')&&enTracks('act').some(t=>enBound(t)==='선물 상자')}],
+ hint:'활성 클립을 누르면 위 속성 줄에서 「시작」 · 「길이」를 숫자로 고칠 수 있어요 (시작 3, 길이 2).\n선물 상자는 처음에 꺼져 있어요(인스펙터 이름 옆 체크). 활성화 트랙이 켜 줘요.\n촌장은 지금 X 14에 있어요.'},
+{id:'c-av',task:true,en:{proj:()=>labCut(4),sel:'cut'},title:'음악과 대사 넣기 (오디오 · 시그널)',
+ desc:'<b>오디오 트랙</b>에는 프로젝트 창의 오디오를 끌어다 놓아 클립을 만들어요. <b>시그널 트랙</b>은 정한 시간에 바인딩한 오브젝트의 스크립트 메서드를 <b>이름으로</b> 불러요. 촌장에게는 대사를 띄우는 <code>Greet()</code> 메서드가 있는 VillageElder 스크립트가 이미 붙어 있어요.',
+ goal:'컷씬이 시작되면 배경 음악이 흐르고, 3.5초에 촌장이 인사하게 하세요.',
+ checks:[
+  {t:'<b>오디오 트랙</b>을 추가하고 <b>프로젝트 창</b> 기본 에셋 › 오디오의 <b>타니아의 아침</b>을 오디오 트랙 0초 쪽으로 끌어다 놓기 (재생 위치 0에서 트랙 머리 ⋯ › 오디오 클립 추가도 돼요)',ok:()=>enTracks('audio').some(t=>t.clips.some(c=>c.a))},
+  {t:'오디오 클립을 누르고 위 속성 줄의 <b>길이</b>를 <b>5</b>로 (음악이 32초라 그대로면 컷씬도 32초가 돼요)',ok:()=>enTracks('audio').some(t=>t.clips.some(c=>c.a&&c.d<=6.01))&&!enTracks('audio').some(t=>t.clips.some(c=>c.s+c.d>6.01))},
+  {t:'<b>시그널 트랙</b>을 추가하고 바인딩을 <b>촌장</b>으로',ok:()=>enTracks('sig').some(t=>enBound(t)==='촌장')},
+  {t:'프레임 <b>210</b>(3.5초)에서 시그널 트랙 머리 ⋯ › <b>시그널 추가</b> → 부를 메서드 <b>Greet</b> (트랙의 빈 곳을 더블클릭해도 돼요)',ok:()=>enTracks('sig').some(t=>enBound(t)==='촌장'&&t.marks.some(k=>k.m==='Greet'&&k.t>=3&&k.t<=4.5))},
+  {t:'<b>▶ 플레이</b> → 음악이 흐르고 3.5초에 촌장의 인사 대화창이 뜨는 것 보기',ok:()=>enEvP(/^en:say:촌장/)&&enEvP(/^en:tl:sig:Greet/)}],
+ hint:'시그널을 누르면 위 속성 줄에서 「시간」과 「부를 메서드」를 고칠 수 있어요.\n메서드 이름은 대소문자까지 똑같이 Greet. 스크립트를 보려면 촌장을 고르고 VillageElder의 「스크립트 편집」.'},
+{id:'c-trig',task:true,en:{proj:()=>labCut(5),sel:'gate'},title:'광장 입구에 들어서면 컷씬 시작 (스크립트)',
+ desc:'지금은 플레이하자마자 컷씬이 시작돼요. 보통은 주인공이 특정 장소에 들어설 때 시작하죠. <b>박스 콜라이더 2D</b>의 <b>트리거</b>를 켜면 막지 않고 닿았는지만 알려 주고, 그 순간 스크립트의 <code>OnTriggerEnter2D</code>가 불려요. 거기서 디렉터의 <code>Play()</code>를 부르면 돼요. <code>public PlayableDirector director;</code>처럼 공개 변수를 만들면 인스펙터에 칸이 생기고, 계층 구조의 「컷씬」을 그 칸에 끌어다 놓아 연결해요.',
+ goal:'주인공이 「광장 입구」에 들어서는 순간 컷씬이 한 번 재생되게 하세요.',
+ checks:[
+  {t:'<b>컷씬</b>을 고르고 <b>인스펙터</b> 디렉터의 <b>시작할 때 재생</b> 끄기',ok:()=>{const o=enO('컷씬');return !!(o&&o.props.director&&o.props.director.awake===false)}},
+  {t:'<b>광장 입구</b>에 <b>컴포넌트 추가</b> › <b>박스 콜라이더 2D</b> → <b>트리거</b> 켜기',ok:()=>{const o=enO('광장 입구');return !!(o&&o.props.box&&o.props.box.trigger)}},
+  {t:'광장 입구에 <b>스크립트 추가</b> › <b>새 C# 스크립트…</b> 이름 <b>CutsceneTrigger</b> → 편집기에서 <code>OnTriggerEnter2D</code> 안에 <code>director.Play();</code> (힌트의 전체 코드)',ok:()=>!!enTrigScript()},
+  {t:'<b>계층 구조</b>에서 <b>광장 입구</b>를 고르고, <b>인스펙터</b>의 CutsceneTrigger 스크립트 <b>Director</b> 칸에 계층 구조의 <b>컷씬</b>을 끌어다 놓기 (칸을 눌러 컷씬을 골라도 돼요)',ok:()=>enTrigLinked()},
+  {t:'<b>▶ 플레이</b> → 게임 화면을 누르고 방향키로 광장 입구까지 걸어가 컷씬이 시작되는 것 보기',ok:()=>enSeqAfterPlay()}],
+ hint:'편집기는 Ctrl+S로 저장하고 오른쪽 위 「숨기기」로 닫아요.\n\nCutsceneTrigger.cs 전체 코드:\n\nusing UnityEngine;\n\npublic class CutsceneTrigger : MonoBehaviour\n{\n    public PlayableDirector director;\n    private bool played = false;\n\n    void OnTriggerEnter2D(Collider2D other)\n    {\n        if (played)\n        {\n            return;\n        }\n        played = true;\n        director.Play();\n    }\n}\n\nplayed 변수는 컷씬이 한 번만 재생되게 막아요.\n「광장 입구」는 길 위 X 5에 있어요. 박스 콜라이더 2D의 크기(칸) H를 3으로 키우면 길 폭 전체가 입구가 돼요(트리거라 막히지 않고 지나가요).'}
+];
+
 const LESSONS=[
   {...L2,problems:L2P,hash:'lesson-1',cats:['feature'],lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
   {...L1,problems:L1P,hash:'lesson-2',cats:['cs'],lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
@@ -2970,11 +3191,13 @@ const LESSONS=[
   {...L9,problems:L9P,hash:'lesson-9',cats:['feature'],lv:2,kw:['UI 빌더', 'UI 그룹', '버튼 동작'],preview:'요소     → 텍스트 · 버튼 끌어다 놓기\n저장     → 「메인 화면」 · 「게임 UI」\n게임 시작 → 다른 UI 그룹 열기 「게임 UI」\n          + 이 그룹은 닫기'},
   {...L11,problems:L11P,hash:'lesson-11',cats:['vs'],lv:1,kw:['비주얼 스크립트','노드','이벤트'],preview:'시작 ─▶ Debug.Log("안녕")\n키 입력(Space) ─▶ 변수에 더하기(점수)\n            └▶ 만약(점수 ≥ 5) ─▶ 알림'},
   {...L12,problems:L12P,hash:'lesson-12',cats:['vs'],lv:2,kw:['오브젝트 상호작용','커스텀 이벤트','UI 버튼'],preview:'상자: 말을 걸면 ─▶ 소지품 + 열쇠\n문: 열쇠 > 0 ? ─▶ 「문 열림」 보내기\n매니저: 「문 열림」 받기 ─▶ HUD 글자'},
-  {...L10,problems:L10P,hash:'lesson-10',cats:['cs'],lv:3,kw:['UIScreen','UIGroup','OnInteract'],preview:'dialogUI = UIGroup.Find("대화창");\n\nvoid OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n}'}
+  {...L10,problems:L10P,hash:'lesson-10',cats:['cs'],lv:3,kw:['UIScreen','UIGroup','OnInteract'],preview:'dialogUI = UIGroup.Find("대화창");\n\nvoid OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n}'},
+  {...L13,problems:L13P,hash:'lesson-13',cats:['feature'],lv:2,kw:['프리팹','인스턴스','오버라이드'],preview:'계층 구조 슬라임 ─▶ 프로젝트 창 = 프리팹\n프리팹 ─▶ 씬 뷰에 끌어다 놓기 × 4\n인스펙터 체력 5 ─▶ 모두 적용\n대장 슬라임 = 오버라이드 (크기 2 · 체력 12)'},
+  {...L14,problems:L14P,hash:'lesson-14',cats:['feature','cs'],lv:3,kw:['타임라인','플레이어블 디렉터','컷씬'],preview:'컷씬 + 플레이어블 디렉터 → 「촌장의 선물」\n애니메이션 트랙 ● 녹화  주인공 →→→→\n활성화 · 오디오 · 시그널(Greet)\nOnTriggerEnter2D → director.Play();'}
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
-const LVN=['','입문','초급','중급'];
-if(window.TI18N)TI18N.add({"난이도":["Difficulty","難易度","难度"],"입문":["Beginner","入門","入门"],"초급":["Basic","初級","初级"],"중급":["Intermediate","中級","中级"],
+const LVN=['','입문','초급','중급','중상급','상급'];
+if(window.TI18N)TI18N.add({"난이도":["Difficulty","難易度","难度"],"입문":["Beginner","入門","入门"],"초급":["Basic","初級","初级"],"중급":["Intermediate","中級","中级"],"중상급":["Upper-intermediate","中上級","中高级"],"상급":["Advanced","上級","高级"],
  "전체":["All","すべて","全部"],"난이도별 보기":["Filter by difficulty","難易度で絞り込む","按难度筛选"],
  "다음 레슨":["Next lesson","次のレッスン","下一课"],
  "「{title}」 레슨의 통과 기록과 작성한 코드를 모두 지우고 처음부터 시작할까요?":["Clear all pass records and code you wrote for the lesson “{title}” and start over?","「{title}」レッスンの合格記録と作成したコードをすべて消して、最初からやり直しますか？","要清除“{title}”课程的通过记录和你编写的代码，并从头开始吗？"],
@@ -2983,7 +3206,8 @@ if(window.TI18N)TI18N.add({"난이도":["Difficulty","難易度","难度"],"입�
  "키 입력":["Key input","キー入力","按键输入"],"애니메이터":["Animator","アニメーター","动画控制器"],"애니메이션 클립":["Animation clips","アニメーションクリップ","动画片段"],
  "룰 타일":["Rule Tile","ルールタイル","规则图块"],"애니메이션 타일":["Animated Tile","アニメーションタイル","动画图块"],"타일 팔레트":["Tile Palette","タイルパレット","图块调色板"]});
 const lvName=L=>_t(LVN[L.lv]||'입문');
-const lvChip=L=>`<span class="chip lv lv${L.lv}"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>${esc(_t('난이도'))} ${esc(lvName(L))}</span></span>`;
+const LV_DOTS='<i></i><i></i><i></i><i></i><i></i>';
+const lvChip=L=>`<span class="chip lv lv${L.lv}"><span class="dots" aria-hidden="true">${LV_DOTS}</span><span>${esc(_t('난이도'))} ${esc(lvName(L))}</span></span>`;
 /* ===== 레슨 분류 (전체 · 기능 위주 · 비주얼 스크립트 위주 · C# 스크립트 위주) · 정렬은 난이도 순 (같은 난이도면 원래 순서) ===== */
 const LCATS=[['all','전체보기'],['feature','기능 위주'],['vs','비주얼 스크립트 위주'],['cs','C# 스크립트 위주']];
 const LCATN={feature:'기능',vs:'비주얼 스크립트',cs:'C# 스크립트'};
@@ -3051,7 +3275,7 @@ function snRestore(){
 function snSetup(p){
   const base=p&&p.setup?p.setup():p&&p.task?SN_INIT.filter(o=>o.id!=='quiz').map(o=>({...o})):SN_INIT.map(o=>({...o}));
   SN_OBJS.length=0;base.forEach(o=>SN_OBJS.push(o));SN_EDIT=null;SN_EDIT_UI=null;
-  l6Setup(p);stSetup(p);smSetup(p);ubSetup(p);vsSetup(p);
+  l6Setup(p);stSetup(p);smSetup(p);ubSetup(p);vsSetup(p);enSetup(p);
   const tm=tmDefault();if(p&&p.task&&p.tiles)p.tiles(tm);tmLoad(tm);
   SN_UI.length=0;if(p&&p.uiSetup)p.uiSetup().forEach(u=>SN_UI.push(JSON.parse(JSON.stringify(u))));
   SN.tool='select';SN.layer=(p&&p.layer)||'t';SN.tile='floor';SN.hover=null;
@@ -3653,7 +3877,7 @@ function renderHier(){
     if(L.length){h+=fold('folder','타일맵',2);h+=L.map(r=>row('L:'+r[0],r[2],r[3],r[1],r[4])).join('')}}
   if(open&&tk)h+=fold('folder','게임 오브젝트',list.length);
   if(open)h+=list.map(o=>{const K=KUI[o.kind],on=o.id===SN.sel;
-    return`<div class="tr${on?' on':''}" style="--d:${D};${o.active===false?'opacity:.45':''}" data-id="${o.id}" draggable="true" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${K.c}">${ico(K.ic)}</span><span class="tl"><span data-i18n-skip>${esc(o.name)}</span>${o.kind==='camera'?'<span class="wbadge">시작 카메라</span>':''}</span><span class="ts">${o.kind==='camera'?'':o.x+','+o.y}</span></div>`}).join('');
+    return`<div class="tr${on?' on':''}" style="--d:${D};${o.active===false?'opacity:.45':''}" data-id="${o.id}" draggable="true" tabindex="0" role="treeitem" aria-selected="${on}"><span class="fold sp"></span><span class="ti" style="color:${K.c}">${ico(K.ic)}</span><span class="tl"><span data-i18n-skip>${esc(o.name)}</span>${o.kind==='camera'?'<span class="wbadge">시작 카메라</span>':''}</span></div>`}).join('');
   if(open&&((tk&&pr.ui)||SN_UI.length)){const U=SN_UI.filter(u=>!q||u.name.toLowerCase().includes(q));h+=fold('folder','UI (캔버스)',U.length);
     const urow=u=>row('U:'+u.id,u.type==='button'?'uibtn':u.type==='panel'?'cube':'uitext','#e9bd0c','<span data-i18n-skip>'+esc(u.name)+'</span>',u.hidden?_t('숨김'):(ANC_N[u.anchor]||''),!!u.hidden,true),seenG=new Set();
     h+=U.map(u=>{if(!u.grp)return urow(u);if(seenG.has(u.grp))return'';seenG.add(u.grp);const mem=U.filter(q=>q.grp===u.grp),hid=mem.every(q=>q.hidden),on=SN.sel==='G:'+u.grp;
@@ -3674,7 +3898,7 @@ $('#hier').addEventListener('click',e=>{
 });
 /* Delete 키: 입력칸 밖에서 누르면 고른 오브젝트·UI 삭제 (실습 문제) */
 document.addEventListener('keydown',e=>{
-  if(e.key!=='Delete'||$('#lessonView').hidden||!P()||!P().task||PLAY||SMON||UBON||VSON)return;
+  if(e.key!=='Delete'||$('#lessonView').hidden||!P()||!P().task||PLAY||SMON||UBON||VSON||EN.on)return;
   if(e.target&&e.target.closest&&e.target.closest('input,textarea,select,#hier'))return;
   e.preventDefault();snDelete(SN.sel);
 });
@@ -3819,7 +4043,7 @@ $('#insp').addEventListener('input',e=>{
   if('name' in t.dataset){if(t.readOnly)return;o.name=t.value;SN_EDIT=null;renderHier();snRedraw();return}
   if('act' in t.dataset){if(t.checked)delete o.active;else o.active=false;SN_EDIT=null;renderHier();snRedraw();return}
   if(t.dataset.c){o.col[t.dataset.c]=t.checked;snRedraw();return}
-  if(t.dataset.pos){const v=+t.value;if(!isNaN(v)&&t.value!==''){o[t.dataset.pos]=clamp(v,1,t.dataset.pos==='x'?SN_COLS-2:SN_ROWS-2);snRedraw();const r=$(`#hier .tr[data-id="${o.id}"] .ts`);if(r)r.textContent=o.x+','+o.y}}
+  if(t.dataset.pos){const v=+t.value;if(!isNaN(v)&&t.value!==''){o[t.dataset.pos]=clamp(v,1,t.dataset.pos==='x'?SN_COLS-2:SN_ROWS-2);snRedraw();}}
   else if(t.dataset.p){const k=t.dataset.p;o[k]=t.type==='checkbox'?t.checked:(t.value===''?o[k]:+t.value);snRedraw()}
   else if(t.dataset.ps){SN_EDIT=null;o[t.dataset.ps]=t.value;snRedraw()}
   else if(t.dataset.sf){const p=P(),v=st.vals[p.id]||(st.vals[p.id]={});v[t.dataset.sf]=t.type==='checkbox'?t.checked:t.type==='number'?(t.value===''?0:+t.value):t.value;save();
@@ -3865,7 +4089,7 @@ $('#insp').addEventListener('pointerdown',e=>{
   lab.addEventListener('pointermove',mv);lab.addEventListener('pointerup',up);lab.addEventListener('pointercancel',up);
 });
 SN.onMove=o=>{
-  SN_EDIT=null;const r=$(`#hier .tr[data-id="${o.id}"] .ts`);if(r)r.textContent=o.x+','+o.y;
+  SN_EDIT=null;
   if(SN.sel!==o.id)return;
   ['x','y'].forEach(a=>{const i=$('#insp [data-pos="'+a+'"]');if(i&&document.activeElement!==i)i.value=o[a]});
 };
@@ -3985,6 +4209,7 @@ function tkPing(){
 
 /* ---- 창 위치 힌트: 할 일이 어느 창에서 하는 일인지 작은 표시 + 그 창을 살짝 빛나게 ----
    할 일 글에 나오는 창 이름으로 찾음 (레슨 6은 애니메이터 · 애니메이션 · 프로젝트 · 콘솔 탭) · 위치(왼쪽 위 등)는 지금 화면 배치에서 계산 */
+const LOC_RULES_EN=[[/타임라인 (창|탭)|트랙 머리|● 녹화|프레임 칸|시그널 트랙|오디오 트랙|활성화 트랙|애니메이션 트랙/,'tl'],[/프로젝트 창/,'proj'],[/씬 뷰/,'scene']];
 const LOC_RULES=[
   [/계층 구조/,'vsside'],[/노드 목록|속성 패널|그래프 변수|비주얼 스크립트 창/,'vs'],
   [/마을 › UI|게임 화면/,'ubpn'],[/UI 빌더/,'ub'],
@@ -3995,6 +4220,7 @@ const LOC_RULES=[
 const LOC_GUESS=[[/샘플|반복 끄기|타임라인|속성 추가|클립 (버튼|메뉴)/,'anim',1],[/Any State|전환|상태 속성|깡충 상태/,'animator',1],
   [/지우개|브러시|이동 도구/,'sbar'],[/칠하기|칠해|점선|칸에|씬에서|끌어/,'scene'],[/키로|키를 떼|방향키|움직여|걸어/,'game'],[/앵커|글자|색을|이름을|트리거|사용은|메시지|콜라이더 모두/,'insp']];
 function locEl(k){
+  if(EN.on)return EN_LOC[k]?$('#enView'):null;
   if(UBON){if(k==='hier'||k==='insp'||k==='ub')return $('#ubView');if(k==='play'||k==='game'||k==='scene'||k==='ubpn')return $('#ubPn')}
   if(VSON){if(k==='vsside'||k==='hier')return $('#vsSide');if(k==='insp'||k==='vs'||k==='scene')return $('#vsView');if(k==='play'||k==='game'||k==='ubpn'||k==='vspn')return $('#vsGameW');if(k==='con')return document.querySelector('.vscon')}
   const an=t=>L6ON?document.querySelector('#anPn .antab[data-an="'+t+'"]'):null;
@@ -4010,7 +4236,7 @@ function locKeys(html,only){
   const d=document.createElement('div');d.innerHTML=html;
   /* 괄호 안 덧붙임 말(예: 「(게임 뷰에 HP 100이 나와요)」)은 빼고 찾음 — 남는 게 없으면 그대로 */
   const t=d.textContent.replace(/\([^)]*\)/g,'').trim()||d.textContent;
-  let hit=[];LOC_RULES.forEach(([re,k])=>{const m=t.match(re);if(m)hit.push([m.index,k])});
+  let hit=[];(EN.on?LOC_RULES_EN.concat(LOC_RULES):LOC_RULES).forEach(([re,k])=>{const m=t.match(re);if(m)hit.push([m.index,k])});
   const anHit=hit.some(h=>['animator','anim','proj'].includes(h[1])),none=!hit.length&&!only;
   LOC_GUESS.forEach(([re,k,an])=>{if(an?!(L6ON&&!anHit):!none)return;const m=t.match(re);if(m)hit.push([m.index,k])});
   hit.sort((a,b)=>a[0]-b[0]);
@@ -4028,6 +4254,7 @@ function locDecorate(p){
 }
 [$('#tkList'),$('#brief')].forEach(tl=>{
   tl.addEventListener('click',e=>{const b=e.target.closest('.tkloc');if(!b)return;e.preventDefault();
+    if(EN.on){const ks=b.dataset.k.split(' ').map(k=>EN_LOC[k]).filter(Boolean);if(ks.length)enSend({t:'flash',k:ks});const v=$('#enView');v.classList.remove('loc-flash');void v.offsetWidth;v.classList.add('loc-flash');setTimeout(()=>v.classList.remove('loc-flash'),1900);return}
     const els=b.dataset.k.split(' ').map(locEl).filter(Boolean);if(!els.length)return;const r=els[0].getBoundingClientRect();
     if(r.top<0||r.bottom>innerHeight)els[0].scrollIntoView({block:'center',behavior:'smooth'});
     const f=els.flatMap(el=>el.classList.contains('antab')?[el,$('#anPn')]:[el]);f.forEach(x=>{x.classList.remove('loc-flash');void x.offsetWidth;x.classList.add('loc-flash')});
@@ -4274,6 +4501,81 @@ $$('#anPn .antab').forEach(b=>{b.onclick=()=>anTab(b.dataset.an);
   /* 끌어다 놓는 중에 탭 위에 잠깐 머물면 그 탭으로 (유니티처럼) */
   let dt=0;b.addEventListener('dragenter',e=>{e.preventDefault();clearTimeout(dt);dt=setTimeout(()=>anTab(b.dataset.an),250)});
   b.addEventListener('dragover',e=>e.preventDefault());b.addEventListener('dragleave',()=>clearTimeout(dt))});
+
+/* ===================== 레슨 13 · 14: 엔진 실습장 — 진짜 엔진(edit.html?learn=1)을 iframe으로 띄움 =====================
+   · 문제마다 en.proj()가 만든 프로젝트를 postMessage({thaniyaLab:1,t:'load'})로 보냄 (엔진은 내 프로젝트와 따로 저장)
+   · 엔진 → 여기: state(프로젝트 JSON · 플레이 상태 · 고른 오브젝트) · ev(play · stop · log · say · trig · tl:… · pf:…) → TASK.ev에 'en:'+일
+   · 할 일은 EN.P(엔진의 지금 프로젝트)와 TASK.ev로 확인 · 「위치 보기」는 엔진 안의 그 창을 반짝임 */
+const EN={on:false,P:null,play:null,seq:[],ready:false,sig:'',proj:null,sel:null,selNames:new Set(),pend:false,p:null};
+const enFr=()=>document.getElementById('enFr');
+const enIs=(v,n)=>{v=String(v||'').trim();return v===n||v===_t(n)};
+const enObjs=()=>EN.P&&Array.isArray(EN.P.maps)?EN.P.maps.flatMap(m=>m.objs||[]):[];
+const enO=n=>enObjs().find(o=>enIs(o.name,n))||null;
+const enPf=n=>((EN.P&&EN.P.prefabs)||[]).find(p=>enIs(p.name,n))||null;
+const enPfRoot=n=>{const p=enPf(n);return p?p.objs.find(o=>o.id===p.rk)||p.objs[0]:null};
+const enIns=pf=>pf?enObjs().filter(o=>o.pf&&o.pf.id===pf.id&&o.pf.k===pf.rk):[];
+const enBoss=()=>enIns(enPf('슬라임')).find(o=>enIs(o.name,'대장 슬라임'))||null;
+const enEv=k=>TASK.ev.has('en:'+k)||TASK.ev.has('en:'+_t(k));
+const enEvP=re=>[...TASK.ev].some(e=>re.test(e));
+const enSelHad=n=>[...EN.selNames].some(x=>enIs(x,n));
+const enSelCount=()=>{const pf=enPf('슬라임');if(!pf)return 0;const names=new Set(enIns(pf).map(o=>o.name));return [...EN.selNames].filter(x=>names.has(x)).length};
+const enTlId=id=>((EN.P&&EN.P.anim&&EN.P.anim.tls)||[]).find(t=>t.id===id)||null;
+const enDir=()=>{const o=enO('컷씬');return o&&o.props&&o.props.director?o.props.director:null};
+const enTracks=type=>{const d=enDir(),t=d&&enTlId(d.tl);return t?t.tracks.filter(r=>!type||r.type===type):[]};
+const enBound=tr=>{const d=enDir();if(!d)return '';const id=(d.binds||{})[tr.id];const o=id&&enObjs().find(q=>q.id===id);return o?o.name:''};
+/* 녹화 키: 그 오브젝트에 묶인 애니메이션 트랙의 녹화 클립 → [{t(타임라인 초),x,y}] */
+function enRecKeys(name){
+  const out=[],clips=(EN.P&&EN.P.anim&&EN.P.anim.clips)||[];
+  enTracks('anim').filter(t=>enBound(t)===name).forEach(tr=>tr.clips.forEach(c=>{const k=clips.find(q=>q.id===c.k);if(!k)return;
+    const X=(k.tracks||[]).find(T=>T.p==='x'),Y=(k.tracks||[]).find(T=>T.p==='y');const fs=new Set([...(X?X.keys:[]),...(Y?Y.keys:[])].map(q=>q.f));
+    fs.forEach(f=>{const v=(T,d)=>{const q=T&&T.keys.find(z=>z.f===f);return q?+q.v:d};out.push({t:(+c.s||0)+(f/(k.fps||60)-(+c.in||0))/(+c.spd||1),x:v(X,0),y:v(Y,0)})})}));
+  return out;
+}
+const enRecHas=(name,pred)=>enRecKeys(name).some(pred);
+function enTrigScript(){const o=enO('광장 입구');if(!o||!o.scripts||!EN.P)return null;
+  for(const i of o.scripts){const s=(EN.P.scripts||[]).find(x=>x.id===i.sid);if(!s)continue;const c=String(s.code||'');if(/OnTriggerEnter2D/.test(c)&&/\.\s*Play\s*\(/.test(c))return{i,s}}return null}
+function enTrigLinked(){const r=enTrigScript(),cut=enO('컷씬');if(!r||!cut)return false;if(/Find\s*\(\s*"컷씬"\s*\)/.test(r.s.code))return true;return Object.values(r.i.vals||{}).some(v=>v===cut.id)}
+/* 마지막 ▶ 플레이 뒤에 일어난 순서: 광장 입구 트리거 → 컷씬 재생 이면 한 번 기록 */
+function enSeqCheck(){const s=EN.seq,i=s.indexOf('trig:광장 입구'),j=s.indexOf('tl:play:컷씬');if(i>=0&&j>i)TASK.ev.add('en:cut-by-trig')}
+const enSeqAfterPlay=()=>TASK.ev.has('en:cut-by-trig');
+let enPingT=0;const enPing=()=>{clearTimeout(enPingT);enPingT=setTimeout(()=>{try{tkPing()}catch(e){}},60)};
+function enSend(d){const f=enFr();if(!f||!f.contentWindow)return;d.thaniyaLab=1;try{f.contentWindow.postMessage(d,'*')}catch(e){}}
+function enLoadNow(){if(!EN.proj)return;EN.pend=false;EN.P=null;$('#enLoad').hidden=false;enSend({t:'load',proj:JSON.parse(JSON.stringify(EN.proj))})}
+addEventListener('message',e=>{
+  const d=e.data,f=enFr();if(!d||d.thaniyaLab!==1||!f||e.source!==f.contentWindow)return;
+  if(d.t==='ready'){EN.ready=true;if(EN.on)enLoadNow();return}
+  if(!EN.on)return;
+  if(d.t==='state'){
+    if(d.P){try{const p=JSON.parse(d.P);if(!EN.sig||p.learnSig===EN.sig){EN.P=p;$('#enLoad').hidden=true;if(EN.p&&EN.p.en&&EN.p.en.sel&&!EN.selDone){EN.selDone=1;enSend({t:'select',id:EN.p.en.sel})}}}catch(er){}}
+    EN.play=d.play||null;
+    if(d.sel&&EN.P){const o=enObjs().find(q=>q.id===d.sel);if(o&&!EN.selNames.has(o.name)){EN.selNames.add(o.name);TASK.ev.add('en:sel:'+o.name)}}
+    enPing();return}
+  if(d.t==='ev'&&EN.P){const k=String(d.k||'');if(k==='play')EN.seq=[];EN.seq.push(k);if(EN.seq.length>400)EN.seq.shift();TASK.ev.add('en:'+k);enSeqCheck();enPing()}
+});
+function enSetup(p){
+  const on=!!(p&&p.en);
+  const ws=document.querySelector('main.ws');if(ws)ws.classList.toggle('enlab',on);
+  $('#enView').hidden=!on;
+  if(!on){if(EN.on){EN.on=false;const f=enFr();if(f&&f.contentWindow)enSend({t:'stop'})}return}
+  EN.on=true;EN.p=p;EN.P=null;EN.play=null;EN.seq=[];EN.selNames=new Set();EN.selDone=0;
+  const proj=p.en.proj();proj.learnSig=p.id+':'+Date.now().toString(36);EN.sig=proj.learnSig;EN.proj=proj;
+  $('#enLoad').hidden=false;
+  const f=enFr();
+  if(!f.getAttribute('src')){EN.ready=false;f.setAttribute('src','edit.html?learn=1');return}
+  if(EN.ready)enLoadNow();
+}
+/* 실습장 머리 버튼: 엔진 새로 고침 · 화면 크게 */
+$('#enView').addEventListener('click',e=>{const b=e.target.closest('[data-ena]');if(!b)return;
+  if(b.dataset.ena==='reload'){const f=enFr();EN.ready=false;$('#enLoad').hidden=false;f.setAttribute('src','edit.html?learn=1&r='+Date.now().toString(36))}
+  if(b.dataset.ena==='full'){const v=document.querySelector('.view-pn');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else if(v&&v.requestFullscreen)v.requestFullscreen().catch(()=>{})}});
+/* 「위치 보기」: 엔진 안의 창 이름 → 엔진에게 반짝이게 */
+if(window.TI18N)TI18N.add({"엔진 실습장 · 진짜 Thaniya Engine":["Engine lab · the real Thaniya Engine","エンジン実習場・本物の Thaniya Engine","引擎练习场 · 真正的 Thaniya Engine"],"실습 전용 프로젝트 · 내 프로젝트는 그대로예요":["Practice-only project · your own projects stay untouched","練習専用プロジェクト・自分のプロジェクトはそのまま","练习专用项目 · 你自己的项目不受影响"],
+ "엔진 다시 불러오기":["Reload engine","エンジンを再読み込み","重新加载引擎"],"화면 가득":["Full screen","全画面","全屏"],"엔진을 불러오는 중…":["Loading the engine…","エンジンを読み込み中…","正在加载引擎…"],
+ "엔진이 멈췄거나 이상하면 다시 불러와요 (지금 문제의 처음 상태로)":["Reload if the engine is stuck (back to this task's starting state)","エンジンが止まったりおかしいときに再読み込み（この問題の最初の状態に）","引擎卡住或异常时重新加载（恢复到本题初始状态）"],"실습장을 화면 가득 (Esc로 돌아와요)":["Fill the screen with the lab (Esc to return)","実習場を全画面に（Escで戻る）","练习场全屏（按 Esc 返回）"],
+ "엔진 실습장 · 진짜 Thaniya Engine (실습 전용 프로젝트 · 내 프로젝트는 그대로)":["Engine lab · the real Thaniya Engine (practice-only project)","エンジン実習場・本物の Thaniya Engine（練習専用プロジェクト）","引擎练习场 · 真正的 Thaniya Engine（练习专用项目）"],
+ "프리팹으로 몬스터 배치":["Placing Monsters with Prefabs","プレハブでモンスター配置","用预制体放置怪物"],"타임라인으로 컷씬 만들기":["Making Cutscenes with Timeline","タイムラインでカットシーン作成","用时间轴制作过场动画"],
+ "프리팹":["Prefab","プレハブ","预制体"],"인스턴스":["Instance","インスタンス","实例"],"오버라이드":["Override","オーバーライド","覆盖"],"타임라인":["Timeline","タイムライン","时间轴"],"플레이어블 디렉터":["Playable Director","プレイアブルディレクター","可播放导演"],"컷씬":["Cutscene","カットシーン","过场动画"]});
+const EN_LOC={hier:'hier',insp:'insp',scene:'scene',game:'scene',con:'console',proj:'assets',anim:'anim',animator:'animator',play:'play',tl:'tl'};
 
 /* ===================== 레슨 9: UI 빌더 실습장 — 엔진의 ui-builder.js를 그대로 씀 =====================
    UBP = 실습 프로젝트(엔진 P 모양: 마을 씬 하나 · uiCv 640×360) · 위 큰 창 = UI 빌더 · 아래 = 마을 씬 UI 그룹 목록 + 게임 화면(플레이)
@@ -4700,6 +5002,29 @@ function l6Poll(){
 setInterval(l6Poll,200);
 /* 채점 프레임마다: 애니메이터 한 번 돌리고 주인공 상태에 들어간 횟수 기록 */
 function l6Step(run,dt){ANX.animTick(run,dt);const h=run.m.objs.find(o=>o.id==='hero'),rt=h&&run.anim.get(h.id);if(!rt)return;if(rt.st!==run.last){run.enter[rt.st]=(run.enter[rt.st]||0)+1;run.last=rt.st}run.seen.add(rt.st);run.dur=run.dur||{};run.dur[rt.st]=(run.dur[rt.st]||0)+dt}
+/* 탭 끌어서 순서 바꾸기 (엔진과 같은 방식 · 크롬처럼 따라오고 다른 탭이 비켜남) · 순서는 이 브라우저에 기억 */
+(function(){
+  const box=document.querySelector('#anPn .antabs');if(!box)return;const KEY='thaniya.learn.antabs';
+  try{const o=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(o))o.forEach(id=>{const b=box.querySelector(`.antab[data-an="${id}"]`);if(b)box.append(b)})}catch(e){}
+  let skipClick=false;
+  box.addEventListener('click',e=>{if(skipClick){e.stopPropagation();e.preventDefault();skipClick=false}},true);
+  box.addEventListener('pointerdown',e=>{
+    const tb=e.target.closest('.antab');if(!tb||e.button!==0)return;
+    const sx=e.clientX;let T=null,ci=0,to=0;
+    const mv=ev=>{
+      if(!T){if(Math.abs(ev.clientX-sx)<5)return;const bs=[...box.querySelectorAll('.antab')];T=bs.map(b=>({b,r:b.getBoundingClientRect()}));ci=bs.indexOf(tb);box.classList.add('treo');tb.classList.add('tdragging');try{tb.setPointerCapture(ev.pointerId)}catch(er){}}
+      const me=T[ci].r,W=me.width+4,dx=Math.max(T[0].r.left-me.left,Math.min(ev.clientX-sx,T[T.length-1].r.right-me.right));tb.style.transform=`translateX(${dx}px)`;
+      to=T.filter((_,j)=>j!==ci).filter(o=>o.r.left+o.r.width/2<ev.clientX).length;
+      T.forEach((o,j)=>{if(j===ci)return;const k=j<ci?j:j-1,fp=k<to?k:k+1;o.b.style.transform=fp===j?'':`translateX(${(fp-j)*W}px)`});
+    };
+    const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);
+      if(!T)return;skipClick=true;setTimeout(()=>skipClick=false,0);
+      T.forEach(o=>o.b.style.transform='');box.classList.remove('treo');tb.classList.remove('tdragging');
+      const L=T.map(o=>o.b).filter(b=>b!==tb);L.splice(to,0,tb);L.forEach(b=>box.append(b));
+      try{localStorage.setItem(KEY,JSON.stringify(L.map(b=>b.dataset.an)))}catch(er){}};
+    addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up);
+  });
+})();
 $$('#anPn .antab').forEach(b=>{b.insertAdjacentHTML('afterbegin',b.dataset.an==='proj'?ico('folder'):b.dataset.an==='con'?ico('term'):ANICO(b.dataset.an))});
 $('#insp').addEventListener('change',e=>{const t=e.target;if(!t.dataset||!t.dataset.l6an)return;const h=l6Obj();if(!h)return;
   if(t.dataset.l6an==='ctrl'){h.props.animator.ctrl=t.value;ANX.anRenderAll(true);snRedraw()}});
@@ -5392,7 +5717,7 @@ function svOpen(){
 const RV_DATA={"lesson-1": {"note": "코드를 쓰지 않고 화면을 직접 만지는 레슨이에요. 아래는 나중에 코드와 이어질 말들이에요.", "items": [{"t": "콜라이더 (막는 칸)", "d": "타일맵에서 막을 칸을 칠하거나, 게임 오브젝트(바위)에 박스 콜라이더 2D 컴포넌트를 붙이면 주인공이 지나가지 못해요.", "c": "BoxCollider2D   // 바위에 붙이는 컴포넌트 이름"}, {"t": "UI 텍스트에 값 넣기", "d": "UI 텍스트 안의 {hp} 자리에 hp 값이 들어가요. 코드로 숫자를 바꾸면 화면 글도 함께 바뀝니다.", "c": "HP {hp}"}]}, "lesson-2": {"items": [{"t": "뼈대: Start()", "d": "게임이 시작될 때 한 번 실행되는 함수예요. 쓰고 싶은 코드를 중괄호 안에 넣어요.", "c": "using UnityEngine;\n\npublic class Quiz : MonoBehaviour\n{\n    void Start()\n    {\n        // 여기에 코드를 쓰세요\n    }\n}"}, {"t": "콘솔에 한 줄 출력", "d": "글자는 큰따옴표로 감싸고, 문장 끝에는 세미콜론(;)을 붙여요.", "c": "Debug.Log(\"Hello, Thaniya!\");"}, {"t": "변수 값을 글자와 이어 붙이기", "d": "+로 이어 붙이거나, 글자 앞에 $를 붙이고 {변수}를 넣어요.", "c": "public int hp = 100;\n\nDebug.Log(\"HP: \" + hp);\nDebug.Log($\"HP: {hp}\");"}, {"t": "계산 결과를 글자 안에 넣기", "d": "중괄호 안에 식을 넣으면 계산된 값이 들어가요.", "c": "Debug.Log($\"{a} + {b} = {a + b}\");"}, {"t": "반복문 for", "d": "같은 일을 여러 번 할 때 써요. i가 1, 2, 3, 4, 5로 바뀌며 중괄호 안이 다섯 번 실행돼요.", "c": "for (int i = 1; i <= 5; i++)\n{\n    Debug.Log(i);\n}"}, {"t": "경고와 오류", "d": "Log는 일반, LogWarning은 경고(노란색), LogError는 오류(빨간색)예요.", "c": "Debug.LogWarning(\"배터리가 얼마 남지 않았어요\");\nDebug.LogError(\"저장에 실패했어요\");"}]}, "lesson-3": {"items": [{"t": "내 컴포넌트 꺼내기", "d": "스크립트가 붙은 오브젝트의 컴포넌트는 GetComponent<타입>()으로 꺼내요.", "c": "Transform tr = GetComponent<Transform>();\nDebug.Log($\"위치: {tr.position.x}, {tr.position.y}\");"}, {"t": "다른 오브젝트 찾기", "d": "GameObject.Find(\"이름\")으로 찾고, 그 오브젝트에서 GetComponent로 컴포넌트를 꺼내요. 값을 바꾸려면 대입하세요.", "c": "GameObject torch = GameObject.Find(\"횃불\");\nLight light = torch.GetComponent<Light>();\nlight.intensity = 0.3f;\nDebug.Log(\"횃불 밝기: \" + light.intensity);"}, {"t": "끌어다 놓아 연결하기", "d": "public 칸을 만들면 인스펙터에서 오브젝트를 끌어다 놓아 연결할 수 있어요 (Find 대신).", "c": "public GameObject torch;   // Start() 위에 쓰고 인스펙터 칸에 끌어다 놓기"}, {"t": "컴포넌트 켜고 끄기", "d": "컴포넌트는 enabled로 켜고 꺼요. 오브젝트 전체는 SetActive(…)를 써요.", "c": "light.enabled = lightOn;\nDebug.Log(\"켜짐 여부: \" + light.enabled);"}, {"t": "오브젝트 옮기기", "d": "position에 새 위치를 대입하면 이동해요. Vector2.right는 오른쪽 한 칸 (1, 0)이에요.", "c": "slime.transform.position = hero.transform.position + Vector2.right;"}, {"t": "컴포넌트 함께 쓰기 · 메인 카메라", "d": "Camera.main으로 메인 카메라를 바로 가져와요. orthographicSize가 작을수록 화면이 확대돼요.", "c": "Hero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp = hero.hp / 2;\nCamera.main.orthographicSize = 2;"}]}, "lesson-4": {"items": [{"t": "public 변수 · 값 깎기", "d": "public 변수는 인스펙터에 칸이 생겨 값을 바꿀 수 있어요. -=는 빼서 다시 저장해요.", "c": "public int damage = 30;\n\nHero hero = GameObject.Find(\"주인공\").GetComponent<Hero>();\nhero.hp -= damage;\nDebug.Log(\"HP: \" + hero.hp);"}, {"t": "한도까지만 회복 (Mathf.Min)", "d": "두 값 중 작은 쪽을 골라요. if로 써도 같은 결과예요.", "c": "hero.hp = Mathf.Min(hero.hp + heal, limit);\n\n// if로 쓰면\nhero.hp += heal;\nif (hero.hp > limit)\n{\n    hero.hp = limit;\n}"}, {"t": "아이템 수량 바꾸기", "d": "포션의 Item 컴포넌트에서 qty를 줄이고, 그만큼 주인공 hp를 올려요.", "c": "Item potion = GameObject.Find(\"포션\").GetComponent<Item>();\npotion.qty -= 1;\nhero.hp += healAmount;\nDebug.Log($\"포션 {potion.qty}개 · HP {hero.hp}\");"}, {"t": "조건문 if · else", "d": "조건이 참일 때만 실행하고, 아니면 else 쪽을 실행해요.", "c": "if (potion.qty > 0)\n{\n    potion.qty -= 1;\n    hero.hp += healAmount;\n}\nelse\n{\n    Debug.LogWarning(\"포션이 없어요\");\n}"}, {"t": "거리 재기 · 오브젝트 끄기", "d": "Vector2.Distance로 두 위치 사이 거리를 재요. SetActive(false)는 오브젝트를 화면에서 치워요.", "c": "float d = Vector2.Distance(hero.transform.position, coin.transform.position);\nif (d <= reach)\n{\n    coins += coin.GetComponent<Item>().qty;\n    coin.SetActive(false);\n}"}, {"t": "UI 글자와 버튼 함수", "d": "public Text 칸에 UI 텍스트를 연결하고 .text에 대입해요. 버튼의 클릭에 연결할 함수는 public void로 만들어요.", "c": "public Text label;\n\nvoid Start()\n{\n    label.text = \"포션 \" + potion.qty + \"개\";\n}\n\npublic void OnClick()\n{\n    if (potion.qty > 0)\n    {\n        potion.qty -= 1;\n    }\n}"}]}, "lesson-5": {"items": [{"t": "Start()에서 Hero 컴포넌트 잡아 두기", "d": "private 변수에 한 번 담아 두면 Update에서 계속 쓸 수 있어요.", "c": "private Hero hero;\n\nvoid Start()\n{\n    hero = GetComponent<Hero>();\n}"}, {"t": "Update()와 입력 읽기", "d": "Update는 매 프레임 실행돼요. 방향키/WASD 입력은 왼쪽·위 -1, 오른쪽·아래 +1로 읽혀요.", "c": "void Update()\n{\n    float h = Input.GetAxisRaw(\"Horizontal\");\n    float v = Input.GetAxisRaw(\"Vertical\");\n}"}, {"t": "입력 방향으로 움직이기", "d": "방향 × 속도 × Time.deltaTime으로 프레임 속도와 상관없이 같은 속도로 움직여요.", "c": "Vector2 dir = new Vector2(h, v);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "멈춤과 바라보는 방향", "d": "입력이 없으면 return으로 Update를 일찍 끝내요. Face로 바라보는 방향을 정해요.", "c": "if (h == 0 && v == 0)\n    return;\n\nVector2 dir = new Vector2(h, v);\nhero.Face(dir);\nhero.Move(dir * speed * Time.deltaTime);"}, {"t": "대각선 속도 맞추기", "d": "normalized는 방향의 길이를 1로 맞춰요. 대각선이 더 빠르게 느껴지는 걸 막아요.", "c": "if (normalizeDiagonal)\n    dir = dir.normalized;"}, {"t": "Shift로 달리기", "d": "GetKey는 누르고 있는 동안 true예요.", "c": "float s = speed;\nif (Input.GetKey(KeyCode.LeftShift))\n    s = s * runMultiplier;"}, {"t": "완성한 HeroMovement.cs 전체", "d": "엔진에서 주인공을 고르고 「스크립트 편집」으로 열면 똑같은 코드가 있어요.", "c": "@L5_FINAL", "long": true}]}, "lesson-6": {"note": "대부분 애니메이터·애니메이션 창을 다루는 레슨이에요. 코드는 마지막 문제의 한 가지만 나와요.", "items": [{"t": "애니메이터 꺼내기", "d": "GetComponent로 이 오브젝트의 Animator를 꺼내요.", "c": "Animator animator = GetComponent<Animator>();"}, {"t": "Space를 누른 순간 깡충 (SetTrigger)", "d": "스크립트는 애니메이터의 파라미터만 바꿔요. GetKeyDown은 누른 순간 한 번만 true라서 한 번만 뛰어요. (누르는 동안 계속 true인 GetKey를 쓰면 여러 번 뛰어요.)", "c": "if (animator != null)\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        animator.SetTrigger(\"Hop\");\n}"}]}, "lesson-7": {"note": "코드 없이 타일 팔레트와 인스펙터를 다루는 레슨이에요. 외워 둘 코드는 없고, 아래 순서만 기억하면 돼요.", "items": [{"t": "룰 타일 · 애니메이션 타일 만드는 순서", "d": "저장하기 전에는 아직 쓸 수 없어요 (엔진도 같아요).", "c": "타일 팔레트 → 지형 3×3 고르기\n인스펙터  → 룰 타일 만들기 · 저장\n＋ 규칙    → 외딴 칸(섬) 규칙 추가\n물 4칸     → 애니메이션 타일 (8 fps)"}]}, "lesson-10": {"items": [{"t": "UI 그룹 찾기", "d": "UIGroup.Find(\"이름\")으로 그룹을 찾아요. 없으면 null이니 먼저 확인해요. 엔진에서는 NpcTalk의 Dialog UI 칸에 자동으로 연결돼요.", "c": "dialogUI = UIGroup.Find(\"대화창\");\nif (dialogUI == null)\n{\n    Debug.LogWarning(\"대화창 UI가 없어요\");\n    return;\n}"}, {"t": "글자 넣고 열기 (OnInteract)", "d": "주인공이 말을 걸면 엔진이 OnInteract()를 불러요. SetText로 그룹 안 요소의 글자를 바꾸고 Show로 열어요.", "c": "void OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, \"이름\", name);\n    UIScreen.SetText(dialogUI.name, \"대사\", npc.text);\n    UIScreen.Show(dialogUI.name);\n}"}, {"t": "다시 말 걸면 닫기", "d": "bool 변수로 대화 중인지 기억하고, 닫는 코드는 내 메서드로 묶어요.", "c": "if (talking)\n{\n    CloseDialog();\n    return;\n}\n\nvoid CloseDialog()\n{\n    UIScreen.Hide(dialogUI.name);\n    talking = false;\n}"}, {"t": "멀어지면 닫기 (Update)", "d": "매 프레임 주인공과의 거리를 재서 멀어지거나 Esc를 누르면 닫아요.", "c": "float d = Vector2.Distance(Hero.main.position, transform.position);\nif (d > closeDistance || Input.GetKeyDown(KeyCode.Escape))\n{\n    CloseDialog();\n}"}]}, "lesson-8": {"items": [{"t": "새 씬 · 시작 씬 · 포탈", "d": "씬은 계층 구조에서 위에서부터 0번 · 1번… 빌드 번호가 붙어요. ★ 시작 씬부터 플레이가 시작돼요.", "c": "계층 구조 → ＋ 새 씬 → 이름 「숲」\n인스펙터  → 시작 씬 ✓ (★)\n포탈      → 대상 씬 「숲」"}, {"t": "지금 씬 알아내기", "d": "using UnityEngine.SceneManagement; 를 맨 위에 써요. name은 씬 이름, buildIndex는 빌드 번호예요.", "c": "Scene s = SceneManager.GetActiveScene();\nDebug.Log(s.name + \" (\" + s.buildIndex + \"번)\");"}, {"t": "씬 불러오기", "d": "이름이나 번호로 불러와요. 지금 메서드가 끝난 다음에 씬이 바뀌어요.", "c": "SceneManager.LoadScene(\"숲\");\nSceneManager.LoadScene(1);"}, {"t": "BGM 매니저 (오디오 소스 반복 재생)", "d": "매니저는 씬이 바뀌어도 살아 있어서 음악이 끊기지 않아요. 오디오 소스가 없으면 null이니 먼저 확인해요.", "c": "AudioSource bgm = GetComponent<AudioSource>();\nif (bgm == null)\n    return;\nbgm.loop = true;\nbgm.Play();"}, {"t": "게임 매니저 · 목숨과 다시 시작", "d": "OnHeroDeath()는 주인공이 쓰러지면 엔진이 매니저에도 보내요. RestartGame()은 시작 씬부터 다시 하지만 매니저의 값은 남아요.", "c": "void OnHeroDeath()\n{\n    lives--;\n    SceneManager.RestartGame();\n}"}]}};
 const RV_OPEN=new Set();let RV_ON=false;try{RV_ON=localStorage.getItem('thaniya.rvon')==='1'}catch(e){}
 function rvCode(c){return c==='@L5_FINAL'?L5_FINAL:c}
-const rvLv=L=>`<span class="rv-lv"><span class="dots lv${L.lv}" aria-hidden="true"><i></i><i></i><i></i></span>${esc(lvName(L))}</span>`;
+const rvLv=L=>`<span class="rv-lv"><span class="dots lv${L.lv}" aria-hidden="true">${LV_DOTS}</span>${esc(lvName(L))}</span>`;
 const rvList=()=>LORDER.filter(L=>inCat(L,LCF));
 let RV_CUR='';
 function rvRender(){
@@ -5499,7 +5824,7 @@ function route(){
   const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search',PVL=LESSONS.find(x=>'#about-'+x.hash===location.hash);
   $('#home').hidden=!!L||S||!!PVL;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;$('#pvView').hidden=!PVL;
   if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
-  else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);if(VSON)vsSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else renderHome()}
+  else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);if(VSON)vsSetup(null);if(EN.on)enSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else renderHome()}
   window.scrollTo(0,0);
 }
 let tkPass=false;

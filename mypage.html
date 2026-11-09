@@ -405,13 +405,14 @@ function dup(id){
   const a=readIdx();const i=a.findIndex(x=>x.id===id);
   a.splice(i<0?0:i+1,0,{id:nid,name:p.name,created:now,updated:now,scenes:src.scenes|0,objs:src.objs|0,thumb:src.thumb});
   writeIdx(a);render();toast(T('“{name}”을(를) 만들었어요',{name:p.name}));
+  if(p.assetScoped)recsCopy(id,nid);
 }
 
 async function remove(id){
   const e=list.find(x=>x.id===id);if(!e)return;
-  const ok=await ask({title:T('프로젝트를 삭제할까요?'),text:T('“{name}”의 씬·오브젝트·스크립트가 이 브라우저에서 지워지고 되돌릴 수 없어요. 에셋 이미지는 다른 프로젝트와 함께 쓰므로 남아 있어요.',{name:e.name||T('이름 없는 게임')}),ok:T('삭제'),danger:true,input:false});
+  const ok=await ask({title:T('프로젝트를 삭제할까요?'),text:T('“{name}”의 씬·오브젝트·스크립트와 이 프로젝트의 에셋(이미지·오디오·글꼴)이 이 브라우저에서 지워지고 되돌릴 수 없어요.',{name:e.name||T('이름 없는 게임')}),ok:T('삭제'),danger:true,input:false});
   if(!ok)return;
-  del(keyOf(id));writeIdx(readIdx().filter(x=>x.id!==id));if(det.open&&detId===id)det.close();render();toast(T('삭제했어요'));
+  del(keyOf(id));recsDel(id);writeIdx(readIdx().filter(x=>x.id!==id));if(det.open&&detId===id)det.close();render();toast(T('삭제했어요'));
   return true;
 }
 
@@ -487,10 +488,19 @@ function idbAll(){return new Promise((res,rej)=>{if(typeof indexedDB==='undefine
   r.onupgradeneeded=()=>r.result.createObjectStore('assets',{keyPath:'id'});
   r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('blocked'));
   r.onsuccess=()=>{const db=r.result;try{const q=db.transaction('assets').objectStore('assets').getAll();q.onsuccess=()=>{res(q.result||[]);db.close()};q.onerror=()=>{rej(q.error);db.close()}}catch(e){db.close();rej(e)}}})}
+/* 에셋은 프로젝트마다 따로 (엔진과 같은 규칙): 키 = 「프로젝트id::에셋id」, aid = 원래 id. 아직 엔진에서 한 번도 안 연 예전 프로젝트는 공용(예전) 레코드 */
+function idbTx(fn){return new Promise((res,rej)=>{if(typeof indexedDB==='undefined')return rej(new Error('no idb'));let r;try{r=indexedDB.open('dungeon-map-maker',1)}catch(e){return rej(e)}
+  r.onupgradeneeded=()=>r.result.createObjectStore('assets',{keyPath:'id'});r.onerror=()=>rej(r.error);
+  r.onsuccess=()=>{const db=r.result;try{const tx=db.transaction('assets','readwrite');fn(tx.objectStore('assets'));tx.oncomplete=()=>{db.close();res()};tx.onerror=()=>{db.close();rej(tx.error)}}catch(e){db.close();rej(e)}}})}
+async function recsFor(id){const all=await idbAll(),mine=all.filter(r=>r&&r.pj===id).map(r=>Object.assign({},r,{id:r.aid}));if(mine.length)return mine;const p=peek(id);return p&&p.assetScoped?[]:all.filter(r=>r&&!r.pj)}
+async function recsDel(id){try{const all=await idbAll();const ks=all.filter(r=>r&&r.pj===id).map(r=>r.id);if(ks.length)await idbTx(st=>ks.forEach(k=>st.delete(k)))}catch(e){}
+  try{localStorage.removeItem('thaniya.baseAssets.v1:'+id);localStorage.removeItem('thaniya.baseAssets.del:'+id)}catch(e){}}
+async function recsCopy(from,to){try{const all=await idbAll();const L=all.filter(r=>r&&r.pj===from);if(L.length)await idbTx(st=>L.forEach(r=>st.put(Object.assign({},r,{id:to+'::'+r.aid,pj:to}))))}catch(e){}
+  try{['thaniya.baseAssets.v1:','thaniya.baseAssets.del:'].forEach(k=>{const v=localStorage.getItem(k+from);if(v!=null)localStorage.setItem(k+to,v)})}catch(e){}}
 const imgSize=src=>new Promise(res=>{const im=new Image();im.onload=()=>res([im.naturalWidth,im.naturalHeight]);im.onerror=()=>res([0,0]);im.src=src});
 async function exportPj(id,withImg){
   const p=peek(id);if(!p){toast(T('프로젝트 데이터를 찾지 못했어요'));return}
-  let recs=[];try{recs=await idbAll()}catch(e){toast(T('에셋 저장소를 열 수 없어 에셋 없이 내보내요'))}
+  let recs=[];try{recs=await recsFor(id)}catch(e){toast(T('에셋 저장소를 열 수 없어 에셋 없이 내보내요'))}
   const assets=[];
   const auds=recs.filter(a=>a&&a.kind==='audio');recs=recs.filter(a=>a&&a.kind!=='audio');
   for(const a of recs.sort((x,y)=>(x.n|0)-(y.n|0))){
