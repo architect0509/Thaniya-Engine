@@ -1,0 +1,2650 @@
+{
+ "format": "dungeon-map-maker",
+ "version": 2,
+ "tileSize": 32,
+ "tilesPerSheetMax": 4096,
+ "name": "고양이 빵집 타이쿤",
+ "start": "bakery",
+ "playerSprite": "",
+ "nextN": 200,
+ "scripts": [
+  {
+   "id": "sc_fac",
+   "name": "Facility",
+   "code": "using UnityEngine;\n\n// 생산시설: 시간이 차면 골드를 벌어요. 레벨이 높을수록 한 번에 버는 골드가 레벨에 비례해 늘어요.\n// 레벨 · 골드는 모두 소지품(Inventory)에 숫자로 들어 있어서 버튼 · 매니저 스크립트와 함께 써요.\n// 쓰인 코드: Update · Time.deltaTime · Inventory · GetComponent<Animator>() · SetTrigger · UIScreen.SetText / SetValue\npublic class Facility : MonoBehaviour\n{\n    [Header(\"이 시설\")]\n    public string id = \"빵\";            // 소지품 이름 \"빵 레벨\" · UI 그룹 \"빵 줄\"(정보 · 진행)\n    [Tooltip(\"1레벨일 때 한 번 생산하면 버는 골드\")]\n    public int income = 1;\n    [Tooltip(\"한 번 생산하는 데 걸리는 시간 (초)\")]\n    public float interval = 1.5f;\n\n    float timer = 0f;\n    Animator anim;\n\n    void Start()\n    {\n        anim = GetComponent<Animator>();\n    }\n\n    void Update()\n    {\n        string row = id + \" 줄\";                          // 이 시설의 UI 그룹 (계층 구조 UI › 빵 줄)\n        int level = Inventory.Count(id + \" 레벨\");\n        if (level == 0)                                   // 아직 열지 않은 시설\n        {\n            UIScreen.SetText(row, \"정보\", \"잠김 · 열면 생산해요\");\n            UIScreen.SetValue(row, \"진행\", 0);\n            return;\n        }\n\n        // 강화 효과: 「빠른 손」은 생산 시간을, 「단골 손님」은 판매 가격을 바꿔요\n        int speedLv = Inventory.Count(\"속도 레벨\");\n        int priceLv = Inventory.Count(\"가격 레벨\");\n        float time = interval / (1f + 0.25f * speedLv);\n        int earn = income * level * (100 + 50 * priceLv) / 100;   // 레벨에 비례\n\n        timer += Time.deltaTime;\n        if (timer >= time)\n        {\n            timer -= time;\n            Inventory.Add(\"골드\", earn);\n            Inventory.Add(\"판매\", 1);\n            anim.SetTrigger(\"Make\");                      // 통통 튀는 생산 애니메이션\n        }\n\n        UIScreen.SetValue(row, \"진행\", timer / time);\n        UIScreen.SetText(row, \"정보\", \"Lv \" + level + \" · +\" + earn + \"G / \" + Mathf.Round(time * 10f) / 10f + \"초\");\n    }\n}\n"
+  },
+  {
+   "id": "sc_btn",
+   "name": "UpgradeButton",
+   "code": "using UnityEngine;\n\n// 업그레이드 버튼 (UI 버튼에 붙어 있어요): 누르면 골드를 내고 레벨을 1 올려요.\n// 비용은 레벨이 오를수록 growth 배씩 비싸져요. 골드가 모자라면 버튼이 회색이 돼요.\n// 버튼 글자는 버튼 위에 놓인 텍스트 요소 「버튼 글」이라서, 배경색과 글자색을 따로 바꿔 늘 잘 보이게 해요.\n// 쓰인 코드: OnClick · Update(UI 스크립트) · Mathf.Pow · Mathf.RoundToInt · UIScreen.SetText / SetColor · Message.Show\npublic class UpgradeButton : MonoBehaviour\n{\n    public string id = \"빵\";             // 올릴 레벨: 소지품 \"빵 레벨\"\n    public string title = \"빵 오븐\";\n    public int baseCost = 8;              // 0레벨 → 1레벨 비용\n    public float growth = 1.45f;          // 레벨마다 비용이 몇 배씩 오르나\n    [Tooltip(\"시설이 아닌 강화(속도 · 가격)면 정보 줄을 이 스크립트가 써요\")]\n    public string effect = \"\";            // 예: \"생산 속도\"\n    public int perLevel = 0;              // 예: 25 → 레벨마다 +25%\n\n    int Cost()\n    {\n        int lv = Inventory.Count(id + \" 레벨\");\n        return Mathf.RoundToInt(baseCost * Mathf.Pow(growth, lv));\n    }\n\n    void Update()\n    {\n        int lv = Inventory.Count(id + \" 레벨\");\n        int cost = Cost();\n        string row = id + \" 줄\";                          // 이 버튼이 들어 있는 UI 그룹\n        string verb = (lv == 0 && effect == \"\") ? \"열기\" : \"강화\";\n        bool canBuy = Inventory.Count(\"골드\") >= cost;\n\n        UIScreen.SetText(row, \"버튼 글\", verb + \" \" + cost + \"G\");\n        UIScreen.SetColor(row, \"버튼\", canBuy ? \"#e9bd0c\" : \"#343842\");      // 버튼 배경\n        UIScreen.SetColor(row, \"버튼 글\", canBuy ? \"#1a1400\" : \"#8b909c\");   // 버튼 글자\n\n        if (effect != \"\")\n        {\n            UIScreen.SetText(row, \"정보\", \"Lv \" + lv + \" · \" + effect + \" +\" + (perLevel * lv) + \"%\");\n        }\n    }\n\n    public void OnClick()\n    {\n        int cost = Cost();\n        if (Inventory.Count(\"골드\") < cost)\n        {\n            Message.Show(\"골드가 \" + (cost - Inventory.Count(\"골드\")) + \"G 모자라요\");\n            return;\n        }\n        Inventory.Remove(\"골드\", cost);\n        Inventory.Add(id + \" 레벨\", 1);\n        Message.Show(title + \" Lv \" + Inventory.Count(id + \" 레벨\") + \"!\");\n        Debug.Log(title + \" 강화 → Lv \" + Inventory.Count(id + \" 레벨\") + \" (\" + cost + \"G 사용)\");\n    }\n}\n"
+  },
+  {
+   "id": "sc_mgr",
+   "name": "ShopManager",
+   "code": "using UnityEngine;\n\n// 가게 매니저: 처음 상태를 정하고, 위쪽 골드 · 가게 정보 UI를 매 프레임 바꿔요.\npublic class ShopManager : MonoBehaviour\n{\n    public int startGold = 0;\n\n    void Start()\n    {\n        Inventory.Add(\"빵 레벨\", 1);          // 빵 오븐은 처음부터 1레벨\n        Inventory.Add(\"골드\", startGold);\n        Debug.Log(\"고양이 빵집 영업 시작!\");\n    }\n\n    void Update()\n    {\n        int gold = Inventory.Count(\"골드\");\n        int shopLv = Inventory.Count(\"빵 레벨\") + Inventory.Count(\"커피 레벨\") + Inventory.Count(\"케이크 레벨\")\n                   + Inventory.Count(\"속도 레벨\") + Inventory.Count(\"가격 레벨\");\n\n        UIScreen.SetText(\"HUD\", \"골드\", gold + \" G\");\n        UIScreen.SetText(\"HUD\", \"가게 정보\", \"가게 Lv \" + shopLv + \" · 판매 \" + Inventory.Count(\"판매\") + \"개\");\n    }\n}\n"
+  },
+  {
+   "id": "sc_tog",
+   "name": "PanelToggle",
+   "code": "using UnityEngine;\n\n// 업그레이드 판 접기 / 펼치기 (판 머리의 「접기」 버튼과, 접었을 때 보이는 「업그레이드」 탭 버튼에 붙어 있어요)\n// UI 그룹을 통째로 숨기고 보여 줘요. 쓰인 코드: OnClick · UIScreen.Show / Hide · 직접 만든 메서드\npublic class PanelToggle : MonoBehaviour\n{\n    [Tooltip(\"켜면 이 버튼이 판을 펼치고, 끄면 접어요\")]\n    public bool open = false;\n\n    public void OnClick()\n    {\n        Row(\"업그레이드 판\", open);\n        Row(\"빵 줄\", open);\n        Row(\"커피 줄\", open);\n        Row(\"케이크 줄\", open);\n        Row(\"속도 줄\", open);\n        Row(\"가격 줄\", open);\n        Row(\"업그레이드 열기\", !open);       // 접혀 있을 때만 보이는 탭\n    }\n\n    // ▼ 직접 만든 메서드: on이면 그 UI 그룹을 보이고, 아니면 숨겨요\n    void Row(string group, bool on)\n    {\n        if (on) UIScreen.Show(group);\n        else UIScreen.Hide(group);\n    }\n}\n"
+  },
+  {
+   "id": "t5fvr3b",
+   "name": "HeroTileMovement",
+   "code": "using UnityEngine;\n\n// 주인공 이동 스크립트 (타일형)\n// 주인공 컴포넌트를 추가하면 기본으로 붙습니다. 방향키/WASD를 누르면 칸 가운데에서 옆 칸 가운데로 한 칸씩 걸어갑니다 (좀비고처럼).\n// 짧게 누르면 딱 한 칸, holdDelay(초)보다 오래 누르고 있으면 멈추지 않고 칸 단위로 이어서 걷습니다.\n// 대각선 없이 상하좌우로만 움직입니다.\n// 막힌 칸(벽 · NPC · 박스 콜라이더)으로는 가지 않고 그쪽을 바라보기만 합니다.\n// 칸에 묶이지 않고 픽셀 단위로 부드럽게 움직이려면 컴포넌트 추가에서 「주인공 이동 (픽셀형)」으로 바꾸세요.\n// 걷기·대기 그림은 애니메이터 컴포넌트가 정합니다. 이 스크립트는 애니메이터 파라미터\n// IsMoving(걷는 중인지)과 Dir(0 아래 · 1 위 · 2 왼쪽 · 3 오른쪽)만 바꿔 줍니다.\n// 좌표: 오른쪽이 +x, 아래쪽이 +y 입니다 (단위: 칸 · 정수 좌표가 칸 가운데).\npublic class HeroTileMovement : MonoBehaviour\n{\n    [Header(\"이동\")]\n    [Tooltip(\"1초에 이동하는 칸 수입니다\")]\n    public float speed = 5f;\n\n    [Tooltip(\"이 시간(초)보다 오래 누르고 있으면 계속 걷습니다. 그보다 짧게 누르면 한 칸만 갑니다\")]\n    [Range(0, 1)]\n    public float holdDelay = 0.15f;\n\n    [Header(\"달리기\")]\n    [Tooltip(\"Shift를 누르고 있는 동안 곱해지는 속도 배율입니다\")]\n    [Range(1, 3)]\n    public float runMultiplier = 1.6f;\n\n    private Hero hero;\n    private Animator animator;\n    private bool stepping = false;     // 한 칸을 걷는 중인지\n    private Vector2 target;            // 이번 걸음의 도착 칸\n    private Vector2 dir;               // 마지막으로 걸은 방향\n    private float lastH = 0f;          // 지난 프레임의 입력\n    private float lastV = 0f;\n    private float holdTime = 0f;       // 같은 방향을 누르고 있는 시간\n    private bool queued = false;       // 걷는 도중 새로 누른 입력 (도착하면 그 방향으로 한 칸 더)\n    private float queuedH = 0f;\n    private float queuedV = 0f;\n\n    void Start()\n    {\n        hero = GetComponent<Hero>();\n        animator = GetComponent<Animator>();     // 애니메이터 컴포넌트 (없으면 null)\n        hero.position = Snap(hero.position);     // 칸 가운데에서 시작\n    }\n\n    void Update()\n    {\n        // 왼쪽 -1 · 오른쪽 +1 / 위 -1 · 아래 +1\n        float h = Input.GetAxisRaw(\"Horizontal\");\n        float v = Input.GetAxisRaw(\"Vertical\");\n\n        // 두 방향을 함께 누르면 지금 걷던 축을 그대로 (대각선 없음)\n        if (h != 0 && v != 0)\n        {\n            if (dir.x != 0)\n                v = 0;\n            else\n                h = 0;\n        }\n        bool pressing = h != 0 || v != 0;\n        bool fresh = pressing && (h != lastH || v != lastV);   // 방금 눌렀거나 방향을 바꿈\n        lastH = h;\n        lastV = v;\n        if (fresh)\n            holdTime = 0f;\n        if (pressing)\n            holdTime += Time.deltaTime;\n        else\n            holdTime = 0f;\n\n        if (!stepping)\n        {\n            // 새로 누르면 한 칸 · 오래 누르고 있으면 계속\n            if (fresh || (pressing && holdTime >= holdDelay))\n                StartStep(h, v);\n        }\n        else if (fresh)\n        {\n            queued = true;\n            queuedH = h;\n            queuedV = v;\n        }\n\n        if (stepping)\n        {\n            float s = speed;\n            if (Input.GetKey(KeyCode.LeftShift))\n                s = s * runMultiplier;\n\n            // 이번 프레임에 걸을 거리 — 칸에 도착하고 남은 거리는 다음 칸으로 이어서 씁니다 (칸마다 끊기지 않게)\n            float budget = s * Time.deltaTime;\n            Vector2 next = Vector2.MoveTowards(hero.position, target, budget);\n            budget = budget - Vector2.Distance(hero.position, next);\n            if (!hero.Move(next - hero.position))\n            {\n                // 걷는 도중 길이 막히면(몬스터가 끼어듦 등) 가까운 칸 가운데로 돌아갑니다\n                target = Snap(hero.position);\n                budget = 0f;\n            }\n            if (Vector2.Distance(hero.position, target) < 0.01f)\n            {\n                hero.position = target;          // 칸 가운데에 딱 맞춤\n                stepping = false;\n                // 걷는 도중 다시 눌렀거나 오래 누르고 있으면 멈추지 않고 다음 칸으로\n                if (queued)\n                    StartStep(queuedH, queuedV);\n                else if (pressing && holdTime >= holdDelay)\n                    StartStep(h, v);\n                queued = false;\n                // 남은 거리만큼 다음 칸으로 바로 출발\n                if (stepping && budget > 0f)\n                {\n                    Vector2 more = Vector2.MoveTowards(hero.position, target, budget);\n                    hero.Move(more - hero.position);\n                }\n            }\n        }\n\n        // 애니메이터 창의 상태(대기_아래, 걷기_오른쪽 …)가 이 파라미터로 바뀝니다\n        if (animator != null)\n            animator.SetBool(\"IsMoving\", stepping);\n    }\n\n    // 옆 칸으로 한 걸음을 시작합니다 (막혀 있으면 바라보기만)\n    void StartStep(float h, float v)\n    {\n        dir = new Vector2(h, v);\n        hero.Face(dir);                          // 바라보는 방향 (공격·손전등 방향에 쓰임)\n        if (animator != null)\n            animator.SetInteger(\"Dir\", DirIndex(h, v));\n\n        if (!hero.canMove)                       // 대화 중에는 움직이지 않음\n            return;\n        if (!hero.CanMove(dir))                  // 막힌 칸이면 바라보기만\n            return;\n\n        target = Snap(hero.position) + dir;\n        stepping = true;\n    }\n\n    // 가장 가까운 칸 가운데 좌표\n    Vector2 Snap(Vector2 p)\n    {\n        return new Vector2(Mathf.Round(p.x), Mathf.Round(p.y));\n    }\n\n    // 입력 방향 → 애니메이터 Dir 값\n    int DirIndex(float h, float v)\n    {\n        if (Mathf.Abs(h) > Mathf.Abs(v))\n            return h < 0 ? 2 : 3;\n        return v < 0 ? 1 : 0;\n    }\n}\n"
+  },
+  {
+   "id": "n55bhfx",
+   "name": "HeroCombat",
+   "code": "using UnityEngine;\n\n// 주인공 행동 스크립트 (말 걸기 · 공격)\n// 주인공 컴포넌트를 추가하면 함께 붙습니다. Space · Z · Enter 를 누르면\n//   ① 가까이에 OnInteract()를 가진 오브젝트(NPC 등)가 있으면 그 오브젝트의 OnInteract()를 부르고\n//   ② 없으면 바라보는 방향으로 공격합니다.\n// 키·공격력·사거리를 바꾸거나, 공격 대신 다른 행동을 넣어도 됩니다.\npublic class HeroCombat : MonoBehaviour\n{\n    [Header(\"공격\")]\n    [Tooltip(\"한 번 공격할 때 몬스터에게 주는 피해입니다\")]\n    public int damage = 1;\n\n    [Tooltip(\"공격이 닿는 거리(칸)입니다\")]\n    public float reach = 0.7f;\n\n    [Header(\"말 걸기\")]\n    [Tooltip(\"이 거리(칸) 안에 있는 NPC 등에게 말을 겁니다\")]\n    public float talkDistance = 1.4f;\n\n    private Hero hero;\n\n    void Start()\n    {\n        hero = GetComponent<Hero>();\n    }\n\n    void Update()\n    {\n        bool pressed = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return);\n        if (!pressed)\n        {\n            return;\n        }\n\n        // 가까운 대상의 OnInteract()를 부릅니다 (NpcTalk 스크립트 → 대화창)\n        if (hero.Interact(talkDistance))\n        {\n            return;\n        }\n\n        // 맞은 몬스터는 체력이 줄고 뒤로 밀려납니다. OnHit()을 가진 오브젝트에는 OnHit()을 보냅니다\n        hero.Attack(damage, reach);\n    }\n}\n"
+  }
+ ],
+ "heroScripts": {
+  "tile": "t5fvr3b"
+ },
+ "heroTileInit": true,
+ "heroInit": true,
+ "roleIds": {
+  "HeroCombat": "n55bhfx"
+ },
+ "roleInit": true,
+ "sfmap": {},
+ "anim": {
+  "clips": [
+   {
+    "id": "clip_idle",
+    "name": "시설_대기",
+    "fps": 10,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sx",
+      "keys": [
+       {
+        "f": 0,
+        "v": 1
+       },
+       {
+        "f": 6,
+        "v": 0.98
+       },
+       {
+        "f": 12,
+        "v": 1
+       }
+      ]
+     },
+     {
+      "p": "sy",
+      "keys": [
+       {
+        "f": 0,
+        "v": 1
+       },
+       {
+        "f": 6,
+        "v": 1.04
+       },
+       {
+        "f": 12,
+        "v": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "clip_make",
+    "name": "시설_생산",
+    "fps": 30,
+    "loop": false,
+    "tracks": [
+     {
+      "p": "sx",
+      "keys": [
+       {
+        "f": 0,
+        "v": 1
+       },
+       {
+        "f": 3,
+        "v": 1.18
+       },
+       {
+        "f": 7,
+        "v": 0.9
+       },
+       {
+        "f": 11,
+        "v": 1.04
+       },
+       {
+        "f": 14,
+        "v": 1
+       }
+      ]
+     },
+     {
+      "p": "sy",
+      "keys": [
+       {
+        "f": 0,
+        "v": 1
+       },
+       {
+        "f": 3,
+        "v": 0.82
+       },
+       {
+        "f": 7,
+        "v": 1.14
+       },
+       {
+        "f": 11,
+        "v": 0.97
+       },
+       {
+        "f": 14,
+        "v": 1
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "ctrls": [
+   {
+    "id": "ctrl_fac",
+    "name": "생산시설",
+    "params": [
+     {
+      "n": "Make",
+      "t": "trigger",
+      "d": false
+     }
+    ],
+    "states": [
+     {
+      "id": "st_idle",
+      "n": "대기",
+      "clip": "clip_idle",
+      "spd": 1,
+      "x": -160,
+      "y": -40
+     },
+     {
+      "id": "st_make",
+      "n": "생산",
+      "clip": "clip_make",
+      "spd": 1,
+      "x": 120,
+      "y": -40
+     }
+    ],
+    "trans": [
+     {
+      "id": "tr1",
+      "a": "any",
+      "b": "st_make",
+      "exit": false,
+      "et": 1,
+      "self": true,
+      "conds": [
+       {
+        "p": "Make",
+        "op": "trig",
+        "v": 0
+       }
+      ]
+     },
+     {
+      "id": "tr2",
+      "a": "st_make",
+      "b": "st_idle",
+      "exit": true,
+      "et": 1,
+      "self": false,
+      "conds": []
+     }
+    ],
+    "def": "st_idle",
+    "any": {
+     "x": -160,
+     "y": -140
+    },
+    "entry": {
+     "x": -360,
+     "y": -40
+    }
+   }
+  ]
+ },
+ "animInit": true,
+ "animV2": true,
+ "mgrs": [],
+ "mgrInit": true,
+ "mgrV2": true,
+ "vgraphs": [],
+ "stiles": [],
+ "stN": 0,
+ "audio": [],
+ "fonts": [],
+ "assets": [
+  {
+   "id": "base_cobble",
+   "n": 0,
+   "name": "자갈길",
+   "kind": "tile",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_wood_floor",
+   "n": 1,
+   "name": "나무 바닥",
+   "kind": "tile",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_brick_wall",
+   "n": 2,
+   "name": "벽돌 벽",
+   "kind": "tile",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [
+    0
+   ],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_flowers",
+   "n": 3,
+   "name": "꽃",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_barrel",
+   "n": 4,
+   "name": "나무통",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_crate",
+   "n": 5,
+   "name": "나무 상자",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_pot",
+   "n": 6,
+   "name": "항아리",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_sign",
+   "n": 7,
+   "name": "표지판",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_hero",
+   "n": 8,
+   "name": "검은 고양이",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 4,
+   "rows": 4,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "multiple",
+   "sprites": [
+    {
+     "id": "d0",
+     "name": "주인공_아래_0",
+     "x": 0,
+     "y": 0,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "d1",
+     "name": "주인공_아래_1",
+     "x": 32,
+     "y": 0,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "d2",
+     "name": "주인공_아래_2",
+     "x": 64,
+     "y": 0,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "d3",
+     "name": "주인공_아래_3",
+     "x": 96,
+     "y": 0,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "u0",
+     "name": "주인공_위_0",
+     "x": 0,
+     "y": 32,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "u1",
+     "name": "주인공_위_1",
+     "x": 32,
+     "y": 32,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "u2",
+     "name": "주인공_위_2",
+     "x": 64,
+     "y": 32,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "u3",
+     "name": "주인공_위_3",
+     "x": 96,
+     "y": 32,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "l0",
+     "name": "주인공_왼쪽_0",
+     "x": 0,
+     "y": 64,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "l1",
+     "name": "주인공_왼쪽_1",
+     "x": 32,
+     "y": 64,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "l2",
+     "name": "주인공_왼쪽_2",
+     "x": 64,
+     "y": 64,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "l3",
+     "name": "주인공_왼쪽_3",
+     "x": 96,
+     "y": 64,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "r0",
+     "name": "주인공_오른쪽_0",
+     "x": 0,
+     "y": 96,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "r1",
+     "name": "주인공_오른쪽_1",
+     "x": 32,
+     "y": 96,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "r2",
+     "name": "주인공_오른쪽_2",
+     "x": 64,
+     "y": 96,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "r3",
+     "name": "주인공_오른쪽_3",
+     "x": 96,
+     "y": 96,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    }
+   ]
+  },
+  {
+   "id": "ex_oven",
+   "n": 9,
+   "name": "빵 오븐",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACAklEQVR4Xu1XsUoDQRDdSLAQCSlEgpEgqRSsLMTSQizEwsIyH2EViFiKYn7AH8gHpBALsUhhIRZWAa2CBJUgFiGIhYjKu7jH7s7O7t3lJI0Prrm9mfdm593sXUbExNxs4ZsLeX7pZWKmE9m4AcD6xjYJa12eJUklJhJFpYixC2Bb4Oo1hyT+sJoGiQ5WS1aew5suK4CLARBnMykR4CIfFTYRmgf+khzADpltCncAC5VyftQiI6HR6YftICZcmMmxSR5eB+msd/ohx9hfw38BxAPoswtpr2sCTAPaTOcaRPJVk2BNq5gw8mkoiXOfb84dks+5pqKKSCZEUhD7yAH5nG+nJLwCJHlcQAgGjg9aC3wGk7jbn7fmXTp6JPd9OZ2T0KyeIzaFSSHDXRieAUBoyiST0EeuIs6zkd8Cgq0V/db5rbUtPnhNCJCKTHLAuBd1F4gA9EleOJ4H2Wm9CBu5hLGGWOSQ+aQPVHgnoQu1vSuyfLw5pd2zHu9xJiEcXKx3xVNV/1gBeWVnmQioNduBiGK9H1TvQyQPmGOVIwcgqnbxnu4oBk5bv19KCd3OQfsqrq4tsv99Kk52RVClrQWNZlt8DXQfmKhf34e8RADmN3eSmcdr96NHkpcmC2y1iFfJAeIB/DxEPclApl6uyrmc1kk4FCFIO+BqlzjXevBXVM6TnD8p9e8Di1hG4AAAAABJRU5ErkJggg=="
+  },
+  {
+   "id": "ex_coffee_machine",
+   "n": 10,
+   "name": "커피 머신",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABPklEQVR4XmNgGAUDDBgJ2S8lJvGfkBpC4NmrFzjtwSkBs3jaojWEzCcIsuJCwGqwOQSvA5S0TAgaTiy4d+0MVgcwYTMA5Htq+BwZgMzDFp0sxPrAaI4DXOm5lAPEaiMIiHIAsuUgAOLDHBHVsQSvJcsqYvDKY40CegKiQgAfIORDQoCoEECPc7qnARCgpqXIAG8UlFRUEApBigHRaWDapEkkW5aVl0dQD1FpgJZgwB1AdBSggzcvnqAIiUjIkBVQRDsAPT6bqspQLCQmvrGBAY+CAXcA0VEAArCGBTaALkdsdU6SA0AgRIeLYGJbc+Ub3EGEHEKzKABZDML4Qg0EaOYAGCDkCJKjoGfbOcJRIKdBUA0M0DwEQFGALx2QHALEAljcE0qEeJvlXkH423OkgG3rlhDfLKcnGPCu2YADAPXhW2Sf85jpAAAAAElFTkSuQmCC"
+  },
+  {
+   "id": "ex_cake_case",
+   "n": 11,
+   "name": "케이크 진열장",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABHUlEQVR4XmNgGAWjYKQDRmwBICUm8Z8WAfPs1QsM+1AEYBafu3aHFvYzGGmpgM1FdgiGA5acuXGSJrZDQYyJhjmyA1hgEiDfg3x+7dsfBkdZfnNsjtj/+CPFjgPZYaSl8h/mCLgDcAFqWIoPYHUArS1FBkzExreGmw9GtBArhg8Q5QCYRcgWEitGCBDlgBu7toATH4xGZhMSIwTg2RApF8BTuuOJc1hzA6lgv4UR3EwtLhZzUHkAywVEhQAtAd5sOH3XJIaUliaK7J9TU8egYbEApxkDHgKjDiBYFIPikJYArwM06hZQXPkQAhgOuNGEWeRSE2h17EAxDsMBehpy1LSPIBjNBaMhAA8BUO0Ea7XSEiDXhCAw4FEw4B0TAKvHbMclwWbFAAAAAElFTkSuQmCC"
+  },
+  {
+   "id": "ex_coin",
+   "n": 12,
+   "name": "동전",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABOklEQVR4Xu2WsQ4BQRCGjwgeQKUUhSg8imdQXOEJRHkd8QQKT6D0CGqVQhRypcoDOAUyl8xlsjc7N7uJINmvIWTv/2Z27YiiQODL1Hzy5+Pmy1y33D28ntVwEcDgZNZjlqW5lKuI2hrCF9t9lB0monOySp0kVAJm+Ol4K0kMR53iMxeJSgEunIYhIOUjIQpAON1vGtIaxEV4dt7k730k6tpDSB/ObQEAHTC/20zbpV8MxSpgVu8DdO9yfYpLVR0wWyvh2gWVwCcJAv/RAe5g2XA5sIC1AzBU4Erl4G5CDljf78pNVk9D7AKG4+1HsVUfr+/WG1fUM7sgbQV3DVdVD1QOI4CbCSbmIMJwqXq1ACdhg+57VbiTAErAK/ePCA+stnJEtQUUmG7cgKH7rancWwDhxqxLcCDwM7wBYjiiRfwiyIgAAAAASUVORK5CYII="
+  },
+  {
+   "id": "ex_icon_bread",
+   "n": 13,
+   "name": "빵 아이콘",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABGUlEQVR4Xu2WvQ0CMQyFD8QQCFFQMgA1FSUFYgIGQAzAAAyAGIAJEAXlVdQMQElxQmwBekVOvsSxjaKDJl8Znf2enR9fUWQymcyf6Xyrv5n231rM/voy5+1pyQAV3a5nhpCyNqmZUZ1C3CbKszuUoomoAVd1irgDJgDXjS7nG+Kr+bgWP51vwWfWNYAikI87P4EBJz4YDWvR5WISCFrXHMjHmWA7wGEV5L6TaBhw1beJ34VoB56PKvCR0gUuHxC3IGbCB8aktZi4agBIwRa0eNNLSJPQ2xFDE6UED1HbB/F4uTceJPEM/ILAAJ5LuGwDv3qgzgLc21RcQdwsME3DFBNc1eIh5KBDxGKGbmHy/4APN9F8NNFMhvIBymKOCjTwmvkAAAAASUVORK5CYII="
+  },
+  {
+   "id": "ex_icon_coffee",
+   "n": 14,
+   "name": "커피 아이콘",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA0ElEQVR4XmNgGAUkgDt3nv1HV45NjCZg2FrORJPgIgGMOmDAQ4BoMKC5AAZo4QhGQkEgJSaBUfgQA569ekHQbBDAqwhkeYgOFzH2YYA1V74R5QiciRBk+YNHN8iyHARAeokJPZrnApAj8DmE5g6AAVyOwJkGKI0CEFCQ04CnA5gD0BMn3UIAZjF6SNDNAbjAqAPoFgK4EiELzsihEkBOdNiKZ7qFADbLQYDmIYDLYhigWwgMvWwICjpQUUouQC6G8QGCjQZiqlRsgFDcj4JBAwBl/2GW71KkxwAAAABJRU5ErkJggg=="
+  },
+  {
+   "id": "ex_icon_cake",
+   "n": 15,
+   "name": "케이크 아이콘",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABEUlEQVR4XmNgGAWjYKQDRloFQI+I3H+Y2SVvHuG0h4UWDgBZHiUih2z0f1yOYKK2A7BYzgByDHKIIAOqO4BUMPwcAIrrZW8eoQQEiA8S3xeV9x+EkSVpkgihCQ5ukZFbAMM+Bob/jgEBDPs3bEBxHFUdgO47kIWEAEUOIMVCdJ/DAEkOoMTCG1yPGFJamhjm1NQRHwXUsBAGbHDEBUYIIFuKLw7RgxTmQ0IWogOsUYDNYmpZSJQDQIBWFqIDjFoKFgXoQUou+HbtCIZWAacsuL0YUQCzGFeiQQfYLEAGXFqoJpGUC0CAVAtIBRghEBXlhmIpug+oDTBqw2XLdoEthWFagwGvjrGWA+gJZRSMgmENAHSTc4qy7U9sAAAAAElFTkSuQmCC"
+  },
+  {
+   "id": "ex_icon_speed",
+   "n": 16,
+   "name": "속도 아이콘",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA6UlEQVR4XuWWPQ7CMAyFC+rEcZg5DksZOAwDLJypA4dhLfKQKorS+NnP0Ep8Urcq7ydx0677d3ZRBdzPhylf6/J8Q2v3EQZEfLge56UetzFiWQwRn16n+Smb0NhrL2waNr3gbqDcdy8uA1HiVAMlcvLR0csxNxCZ3tzAkrg3vQB/iLTkyPzXtgg20CL/CtZoNQSdAS19C217VAOMOELTACuupTdPgQVEXFi8s5FTLdQOICpOU15Gci2jxmmixNUp+DZhBn6270LEj0iCboBNThlgxV2k+qPGjWpgFSR5VHozq4qn8TO73jofz6KqOI/fhnMAAAAASUVORK5CYII="
+  },
+  {
+   "id": "ex_icon_price",
+   "n": 17,
+   "name": "가격 아이콘",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCUlEQVR4Xu2WsRHCMAxFA0fPBrADtJmEIVLRhoK0VMyUFnaACWCCcCqcE8S2vqTkKOD19vuRZDtF8efXmVkLcFxtOuvaw/3aexeWTUhelaVlaXFu27d1c+0uHnkMVYCx5QTcAo2cl1lqFRRAK69vl77azXqbDSG2QJIvT7V2jPAhROWeEMkWoHLiuW/6r6KeU9kDphmwylEpZzADXrmWQQC6Jj9vqwDvNS+7h+gpiIWYQk4kjyEPMZU8G4AIIUK5xyo7B3qOpcFEodniT7FYgUBuMFFicjgAb4eFlFwVwBoiJ1cH0IaQ5KYAaAhEbg4ghUDlrgCpEBr5aNA98dhVnedX3c1X5X88vABzWaNiF5EgigAAAABJRU5ErkJggg=="
+  }
+ ],
+ "maps": [
+  {
+   "id": "bakery",
+   "name": "고양이 빵집",
+   "w": 11,
+   "h": 10,
+   "ox": 0,
+   "oy": 0,
+   "theme": "기본",
+   "bg": "",
+   "l": [
+    [
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     1,
+     1,
+     1,
+     1,
+     1,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     1,
+     1,
+     1,
+     1,
+     1,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097,
+     4097
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     8193,
+     8193,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     8193,
+     8193,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     8193,
+     8193,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     8193,
+     8193,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     8193,
+     8193,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     8193,
+     8193,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193,
+     8193
+    ]
+   ],
+   "lm": [
+    {
+     "name": "바닥",
+     "wall": false
+    },
+    {
+     "name": "장식",
+     "wall": false
+    },
+    {
+     "name": "벽",
+     "wall": true
+    }
+   ],
+   "dark": {
+    "on": false,
+    "color": "#05060d",
+    "level": 0.88
+   },
+   "col": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "objs": [
+    {
+     "id": "hero",
+     "type": "spawn",
+     "name": "점원 고양이",
+     "x": 5,
+     "y": 7,
+     "props": {
+      "start": true
+     },
+     "group": null,
+     "parent": null,
+     "scripts": [
+      {
+       "id": "qpoi908",
+       "sid": "t5fvr3b",
+       "vals": {}
+      },
+      {
+       "id": "jjwqox5",
+       "sid": "n55bhfx",
+       "vals": {}
+      }
+     ]
+    },
+    {
+     "id": "cam",
+     "type": "empty",
+     "name": "카메라",
+     "x": 8,
+     "y": 4,
+     "props": {
+      "camera": {
+       "start": true,
+       "size": 5.3,
+       "clamp": false,
+       "smooth": false,
+       "smoothTime": 0.3
+      }
+     },
+     "group": null,
+     "parent": null
+    },
+    {
+     "id": "mgr",
+     "type": "empty",
+     "name": "가게 매니저",
+     "x": 1,
+     "y": 8,
+     "props": {},
+     "group": null,
+     "parent": null,
+     "scripts": [
+      {
+       "id": "sm1",
+       "sid": "sc_mgr",
+       "vals": {
+        "startGold": 0
+       }
+      }
+     ]
+    },
+    {
+     "id": "oven",
+     "type": "empty",
+     "name": "빵 오븐",
+     "x": 2,
+     "y": 3,
+     "props": {
+      "sprite": "ex_oven",
+      "sx": 2,
+      "sy": 2,
+      "animator": {
+       "ctrl": "ctrl_fac",
+       "speed": 1
+      }
+     },
+     "group": "gfac",
+     "parent": null,
+     "scripts": [
+      {
+       "id": "sf_oven",
+       "sid": "sc_fac",
+       "vals": {
+        "id": "빵",
+        "income": 1,
+        "interval": 1.5
+       }
+      }
+     ]
+    },
+    {
+     "id": "coffee",
+     "type": "empty",
+     "name": "커피 머신",
+     "x": 5,
+     "y": 3,
+     "props": {
+      "sprite": "ex_coffee_machine",
+      "sx": 2,
+      "sy": 2,
+      "animator": {
+       "ctrl": "ctrl_fac",
+       "speed": 1
+      }
+     },
+     "group": "gfac",
+     "parent": null,
+     "scripts": [
+      {
+       "id": "sf_coffee",
+       "sid": "sc_fac",
+       "vals": {
+        "id": "커피",
+        "income": 6,
+        "interval": 3
+       }
+      }
+     ]
+    },
+    {
+     "id": "cake",
+     "type": "empty",
+     "name": "케이크 진열장",
+     "x": 8,
+     "y": 3,
+     "props": {
+      "sprite": "ex_cake_case",
+      "sx": 2,
+      "sy": 2,
+      "animator": {
+       "ctrl": "ctrl_fac",
+       "speed": 1
+      }
+     },
+     "group": "gfac",
+     "parent": null,
+     "scripts": [
+      {
+       "id": "sf_cake",
+       "sid": "sc_fac",
+       "vals": {
+        "id": "케이크",
+        "income": 40,
+        "interval": 6
+       }
+      }
+     ]
+    },
+    {
+     "id": "d1",
+     "type": "empty",
+     "name": "화분",
+     "x": 1,
+     "y": 5,
+     "props": {
+      "sprite": "base_pot"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "d2",
+     "type": "empty",
+     "name": "화분 2",
+     "x": 9,
+     "y": 5,
+     "props": {
+      "sprite": "base_pot"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "d3",
+     "type": "empty",
+     "name": "꽃",
+     "x": 1,
+     "y": 7,
+     "props": {
+      "sprite": "base_flowers"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "d4",
+     "type": "empty",
+     "name": "나무 상자",
+     "x": 9,
+     "y": 7,
+     "props": {
+      "sprite": "base_crate"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "d5",
+     "type": "empty",
+     "name": "나무통",
+     "x": 9,
+     "y": 8,
+     "props": {
+      "sprite": "base_barrel"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "d6",
+     "type": "empty",
+     "name": "표지판",
+     "x": 5,
+     "y": 9,
+     "props": {
+      "sprite": "base_sign"
+     },
+     "group": "gdeco",
+     "parent": null
+    }
+   ],
+   "groups": [
+    {
+     "id": "gfac",
+     "name": "생산시설"
+    },
+    {
+     "id": "gdeco",
+     "name": "가게 장식"
+    }
+   ],
+   "ui": [
+    {
+     "id": "h_bg",
+     "type": "panel",
+     "name": "배경",
+     "anchor": "tl",
+     "x": 10,
+     "y": 10,
+     "w": 200,
+     "h": 60,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "bg": "#16110a",
+      "alpha": 0.88,
+      "radius": 12,
+      "border": "#e9bd0c",
+      "bw": 2,
+      "sprite": ""
+     },
+     "group": "ug_hud",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "h_ic",
+     "type": "image",
+     "name": "골드 그림",
+     "anchor": "tl",
+     "x": 18,
+     "y": 18,
+     "w": 40,
+     "h": 40,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "sprite": "ex_coin"
+     },
+     "group": "ug_hud",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "h_g",
+     "type": "text",
+     "name": "골드",
+     "anchor": "tl",
+     "x": 62,
+     "y": 14,
+     "w": 144,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "0 G",
+      "color": "#ffd84a",
+      "size": 22,
+      "align": "left",
+      "valign": "mid",
+      "shadow": true,
+      "bold": true
+     },
+     "group": "ug_hud",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "h_i",
+     "type": "text",
+     "name": "가게 정보",
+     "anchor": "tl",
+     "x": 62,
+     "y": 44,
+     "w": 144,
+     "h": 20,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "가게 Lv 1 · 판매 0개",
+      "color": "#d9c9a0",
+      "size": 11,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_hud",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "p_bg",
+     "type": "panel",
+     "name": "배경",
+     "anchor": "tr",
+     "x": -12,
+     "y": 10,
+     "w": 266,
+     "h": 340,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "bg": "#14161c",
+      "alpha": 0.92,
+      "radius": 14,
+      "border": "#3a3f4c",
+      "bw": 2,
+      "sprite": ""
+     },
+     "group": "ug_panel",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "p_t",
+     "type": "text",
+     "name": "제목",
+     "anchor": "tr",
+     "x": -114,
+     "y": 16,
+     "w": 150,
+     "h": 24,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "업그레이드",
+      "color": "#ffffff",
+      "size": 15,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_panel",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "p_fold",
+     "type": "button",
+     "name": "접기 버튼",
+     "anchor": "tr",
+     "x": -26,
+     "y": 16,
+     "w": 64,
+     "h": 24,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "접기 ›",
+      "bg": "#2a2e38",
+      "color": "#d0d4dc",
+      "size": 11,
+      "radius": 8,
+      "action": "none",
+      "actionText": "",
+      "map": "",
+      "tx": 1,
+      "ty": 1,
+      "target": ""
+     },
+     "group": "ug_panel",
+     "visible": true,
+     "opacity": 1,
+     "scripts": [
+      {
+       "id": "st_fold",
+       "sid": "sc_tog",
+       "vals": {
+        "open": false
+       }
+      }
+     ],
+     "tag": ""
+    },
+    {
+     "id": "ic_빵",
+     "type": "image",
+     "name": "아이콘",
+     "anchor": "tr",
+     "x": -232,
+     "y": 54,
+     "w": 32,
+     "h": 32,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "sprite": "ex_icon_bread"
+     },
+     "group": "ug_row_0",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "nm_빵",
+     "type": "text",
+     "name": "이름",
+     "anchor": "tr",
+     "x": -108,
+     "y": 48,
+     "w": 118,
+     "h": 18,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "빵 오븐",
+      "color": "#f2f2f5",
+      "size": 13,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_0",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "in_빵",
+     "type": "text",
+     "name": "정보",
+     "anchor": "tr",
+     "x": -108,
+     "y": 66,
+     "w": 118,
+     "h": 16,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "color": "#9ea3ae",
+      "size": 10,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_row_0",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "pg_빵",
+     "type": "bar",
+     "name": "진행",
+     "anchor": "tr",
+     "x": -114,
+     "y": 86,
+     "w": 112,
+     "h": 7,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "src": "fixed",
+      "value": 0,
+      "bg": "#2a2d36",
+      "fg": "#f6cd2a",
+      "radius": 4,
+      "text": "",
+      "color": "#ffffff",
+      "size": 9
+     },
+     "group": "ug_row_0",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "bt_빵",
+     "type": "button",
+     "name": "버튼",
+     "anchor": "tr",
+     "x": -22,
+     "y": 56,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "bg": "#e9bd0c",
+      "color": "#1a1400",
+      "size": 11,
+      "radius": 9,
+      "action": "none",
+      "actionText": "",
+      "map": "",
+      "tx": 1,
+      "ty": 1,
+      "target": ""
+     },
+     "group": "ug_row_0",
+     "visible": true,
+     "opacity": 1,
+     "scripts": [
+      {
+       "id": "sb_빵",
+       "sid": "sc_btn",
+       "vals": {
+        "id": "빵",
+        "title": "빵 오븐",
+        "baseCost": 8,
+        "growth": 1.45
+       }
+      }
+     ],
+     "tag": ""
+    },
+    {
+     "id": "bl_빵",
+     "type": "text",
+     "name": "버튼 글",
+     "anchor": "tr",
+     "x": -22,
+     "y": 56,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "강화",
+      "color": "#1a1400",
+      "size": 11,
+      "align": "center",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_0",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ln1",
+     "type": "panel",
+     "name": "구분선",
+     "anchor": "tr",
+     "x": -24,
+     "y": 102,
+     "w": 242,
+     "h": 2,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "bg": "#2c303b",
+      "alpha": 1,
+      "radius": 0,
+      "border": "#000000",
+      "bw": 0,
+      "sprite": ""
+     },
+     "group": "ug_row_1",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ic_커피",
+     "type": "image",
+     "name": "아이콘",
+     "anchor": "tr",
+     "x": -232,
+     "y": 114,
+     "w": 32,
+     "h": 32,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "sprite": "ex_icon_coffee"
+     },
+     "group": "ug_row_1",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "nm_커피",
+     "type": "text",
+     "name": "이름",
+     "anchor": "tr",
+     "x": -108,
+     "y": 108,
+     "w": 118,
+     "h": 18,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "커피 머신",
+      "color": "#f2f2f5",
+      "size": 13,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_1",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "in_커피",
+     "type": "text",
+     "name": "정보",
+     "anchor": "tr",
+     "x": -108,
+     "y": 126,
+     "w": 118,
+     "h": 16,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "color": "#9ea3ae",
+      "size": 10,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_row_1",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "pg_커피",
+     "type": "bar",
+     "name": "진행",
+     "anchor": "tr",
+     "x": -114,
+     "y": 146,
+     "w": 112,
+     "h": 7,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "src": "fixed",
+      "value": 0,
+      "bg": "#2a2d36",
+      "fg": "#f6cd2a",
+      "radius": 4,
+      "text": "",
+      "color": "#ffffff",
+      "size": 9
+     },
+     "group": "ug_row_1",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "bt_커피",
+     "type": "button",
+     "name": "버튼",
+     "anchor": "tr",
+     "x": -22,
+     "y": 116,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "bg": "#e9bd0c",
+      "color": "#1a1400",
+      "size": 11,
+      "radius": 9,
+      "action": "none",
+      "actionText": "",
+      "map": "",
+      "tx": 1,
+      "ty": 1,
+      "target": ""
+     },
+     "group": "ug_row_1",
+     "visible": true,
+     "opacity": 1,
+     "scripts": [
+      {
+       "id": "sb_커피",
+       "sid": "sc_btn",
+       "vals": {
+        "id": "커피",
+        "title": "커피 머신",
+        "baseCost": 50,
+        "growth": 1.5
+       }
+      }
+     ],
+     "tag": ""
+    },
+    {
+     "id": "bl_커피",
+     "type": "text",
+     "name": "버튼 글",
+     "anchor": "tr",
+     "x": -22,
+     "y": 116,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "강화",
+      "color": "#1a1400",
+      "size": 11,
+      "align": "center",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_1",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ln2",
+     "type": "panel",
+     "name": "구분선",
+     "anchor": "tr",
+     "x": -24,
+     "y": 162,
+     "w": 242,
+     "h": 2,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "bg": "#2c303b",
+      "alpha": 1,
+      "radius": 0,
+      "border": "#000000",
+      "bw": 0,
+      "sprite": ""
+     },
+     "group": "ug_row_2",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ic_케이크",
+     "type": "image",
+     "name": "아이콘",
+     "anchor": "tr",
+     "x": -232,
+     "y": 174,
+     "w": 32,
+     "h": 32,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "sprite": "ex_icon_cake"
+     },
+     "group": "ug_row_2",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "nm_케이크",
+     "type": "text",
+     "name": "이름",
+     "anchor": "tr",
+     "x": -108,
+     "y": 168,
+     "w": 118,
+     "h": 18,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "케이크 진열장",
+      "color": "#f2f2f5",
+      "size": 13,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_2",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "in_케이크",
+     "type": "text",
+     "name": "정보",
+     "anchor": "tr",
+     "x": -108,
+     "y": 186,
+     "w": 118,
+     "h": 16,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "color": "#9ea3ae",
+      "size": 10,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_row_2",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "pg_케이크",
+     "type": "bar",
+     "name": "진행",
+     "anchor": "tr",
+     "x": -114,
+     "y": 206,
+     "w": 112,
+     "h": 7,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "src": "fixed",
+      "value": 0,
+      "bg": "#2a2d36",
+      "fg": "#f6cd2a",
+      "radius": 4,
+      "text": "",
+      "color": "#ffffff",
+      "size": 9
+     },
+     "group": "ug_row_2",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "bt_케이크",
+     "type": "button",
+     "name": "버튼",
+     "anchor": "tr",
+     "x": -22,
+     "y": 176,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "bg": "#e9bd0c",
+      "color": "#1a1400",
+      "size": 11,
+      "radius": 9,
+      "action": "none",
+      "actionText": "",
+      "map": "",
+      "tx": 1,
+      "ty": 1,
+      "target": ""
+     },
+     "group": "ug_row_2",
+     "visible": true,
+     "opacity": 1,
+     "scripts": [
+      {
+       "id": "sb_케이크",
+       "sid": "sc_btn",
+       "vals": {
+        "id": "케이크",
+        "title": "케이크 진열장",
+        "baseCost": 300,
+        "growth": 1.55
+       }
+      }
+     ],
+     "tag": ""
+    },
+    {
+     "id": "bl_케이크",
+     "type": "text",
+     "name": "버튼 글",
+     "anchor": "tr",
+     "x": -22,
+     "y": 176,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "강화",
+      "color": "#1a1400",
+      "size": 11,
+      "align": "center",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_2",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ln3",
+     "type": "panel",
+     "name": "구분선",
+     "anchor": "tr",
+     "x": -24,
+     "y": 222,
+     "w": 242,
+     "h": 2,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "bg": "#2c303b",
+      "alpha": 1,
+      "radius": 0,
+      "border": "#000000",
+      "bw": 0,
+      "sprite": ""
+     },
+     "group": "ug_row_3",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ic_속도",
+     "type": "image",
+     "name": "아이콘",
+     "anchor": "tr",
+     "x": -232,
+     "y": 234,
+     "w": 32,
+     "h": 32,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "sprite": "ex_icon_speed"
+     },
+     "group": "ug_row_3",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "nm_속도",
+     "type": "text",
+     "name": "이름",
+     "anchor": "tr",
+     "x": -108,
+     "y": 228,
+     "w": 118,
+     "h": 18,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "빠른 손",
+      "color": "#f2f2f5",
+      "size": 13,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_3",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "in_속도",
+     "type": "text",
+     "name": "정보",
+     "anchor": "tr",
+     "x": -108,
+     "y": 246,
+     "w": 118,
+     "h": 16,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "color": "#9ea3ae",
+      "size": 10,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_row_3",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ds_속도",
+     "type": "text",
+     "name": "설명",
+     "anchor": "tr",
+     "x": -108,
+     "y": 262,
+     "w": 118,
+     "h": 14,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "모든 시설 생산이 빨라져요",
+      "color": "#6f7480",
+      "size": 9,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_row_3",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "bt_속도",
+     "type": "button",
+     "name": "버튼",
+     "anchor": "tr",
+     "x": -22,
+     "y": 236,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "bg": "#e9bd0c",
+      "color": "#1a1400",
+      "size": 11,
+      "radius": 9,
+      "action": "none",
+      "actionText": "",
+      "map": "",
+      "tx": 1,
+      "ty": 1,
+      "target": ""
+     },
+     "group": "ug_row_3",
+     "visible": true,
+     "opacity": 1,
+     "scripts": [
+      {
+       "id": "sb_속도",
+       "sid": "sc_btn",
+       "vals": {
+        "id": "속도",
+        "title": "빠른 손",
+        "baseCost": 80,
+        "growth": 2,
+        "effect": "생산 속도",
+        "perLevel": 25
+       }
+      }
+     ],
+     "tag": ""
+    },
+    {
+     "id": "bl_속도",
+     "type": "text",
+     "name": "버튼 글",
+     "anchor": "tr",
+     "x": -22,
+     "y": 236,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "강화",
+      "color": "#1a1400",
+      "size": 11,
+      "align": "center",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_3",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ln4",
+     "type": "panel",
+     "name": "구분선",
+     "anchor": "tr",
+     "x": -24,
+     "y": 282,
+     "w": 242,
+     "h": 2,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "bg": "#2c303b",
+      "alpha": 1,
+      "radius": 0,
+      "border": "#000000",
+      "bw": 0,
+      "sprite": ""
+     },
+     "group": "ug_row_4",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ic_가격",
+     "type": "image",
+     "name": "아이콘",
+     "anchor": "tr",
+     "x": -232,
+     "y": 294,
+     "w": 32,
+     "h": 32,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "sprite": "ex_icon_price"
+     },
+     "group": "ug_row_4",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "nm_가격",
+     "type": "text",
+     "name": "이름",
+     "anchor": "tr",
+     "x": -108,
+     "y": 288,
+     "w": 118,
+     "h": 18,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "단골 손님",
+      "color": "#f2f2f5",
+      "size": 13,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_4",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "in_가격",
+     "type": "text",
+     "name": "정보",
+     "anchor": "tr",
+     "x": -108,
+     "y": 306,
+     "w": 118,
+     "h": 16,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "color": "#9ea3ae",
+      "size": 10,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_row_4",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "ds_가격",
+     "type": "text",
+     "name": "설명",
+     "anchor": "tr",
+     "x": -108,
+     "y": 322,
+     "w": 118,
+     "h": 14,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "모든 판매 가격이 올라요",
+      "color": "#6f7480",
+      "size": 9,
+      "align": "left",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_row_4",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "bt_가격",
+     "type": "button",
+     "name": "버튼",
+     "anchor": "tr",
+     "x": -22,
+     "y": 296,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "",
+      "bg": "#e9bd0c",
+      "color": "#1a1400",
+      "size": 11,
+      "radius": 9,
+      "action": "none",
+      "actionText": "",
+      "map": "",
+      "tx": 1,
+      "ty": 1,
+      "target": ""
+     },
+     "group": "ug_row_4",
+     "visible": true,
+     "opacity": 1,
+     "scripts": [
+      {
+       "id": "sb_가격",
+       "sid": "sc_btn",
+       "vals": {
+        "id": "가격",
+        "title": "단골 손님",
+        "baseCost": 120,
+        "growth": 2.2,
+        "effect": "판매 가격",
+        "perLevel": 50
+       }
+      }
+     ],
+     "tag": ""
+    },
+    {
+     "id": "bl_가격",
+     "type": "text",
+     "name": "버튼 글",
+     "anchor": "tr",
+     "x": -22,
+     "y": 296,
+     "w": 82,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "강화",
+      "color": "#1a1400",
+      "size": 11,
+      "align": "center",
+      "valign": "mid",
+      "shadow": false,
+      "bold": true
+     },
+     "group": "ug_row_4",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "o_btn",
+     "type": "button",
+     "name": "펼치기 버튼",
+     "anchor": "tr",
+     "x": -12,
+     "y": 10,
+     "w": 118,
+     "h": 34,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "‹ 업그레이드",
+      "bg": "#e9bd0c",
+      "color": "#1a1400",
+      "size": 12,
+      "radius": 10,
+      "action": "none",
+      "actionText": "",
+      "map": "",
+      "tx": 1,
+      "ty": 1,
+      "target": ""
+     },
+     "group": "ug_open",
+     "visible": false,
+     "opacity": 1,
+     "scripts": [
+      {
+       "id": "st_open",
+       "sid": "sc_tog",
+       "vals": {
+        "open": true
+       }
+      }
+     ],
+     "tag": ""
+    },
+    {
+     "id": "h_t",
+     "type": "text",
+     "name": "안내",
+     "anchor": "bl",
+     "x": 12,
+     "y": -34,
+     "w": 330,
+     "h": 22,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "버튼으로 시설을 열고 강화해요 · 방향키로 가게를 걸어 다녀요",
+      "color": "#cfc6b4",
+      "size": 11,
+      "align": "left",
+      "valign": "mid",
+      "shadow": true,
+      "bold": false
+     },
+     "group": "ug_tip",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    }
+   ],
+   "uiGroups": [
+    {
+     "id": "ug_hud",
+     "name": "HUD"
+    },
+    {
+     "id": "ug_panel",
+     "name": "업그레이드 판"
+    },
+    {
+     "id": "ug_row_0",
+     "name": "빵 줄"
+    },
+    {
+     "id": "ug_row_1",
+     "name": "커피 줄"
+    },
+    {
+     "id": "ug_row_2",
+     "name": "케이크 줄"
+    },
+    {
+     "id": "ug_row_3",
+     "name": "속도 줄"
+    },
+    {
+     "id": "ug_row_4",
+     "name": "가격 줄"
+    },
+    {
+     "id": "ug_open",
+     "name": "업그레이드 열기"
+    },
+    {
+     "id": "ug_tip",
+     "name": "안내"
+    }
+   ],
+   "uiCv": {
+    "w": 640,
+    "h": 360,
+    "mode": "expand",
+    "match": 0.5
+   },
+   "camInit": true
+  }
+ ]
+}

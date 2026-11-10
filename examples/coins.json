@@ -1,0 +1,2022 @@
+{
+ "format": "dungeon-map-maker",
+ "version": 2,
+ "tileSize": 32,
+ "tilesPerSheetMax": 4096,
+ "name": "동전을 모으면 점수가 올라가요",
+ "start": "meadow",
+ "playerSprite": "",
+ "nextN": 200,
+ "scripts": [
+  {
+   "id": "sc_coin",
+   "name": "Coin",
+   "code": "using UnityEngine;\n\n// 동전: 주인공이 닿으면 소지품에 1개 더하고 사라져요.\n// 쓰인 코드: OnTriggerEnter2D · Inventory · UIScreen · gameObject.SetActive · Mathf.Sin\npublic class Coin : MonoBehaviour\n{\n    public int value = 1;     // 이 동전 하나의 값\n    public int goal = 5;      // 모두 모아야 하는 동전 수\n\n    float baseY;\n    float t;\n\n    void Start()\n    {\n        baseY = transform.position.y;\n        t = transform.position.x;          // 동전마다 출렁이는 박자가 조금씩 달라요\n    }\n\n    void Update()\n    {\n        // 제자리에서 위아래로 살짝 출렁여요\n        t += Time.deltaTime * 4f;\n        transform.position = new Vector2(transform.position.x, baseY + Mathf.Sin(t) * 0.08f);\n    }\n\n    // 트리거 콜라이더에 주인공이 들어온 순간\n    void OnTriggerEnter2D(Collider2D other)\n    {\n        int total = Inventory.Add(\"동전\", value);\n        UIScreen.SetText(\"점수판\", \"점수\", \"동전 \" + total + \" / \" + goal);\n        Debug.Log(\"동전을 주웠어요! 지금 \" + total + \"개\");\n\n        if (total >= goal)\n        {\n            UIScreen.Show(\"완료\");\n            Debug.Log(\"동전을 모두 모았어요!\");\n        }\n\n        gameObject.SetActive(false);       // 주운 동전은 화면에서 치워요\n    }\n}\n"
+  },
+  {
+   "id": "vjrlfdl",
+   "name": "HeroTileMovement",
+   "code": "using UnityEngine;\n\n// 주인공 이동 스크립트 (타일형)\n// 주인공 컴포넌트를 추가하면 기본으로 붙습니다. 방향키/WASD를 누르면 칸 가운데에서 옆 칸 가운데로 한 칸씩 걸어갑니다 (좀비고처럼).\n// 짧게 누르면 딱 한 칸, holdDelay(초)보다 오래 누르고 있으면 멈추지 않고 칸 단위로 이어서 걷습니다.\n// 대각선 없이 상하좌우로만 움직입니다.\n// 막힌 칸(벽 · NPC · 박스 콜라이더)으로는 가지 않고 그쪽을 바라보기만 합니다.\n// 칸에 묶이지 않고 픽셀 단위로 부드럽게 움직이려면 컴포넌트 추가에서 「주인공 이동 (픽셀형)」으로 바꾸세요.\n// 걷기·대기 그림은 애니메이터 컴포넌트가 정합니다. 이 스크립트는 애니메이터 파라미터\n// IsMoving(걷는 중인지)과 Dir(0 아래 · 1 위 · 2 왼쪽 · 3 오른쪽)만 바꿔 줍니다.\n// 좌표: 오른쪽이 +x, 아래쪽이 +y 입니다 (단위: 칸 · 정수 좌표가 칸 가운데).\npublic class HeroTileMovement : MonoBehaviour\n{\n    [Header(\"이동\")]\n    [Tooltip(\"1초에 이동하는 칸 수입니다\")]\n    public float speed = 5f;\n\n    [Tooltip(\"이 시간(초)보다 오래 누르고 있으면 계속 걷습니다. 그보다 짧게 누르면 한 칸만 갑니다\")]\n    [Range(0, 1)]\n    public float holdDelay = 0.15f;\n\n    [Header(\"달리기\")]\n    [Tooltip(\"Shift를 누르고 있는 동안 곱해지는 속도 배율입니다\")]\n    [Range(1, 3)]\n    public float runMultiplier = 1.6f;\n\n    private Hero hero;\n    private Animator animator;\n    private bool stepping = false;     // 한 칸을 걷는 중인지\n    private Vector2 target;            // 이번 걸음의 도착 칸\n    private Vector2 dir;               // 마지막으로 걸은 방향\n    private float lastH = 0f;          // 지난 프레임의 입력\n    private float lastV = 0f;\n    private float holdTime = 0f;       // 같은 방향을 누르고 있는 시간\n    private bool queued = false;       // 걷는 도중 새로 누른 입력 (도착하면 그 방향으로 한 칸 더)\n    private float queuedH = 0f;\n    private float queuedV = 0f;\n\n    void Start()\n    {\n        hero = GetComponent<Hero>();\n        animator = GetComponent<Animator>();     // 애니메이터 컴포넌트 (없으면 null)\n        hero.position = Snap(hero.position);     // 칸 가운데에서 시작\n    }\n\n    void Update()\n    {\n        // 왼쪽 -1 · 오른쪽 +1 / 위 -1 · 아래 +1\n        float h = Input.GetAxisRaw(\"Horizontal\");\n        float v = Input.GetAxisRaw(\"Vertical\");\n\n        // 두 방향을 함께 누르면 지금 걷던 축을 그대로 (대각선 없음)\n        if (h != 0 && v != 0)\n        {\n            if (dir.x != 0)\n                v = 0;\n            else\n                h = 0;\n        }\n        bool pressing = h != 0 || v != 0;\n        bool fresh = pressing && (h != lastH || v != lastV);   // 방금 눌렀거나 방향을 바꿈\n        lastH = h;\n        lastV = v;\n        if (fresh)\n            holdTime = 0f;\n        if (pressing)\n            holdTime += Time.deltaTime;\n        else\n            holdTime = 0f;\n\n        if (!stepping)\n        {\n            // 새로 누르면 한 칸 · 오래 누르고 있으면 계속\n            if (fresh || (pressing && holdTime >= holdDelay))\n                StartStep(h, v);\n        }\n        else if (fresh)\n        {\n            queued = true;\n            queuedH = h;\n            queuedV = v;\n        }\n\n        if (stepping)\n        {\n            float s = speed;\n            if (Input.GetKey(KeyCode.LeftShift))\n                s = s * runMultiplier;\n\n            // 이번 프레임에 걸을 거리 — 칸에 도착하고 남은 거리는 다음 칸으로 이어서 씁니다 (칸마다 끊기지 않게)\n            float budget = s * Time.deltaTime;\n            Vector2 next = Vector2.MoveTowards(hero.position, target, budget);\n            budget = budget - Vector2.Distance(hero.position, next);\n            if (!hero.Move(next - hero.position))\n            {\n                // 걷는 도중 길이 막히면(몬스터가 끼어듦 등) 가까운 칸 가운데로 돌아갑니다\n                target = Snap(hero.position);\n                budget = 0f;\n            }\n            if (Vector2.Distance(hero.position, target) < 0.01f)\n            {\n                hero.position = target;          // 칸 가운데에 딱 맞춤\n                stepping = false;\n                // 걷는 도중 다시 눌렀거나 오래 누르고 있으면 멈추지 않고 다음 칸으로\n                if (queued)\n                    StartStep(queuedH, queuedV);\n                else if (pressing && holdTime >= holdDelay)\n                    StartStep(h, v);\n                queued = false;\n                // 남은 거리만큼 다음 칸으로 바로 출발\n                if (stepping && budget > 0f)\n                {\n                    Vector2 more = Vector2.MoveTowards(hero.position, target, budget);\n                    hero.Move(more - hero.position);\n                }\n            }\n        }\n\n        // 애니메이터 창의 상태(대기_아래, 걷기_오른쪽 …)가 이 파라미터로 바뀝니다\n        if (animator != null)\n            animator.SetBool(\"IsMoving\", stepping);\n    }\n\n    // 옆 칸으로 한 걸음을 시작합니다 (막혀 있으면 바라보기만)\n    void StartStep(float h, float v)\n    {\n        dir = new Vector2(h, v);\n        hero.Face(dir);                          // 바라보는 방향 (공격·손전등 방향에 쓰임)\n        if (animator != null)\n            animator.SetInteger(\"Dir\", DirIndex(h, v));\n\n        if (!hero.canMove)                       // 대화 중에는 움직이지 않음\n            return;\n        if (!hero.CanMove(dir))                  // 막힌 칸이면 바라보기만\n            return;\n\n        target = Snap(hero.position) + dir;\n        stepping = true;\n    }\n\n    // 가장 가까운 칸 가운데 좌표\n    Vector2 Snap(Vector2 p)\n    {\n        return new Vector2(Mathf.Round(p.x), Mathf.Round(p.y));\n    }\n\n    // 입력 방향 → 애니메이터 Dir 값\n    int DirIndex(float h, float v)\n    {\n        if (Mathf.Abs(h) > Mathf.Abs(v))\n            return h < 0 ? 2 : 3;\n        return v < 0 ? 1 : 0;\n    }\n}\n"
+  },
+  {
+   "id": "t88beyl",
+   "name": "HeroCombat",
+   "code": "using UnityEngine;\n\n// 주인공 행동 스크립트 (말 걸기 · 공격)\n// 주인공 컴포넌트를 추가하면 함께 붙습니다. Space · Z · Enter 를 누르면\n//   ① 가까이에 OnInteract()를 가진 오브젝트(NPC 등)가 있으면 그 오브젝트의 OnInteract()를 부르고\n//   ② 없으면 바라보는 방향으로 공격합니다.\n// 키·공격력·사거리를 바꾸거나, 공격 대신 다른 행동을 넣어도 됩니다.\npublic class HeroCombat : MonoBehaviour\n{\n    [Header(\"공격\")]\n    [Tooltip(\"한 번 공격할 때 몬스터에게 주는 피해입니다\")]\n    public int damage = 1;\n\n    [Tooltip(\"공격이 닿는 거리(칸)입니다\")]\n    public float reach = 0.7f;\n\n    [Header(\"말 걸기\")]\n    [Tooltip(\"이 거리(칸) 안에 있는 NPC 등에게 말을 겁니다\")]\n    public float talkDistance = 1.4f;\n\n    private Hero hero;\n\n    void Start()\n    {\n        hero = GetComponent<Hero>();\n    }\n\n    void Update()\n    {\n        bool pressed = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return);\n        if (!pressed)\n        {\n            return;\n        }\n\n        // 가까운 대상의 OnInteract()를 부릅니다 (NpcTalk 스크립트 → 대화창)\n        if (hero.Interact(talkDistance))\n        {\n            return;\n        }\n\n        // 맞은 몬스터는 체력이 줄고 뒤로 밀려납니다. OnHit()을 가진 오브젝트에는 OnHit()을 보냅니다\n        hero.Attack(damage, reach);\n    }\n}\n"
+  }
+ ],
+ "heroScripts": {
+  "tile": "vjrlfdl"
+ },
+ "heroTileInit": true,
+ "heroInit": true,
+ "roleIds": {
+  "HeroCombat": "t88beyl"
+ },
+ "roleInit": true,
+ "sfmap": {},
+ "anim": {
+  "clips": [
+   {
+    "id": "cg4lx1g",
+    "name": "주인공_대기_아래",
+    "fps": 3,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sprite",
+      "keys": [
+       {
+        "f": 0,
+        "v": "base_hero:d0"
+       },
+       {
+        "f": 1,
+        "v": "base_hero:d2"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "ce7vipa",
+    "name": "주인공_걷기_아래",
+    "fps": 8,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sprite",
+      "keys": [
+       {
+        "f": 0,
+        "v": "base_hero:d1"
+       },
+       {
+        "f": 1,
+        "v": "base_hero:d2"
+       },
+       {
+        "f": 2,
+        "v": "base_hero:d3"
+       },
+       {
+        "f": 3,
+        "v": "base_hero:d0"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "h63y5x1",
+    "name": "주인공_대기_위",
+    "fps": 3,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sprite",
+      "keys": [
+       {
+        "f": 0,
+        "v": "base_hero:u0"
+       },
+       {
+        "f": 1,
+        "v": "base_hero:u2"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "shh0kkg",
+    "name": "주인공_걷기_위",
+    "fps": 8,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sprite",
+      "keys": [
+       {
+        "f": 0,
+        "v": "base_hero:u1"
+       },
+       {
+        "f": 1,
+        "v": "base_hero:u2"
+       },
+       {
+        "f": 2,
+        "v": "base_hero:u3"
+       },
+       {
+        "f": 3,
+        "v": "base_hero:u0"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "h54vh8t",
+    "name": "주인공_대기_왼쪽",
+    "fps": 3,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sprite",
+      "keys": [
+       {
+        "f": 0,
+        "v": "base_hero:l0"
+       },
+       {
+        "f": 1,
+        "v": "base_hero:l2"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "kt06cen",
+    "name": "주인공_걷기_왼쪽",
+    "fps": 8,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sprite",
+      "keys": [
+       {
+        "f": 0,
+        "v": "base_hero:l1"
+       },
+       {
+        "f": 1,
+        "v": "base_hero:l2"
+       },
+       {
+        "f": 2,
+        "v": "base_hero:l3"
+       },
+       {
+        "f": 3,
+        "v": "base_hero:l0"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "4rek7j4",
+    "name": "주인공_대기_오른쪽",
+    "fps": 3,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sprite",
+      "keys": [
+       {
+        "f": 0,
+        "v": "base_hero:r0"
+       },
+       {
+        "f": 1,
+        "v": "base_hero:r2"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "pjp8xrp",
+    "name": "주인공_걷기_오른쪽",
+    "fps": 8,
+    "loop": true,
+    "tracks": [
+     {
+      "p": "sprite",
+      "keys": [
+       {
+        "f": 0,
+        "v": "base_hero:r1"
+       },
+       {
+        "f": 1,
+        "v": "base_hero:r2"
+       },
+       {
+        "f": 2,
+        "v": "base_hero:r3"
+       },
+       {
+        "f": 3,
+        "v": "base_hero:r0"
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "ctrls": [
+   {
+    "id": "656cehg",
+    "name": "주인공",
+    "params": [
+     {
+      "n": "IsMoving",
+      "t": "bool",
+      "d": false
+     },
+     {
+      "n": "Dir",
+      "t": "int",
+      "d": 0
+     }
+    ],
+    "states": [
+     {
+      "id": "jvv0rdf",
+      "n": "대기_아래",
+      "clip": "cg4lx1g",
+      "spd": 1,
+      "x": -320,
+      "y": -60
+     },
+     {
+      "id": "sy43inc",
+      "n": "걷기_아래",
+      "clip": "ce7vipa",
+      "spd": 1,
+      "x": 160,
+      "y": -60
+     },
+     {
+      "id": "ud2xiew",
+      "n": "대기_위",
+      "clip": "h63y5x1",
+      "spd": 1,
+      "x": -320,
+      "y": 4
+     },
+     {
+      "id": "71xxrrb",
+      "n": "걷기_위",
+      "clip": "shh0kkg",
+      "spd": 1,
+      "x": 160,
+      "y": 4
+     },
+     {
+      "id": "bf1xygg",
+      "n": "대기_왼쪽",
+      "clip": "h54vh8t",
+      "spd": 1,
+      "x": -320,
+      "y": 68
+     },
+     {
+      "id": "8xj19n9",
+      "n": "걷기_왼쪽",
+      "clip": "kt06cen",
+      "spd": 1,
+      "x": 160,
+      "y": 68
+     },
+     {
+      "id": "rif9j0x",
+      "n": "대기_오른쪽",
+      "clip": "4rek7j4",
+      "spd": 1,
+      "x": -320,
+      "y": 132
+     },
+     {
+      "id": "05iy7nt",
+      "n": "걷기_오른쪽",
+      "clip": "pjp8xrp",
+      "spd": 1,
+      "x": 160,
+      "y": 132
+     }
+    ],
+    "trans": [
+     {
+      "id": "2e4i5uz",
+      "a": "any",
+      "b": "jvv0rdf",
+      "exit": false,
+      "et": 1,
+      "self": false,
+      "conds": [
+       {
+        "p": "IsMoving",
+        "op": "false",
+        "v": 0
+       },
+       {
+        "p": "Dir",
+        "op": "eq",
+        "v": 0
+       }
+      ]
+     },
+     {
+      "id": "4p18lgw",
+      "a": "any",
+      "b": "sy43inc",
+      "exit": false,
+      "et": 1,
+      "self": false,
+      "conds": [
+       {
+        "p": "IsMoving",
+        "op": "true",
+        "v": 0
+       },
+       {
+        "p": "Dir",
+        "op": "eq",
+        "v": 0
+       }
+      ]
+     },
+     {
+      "id": "7whtqmv",
+      "a": "any",
+      "b": "ud2xiew",
+      "exit": false,
+      "et": 1,
+      "self": false,
+      "conds": [
+       {
+        "p": "IsMoving",
+        "op": "false",
+        "v": 0
+       },
+       {
+        "p": "Dir",
+        "op": "eq",
+        "v": 1
+       }
+      ]
+     },
+     {
+      "id": "57k57mr",
+      "a": "any",
+      "b": "71xxrrb",
+      "exit": false,
+      "et": 1,
+      "self": false,
+      "conds": [
+       {
+        "p": "IsMoving",
+        "op": "true",
+        "v": 0
+       },
+       {
+        "p": "Dir",
+        "op": "eq",
+        "v": 1
+       }
+      ]
+     },
+     {
+      "id": "e3fh2u4",
+      "a": "any",
+      "b": "bf1xygg",
+      "exit": false,
+      "et": 1,
+      "self": false,
+      "conds": [
+       {
+        "p": "IsMoving",
+        "op": "false",
+        "v": 0
+       },
+       {
+        "p": "Dir",
+        "op": "eq",
+        "v": 2
+       }
+      ]
+     },
+     {
+      "id": "qcudzno",
+      "a": "any",
+      "b": "8xj19n9",
+      "exit": false,
+      "et": 1,
+      "self": false,
+      "conds": [
+       {
+        "p": "IsMoving",
+        "op": "true",
+        "v": 0
+       },
+       {
+        "p": "Dir",
+        "op": "eq",
+        "v": 2
+       }
+      ]
+     },
+     {
+      "id": "8s8hy7l",
+      "a": "any",
+      "b": "rif9j0x",
+      "exit": false,
+      "et": 1,
+      "self": false,
+      "conds": [
+       {
+        "p": "IsMoving",
+        "op": "false",
+        "v": 0
+       },
+       {
+        "p": "Dir",
+        "op": "eq",
+        "v": 3
+       }
+      ]
+     },
+     {
+      "id": "nw8v3fw",
+      "a": "any",
+      "b": "05iy7nt",
+      "exit": false,
+      "et": 1,
+      "self": false,
+      "conds": [
+       {
+        "p": "IsMoving",
+        "op": "true",
+        "v": 0
+       },
+       {
+        "p": "Dir",
+        "op": "eq",
+        "v": 3
+       }
+      ]
+     }
+    ],
+    "def": "jvv0rdf",
+    "any": {
+     "x": -80,
+     "y": -30
+    },
+    "entry": {
+     "x": -80,
+     "y": -150
+    }
+   }
+  ],
+  "heroCtrl": "656cehg"
+ },
+ "animInit": true,
+ "animV2": true,
+ "mgrs": [],
+ "mgrInit": true,
+ "mgrV2": true,
+ "vgraphs": [],
+ "stiles": [],
+ "stN": 0,
+ "audio": [],
+ "fonts": [],
+ "assets": [
+  {
+   "id": "base_grass",
+   "n": 9,
+   "name": "잔디",
+   "kind": "tile",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 3,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_dirt",
+   "n": 10,
+   "name": "흙길",
+   "kind": "tile",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 2,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_water",
+   "n": 11,
+   "name": "물",
+   "kind": "tile",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 2,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [
+    0,
+    1
+   ],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_stone_wall",
+   "n": 12,
+   "name": "돌 벽",
+   "kind": "tile",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [
+    0
+   ],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_tall_grass",
+   "n": 13,
+   "name": "긴 풀 (겹쳐 칠하기)",
+   "kind": "tile",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_tree",
+   "n": 14,
+   "name": "나무",
+   "kind": "sprite",
+   "tileW": 64,
+   "tileH": 96,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_pine",
+   "n": 15,
+   "name": "소나무",
+   "kind": "sprite",
+   "tileW": 64,
+   "tileH": 96,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_bush",
+   "n": 16,
+   "name": "덤불",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_rock",
+   "n": 17,
+   "name": "바위",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_flowers",
+   "n": 18,
+   "name": "꽃",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_mushroom",
+   "n": 19,
+   "name": "버섯",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_sign",
+   "n": 20,
+   "name": "표지판",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": []
+  },
+  {
+   "id": "base_hero",
+   "n": 21,
+   "name": "검은 고양이",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 4,
+   "rows": 4,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "multiple",
+   "sprites": [
+    {
+     "id": "d0",
+     "name": "주인공_아래_0",
+     "x": 0,
+     "y": 0,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "d1",
+     "name": "주인공_아래_1",
+     "x": 32,
+     "y": 0,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "d2",
+     "name": "주인공_아래_2",
+     "x": 64,
+     "y": 0,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "d3",
+     "name": "주인공_아래_3",
+     "x": 96,
+     "y": 0,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "u0",
+     "name": "주인공_위_0",
+     "x": 0,
+     "y": 32,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "u1",
+     "name": "주인공_위_1",
+     "x": 32,
+     "y": 32,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "u2",
+     "name": "주인공_위_2",
+     "x": 64,
+     "y": 32,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "u3",
+     "name": "주인공_위_3",
+     "x": 96,
+     "y": 32,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "l0",
+     "name": "주인공_왼쪽_0",
+     "x": 0,
+     "y": 64,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "l1",
+     "name": "주인공_왼쪽_1",
+     "x": 32,
+     "y": 64,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "l2",
+     "name": "주인공_왼쪽_2",
+     "x": 64,
+     "y": 64,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "l3",
+     "name": "주인공_왼쪽_3",
+     "x": 96,
+     "y": 64,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "r0",
+     "name": "주인공_오른쪽_0",
+     "x": 0,
+     "y": 96,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "r1",
+     "name": "주인공_오른쪽_1",
+     "x": 32,
+     "y": 96,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "r2",
+     "name": "주인공_오른쪽_2",
+     "x": 64,
+     "y": 96,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    },
+    {
+     "id": "r3",
+     "name": "주인공_오른쪽_3",
+     "x": 96,
+     "y": 96,
+     "w": 32,
+     "h": 32,
+     "pivotX": 0.5,
+     "pivotY": 1
+    }
+   ]
+  },
+  {
+   "id": "ex_coin",
+   "n": 22,
+   "name": "동전",
+   "kind": "sprite",
+   "tileW": 32,
+   "tileH": 32,
+   "cols": 1,
+   "rows": 1,
+   "theme": "기본",
+   "solid": [],
+   "spriteMode": "single",
+   "sprites": [],
+   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABOklEQVR4Xu2WsQ4BQRCGjwgeQKUUhSg8imdQXOEJRHkd8QQKT6D0CGqVQhRypcoDOAUyl8xlsjc7N7uJINmvIWTv/2Z27YiiQODL1Hzy5+Pmy1y33D28ntVwEcDgZNZjlqW5lKuI2hrCF9t9lB0monOySp0kVAJm+Ol4K0kMR53iMxeJSgEunIYhIOUjIQpAON1vGtIaxEV4dt7k730k6tpDSB/ObQEAHTC/20zbpV8MxSpgVu8DdO9yfYpLVR0wWyvh2gWVwCcJAv/RAe5g2XA5sIC1AzBU4Erl4G5CDljf78pNVk9D7AKG4+1HsVUfr+/WG1fUM7sgbQV3DVdVD1QOI4CbCSbmIMJwqXq1ACdhg+57VbiTAErAK/ePCA+stnJEtQUUmG7cgKH7rancWwDhxqxLcCDwM7wBYjiiRfwiyIgAAAAASUVORK5CYII="
+  }
+ ],
+ "maps": [
+  {
+   "id": "meadow",
+   "name": "동전 들판",
+   "w": 16,
+   "h": 10,
+   "ox": 0,
+   "oy": 0,
+   "theme": "기본",
+   "bg": "",
+   "l": [
+    [
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36867,
+     36866,
+     36865,
+     36867,
+     36866,
+     36865,
+     36867,
+     40961,
+     40961,
+     36867,
+     36866,
+     36865,
+     36867,
+     36866,
+     36865,
+     36867,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     40961,
+     40961,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     40961,
+     40961,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36867,
+     36866,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     36865,
+     36867,
+     36866,
+     36866,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     40961,
+     36866,
+     36866,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     40961,
+     40961,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36867,
+     36866,
+     36865,
+     36867,
+     36866,
+     36865,
+     36867,
+     40961,
+     40961,
+     36867,
+     36866,
+     36865,
+     36867,
+     36866,
+     36865,
+     36867,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     40961,
+     40961,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36866,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865,
+     36866,
+     36867,
+     36865
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     53249,
+     53249,
+     53249,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     53249,
+     53249,
+     53249,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     45057,
+     45057,
+     45057,
+     45057,
+     49153,
+     49153,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     45057,
+     45057,
+     45057,
+     45057,
+     49153,
+     49153,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     49153,
+     49153,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     49153,
+     49153,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     49153,
+     49153,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     49153,
+     49153,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     49153,
+     49153,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153,
+     49153
+    ]
+   ],
+   "lm": [
+    {
+     "name": "바닥",
+     "wall": false
+    },
+    {
+     "name": "장식",
+     "wall": false
+    },
+    {
+     "name": "벽",
+     "wall": true
+    }
+   ],
+   "dark": {
+    "on": false,
+    "color": "#05060d",
+    "level": 0.88
+   },
+   "col": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "objs": [
+    {
+     "id": "hero",
+     "type": "spawn",
+     "name": "주인공",
+     "x": 2,
+     "y": 4,
+     "props": {
+      "start": true,
+      "animator": {
+       "ctrl": "656cehg",
+       "speed": 1
+      }
+     },
+     "group": null,
+     "parent": null,
+     "scripts": [
+      {
+       "id": "y2f52tg",
+       "sid": "vjrlfdl",
+       "vals": {}
+      },
+      {
+       "id": "kcrkumg",
+       "sid": "t88beyl",
+       "vals": {}
+      }
+     ]
+    },
+    {
+     "id": "cam",
+     "type": "empty",
+     "name": "카메라",
+     "x": 2,
+     "y": 4,
+     "props": {
+      "camera": {
+       "start": true,
+       "size": 4,
+       "clamp": true,
+       "smooth": true,
+       "smoothTime": 0.25
+      }
+     },
+     "group": null,
+     "parent": "hero"
+    },
+    {
+     "id": "c0",
+     "type": "empty",
+     "name": "동전",
+     "x": 5,
+     "y": 4,
+     "props": {
+      "sprite": "ex_coin",
+      "box": {
+       "trigger": true,
+       "w": 1,
+       "h": 1,
+       "ox": 0,
+       "oy": 0
+      }
+     },
+     "group": "gcoin",
+     "parent": null,
+     "scripts": [
+      {
+       "id": "cs0",
+       "sid": "sc_coin",
+       "vals": {}
+      }
+     ]
+    },
+    {
+     "id": "c1",
+     "type": "empty",
+     "name": "동전 (1)",
+     "x": 12,
+     "y": 3,
+     "props": {
+      "sprite": "ex_coin",
+      "box": {
+       "trigger": true,
+       "w": 1,
+       "h": 1,
+       "ox": 0,
+       "oy": 0
+      }
+     },
+     "group": "gcoin",
+     "parent": null,
+     "scripts": [
+      {
+       "id": "cs1",
+       "sid": "sc_coin",
+       "vals": {}
+      }
+     ]
+    },
+    {
+     "id": "c2",
+     "type": "empty",
+     "name": "동전 (2)",
+     "x": 10,
+     "y": 7,
+     "props": {
+      "sprite": "ex_coin",
+      "box": {
+       "trigger": true,
+       "w": 1,
+       "h": 1,
+       "ox": 0,
+       "oy": 0
+      }
+     },
+     "group": "gcoin",
+     "parent": null,
+     "scripts": [
+      {
+       "id": "cs2",
+       "sid": "sc_coin",
+       "vals": {}
+      }
+     ]
+    },
+    {
+     "id": "c3",
+     "type": "empty",
+     "name": "동전 (3)",
+     "x": 3,
+     "y": 7,
+     "props": {
+      "sprite": "ex_coin",
+      "box": {
+       "trigger": true,
+       "w": 1,
+       "h": 1,
+       "ox": 0,
+       "oy": 0
+      }
+     },
+     "group": "gcoin",
+     "parent": null,
+     "scripts": [
+      {
+       "id": "cs3",
+       "sid": "sc_coin",
+       "vals": {}
+      }
+     ]
+    },
+    {
+     "id": "c4",
+     "type": "empty",
+     "name": "동전 (4)",
+     "x": 13,
+     "y": 6,
+     "props": {
+      "sprite": "ex_coin",
+      "box": {
+       "trigger": true,
+       "w": 1,
+       "h": 1,
+       "ox": 0,
+       "oy": 0
+      }
+     },
+     "group": "gcoin",
+     "parent": null,
+     "scripts": [
+      {
+       "id": "cs4",
+       "sid": "sc_coin",
+       "vals": {}
+      }
+     ]
+    },
+    {
+     "id": "t1",
+     "type": "empty",
+     "name": "나무",
+     "x": 6,
+     "y": 2,
+     "props": {
+      "sprite": "base_tree"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "t2",
+     "type": "empty",
+     "name": "소나무",
+     "x": 2,
+     "y": 8,
+     "props": {
+      "sprite": "base_pine"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "t3",
+     "type": "empty",
+     "name": "나무 2",
+     "x": 13,
+     "y": 9,
+     "props": {
+      "sprite": "base_tree"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "f1",
+     "type": "empty",
+     "name": "꽃",
+     "x": 9,
+     "y": 2,
+     "props": {
+      "sprite": "base_flowers"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "f2",
+     "type": "empty",
+     "name": "꽃 2",
+     "x": 5,
+     "y": 8,
+     "props": {
+      "sprite": "base_flowers"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "r1",
+     "type": "empty",
+     "name": "바위",
+     "x": 11,
+     "y": 6,
+     "props": {
+      "sprite": "base_rock"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "m1",
+     "type": "empty",
+     "name": "버섯",
+     "x": 8,
+     "y": 6,
+     "props": {
+      "sprite": "base_mushroom"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "bu",
+     "type": "empty",
+     "name": "덤불",
+     "x": 14,
+     "y": 5,
+     "props": {
+      "sprite": "base_bush"
+     },
+     "group": "gdeco",
+     "parent": null
+    },
+    {
+     "id": "sg",
+     "type": "empty",
+     "name": "표지판",
+     "x": 1,
+     "y": 3,
+     "props": {
+      "sprite": "base_sign"
+     },
+     "group": "gdeco",
+     "parent": null
+    }
+   ],
+   "groups": [
+    {
+     "id": "gcoin",
+     "name": "동전"
+    },
+    {
+     "id": "gdeco",
+     "name": "들판 장식"
+    }
+   ],
+   "ui": [
+    {
+     "id": "s_bg",
+     "type": "panel",
+     "name": "배경",
+     "anchor": "tl",
+     "x": 12,
+     "y": 10,
+     "w": 150,
+     "h": 38,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "bg": "#14110a",
+      "alpha": 0.8,
+      "radius": 10,
+      "border": "#e9bd0c",
+      "bw": 2,
+      "sprite": ""
+     },
+     "group": "ug_score",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "s_ic",
+     "type": "image",
+     "name": "동전 그림",
+     "anchor": "tl",
+     "x": 18,
+     "y": 13,
+     "w": 32,
+     "h": 32,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "sprite": "ex_coin"
+     },
+     "group": "ug_score",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "s_txt",
+     "type": "text",
+     "name": "점수",
+     "anchor": "tl",
+     "x": 54,
+     "y": 14,
+     "w": 104,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "동전 0 / 5",
+      "color": "#ffe08a",
+      "size": 16,
+      "align": "left",
+      "valign": "mid",
+      "shadow": true,
+      "bold": true
+     },
+     "group": "ug_score",
+     "visible": true,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "d_bg",
+     "type": "panel",
+     "name": "배경",
+     "anchor": "mc",
+     "x": 0,
+     "y": 0,
+     "w": 330,
+     "h": 96,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "bg": "#0f1a12",
+      "alpha": 0.9,
+      "radius": 14,
+      "border": "#4cd98a",
+      "bw": 2,
+      "sprite": ""
+     },
+     "group": "ug_done",
+     "visible": false,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "d_t1",
+     "type": "text",
+     "name": "제목",
+     "anchor": "mc",
+     "x": 0,
+     "y": -16,
+     "w": 310,
+     "h": 30,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "동전을 모두 모았어요!",
+      "color": "#7ff0ac",
+      "size": 20,
+      "align": "center",
+      "valign": "mid",
+      "shadow": true,
+      "bold": true
+     },
+     "group": "ug_done",
+     "visible": false,
+     "opacity": 1,
+     "tag": ""
+    },
+    {
+     "id": "d_t2",
+     "type": "text",
+     "name": "설명",
+     "anchor": "mc",
+     "x": 0,
+     "y": 18,
+     "w": 310,
+     "h": 24,
+     "l": 0,
+     "r": 0,
+     "t": 0,
+     "b": 0,
+     "props": {
+      "text": "Coin.cs의 goal 값을 바꿔 보세요",
+      "color": "#d8e8dc",
+      "size": 13,
+      "align": "center",
+      "valign": "mid",
+      "shadow": false,
+      "bold": false
+     },
+     "group": "ug_done",
+     "visible": false,
+     "opacity": 1,
+     "tag": ""
+    }
+   ],
+   "uiGroups": [
+    {
+     "id": "ug_score",
+     "name": "점수판"
+    },
+    {
+     "id": "ug_done",
+     "name": "완료"
+    }
+   ],
+   "uiCv": {
+    "w": 640,
+    "h": 360,
+    "mode": "expand",
+    "match": 0.5
+   },
+   "camInit": true
+  }
+ ]
+}

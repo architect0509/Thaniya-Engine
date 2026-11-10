@@ -107,6 +107,32 @@ a.brand.nolink{cursor:default}a.brand.nolink:hover{color:inherit}
 .brief-pn{grid-area:brief;display:block;padding:20px 20px 18px;align-self:start;font-size:14px;line-height:1.65}
 .brief-pn h1{margin:0 0 10px;font-size:19px;line-height:1.35;letter-spacing:-.02em}
 .brief-pn p{margin:0 0 14px;color:#d6d6de}
+/* 학습 노트 창 (문제 칸을 새 창으로) */
+.brief-pn{position:relative}
+.brief-pn>h1{padding-right:66px}
+.bfpop{position:absolute;top:14px;right:14px;z-index:2;height:26px;padding:0 10px;display:inline-flex;align-items:center;gap:5px;border-radius:999px;border:1px solid var(--line);background:var(--raised);color:var(--mut);font-size:11.5px;font-weight:600;white-space:nowrap}
+.bfpop:hover{color:var(--tx);border-color:var(--y)}
+.bfpop svg{flex:none}
+.bf-stub{grid-area:brief;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:14px 10px;text-align:center;color:var(--mut);font-size:12.5px}
+.bf-stub[hidden]{display:none!important}
+.bf-stub .bfs-s{display:none}
+.bf-stub .bfs-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(246,205,42,.12);color:var(--y)}
+.bf-stub button{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--raised);color:var(--tx);font-size:12px;white-space:nowrap}
+.bf-stub button:hover{border-color:var(--y)}
+.ws.bf-out>#brief{display:none!important}
+.ws.bf-out .task-pn .tklist{opacity:.55}
+@media (min-width:1181px) and (min-height:620px){
+  #lessonView>.ws.bf-out{--bw:58px!important}
+  #lessonView>.ws.bf-out .wsz[data-z="brief"]{display:none!important}
+  #lessonView>.ws.enlab.bf-out{--bw:clamp(250px,19vw,320px)!important;grid-template-areas:"code view view view view" "code view view view view"}
+  #lessonView>.ws.enlab.bf-out>#bfStub{display:none!important}
+  .ws.bf-out .bf-stub{padding:12px 4px;gap:10px}
+  .ws.bf-out .bf-stub .bfs-t{display:none}
+  .ws.bf-out .bf-stub .bfs-s{display:block;writing-mode:vertical-rl;letter-spacing:.12em;white-space:nowrap;font-weight:600;color:var(--tx)}
+  .ws.bf-out .bf-stub button{width:40px;height:40px;padding:0;font-size:15px}
+  .ws.bf-out .bf-stub button span{display:none}
+}
+html[data-theme="light"] .bf-stub .bfs-ic{background:rgba(246,205,42,.22);color:#8a6a00}
 .goal{border-left:3px solid var(--accent);background:rgba(255,255,255,.04);border-radius:0 12px 12px 0;padding:10px 14px;margin:0 0 16px}
 .goal b{color:var(--accent)}
 .lbl{font-size:12px;color:var(--mute);margin:0 0 6px;font-weight:600}
@@ -615,7 +641,284 @@ html[data-theme="light"] .card.soon.empty-cat .ec-ic{color:#0b7a3a}
 .dq figcaption{margin-top:8px;font-size:12.5px;line-height:1.55;color:var(--mut);opacity:.85}
 html[data-theme="light"] .dq-q{color:#8a6a00;opacity:.6}
 @media (max-width:640px){.dq{padding:22px 16px 0}.dq-q{font-size:30px}}
+/* ===== 오늘의 코드 한 줄 · 용어 · 넘겨 보기 ===== */
+.dq-n{margin-left:8px;font:500 11px var(--m);letter-spacing:0;opacity:.6}
+.dq-tm{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:14px auto 0;max-width:860px;padding:0}
+.dq-tm>div{flex:0 1 270px;min-width:200px;text-align:left;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.11)}
+.dq-tm dt{font:600 12px/1.5 var(--m);color:#ffdc55}
+.dq-tm dt::before{content:"용어 ";font:500 10.5px var(--f);color:var(--mut);opacity:.85;margin-right:2px}
+html[lang]:not([lang="ko"]) .dq-tm dt::before{content:""}
+.dq-tm dd{margin:2px 0 0;font-size:12.5px;line-height:1.55;color:var(--mut)}
+.dq-nav{display:flex;justify-content:center;gap:6px;margin-top:12px}
+.dq-nav button{height:28px;min-width:28px;padding:0 11px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:var(--mut);font-size:12px;display:inline-flex;align-items:center;gap:5px}
+.dq-nav button:hover{color:var(--tx);border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.1)}
+html[data-theme="light"] .dq-tm>div{background:rgba(0,0,0,.035);border-color:rgba(0,0,0,.1)}
+html[data-theme="light"] .dq-tm dt{color:#8a6a00}
+html[data-theme="light"] .dq-nav button{border-color:rgba(0,0,0,.16);background:rgba(0,0,0,.03)}
+html[data-theme="light"] .dq-nav button:hover{border-color:rgba(0,0,0,.32);background:rgba(0,0,0,.07)}
+
+/* ===== 추천 학습 로드맵 ===== */
+.rm{max-width:1240px;margin:0 auto;padding:30px 24px 0}
+#home[data-page="hub"] .rm{padding-bottom:64px}
+.rm-hd{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 16px;margin-bottom:12px}
+.rm-hd h2{margin:0;font-size:20px;letter-spacing:-.01em}
+.rm-hd p{margin:2px 0 0;font-size:12.5px;color:var(--mut)}
+.rm-sum{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mut)}
+.rm-sum .rm-tb{width:90px;height:6px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+.rm-sum .rm-tb i{display:block;height:100%;background:#4cd98a;border-radius:inherit}
+.rm-btn{height:30px;padding:0 13px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:var(--tx);font-size:12.5px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.rm-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.34)}
+.rm-rec{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 10px;font-size:12.5px}
+.rm-rec>span{color:var(--mut)}
+.rm-rc{height:28px;padding:0 12px;border-radius:999px;border:1px solid rgba(246,205,42,.45);background:rgba(246,205,42,.1);color:#ffdc55;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.rm-rc:hover{background:rgba(246,205,42,.2)}
+.rm-rc.top{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);border-color:transparent;color:#1a1400}
+.rm-lg{margin-left:auto;display:flex;gap:12px;color:var(--mut);font-size:11.5px}
+.rm-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1.5px solid}
+.rm-lg .d{background:rgba(76,217,138,.3);border-color:#4cd98a}.rm-lg .p{border-color:rgba(246,205,42,.7)}.rm-lg .r{border-color:#f6cd2a;box-shadow:0 0 0 2px rgba(246,205,42,.25)}
+.rm-all-done{color:#4cd98a;font-weight:600}
+.rm-wrap{position:relative;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.025)}
+.rm-wrap::before,.rm-wrap::after{content:"";position:absolute;top:0;bottom:14px;width:36px;z-index:2;pointer-events:none;opacity:0;transition:opacity .2s}
+.rm-wrap::before{left:0;border-radius:18px 0 0 0;background:linear-gradient(90deg,#0e1014,transparent)}
+.rm-wrap::after{right:0;border-radius:0 18px 0 0;background:linear-gradient(-90deg,#0e1014,transparent)}
+.rm-wrap.rm-fl::before,.rm-wrap.rm-fr::after{opacity:.9}
+.rm-scroll{overflow-x:auto;overflow-y:hidden;scrollbar-width:auto;scrollbar-color:rgba(255,255,255,.32) rgba(255,255,255,.06);border-radius:18px;outline:none}
+.rm-scroll:focus-visible{box-shadow:0 0 0 2px #f6cd2a}
+.rm-scroll::-webkit-scrollbar{height:12px}
+.rm-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:0 0 18px 18px}
+.rm-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:99px;border:3px solid transparent;background-clip:padding-box}
+.rm-scroll::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.45);background-clip:padding-box}
+.rm-board{position:relative;width:max-content}
+.rm-sz{display:block;pointer-events:none}
+.rm-ln{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.rm-ln path{fill:none;stroke:rgba(255,255,255,.24);stroke-width:1.6;transition:opacity .15s}
+.rm-ln circle{transition:opacity .15s}
+.rm-ln path.sec{display:none}
+.rm-ln.hl path.sec.on{display:inline;stroke-dasharray:3 5;animation:none}
+.rm-ln.hl path:not(.on),.rm-ln.hl circle:not(.on){opacity:.12}
+.rm-ln.hl path.on{stroke-width:2.2;stroke:rgba(255,255,255,.7)}
+.rm-ln.hl path.on.ok{stroke:#4cd98a;stroke-opacity:1}.rm-ln.hl path.on.go{stroke:#f6cd2a;stroke-opacity:1}
+.rm-board .rm-n{transition:transform .15s,border-color .15s,box-shadow .15s,opacity .15s}
+.rm-board.hl .rm-n:not(.rel){opacity:.38}
+.rm-ln path.ok{stroke:#4cd98a;stroke-opacity:.75}
+.rm-ln path.go{stroke:#f6cd2a;stroke-dasharray:5 5;stroke-opacity:.85;animation:rmDash 1.2s linear infinite}
+.rm-ln circle{fill:rgba(255,255,255,.35)}.rm-ln circle.ok{fill:#4cd98a}.rm-ln circle.go{fill:#f6cd2a}
+@keyframes rmDash{to{stroke-dashoffset:-20}}
+.rm-th{position:absolute;top:12px;z-index:1;display:flex;align-items:center;gap:7px;height:24px;font-size:12px;font-weight:600;color:var(--mut);white-space:nowrap}
+.rm-th b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.1);font:600 11px var(--m);color:var(--tx)}
+.rm-n{position:absolute;z-index:1;display:flex;flex-direction:column;gap:4px;width:164px;padding:6px 9px 7px;border-radius:10px;text-align:left;background:#1b1e26;border:1.5px solid rgba(255,255,255,.16);color:var(--tx);font:12px/1.4 var(--f);transition:transform .15s,border-color .15s,box-shadow .15s}
+.rm-n:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.4)}
+.rm-n:focus-visible{outline:2px solid #f6cd2a;outline-offset:2px}
+.rm-n.open{border-color:#f6cd2a}
+.rm-nt{display:flex;align-items:center;gap:6px;height:13px;color:var(--mut)}
+.rm-nt .dots i{width:5px;height:5px}
+.rm-cd{display:inline-flex;gap:3px}.rm-cd i{width:7px;height:7px;border-radius:2px}
+.rm-cd .c-feature{background:#31c1ec}.rm-cd .c-cs{background:#bf63ff}.rm-cd .c-vs{background:#10d35e;border-radius:50%}
+.rm-bd{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.rm-n b{font-size:12.5px;font-weight:600;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm-nf{display:flex;align-items:center;gap:7px}
+.rm-nf .rm-pb{flex:1;height:4px;border-radius:99px;background:rgba(255,255,255,.13);overflow:hidden}
+.rm-nf .rm-pb i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#f6cd2a,#ffdf6b)}
+.rm-nf small{font:500 10.5px var(--m);color:var(--mut)}
+.rm-n.later{opacity:.72}
+.rm-board .rm-n.rm-ex{width:70px;height:70px;padding:0;gap:0;display:block;border:3px solid #0b0d12;border-radius:10px;overflow:hidden;background:#0b0d12;box-shadow:0 0 0 2px rgba(143,212,236,.55),0 6px 14px -4px rgba(0,0,0,.6);transition:transform .15s cubic-bezier(.3,1.6,.5,1),box-shadow .15s,opacity .15s}
+.rm-n.rm-ex img{display:block;width:64px;height:64px;image-rendering:pixelated;border-radius:6px;pointer-events:none}
+.rm-board .rm-n.rm-ex:hover,.rm-board .rm-n.rm-ex:focus-visible,.rm-board .rm-n.rm-ex.open{transform:translateY(-3px) scale(1.06);box-shadow:0 0 0 2px #8fd4ec,0 0 16px rgba(143,212,236,.55),0 10px 18px -4px rgba(0,0,0,.6);outline:none}
+.rm-ln path.ex{stroke:rgba(120,200,230,.5);stroke-dasharray:4 4}.rm-ln circle.ex{fill:rgba(120,200,230,.6)}
+.rm-ln.hl path.on.ex{stroke:#8fd4ec;stroke-opacity:1}
+.rm-lg .x{border-color:#8fd4ec;border-radius:2px;background:#0b0d12}
+.rm-exth{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;margin:8px 0 2px;image-rendering:pixelated;background:#0d0f13}
+.rm-pop .rm-exk{margin:0 0 9px}.rm-pop .rm-exk li{font-size:10.5px;padding:0 7px}
+.rm-exn{font-size:11.5px!important;padding:6px 9px;border-radius:8px;background:rgba(120,200,230,.08);border:1px dashed rgba(120,200,230,.35)}
+.rm-pk .chip.ex-lvc{background:rgba(255,255,255,.07);color:var(--tx)}
+html[data-theme="light"] .rm-board .rm-n.rm-ex{box-shadow:0 0 0 2px rgba(20,120,160,.55),0 6px 14px -4px rgba(0,0,0,.25)}
+html[data-theme="light"] .rm-ln path.ex{stroke:rgba(20,120,160,.5)}html[data-theme="light"] .rm-ln.hl path.on.ex{stroke:#0b6f8f}
+.rm-n.prog{border-color:rgba(246,205,42,.55)}
+.rm-n.rec{border-color:#f6cd2a;box-shadow:0 0 0 3px rgba(246,205,42,.16)}
+.rm-n.rec .rm-bd{color:#ffdc55}
+.rm-n.next{box-shadow:0 0 0 3px rgba(246,205,42,.28),0 8px 22px -6px rgba(246,205,42,.35);animation:rmPulse 2.2s ease-in-out infinite}
+.rm-n.next .rm-bd{color:#1a1400;background:#f6cd2a;padding:1px 6px;border-radius:99px}
+@keyframes rmPulse{50%{box-shadow:0 0 0 6px rgba(246,205,42,.12),0 8px 22px -6px rgba(246,205,42,.35)}}
+.rm-n.done{background:#163322;border-color:#4cd98a;opacity:1}
+.rm-n.done .rm-bd{color:#4cd98a}
+.rm-n.done .rm-nf .rm-pb i{background:#4cd98a}
+.rm-n.done .rm-nt,.rm-n.done .rm-nf small{color:#9fe2bb}
+@media (prefers-reduced-motion:reduce){.rm-n.next,.rm-ln path.go{animation:none}}
+/* 노드 소개창 */
+.rm-pop{position:fixed;z-index:60;width:310px;max-width:calc(100vw - 24px);padding:14px 15px 13px;border-radius:16px;background:#20232c;border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 50px -12px rgba(0,0,0,.7);color:var(--tx);font:13px/1.6 var(--f)}
+.rm-pop[hidden]{display:none}
+.rm-pk{display:flex;align-items:center;gap:6px 7px;flex-wrap:wrap;padding-right:26px;font-size:11.5px;color:var(--mut)}
+.rm-pk .chip{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:99px;background:rgba(246,205,42,.16);color:#ffdc55;font-size:11px;font-weight:600}
+.rm-pk .chip.c-feature{background:rgba(49,193,236,.16);color:#7fd8f5}.rm-pk .chip.c-cs{background:rgba(191,99,255,.16);color:#d3a2ff}.rm-pk .chip.c-vs{background:rgba(16,211,94,.16);color:#6fe6a0}
+.rm-pk .dots i{width:5px;height:5px}
+.rm-pk .rm-px{position:absolute;top:10px;right:10px}
+.rm-dh .rm-px{margin-left:auto}
+.rm-px{width:24px;height:24px;border:0;border-radius:50%;background:transparent;color:var(--mut);font-size:16px;line-height:1}
+.rm-px:hover{background:rgba(255,255,255,.1);color:var(--tx)}
+.rm-pop h3{margin:6px 0 4px;font-size:16px;letter-spacing:-.01em}
+.rm-pop p{margin:0 0 8px;color:var(--mut);font-size:12.5px}
+.rm-why{padding:7px 10px;border-radius:10px;background:rgba(246,205,42,.08);border-left:3px solid #f6cd2a;color:var(--tx)!important}
+.rm-why b{display:block;font-size:11px;color:#ffdc55}
+.rm-req{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:0 0 9px;font-size:11.5px;color:var(--mut)}
+.rm-req span{padding:1px 8px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:var(--tx)}
+.rm-req span.ok{border-color:rgba(76,217,138,.6);color:#4cd98a}
+.rm-pp{display:flex;align-items:center;gap:9px;margin-bottom:11px;font-size:11.5px;color:var(--mut)}
+.rm-pp .rm-pb{flex:1;height:5px;border-radius:99px;background:rgba(255,255,255,.13);overflow:hidden}
+.rm-pp .rm-pb i{display:block;height:100%;background:linear-gradient(90deg,#f6cd2a,#ffdf6b)}
+.rm-pp .rm-pb.ok i{background:#4cd98a}.rm-pp .ok{color:#4cd98a;font-weight:600}
+.rm-pa{display:flex;gap:6px;flex-wrap:wrap}
+.rm-go{flex:1;height:34px;border:0;border-radius:999px;background:linear-gradient(180deg,rgba(255,221,90,.96),rgba(233,189,12,.92));color:#1a1400;font-weight:700;font-size:13px}
+.rm-go:hover{filter:brightness(1.06)}
+.rm-pa .rm-btn{height:34px}
+.rm-pa .rm-rs{color:#f19aa2}
+/* 진행 관리 창 */
+.rm-dlg{width:min(560px,calc(100vw - 32px));max-height:min(80vh,720px);padding:0;border-radius:18px;border:1px solid rgba(255,255,255,.16);background:#1b1e25;color:var(--tx);box-shadow:0 30px 70px -10px rgba(0,0,0,.7)}
+.rm-dlg::backdrop{background:rgba(0,0,0,.5)}
+.rm-dlg[open]{display:flex;flex-direction:column}
+.rm-dh{display:flex;align-items:center;gap:10px;padding:16px 18px 6px}
+.rm-dh h3{margin:0;font-size:17px}
+.rm-dlg>p{margin:0;padding:0 18px 10px;font-size:12.5px;color:var(--mut)}
+.rm-dl{list-style:none;margin:0;padding:4px 10px;overflow:auto;flex:1;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.rm-dl li{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;font-size:13px}
+.rm-dl li:hover{background:rgba(255,255,255,.04)}
+.rm-dl .st{width:10px;height:10px;border-radius:3px;border:1.5px solid rgba(255,255,255,.3);flex:none}
+.rm-dl .st.d{background:#4cd98a;border-color:#4cd98a}.rm-dl .st.p{border-color:#f6cd2a;background:linear-gradient(90deg,#f6cd2a 50%,transparent 50%)}
+.rm-dl .ti{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm-dl .tn{display:inline-grid;place-items:center;width:18px;height:18px;margin-right:8px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--mut);font:600 10.5px var(--m);vertical-align:1px}
+html[data-theme="light"] .rm-dl .tn{background:rgba(0,0,0,.07)}
+.rm-dl small{color:var(--mut);font:500 11.5px var(--m);white-space:nowrap}
+.rm-dl small.ok{color:#4cd98a}
+.rm-dl button{height:26px;padding:0 10px;border-radius:999px;border:1px solid rgba(234,103,115,.45);background:transparent;color:#f19aa2;font-size:11.5px}
+.rm-dl button:hover:not(:disabled){background:rgba(234,103,115,.12)}
+.rm-dl button:disabled{opacity:.35;cursor:default;border-color:rgba(255,255,255,.2);color:var(--mut)}
+.rm-df{display:flex;gap:8px;padding:12px 18px 16px}
+.rm-df .rm-btn{height:34px}
+.rm-df .rm-dan{color:#fff;background:#c9434f;border-color:transparent}
+.rm-df .rm-dan:hover{background:#d8515d}
+.rm-df .rm-cl{margin-left:auto}
+@media (max-width:640px){.rm{padding:24px 16px 0}.rm-lg{margin-left:0;width:100%}.rm-sum{margin-left:0}}
+/* 라이트 */
+html[data-theme="light"] .rm-sum .rm-tb,html[data-theme="light"] .rm-nf .rm-pb,html[data-theme="light"] .rm-pp .rm-pb{background:rgba(0,0,0,.1)}
+html[data-theme="light"] .rm-btn{border-color:rgba(0,0,0,.18);background:rgba(0,0,0,.03)}
+html[data-theme="light"] .rm-btn:hover{border-color:rgba(0,0,0,.34);background:rgba(0,0,0,.07)}
+html[data-theme="light"] .rm-rc{color:#7a5d00;border-color:rgba(176,135,0,.5);background:rgba(246,205,42,.16)}
+html[data-theme="light"] .rm-rc.top{color:#1a1400}
+html[data-theme="light"] .rm-wrap{border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.02)}
+html[data-theme="light"] .rm-wrap::before{background:linear-gradient(90deg,#f3f4f7,transparent)}
+html[data-theme="light"] .rm-wrap::after{background:linear-gradient(-90deg,#f3f4f7,transparent)}
+html[data-theme="light"] .rm-scroll{scrollbar-color:rgba(0,0,0,.3) rgba(0,0,0,.05)}
+html[data-theme="light"] .rm-scroll::-webkit-scrollbar-track{background:rgba(0,0,0,.04)}
+html[data-theme="light"] .rm-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,.26);background-clip:padding-box}
+html[data-theme="light"] .rm-ln path{stroke:rgba(0,0,0,.22)}
+html[data-theme="light"] .rm-ln.hl path.on{stroke:rgba(0,0,0,.6)}html[data-theme="light"] .rm-ln.hl path.on.ok{stroke:#1f9d55}html[data-theme="light"] .rm-ln.hl path.on.go{stroke:#c99a00}
+html[data-theme="light"] .rm-ln path.ok{stroke:#1f9d55}
+html[data-theme="light"] .rm-ln path.go{stroke:#c99a00}
+html[data-theme="light"] .rm-ln circle{fill:rgba(0,0,0,.3)}html[data-theme="light"] .rm-ln circle.ok{fill:#1f9d55}html[data-theme="light"] .rm-ln circle.go{fill:#c99a00}
+html[data-theme="light"] .rm-th b{background:rgba(0,0,0,.08)}
+html[data-theme="light"] .rm-n{background:#fff;border-color:rgba(0,0,0,.16)}
+html[data-theme="light"] .rm-n:hover{border-color:rgba(0,0,0,.4)}
+html[data-theme="light"] .rm-n.rec,html[data-theme="light"] .rm-n.open{border-color:#d4a900}
+html[data-theme="light"] .rm-n.rec .rm-bd{color:#8a6a00}
+html[data-theme="light"] .rm-n.next .rm-bd{color:#1a1400}
+html[data-theme="light"] .rm-n.done{background:#e3f6ea;border-color:#1f9d55}
+html[data-theme="light"] .rm-n.done .rm-bd,html[data-theme="light"] .rm-all-done{color:#13793e}
+html[data-theme="light"] .rm-n.done .rm-nt,html[data-theme="light"] .rm-n.done .rm-nf small{color:#2c7a4b}
+html[data-theme="light"] .rm-n.done .rm-nf .rm-pb i,html[data-theme="light"] .rm-sum .rm-tb i{background:#1f9d55}
+html[data-theme="light"] .rm-pop{background:#fff;border-color:rgba(0,0,0,.14);box-shadow:0 24px 50px -12px rgba(0,0,0,.25)}
+html[data-theme="light"] .rm-pk .chip{color:#7a5d00}
+html[data-theme="light"] .rm-pk .chip.c-feature{color:#0b6f8f}html[data-theme="light"] .rm-pk .chip.c-cs{color:#7a2bc0}html[data-theme="light"] .rm-pk .chip.c-vs{color:#0b7a3a}
+html[data-theme="light"] .rm-px:hover{background:rgba(0,0,0,.07)}
+html[data-theme="light"] .rm-why b{color:#8a6a00}
+html[data-theme="light"] .rm-req span{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.12)}
+html[data-theme="light"] .rm-req span.ok,html[data-theme="light"] .rm-pp .ok,html[data-theme="light"] .rm-dl small.ok{color:#13793e;border-color:rgba(19,121,62,.5)}
+html[data-theme="light"] .rm-pa .rm-rs,html[data-theme="light"] .rm-dl button{color:#b3303c}
+html[data-theme="light"] .rm-dlg{background:#fff;border-color:rgba(0,0,0,.14)}
+html[data-theme="light"] .rm-dl li:hover{background:rgba(0,0,0,.035)}
+html[data-theme="light"] .rm-dl .st{border-color:rgba(0,0,0,.3)}
+html[data-theme="light"] .rm-dl .st.d{background:#1f9d55;border-color:#1f9d55}
+html[data-theme="light"] .rm-df .rm-dan{color:#fff;background:#c9434f}
 .tools{max-width:1120px;margin:0 auto;padding:28px 24px 0}
+/* ===== 학습 홈(허브) · 레슨 페이지 나누기 ===== */
+#home[data-page="hub"] [data-pg="lessons"],#home[data-page="lessons"] [data-pg="hub"]{display:none!important}
+.home .top .hm-back{margin-right:2px}
+.hub-hero{max-width:1120px;margin:0 auto;padding:44px 24px 6px;display:flex;align-items:center;gap:20px}
+.hub-hero img{width:76px;height:76px;flex:none;filter:drop-shadow(0 10px 24px rgba(233,189,12,.28))}
+.hub-hero .hk{margin:0 0 2px;font:600 12px var(--m);letter-spacing:.14em;text-transform:uppercase;color:var(--y);opacity:.85}
+.hub-hero h1{margin:0;font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;line-height:1.1}
+.hub-hero h1 span{color:var(--y)}
+.hub-hero p.hs{margin:8px 0 0;color:var(--mut);font-size:14px}
+.home .dq{padding-top:26px}
+/* 바로가기 (홈의 index 바로가기와 같은 정사각형 블록) */
+.qk{max-width:1120px;margin:0 auto;padding:34px 24px 0}
+.qk .sec{margin:0 0 14px;font-size:20px;letter-spacing:-.01em}
+.qk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,262px));gap:18px}
+.qk-card{--qline:rgba(255,255,255,.12);position:relative;aspect-ratio:1/1;border-radius:18px;overflow:hidden;isolation:isolate;background:#16161c;border:1px solid var(--qline);box-shadow:0 14px 34px rgba(0,0,0,.35);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s,border-color .25s;color:#fff}
+.qk-card:hover,.qk-card:focus-within{transform:translateY(-4px);border-color:rgba(233,189,12,.45);box-shadow:0 22px 44px rgba(0,0,0,.45)}
+.qk-bg{position:absolute;inset:0;z-index:-1;width:100%;height:100%;object-fit:cover;transition:filter .35s,transform .45s ease}
+.qk-card:hover .qk-bg,.qk-card:focus-within .qk-bg{filter:blur(7px) brightness(.32);transform:scale(1.1)}
+.qk-code{margin:0;padding:22px 20px;background:radial-gradient(120% 90% at 20% 0%,#24304a 0,#141822 55%,#0e1016 100%);font:600 13px/1.75 var(--m);color:#d6deeb;white-space:pre;overflow:hidden}
+.qk-code .k{color:#c792ea}.qk-code .t{color:#82aaff}.qk-code .s{color:#c3e88d}.qk-code .c{color:#6b7a99;font-weight:500}.qk-code .n{color:#f78c6c}
+.qk-cap{position:absolute;left:0;right:0;bottom:0;padding:44px 18px 16px;background:linear-gradient(180deg,rgba(11,11,14,0),rgba(11,11,14,.9));transition:opacity .25s}
+.qk-cap b{display:block;font-size:18px;color:#fff}
+.qk-cap span{display:block;font-size:13px;color:#c9c9d1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.qk-card:hover .qk-cap,.qk-card:focus-within .qk-cap{opacity:0}
+.qk-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;opacity:0;transition:opacity .25s}
+.qk-card:hover .qk-ov,.qk-card:focus-within .qk-ov{opacity:1}
+.qk-ic{display:grid;place-items:center;width:46px;height:46px;margin-bottom:4px;border-radius:14px;background:rgba(233,189,12,.16);color:#f6cd2a}
+.qk-ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.qk-t{font-size:18px}
+.qk-d{font-size:13px;line-height:1.5;color:#c9c9d1;max-width:220px}
+a.qk-go{margin-top:12px;display:inline-flex;align-items:center;height:40px;padding:0 20px;border-radius:10px;background:#e9bd0c;color:#1a1400;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 6px 16px rgba(233,189,12,.3);transition:filter .15s}
+a.qk-go:hover{filter:brightness(1.08)}
+a.qk-go::after{content:"";position:absolute;inset:0;z-index:0}
+.qk-n{position:absolute;top:12px;right:12px;z-index:1;padding:2px 9px;border-radius:999px;background:rgba(11,11,14,.66);font:600 11.5px var(--m);color:#e9eaee;transition:opacity .25s}
+.qk-card:hover .qk-n,.qk-card:focus-within .qk-n{opacity:0}
+@media (hover:none){
+  .qk-cap{display:none}
+  .qk-ov{opacity:1;justify-content:flex-end;align-items:flex-start;text-align:left;gap:2px;padding:16px;background:linear-gradient(180deg,rgba(11,11,14,0) 30%,rgba(11,11,14,.9))}
+  .qk-ic,.qk-d{display:none}
+  a.qk-go{margin-top:8px;height:34px;padding:0 14px;font-size:13px}
+}
+@media (max-width:720px){.qk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hub-hero{padding:30px 16px 4px;gap:14px}.hub-hero img{width:56px;height:56px}.qk,.rm{padding-left:16px;padding-right:16px}}
+@media (max-width:420px){.qk-grid{grid-template-columns:minmax(0,1fr)}.qk-card{aspect-ratio:16/10}}
+.hero p.hl{margin:4px 0 0;color:var(--mut);font-size:13.5px}
+html[data-theme="light"] .qk-card{--qline:rgba(0,0,0,.12);box-shadow:0 14px 30px rgba(0,0,0,.14)}
+html[data-theme="light"] .hub-hero .hk,html[data-theme="light"] .hub-hero h1 span{color:#9a7600}
+/* ===== 예제 페이지 ===== */
+#exView:not([hidden]){display:block;min-height:100vh;background:var(--bg)}
+.ex-main{max-width:1120px;margin:0 auto;padding:30px 24px 60px}
+.ex-head h1{margin:0;font-size:28px;letter-spacing:-.02em}
+.ex-head p{margin:6px 0 0;color:var(--mut);font-size:13.5px;max-width:760px}
+.ex-note{display:flex;align-items:flex-start;gap:8px;margin:14px 0 0;padding:10px 14px;border-radius:12px;background:rgba(246,205,42,.08);border:1px solid rgba(246,205,42,.25);font-size:12.5px;color:var(--tx);max-width:760px}
+.ex-note b{color:#ffdc55;white-space:nowrap}
+.ex-bar{padding:18px 0 0;margin:0;max-width:none}
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;margin-top:18px}
+.ex-card{display:flex;flex-direction:column;border-radius:18px;overflow:hidden;background:var(--panel);border:1px solid var(--line);box-shadow:0 12px 28px -14px rgba(0,0,0,.6);transition:transform .2s,border-color .2s}
+.ex-card:hover{transform:translateY(-3px);border-color:rgba(246,205,42,.45)}
+.ex-th{position:relative;display:block;aspect-ratio:16/9;padding:0;border:0;background:#0d0f13;cursor:pointer;overflow:hidden}
+.ex-th img{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated;transition:transform .35s}
+.ex-card:hover .ex-th img{transform:scale(1.04)}
+.ex-th .ex-play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.42);opacity:0;transition:opacity .2s;color:#fff;font-weight:700;font-size:14px}
+.ex-th:hover .ex-play,.ex-th:focus-visible .ex-play{opacity:1}
+.ex-lv{position:absolute;top:10px;left:10px;height:22px;padding:0 9px;display:inline-flex;align-items:center;gap:5px;border-radius:999px;font-size:11.5px;font-weight:700;background:rgba(11,11,14,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.ex-lv i{width:7px;height:7px;border-radius:50%}
+.ex-lv.l1{color:#7ff0ac}.ex-lv.l1 i{background:#4cd98a}.ex-lv.l2{color:#ffdc55}.ex-lv.l2 i{background:#f6cd2a}.ex-lv.l3{color:#ff9aa4}.ex-lv.l3 i{background:#ea6773}
+.ex-b{display:flex;flex-direction:column;gap:8px;padding:14px 16px 16px;flex:1}
+.ex-b h2{margin:0;font-size:16.5px;letter-spacing:-.01em}
+.ex-b p{margin:0;color:var(--mut);font-size:13px;line-height:1.55}
+.ex-b .kws li{font-size:11px;padding:1px 8px}
+.ex-f{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:6px}
+.ex-json{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);color:var(--mut);font-size:12px;text-decoration:none}
+.ex-json:hover{color:var(--tx);border-color:var(--y)}
+.ex-open{margin-left:auto;height:34px;padding:0 16px;border:0;border-radius:999px;background:linear-gradient(180deg,rgba(255,221,90,.96),rgba(233,189,12,.92));color:#1a1400;font-weight:700;font-size:13px}
+.ex-open:hover{filter:brightness(1.06)}
+.ex-empty{grid-column:1/-1;padding:46px 20px;text-align:center;color:var(--mut);border:1px dashed var(--line);border-radius:18px}
+@media (max-width:640px){.ex-main{padding:22px 16px 48px}}
+html[data-theme="light"] .ex-card{background:#fff;box-shadow:0 10px 24px -14px rgba(0,0,0,.25)}
+html[data-theme="light"] .ex-note b{color:#8a6a00}
+html[data-theme="light"] .ex-note{background:rgba(246,205,42,.12)}
+.ex-dot{width:8px;height:8px;border-radius:50%;flex:none}.ex-dot.l1{background:#4cd98a}.ex-dot.l2{background:#f6cd2a}.ex-dot.l3{background:#ea6773}
+
 .tools .sec{display:flex;align-items:center;gap:14px;margin:0 0 14px;font-size:15px;font-weight:600;color:rgba(235,235,245,.62)}
 .tools .sec::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
 .card.tool{width:100%;flex-direction:row;align-items:center;gap:28px;border-color:rgba(94,224,198,.38);
@@ -1237,16 +1540,19 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 </head>
 <body>
-<div id="home" class="home">
-<header class="top"><a class="brand" href="mypage.html" data-home title="마이페이지로 (내 프로젝트)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a><div class="lesson">엔진 · C# 기초</div><button class="treset" type="button" id="homeReset" title="모든 레슨의 통과 기록과 작성한 코드를 지웁니다">학습 기록 초기화</button><span class="thost"></span><span id="langHost"></span></header>
-<figure class="dq" id="dq" aria-labelledby="dqT"></figure>
-<section class="tools" aria-labelledby="toolsT"><h2 class="sec" id="toolsT">도구</h2><div id="tools"></div></section>
-<section class="hero"><h1>레슨</h1></section>
-<div class="lvbar" id="lvbar" role="group" aria-label="난이도별 보기"></div>
-<div class="cards" id="cards"></div>
-<div class="rvwrap" id="rvList" hidden></div>
+<div id="home" class="home" data-page="hub">
+<header class="top"><button class="back hm-back" type="button" id="hmBack" data-pg="lessons" aria-label="학습 홈으로">← 학습 홈</button><a class="brand" href="mypage.html" data-home title="마이페이지로 (내 프로젝트)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a><div class="lesson">엔진 · C# 기초</div><button class="treset" type="button" id="homeReset" title="모든 레슨의 통과 기록과 작성한 코드를 지웁니다">학습 기록 초기화</button><span class="thost"></span><span id="langHost"></span></header>
+<section class="hub-hero" data-pg="hub"><img src="assets/thaniya-logo-512.png" alt="" width="76" height="76"><div><p class="hk">Thaniya Engine</p><h1>Thaniya Engine <span>Edu</span></h1><p class="hs">엔진 사용법과 C# 스크립트를 레슨 · 예제로 하나씩 익혀요</p></div></section>
+<figure class="dq" id="dq" data-pg="hub" aria-labelledby="dqT"></figure>
+<section class="qk" data-pg="hub" aria-labelledby="qkH"><h2 class="sec" id="qkH">바로가기</h2><div class="qk-grid" id="qkGrid"></div></section>
+<section class="rm" id="rm" data-pg="hub" aria-labelledby="rmT"></section>
+<section class="hero" data-pg="lessons"><h1>레슨</h1><p class="hl">문제를 풀며 엔진과 C#을 익혀요. 난이도 순으로 정리돼 있어요.</p></section>
+<div class="lvbar" id="lvbar" data-pg="lessons" role="group" aria-label="난이도별 보기"></div>
+<div class="cards" id="cards" data-pg="lessons"></div>
+<div class="rvwrap" id="rvList" data-pg="lessons" hidden></div>
 <dialog class="rv-dlg" id="rvDlg" aria-labelledby="rvMt"></dialog>
 <dialog class="lc-dlg" id="lcDlg" aria-labelledby="lcT" aria-describedby="lcS"></dialog>
+<dialog class="rm-dlg" id="rmDlg" aria-labelledby="rmDlgT"></dialog>
 </div>
 <div id="pvView" class="pv" hidden>
 <header class="top"><button class="back" type="button" id="pvBack" aria-label="레슨 목록으로">← 레슨 목록</button><a class="brand" href="#" id="pvHome" title="학습 메인으로 (레슨 목록)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a><button type="button" class="pv-start-t" id="pvStartT">시작하기</button></header>
@@ -1273,6 +1579,7 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 
 <main class="ws">
   <section class="pn brief-pn" id="brief" aria-live="polite"></section>
+  <section class="pn bf-stub" id="bfStub" hidden aria-label="학습 노트"><span class="bfs-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="12" height="13" rx="2"/><path d="M9 4h10a2 2 0 0 1 2 2v10"/></svg></span><span class="bfs-t">학습 내용과 해야 할 일이 새 창에 열려 있어요</span><span class="bfs-s">학습 노트 · 새 창</span><button type="button" id="bfStubShow" title="새 창 보기">⧉ <span>새 창 보기</span></button><button type="button" id="bfStubDock" title="다시 합치기">⇤ <span>다시 합치기</span></button></section>
 
   <section class="pn view-pn">
     <div class="phead">
@@ -1374,9 +1681,23 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 </main>
 </div>
 
+<div id="exView" hidden>
+<header class="top">
+  <button class="back" type="button" id="exBack" aria-label="학습 홈으로">← 학습 홈</button>
+  <a class="brand" href="#" id="exHome" title="학습 홈으로"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a>
+  <div class="lesson tool"><b>예제</b><span>완성된 프로젝트를 엔진에서 열어 보고 고쳐 봐요</span></div>
+  <span class="spacer"></span><span class="thost"></span><span class="lhost"></span>
+</header>
+<main class="ex-main">
+  <section class="ex-head"><h1>예제</h1><p>완성된 프로젝트예요. 「예제 열기」를 누르면 엔진에서 그대로 열리고, 코드를 읽고 값을 바꿔 보며 배울 수 있어요.</p>
+  <p class="ex-note"><b>저장</b><span>엔진의 저장 버튼을 눌러야 내 프로젝트로 저장돼요. 저장하지 않고 나가려 하면 저장할지 물어봐요.</span></p></section>
+  <div class="lvbar ex-bar" id="exBar" role="group" aria-label="난이도"></div>
+  <div class="ex-grid" id="exGrid"></div>
+</main>
+</div>
 <div id="searchView" hidden>
 <header class="top">
-  <button class="back" type="button" id="svBack" aria-label="레슨 목록으로">← 레슨 목록</button>
+  <button class="back" type="button" id="svBack" aria-label="학습 홈으로">← 학습 홈</button>
   <a class="brand" href="#" id="svHome" title="학습 메인으로 (레슨 목록)"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a>
   <div class="lesson tool"><b>도구</b><span>코드 검색 · 코드를 넣으면 설명과 예시를 보여 줘요</span></div>
   <span class="spacer"></span><button class="treset" type="button" id="svWin" title="코드 검색을 따로 떠 있는 새 창으로 열기" aria-label="코드 검색을 새 창으로 열기">새 창으로 열기 ↗</button><span class="thost"></span><span class="lhost"></span>
@@ -1406,11 +1727,12 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 </div>
 
 <script src="script-engine.js?v=20261110a"></script>
-<script src="script-editor.js?v=20261107a"></script>
+<script src="script-editor.js?v=20261111b"></script>
 <script src="anim-editor.js?v=20261107f"></script>
 <script src="ui-builder.js?v=20261105d"></script>
 <script src="visual-script.js?v=20261108d"></script>
 <script src="learn-preview.js?v=20261110a"></script>
+<script src="examples/examples.js?v=20261111a"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
@@ -3849,7 +4171,7 @@ function renderTop(){
 }
 function renderBrief(){
   const p=P();
-  $('#brief').innerHTML=`<h1>${esc(_t(p.task?'실습 {n}.':'문제 {n}.',{n:st.cur+1}))} ${esc(p.title)}</h1><p>${p.desc}</p><div class="goal">${p.goal}</div>
+  $('#brief').innerHTML=`<button type="button" class="bfpop" id="bfPop" title="${esc(_t('학습 내용과 해야 할 일을 새 창으로 따로 보기'))}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-8 8"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>${esc(_t('새 창'))}</button><h1>${esc(_t(p.task?'실습 {n}.':'문제 {n}.',{n:st.cur+1}))} ${esc(p.title)}</h1><p>${p.desc}</p><div class="goal">${p.goal}</div>
   ${p.task?'':`<div class="exp"><div class="lbl">${esc(p.expLabel||'기대 출력')}</div><div class="conlist">${p.expNote&&!p.tests[0].out.length?`<div class="empty">${esc(p.expNote)}</div>`:conHTML(p.tests[0].out)}</div>${(p.expMore||[]).map(x=>`<div class="lbl" style="margin-top:8px">${esc(_t(x.l))}</div><div class="conlist">${conHTML(p.tests[x.i].out)}</div>`).join('')}</div>`}
   <button class="btn" type="button" id="hintBtn" aria-expanded="false">힌트 보기</button><pre class="hint" id="hint" hidden>${esc(p.hint)}</pre>`;
   $('#hintBtn').onclick=()=>{const h=$('#hint'),o=h.hidden;h.hidden=!o;$('#hintBtn').textContent=o?'힌트 숨기기':'힌트 보기';$('#hintBtn').setAttribute('aria-expanded',String(o))};
@@ -5342,6 +5664,7 @@ ta.addEventListener('keydown',e=>{
   const a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
   if(e.key==='Tab'&&!e.ctrlKey&&!e.altKey){
     e.preventDefault();
+    if(typeof edTabStop==='function'){edTabStop(ta,e.shiftKey);return}
     if(e.shiftKey){const ls=v.lastIndexOf('\n',a-1)+1,m=/^( {1,4}|\t)/.exec(v.slice(ls));if(m)ta.setRangeText('',ls,ls+m[0].length,'end')}
     else ta.setRangeText('    ',a,b,'end');
     ta.dispatchEvent(new Event('input'));
@@ -5370,35 +5693,284 @@ document.addEventListener('click',e=>{
   LCF=b.dataset.lc;try{localStorage.setItem('thaniya.lcat',LCF)}catch(_){}
   renderHome(true);
 });
-const DQ_POOL=[["Debug.Log(\"Hello, Thaniya!\");", "콘솔에 글자를 한 줄 출력해요."], ["Debug.Log(\"HP: \" + hp);", "글자와 변수 값을 + 로 이어 붙여 출력해요."], ["Debug.Log($\"{a} + {b} = {a + b}\");", "글자 앞에 $를 붙이면 중괄호 안의 식이 계산돼 글자에 들어가요."], ["for (int i = 1; i <= 5; i++)", "i를 1부터 5까지 바꿔 가며 중괄호 안을 다섯 번 실행해요."], ["Debug.LogWarning(\"체력이 낮아요\");", "콘솔에 노란색 경고로 알려요."], ["Debug.LogError(\"저장에 실패했어요\");", "콘솔에 빨간색 오류로 알려요."], ["Light light = GetComponent<Light>();", "이 오브젝트에 붙은 Light 컴포넌트를 꺼내요."], ["GameObject torch = GameObject.Find(\"횃불\");", "이름으로 다른 오브젝트를 찾아요."], ["light.intensity = 0.3f;", "값을 대입하면 인스펙터와 게임 뷰가 바로 바뀌어요."], ["light.enabled = false;", "컴포넌트를 끄면 빛이 꺼져요. 오브젝트 전체는 SetActive를 써요."], ["Camera.main.orthographicSize = 2;", "카메라 크기가 작을수록 화면이 더 확대돼요."], ["slime.transform.position = hero.transform.position + Vector2.right;", "슬라임을 주인공의 오른쪽 한 칸 옆으로 옮겨요."], ["hero.hp -= damage;", "hp에서 damage만큼 빼고 다시 저장해요."], ["hero.hp = Mathf.Min(hero.hp + heal, limit);", "회복해도 한도를 넘지 않게 둘 중 작은 값을 골라요."], ["coin.SetActive(false);", "오브젝트를 화면에서 치워요."], ["float d = Vector2.Distance(hero.transform.position, coin.transform.position);", "두 위치 사이의 거리를 재요."], ["public void OnClick()", "버튼의 클릭에 연결할 함수는 public void로 만들어요."], ["float h = Input.GetAxisRaw(\"Horizontal\");", "왼쪽은 -1, 오른쪽은 +1, 입력이 없으면 0으로 읽어요."], ["hero.Move(dir * speed * Time.deltaTime);", "프레임 속도와 상관없이 같은 속도로 움직여요."], ["dir = dir.normalized;", "방향의 길이를 1로 맞춰서 대각선이 더 빠르지 않게 해요."], ["if (Input.GetKeyDown(KeyCode.Space))", "키를 누른 순간에만 한 번 true가 돼요."], ["animator.SetTrigger(\"Hop\");", "애니메이터의 Hop 트리거를 발동해 깡충 뛰게 해요."]];
-let DQ_I=Math.floor(Math.random()*DQ_POOL.length);
-function dqRender(){
-  const p=DQ_POOL[DQ_I];
-  $('#dq').innerHTML=`<p class="dq-l" id="dqT">${esc(_t('오늘의 코드 한 줄'))}</p><blockquote><span class="dq-q" aria-hidden="true">“</span><code class="dq-c" translate="no">${csHighlight(p[0]).replace(/\n\s*$/,'')}</code><span class="dq-q" aria-hidden="true">”</span></blockquote><figcaption>${esc(p[1])}</figcaption>`;
+/* ===================== 학습 홈 바로가기 (레슨 · 코드 검색 · 예제) ===================== */
+if(window.TI18N)TI18N.add({"바로가기":["Shortcuts","ショートカット","快捷入口"],"학습 홈":["Learning home","学習ホーム","学习首页"],"← 학습 홈":["← Learning home","← 学習ホーム","← 学习首页"],"레슨":["Lessons","レッスン","课程"],"코드 검색":["Code search","コード検索","代码搜索"],"예제":["Examples","サンプル","示例"],
+ "엔진 사용법과 C# 스크립트를 레슨 · 예제로 하나씩 익혀요":["Learn the engine and C# scripting step by step with lessons and examples","エンジンの使い方とC#スクリプトをレッスンとサンプルで少しずつ学びます","通过课程和示例一步步学习引擎用法和 C# 脚本"],
+ "{n}개 레슨 · {d}개 완료":["{n} lessons · {d} done","{n} レッスン · {d} 完了","{n} 节课 · 已完成 {d}"],"엔진 화면과 C#을 문제를 풀며 차근차근 익혀요":["Learn the editor and C# by solving problems one by one","問題を解きながらエディターとC#を少しずつ学びます","边做题边一步步学习编辑器和 C#"],"레슨 보기":["View lessons","レッスンを見る","查看课程"],
+ "코드를 넣으면 쓰인 코드마다 설명과 예시를 보여 줘요":["Paste code to see an explanation and example for each part","コードを入れると、使われたコードごとに説明と例を表示します","粘贴代码，逐个显示说明和示例"],"검색 열기":["Open search","検索を開く","打开搜索"],"레슨 아님 · 찾아보기":["Not a lesson · Reference","レッスンではありません · リファレンス","非课程 · 查阅"],
+ "완성된 프로젝트를 엔진에서 열어 보고 고쳐 봐요":["Open finished projects in the engine and tweak them","完成したプロジェクトをエンジンで開いていじってみます","在引擎中打开完成的项目并修改"],"예제 {n}개":["{n} examples","サンプル {n} 個","{n} 个示例"],"예제 보기":["View examples","サンプルを見る","查看示例"],
+ "문제를 풀며 엔진과 C#을 익혀요. 난이도 순으로 정리돼 있어요.":["Learn the engine and C# by solving problems, sorted by difficulty.","問題を解きながらエンジンとC#を学びます。難易度順に並んでいます。","边做题边学习引擎和 C#，按难度排列。"],
+ "쉬움":["Easy","かんたん","简单"],"보통":["Normal","ふつう","普通"],"어려움":["Hard","むずかしい","困难"],"예제 열기":["Open example","サンプルを開く","打开示例"],"엔진에서 열기":["Open in engine","エンジンで開く","在引擎中打开"],"준비 중":["Coming soon","準備中","准备中"],
+ "완성된 프로젝트예요. 「예제 열기」를 누르면 엔진에서 그대로 열리고, 코드를 읽고 값을 바꿔 보며 배울 수 있어요.":["Finished projects. Press “Open example” to open one in the engine, then read the code and change values to learn.","完成したプロジェクトです。「サンプルを開く」を押すとエンジンでそのまま開き、コードを読んで値を変えながら学べます。","这些是完成的项目。点击“打开示例”即可在引擎中打开，阅读代码、修改数值来学习。"],
+ "저장":["Save","保存","保存"],"엔진의 저장 버튼을 눌러야 내 프로젝트로 저장돼요. 저장하지 않고 나가려 하면 저장할지 물어봐요.":["It's saved to your projects only when you press Save in the engine. If you leave without saving, you'll be asked.","エンジンの保存を押したときだけマイプロジェクトに保存されます。保存せずに離れようとすると確認します。","只有在引擎中按“保存”才会保存为我的项目。未保存就离开时会询问。"],
+ "이 난이도의 예제를 준비하고 있어요":["Examples for this level are on the way","この難易度のサンプルは準備中です","此难度的示例正在准备中"],"예제 JSON 내려받기 (엔진 「파일 › 가져오기」로도 열 수 있어요)":["Download example JSON (can also be opened with File › Import in the engine)","サンプルJSONをダウンロード（エンジンの「ファイル › インポート」でも開けます）","下载示例 JSON（也可在引擎“文件 › 导入”中打开）"]});
+const EX_LV=['','쉬움','보통','어려움'];
+const EXS=()=>(window.THANIYA_EXAMPLES||[]).filter(x=>x&&x.id);
+const QK_IC={lessons:'<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/><path d="M9 9.5l-1.6 1.5L9 12.5M13 9.5l1.6 1.5-1.6 1.5"/>',examples:'<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9h17"/><path d="M10 13l4 2-4 2z"/>'};
+function qkRender(){
+  const g=$('#qkGrid');if(!g)return;
+  const done=LESSONS.filter(L=>L.problems.length&&L.problems.every(p=>st.done[p.id])).length,ex=EXS(),ic=k=>`<span class="qk-ic"><svg viewBox="0 0 24 24" aria-hidden="true">${QK_IC[k]}</svg></span>`;
+  const card=(k,bg,t,cap,d,go,href,n)=>`<div class="qk-card" data-qk="${k}">${bg}${n?`<span class="qk-n">${esc(n)}</span>`:''}<div class="qk-cap"><b>${esc(_t(t))}</b><span>${esc(cap)}</span></div><div class="qk-ov">${ic(k)}<b class="qk-t">${esc(_t(t))}</b><span class="qk-d">${esc(_t(d))}</span><a class="qk-go" href="${href}">${esc(_t(go))}</a></div></div>`;
+  g.innerHTML=card('lessons','<img class="qk-bg" src="assets/learn/lesson-6-0.webp" alt="" loading="lazy" decoding="async" style="object-position:30% 50%">','레슨',_t('{n}개 레슨 · {d}개 완료',{n:LESSONS.length,d:done}),'엔진 화면과 C#을 문제를 풀며 차근차근 익혀요','레슨 보기','#lessons',done+' / '+LESSONS.length)
+   +card('search','<pre class="qk-bg qk-code" aria-hidden="true"><span class="k">void</span> <span class="t">Start</span>()\n{\n    <span class="c">// 체력을 콘솔에 출력</span>\n    <span class="t">Debug</span>.<span class="t">Log</span>(<span class="s">"HP: "</span> + hp);\n    hp -= <span class="n">10</span>;\n}</pre>','코드 검색',_t('레슨 아님 · 찾아보기'),'코드를 넣으면 쓰인 코드마다 설명과 예시를 보여 줘요','검색 열기','#search','')
+   +card('examples',`<img class="qk-bg" src="${esc((ex[0]&&ex[0].thumb)||'assets/learning-screenshot.webp')}" alt="" loading="lazy" decoding="async">`,'예제',_t('완성된 프로젝트를 엔진에서 열어 보고 고쳐 봐요'),'완성된 프로젝트를 엔진에서 열어 보고 고쳐 봐요','예제 보기','#examples',_t('예제 {n}개',{n:ex.length}));
 }
+/* ===================== 예제 페이지 (#examples) ===================== */
+let EXF='all';try{const v=localStorage.getItem('thaniya.exlv');if(['all','1','2','3'].includes(v))EXF=v}catch(e){}
+function exRender(){
+  const L=EXS(),cnt=k=>k==='all'?L.length:L.filter(x=>String(x.level||1)===k).length;
+  $('#exBar').innerHTML=[['all','전체보기'],['1','쉬움'],['2','보통'],['3','어려움']].map(([k,n])=>{const c=cnt(k);return`<button type="button" class="lvb${c?'':' empty'}" data-exf="${k}" aria-pressed="${EXF===k}">${k==='all'?'':`<span class="ex-dot l${k}"></span>`}<span>${esc(_t(n))}</span>${c?`<b>${c}</b>`:`<b class="soon">${esc(_t('준비 중'))}</b>`}</button>`}).join('');
+  const show=L.filter(x=>EXF==='all'||String(x.level||1)===EXF);
+  $('#exGrid').innerHTML=show.length?show.map(x=>{const lv=Math.min(3,Math.max(1,+x.level||1));return`<article class="ex-card">
+    <button type="button" class="ex-th" data-ex="${esc(x.id)}" aria-label="${esc(_t('예제 열기'))} · ${esc(x.title)}"><img src="${esc(x.thumb||'')}" alt="" loading="lazy" decoding="async"><span class="ex-lv l${lv}"><i></i>${esc(_t(EX_LV[lv]))}</span><span class="ex-play">▶ ${esc(_t('엔진에서 열기'))}</span></button>
+    <div class="ex-b"><h2>${esc(x.title)}</h2><p>${esc(x.desc||'')}</p>${(x.code||[]).length?`<ul class="kws" aria-label="code">${x.code.map(k=>`<li translate="no">${esc(k)}</li>`).join('')}</ul>`:''}
+    <div class="ex-f">${x.file?`<a class="ex-json" href="${esc(x.file)}" download title="${esc(_t('예제 JSON 내려받기 (엔진 「파일 › 가져오기」로도 열 수 있어요)'))}">⤓ JSON</a>`:''}<button type="button" class="ex-open" data-ex="${esc(x.id)}">${esc(_t('예제 열기'))} →</button></div></div></article>`}).join(''):`<div class="ex-empty">${esc(_t('이 난이도의 예제를 준비하고 있어요'))}</div>`;
+}
+/* 예제 열기 → 엔진(edit.html?ex=id). 엔진 안 학습 창(iframe)이면 엔진 창을, 엔진이 띄운 학습 팝업이면 그 엔진 창을 바꿈 */
+function exOpen(id){
+  const u='edit.html?ex='+encodeURIComponent(id);
+  try{if(window.top!==window){window.top.location.href=new URL(u,location.href).href;return}}catch(e){}
+  try{const o=window.opener;if(o&&!o.closed&&/edit\.html$/.test(o.location.pathname)){o.location.href=new URL(u,location.href).href;try{o.focus()}catch(_){ }return}}catch(e){}
+  location.href=u;
+}
+document.addEventListener('click',e=>{
+  const f=e.target.closest&&e.target.closest('#exBar [data-exf]');if(f){EXF=f.dataset.exf;try{localStorage.setItem('thaniya.exlv',EXF)}catch(_){ }exRender();const b=$('#exBar [data-exf="'+EXF+'"]');if(b)b.focus();return}
+  const o=e.target.closest&&e.target.closest('#exGrid [data-ex]');if(o){exOpen(o.dataset.ex)}
+});
+/* ===================== 추천 학습 로드맵 (왼쪽 → 오른쪽 트리 · 분류와 상관없이 쉽고 중요한 것부터) ===================== */
+const RM_TIERS=['첫걸음','기본 다지기','값과 상호작용','움직임과 구조','연출과 대화','예제로 응용'];
+/* 예제 카드(참고용): 학습 기록 · 완료 · 추천에는 들어가지 않음. after = 이 레슨 다음 열에 붙음 */
+const RM_EX=[{id:'coins',after:'lesson-4'},{id:'subway',after:'lesson-5'},{id:'escape',after:'lesson-10'},{id:'tycoon',after:'lesson-10'}];
+/* h 레슨 · t 단계(열) · req 먼저 하면 좋은 레슨(첫째 = 트리에서 이어지는 줄기, 나머지는 마우스를 올렸을 때만 점선) · why 이 단계에 두는 까닭 */
+const RM=[
+ {h:'lesson-2',t:0,req:[],why:'모든 C# 스크립트의 출발점이에요. 값이 어떻게 바뀌는지 콘솔로 확인하는 법을 먼저 익혀 두면 이후 모든 레슨이 쉬워져요.'},
+ {h:'lesson-1',t:0,req:[],why:'엔진 화면(계층 구조 · 인스펙터 · 씬 뷰)과 맵 만들기의 기본이에요. 기능 레슨은 모두 여기서 시작해요.'},
+ {h:'lesson-11',t:0,req:[],why:'코드 없이 이벤트 · 조건 · 반복의 흐름을 눈으로 보며 익혀요. 프로그래밍이 처음이라면 가볍게 먼저 해 봐도 좋아요.'},
+ {h:'lesson-3',t:1,req:['lesson-2'],why:'오브젝트에 붙은 컴포넌트를 꺼내 값을 읽고 바꾸는 법 — 스크립트로 게임을 움직이는 가장 기본 동작이에요.'},
+ {h:'lesson-9',t:1,req:['lesson-1'],why:'메인 화면과 게임 UI를 직접 만들어요. 뒤에 나오는 상호작용 · 대화창 레슨이 이 UI 그룹을 사용해요.'},
+ {h:'lesson-6',t:1,req:['lesson-1'],why:'캐릭터가 살아 움직이게 하는 애니메이터와 클립을 다뤄요. 컷씬(타임라인) 레슨의 바탕이 돼요.'},
+ {h:'lesson-13',t:1,req:['lesson-1'],why:'같은 몬스터를 여러 마리 배치하고 한꺼번에 고치는 프리팹 — 맵을 채울 때 꼭 필요한 기능이에요.'},
+ {h:'lesson-7',t:1,req:['lesson-1'],why:'가장자리가 저절로 맞춰지는 룰 타일과 움직이는 물 타일로 맵을 더 보기 좋게 다듬어요.'},
+ {h:'lesson-4',t:2,req:['lesson-3'],why:'변수와 public 필드로 캐릭터 · 아이템 값을 다루고 UI에 보여 줘요. 이후 C# 레슨 대부분이 이 내용을 써요.'},
+ {h:'lesson-12',t:2,req:['lesson-11','lesson-9'],why:'비주얼 스크립트로 상자 · 문 · UI가 서로 신호를 주고받게 만들어요. 노드 흐름과 UI 그룹을 함께 써요.'},
+ {h:'lesson-5',t:3,req:['lesson-4'],why:'Update · 키 입력 · Vector2로 주인공 이동 스크립트를 처음부터 끝까지 만들어요. 게임다운 조작의 핵심이에요.'},
+ {h:'lesson-8',t:3,req:['lesson-4'],why:'게임을 여러 씬으로 나누고 씬이 바뀌어도 살아 있는 매니저를 만들어요. 게임 전체 구조를 잡는 단계예요.'},
+ {h:'lesson-10',t:4,req:['lesson-5','lesson-9'],why:'NPC가 대화창 UI를 열고 대사를 넘기게 만들어요. 스크립트와 UI 그룹을 함께 다루는 종합 레슨이에요.'},
+ {h:'lesson-14',t:4,req:['lesson-5','lesson-6'],why:'타임라인으로 주인공이 걸어 들어오고 촌장이 선물을 주는 컷씬을 연출해요. 애니메이션과 스크립트를 모두 써요.'}
+].filter(r=>LESSONS.some(L=>L.hash===r.h));
+if(window.TI18N)TI18N.add({"추천 학습 로드맵":["Recommended learning roadmap","おすすめ学習ロードマップ","推荐学习路线图"],
+ "분류와 상관없이 쉽고 중요한 것부터 차례로 이어져요. 카드를 누르면 소개가 보여요.":["Easy and important lessons first, regardless of category. Click a card for an overview.","分類に関係なく、やさしく大切なものから順につながります。カードを押すと紹介が表示されます。","不分类别，从简单重要的开始依次衔接。点击卡片查看简介。"],
+ "첫걸음":["First steps","はじめの一歩","第一步"],"기본 다지기":["Basics","基礎固め","打好基础"],"값과 상호작용":["Values & interaction","値とインタラクション","数值与交互"],"움직임과 구조":["Movement & structure","動きと構造","移动与结构"],"연출과 대화":["Cutscenes & dialogue","演出と会話","演出与对话"],
+ "완료 {n} / {t}":["Done {n} / {t}","完了 {n} / {t}","已完成 {n} / {t}"],"진행 관리":["Manage progress","進行状況の管理","管理进度"],
+ "지금 추천":["Recommended now","今のおすすめ","当前推荐"],"다음 추천":["Up next","次のおすすめ","下一步"],"추천":["Recommended","おすすめ","推荐"],"완료":["Done","完了","已完成"],"진행 중":["In progress","進行中","进行中"],
+ "모든 레슨을 마쳤어요! 다시하고 싶은 레슨을 골라 보세요.":["You finished every lesson! Pick one to redo.","すべてのレッスンを終えました！やり直したいレッスンを選んでください。","你已完成全部课程！选一课重做吧。"],
+ "{n}단계":["Step {n}","ステップ {n}","第 {n} 阶段"],"왜 이 단계에?":["Why at this step?","なぜこの段階？","为什么在这一阶段？"],"먼저 하면 좋아요":["Good to do first","先にやると良い","建议先完成"],
+ "{n} / {t} 문제":["{n} / {t} problems","{n} / {t} 問","{n} / {t} 题"],"학습하기":["Start","学習する","开始学习"],"이어하기":["Continue","続ける","继续"],"다시하기":["Redo","やり直す","重做"],"시작하기":["Start","始める","开始"],
+ "자세히 보기":["Details","詳しく見る","查看详情"],"기록 초기화":["Reset progress","記録をリセット","重置记录"],
+ "학습 진행 관리":["Manage learning progress","学習の進行管理","管理学习进度"],"레슨마다 통과 기록과 작성한 코드를 지울 수 있어요. 지운 기록은 되돌릴 수 없어요.":["Clear pass records and code per lesson. This can’t be undone.","レッスンごとに合格記録と書いたコードを消せます。元に戻せません。","可以按课清除通过记录和编写的代码。清除后无法恢复。"],
+ "초기화":["Reset","リセット","重置"],"전체 학습 기록 초기화":["Reset all learning progress","すべての学習記録をリセット","重置全部学习记录"],"시작 전":["Not started","未開始","未开始"],
+ "「{title}」 레슨의 기록을 지울까요?":["Clear progress for “{title}”?","「{title}」の記録を消しますか？","要清除“{title}”的记录吗？"],"통과 기록과 작성한 코드가 모두 지워져요. 되돌릴 수 없어요.":["Pass records and your code will be deleted. This can’t be undone.","合格記録と書いたコードがすべて消えます。元に戻せません。","通过记录和编写的代码将全部删除，无法恢复。"],
+ "모든 레슨의 기록을 지울까요?":["Clear progress for all lessons?","すべてのレッスンの記録を消しますか？","要清除全部课程的记录吗？"],"지우기":["Clear","消す","清除"],"취소":["Cancel","キャンセル","取消"],
+ "카드에 마우스를 올리면 이어진 레슨만 강조돼요.":["Hover a card to highlight its connected lessons.","カードにマウスを乗せると、つながったレッスンだけが強調されます。","将鼠标悬停在卡片上，只突出显示相连的课程。"],"예제로 응용":["Apply with examples","サンプルで応用","用示例应用"],"참고용":["Reference","参考用","参考"],"참고용 · 열어 보기만 해요":["Reference · just open it","参考用 · 開いて見るだけ","参考 · 打开看看即可"],"예제 (참고용)":["Example (reference)","サンプル（参考用）","示例（参考）"],"이 레슨 다음에 보면 좋아요":["Good after this lesson","このレッスンの後に見ると良い","建议学完此课后查看"],"참고용 예제예요. 열어 봐도 학습 기록이나 완료에는 들어가지 않아요.":["A reference example. Opening it doesn't count toward your progress.","参考用のサンプルです。開いても学習記録や完了には入りません。","这是参考示例，打开也不会计入学习记录或完成。"],"예제 페이지":["Examples page","サンプルページ","示例页面"],"왼쪽 · 오른쪽으로 스크롤해 보세요":["Scroll left and right","左右にスクロールできます","可左右滚动"],"닫기":["Close","閉じる","关闭"],
+ "용어":["Terms","用語","术语"],"이전 코드":["Previous","前のコード","上一条"],"다음 코드":["Next","次のコード","下一条"],"다른 코드":["Shuffle","ほかのコード","换一条"]});
+const rmL=h=>LESSONS.find(L=>L.hash===h);
+const rmExs=()=>RM_EX.map(e=>{const x=(window.THANIYA_EXAMPLES||[]).find(q=>q&&q.id===e.id),p=RM.find(r=>r.h===e.after);return x&&p?{h:'ex-'+e.id,t:p.t+1,req:[e.after],ex:x}:null}).filter(Boolean);
+const rmAll=()=>RM.concat(rmExs());
+function rmStat(L){const t=L.problems.length,n=L.problems.filter(p=>st.done[p.id]).length,rec=L.problems.some(p=>st.done[p.id]||st.code[p.id]!=null||st.vals[p.id]!=null);return{n,t,done:t>0&&n===t,prog:n>0&&n<t,rec}}
+function rmState(){const S={};RM.forEach(r=>S[r.h]=rmStat(rmL(r.h)));
+  const prog=RM.filter(r=>S[r.h].prog),open=RM.filter(r=>!S[r.h].done&&!S[r.h].prog&&r.req.every(q=>!S[q]||S[q].done));
+  return{S,recs:[...prog,...open].slice(0,3).map(r=>r.h)};
+}
+const rmCatDots=L=>`<span class="rm-cd" aria-hidden="true">${(L.cats||[]).map(c=>`<i class="c-${c}" title="${esc(_t(LCATN[c]))}"></i>`).join('')}</span>`;
+let rmScrolled=false;
+function rmRender(){
+  const box=$('#rm');if(!box||!RM.length)return;rmPopClose();
+  const{S,recs}=rmState(),doneN=RM.filter(r=>S[r.h].done).length;
+  const node=(r,G)=>{const L=rmL(r.h),s=S[r.h],i=recs.indexOf(r.h),ok=r.req.every(q=>!S[q]||S[q].done);
+    const cls=s.done?'done':(i===0?'rec next':i>0?'rec':'')+(s.prog?' prog':'')+(!s.done&&!s.prog&&!ok&&i<0?' later':'');
+    const bd=s.done?'✓ '+_t('완료'):i===0?_t('다음 추천'):i>0?_t('추천'):s.prog?_t('진행 중'):'';
+    return`<button type="button" class="rm-n ${cls}" data-rm="${r.h}" style="left:${RM_G.px+r.t*(RM_G.w+RM_G.gx)}px;top:${RM_G.top+G.Y[r.h]*RM_G.rh}px" title="${esc(_t(L.title))}" aria-haspopup="dialog" aria-label="${esc(_t(L.title))} · ${esc(_t('난이도'))} ${esc(lvName(L))}${bd?' · '+esc(bd):''} · ${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}">
+      <span class="rm-nt">${rmCatDots(L)}<span class="lv${L.lv}" aria-hidden="true"><span class="dots">${LV_DOTS}</span></span>${bd?`<span class="rm-bd">${esc(bd)}</span>`:''}</span>
+      <b>${esc(_t(L.title))}</b><span class="rm-nf"><span class="rm-pb"><i style="width:${s.t?s.n/s.t*100:0}%"></i></span><small>${s.n}/${s.t}</small></span></button>`};
+  const exNode=(r,G)=>{const x=r.ex,lv=Math.min(3,Math.max(1,+x.level||1));
+    return`<button type="button" class="rm-n rm-ex" data-rm="${r.h}" style="left:${RM_G.px+r.t*(RM_G.w+RM_G.gx)}px;top:${RM_G.top+G.Y[r.h]*RM_G.rh-3}px" title="${esc(_t('예제'))} · ${esc(x.title)} (${esc(_t(EX_LV[lv]))})" aria-haspopup="dialog" aria-label="${esc(_t('예제'))} · ${esc(x.title)} · ${esc(_t(EX_LV[lv]))} · ${esc(_t('참고용'))}"><img src="${esc(x.icon||x.thumb||'')}" alt="" width="64" height="64" draggable="false"></button>`};
+  box.innerHTML=`<div class="rm-hd"><div><h2 id="rmT">${esc(_t('추천 학습 로드맵'))}</h2><p>${esc(_t('분류와 상관없이 쉽고 중요한 것부터 차례로 이어져요. 카드를 누르면 소개가 보여요.'))} ${esc(_t('카드에 마우스를 올리면 이어진 레슨만 강조돼요.'))}</p></div>
+    <div class="rm-sum"><span>${esc(_t('완료 {n} / {t}',{n:doneN,t:RM.length}))}</span><span class="rm-tb"><i style="width:${doneN/RM.length*100}%"></i></span><button type="button" class="rm-btn" id="rmMng"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${esc(_t('진행 관리'))}</button></div></div>
+  <div class="rm-rec">${recs.length?`<span>${esc(_t('지금 추천'))}</span>${recs.map((h,i)=>`<button type="button" class="rm-rc${i?'':' top'}" data-rmgo="${h}">${i?'':'▶ '}${esc(_t(rmL(h).title))}</button>`).join('')}`:`<span class="rm-all-done">✓ ${esc(_t('모든 레슨을 마쳤어요! 다시하고 싶은 레슨을 골라 보세요.'))}</span>`}
+    <span class="rm-lg"><span><i class="d"></i>${esc(_t('완료'))}</span><span><i class="p"></i>${esc(_t('진행 중'))}</span><span><i class="r"></i>${esc(_t('추천'))}</span><span><i class="x"></i>${esc(_t('예제 (참고용)'))}</span></span></div>
+  <div class="rm-wrap" id="rmWrap"><div class="rm-scroll" id="rmScroll" tabindex="0" role="region" aria-label="${esc(_t('추천 학습 로드맵'))} · ${esc(_t('왼쪽 · 오른쪽으로 스크롤해 보세요'))}"><div class="rm-board" id="rmBoard"><svg class="rm-ln" id="rmLn" aria-hidden="true"></svg>
+  ${(()=>{const G=rmLayout(),A=rmAll(),NC=G_COLS;return RM_TIERS.slice(0,NC).map((tn,ti)=>A.some(r=>r.t===ti)?`<div class="rm-th" style="left:${RM_G.px+ti*(RM_G.w+RM_G.gx)}px"><b>${ti+1}</b>${esc(_t(tn))}</div>`:'').join('')+A.map(r=>r.ex?exNode(r,G):node(r,G)).join('')+`<i class="rm-sz" style="width:${RM_G.px*2+NC*RM_G.w+(NC-1)*RM_G.gx}px;height:${RM_G.top+(G.rows-1)*RM_G.rh+64+RM_G.pb}px"></i>`})()}
+  </div></div></div>`;
+  const sc=$('#rmScroll');sc.addEventListener('scroll',()=>{rmFade();rmPopPlace()},{passive:true});
+  requestAnimationFrame(()=>{rmLines(S,recs);
+    if(!rmScrolled&&recs[0]){const n=sc.querySelector(`[data-rm="${recs[0]}"]`);if(n&&n.offsetLeft+n.offsetWidth>sc.clientWidth)sc.scrollLeft=n.offsetLeft-60;rmScrolled=true}
+    rmFade()});
+  if(!rmRO&&window.ResizeObserver){rmRO=new ResizeObserver(()=>{const s=rmState();rmLines(s.S,s.recs);rmFade()})}
+  if(rmRO){rmRO.disconnect();rmRO.observe($('#rmBoard'))}
+}
+let rmRO=null;
+function rmFade(){const sc=$('#rmScroll'),w=$('#rmWrap');if(!sc||!w)return;w.classList.toggle('rm-fl',sc.scrollLeft>4);w.classList.toggle('rm-fr',sc.scrollLeft+sc.clientWidth<sc.scrollWidth-4)}
+/* 트리 배치: 첫째 선행 레슨을 부모로 삼은 숲. 잎을 위에서부터 한 줄씩, 부모는 자식들의 가운데 */
+const RM_G={w:164,gx:72,rh:68,top:40,px:22,pb:14};
+let G_COLS=5;
+function rmLayout(){
+  const A=rmAll(),kids={},par={},Y={};let row=0;A.forEach(r=>kids[r.h]=[]);
+  A.forEach(r=>{const p=r.req.find(q=>kids[q]&&A.find(x=>x.h===q).t<r.t)||null;par[r.h]=p;if(p)kids[p].push(r.h)});
+  /* 예제 타일(정사각형 70px)은 위아래로 조금만 더 띄움: 앞에 .12줄 · 자기 자리 1.12줄 (세로가 너무 길어지지 않게) */
+  const isEx=h=>String(h).startsWith('ex-');
+  const place=h=>{const k=kids[h];if(!k.length){if(isEx(h)){row+=.12;Y[h]=row;row+=1.12}else Y[h]=row++;return}k.forEach(place);Y[h]=(Y[k[0]]+Y[k[k.length-1]])/2};
+  A.filter(r=>!par[r.h]).forEach(r=>place(r.h));
+  G_COLS=Math.max(...A.map(r=>r.t))+1;
+  return{kids,par,Y,rows:Math.max(1,row)};
+}
+function rmLines(S,recs){
+  const b=$('#rmBoard'),svg=$('#rmLn');if(!b||!svg||!b.offsetWidth)return;
+  const W=b.scrollWidth,H=b.scrollHeight,G=rmLayout();
+  svg.setAttribute('width',W);svg.setAttribute('height',H);svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const box=h=>{const n=b.querySelector(`[data-rm="${h}"]`);return n&&{l:n.offsetLeft,r:n.offsetLeft+n.offsetWidth,c:n.offsetTop+n.offsetHeight/2}};
+  const cls=(q,h)=>S[q]&&S[q].done?(S[h].done?'ok':recs.includes(h)?'go':'ok'):'';
+  let main='',sec='',dots='';
+  rmAll().forEach(r=>r.req.forEach(q=>{
+    const A=box(q),C=box(r.h);if(!A||!C)return;
+    const k=r.ex?'ex':cls(q,r.h),x1=A.r,y1=A.c,x2=C.l-3,y2=C.c,at=`data-a="${q}" data-b="${r.h}"`;
+    if(G.par[r.h]===q){
+      const xm=Math.round(x2-RM_G.gx/2),dy=y2-y1,sg=Math.sign(dy),rr=Math.min(9,Math.abs(dy)/2);
+      const d=Math.abs(dy)<1?`M${x1} ${y1}H${x2}`:`M${x1} ${y1}H${xm-rr}Q${xm} ${y1} ${xm} ${y1+sg*rr}V${y2-sg*rr}Q${xm} ${y2} ${xm+rr} ${y2}H${x2}`;
+      main+=`<path class="${k}" ${at} d="${d}"/>`;dots+=`<circle class="${k}" ${at} cx="${x2}" cy="${y2}" r="3"/>`;
+    }else{
+      const m=Math.max(40,(x2-x1)*.45);
+      sec+=`<path class="sec ${k}" ${at} d="M${x1} ${y1}C${x1+m} ${y1} ${x2-m} ${y2} ${x2} ${y2}"/>`;
+    }
+  }));
+  svg.innerHTML=sec+main+dots;
+  rmHl(rmPopH||rmHov);
+}
+/* 마우스를 올린(또는 소개창을 연) 레슨과 이어진 선 · 카드만 또렷하게 */
+let rmHov=null;
+function rmHl(h){
+  const b=$('#rmBoard'),svg=$('#rmLn');if(!b||!svg)return;
+  const A=rmAll(),r=h&&A.find(x=>x.h===h);
+  b.classList.toggle('hl',!!r);svg.classList.toggle('hl',!!r);
+  const rel=new Set(r?[h,...r.req,...A.filter(x=>x.req.includes(h)).map(x=>x.h)]:[]);
+  b.querySelectorAll('.rm-n').forEach(n=>n.classList.toggle('rel',rel.has(n.dataset.rm)));
+  svg.querySelectorAll('[data-a]').forEach(p=>p.classList.toggle('on',!!r&&(p.dataset.a===h||p.dataset.b===h)));
+}
+document.addEventListener('pointerover',e=>{const n=e.target.closest&&e.target.closest('#rmBoard .rm-n');const h=n?n.dataset.rm:null;if(h!==rmHov){rmHov=h;rmHl(rmPopH||h)}});
+document.addEventListener('focusin',e=>{const n=e.target.closest&&e.target.closest('#rmBoard .rm-n');if(n){rmHov=n.dataset.rm;rmHl(rmPopH||rmHov)}});
+/* ---- 노드 소개창 ---- */
+let rmPopH=null,rmPopA=null;
+function rmPopEl(){let p=$('#rmPop');if(!p){p=document.createElement('div');p.id='rmPop';p.className='rm-pop';p.setAttribute('role','dialog');p.hidden=true;document.body.append(p);
+  p.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.classList.contains('rm-px')){rmPopClose(true);return}
+    if(String(rmPopH).startsWith('ex-')){const id=rmPopH.slice(3);if(b.classList.contains('rm-exo')){rmPopClose();exOpen(id)}else if(b.classList.contains('rm-exp')){rmPopClose();location.hash='examples'}return}
+    const L=rmL(rmPopH);if(!L)return;
+    if(b.classList.contains('rm-go')){rmPopClose();pvStart(L);return}
+    if(b.classList.contains('rm-more')){rmPopClose();location.hash='about-'+L.hash;return}
+    if(b.classList.contains('rm-rs')){rmPopClose();if(await rmResetAsk(L))renderHome()}
+  })}return p}
+function rmPopOpen(h,anchor){
+  if(rmPopH===h&&$('#rmPop')&&!$('#rmPop').hidden){rmPopClose(true);return}
+  if(String(h).startsWith('ex-')){rmExPop(h,anchor);return}
+  const L=rmL(h),r=RM.find(x=>x.h===h);if(!L||!r)return;
+  const{S}=rmState(),s=S[h],p=rmPopEl();
+  const go=s.done?'다시하기':s.n?'이어하기':'학습하기';
+  p.innerHTML=`<div class="rm-pk"><span>${esc(_t('{n}단계',{n:r.t+1}))} · ${esc(_t(RM_TIERS[r.t]))}</span><span class="chip lv${L.lv}"><span class="dots" aria-hidden="true">${LV_DOTS}</span>${esc(lvName(L))}</span>${(L.cats||[]).map(c=>`<span class="chip c-${c}">${esc(_t(LCATN[c]))}</span>`).join('')}<button type="button" class="rm-px" aria-label="${esc(_t('닫기'))}">×</button></div>
+    <h3 id="rmPopT">${esc(_t(L.title))}</h3><p>${esc(_t(L.lead))}</p>
+    <p class="rm-why"><b>${esc(_t('왜 이 단계에?'))}</b>${esc(r.why)}</p>
+    ${r.req.length?`<div class="rm-req">${esc(_t('먼저 하면 좋아요'))}${r.req.map(q=>{const Q=rmL(q),ok=S[q]&&S[q].done;return Q?`<span class="${ok?'ok':''}">${ok?'✓ ':''}${esc(_t(Q.title))}</span>`:''}).join('')}</div>`:''}
+    <div class="rm-pp"><span class="rm-pb${s.done?' ok':''}"><i style="width:${s.t?s.n/s.t*100:0}%"></i></span><span>${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}</span>${s.done?`<span class="ok">✓ ${esc(_t('완료'))}</span>`:''}</div>
+    <div class="rm-pa"><button type="button" class="rm-go">${esc(_t(go))} →</button>${window.PV_DATA&&PV_DATA[L.hash]?`<button type="button" class="rm-btn rm-more">${esc(_t('자세히 보기'))}</button>`:''}${s.rec?`<button type="button" class="rm-btn rm-rs">${esc(_t('기록 초기화'))}</button>`:''}</div>`;
+  p.setAttribute('aria-labelledby','rmPopT');
+  $$('.rm-n.open').forEach(n=>n.classList.remove('open'));anchor.classList.add('open');
+  rmPopH=h;rmPopA=anchor;p.hidden=false;rmHl(h);rmPopPlace();p.querySelector('.rm-go').focus({preventScroll:true});
+}
+/* 예제 카드 소개창: 참고용 — 열어도 학습 기록은 그대로 */
+function rmExPop(h,anchor){
+  const r=rmExs().find(x=>x.h===h);if(!r)return;const x=r.ex,lv=Math.min(3,Math.max(1,+x.level||1)),P=rmL(r.req[0]),p=rmPopEl();
+  p.innerHTML=`<div class="rm-pk"><span>${esc(_t('예제'))} · ${esc(_t('참고용'))}</span><span class="chip ex-lvc l${lv}"><span class="ex-dot l${lv}" aria-hidden="true"></span>${esc(_t(EX_LV[lv]))}</span><button type="button" class="rm-px" aria-label="${esc(_t('닫기'))}">×</button></div>
+    ${x.thumb?`<img class="rm-exth" src="${esc(x.thumb)}" alt="" loading="lazy">`:''}
+    <h3 id="rmPopT">${esc(x.title)}</h3><p>${esc(x.desc||'')}</p>
+    ${(x.code||[]).length?`<ul class="kws rm-exk">${x.code.map(k=>`<li translate="no">${esc(k)}</li>`).join('')}</ul>`:''}
+    ${P?`<div class="rm-req">${esc(_t('이 레슨 다음에 보면 좋아요'))}<span>${esc(_t(P.title))}</span></div>`:''}
+    <p class="rm-exn">${esc(_t('참고용 예제예요. 열어 봐도 학습 기록이나 완료에는 들어가지 않아요.'))}</p>
+    <div class="rm-pa"><button type="button" class="rm-go rm-exo">${esc(_t('예제 열기'))} →</button><button type="button" class="rm-btn rm-exp">${esc(_t('예제 페이지'))}</button></div>`;
+  p.setAttribute('aria-labelledby','rmPopT');
+  $$('.rm-n.open').forEach(n=>n.classList.remove('open'));anchor.classList.add('open');
+  rmPopH=h;rmPopA=anchor;p.hidden=false;rmHl(h);rmPopPlace();p.querySelector('.rm-go').focus({preventScroll:true});
+}
+function rmPopPlace(){
+  const p=$('#rmPop');if(!p||p.hidden||!rmPopA)return;
+  if(!rmPopA.isConnected){rmPopClose();return}
+  const a=rmPopA.getBoundingClientRect(),sc=$('#rmScroll').getBoundingClientRect();
+  if(a.right<sc.left+10||a.left>sc.right-10){p.style.visibility='hidden';return}p.style.visibility='';
+  const w=p.offsetWidth,h=p.offsetHeight,vw=innerWidth,vh=innerHeight;
+  let x=a.right+10,y=a.top+a.height/2-h/2;
+  if(x+w>vw-12){x=a.left-w-10;if(x<12){x=Math.min(Math.max(12,a.left+a.width/2-w/2),vw-w-12);y=a.bottom+8;if(y+h>vh-12)y=a.top-h-8}}
+  y=Math.min(Math.max(12,y),Math.max(12,vh-h-12));
+  p.style.left=x+'px';p.style.top=y+'px';
+}
+function rmPopClose(refocus){const p=$('#rmPop');if(!p||p.hidden)return;p.hidden=true;const a=rmPopA;rmPopH=null;rmPopA=null;rmHl(rmHov);if(a){a.classList.remove('open');if(refocus&&a.isConnected)a.focus({preventScroll:true})}}
+addEventListener('scroll',rmPopPlace,{passive:true});addEventListener('resize',rmPopPlace);
+document.addEventListener('pointerdown',e=>{const p=$('#rmPop');if(p&&!p.hidden&&!p.contains(e.target)&&!e.target.closest('.rm-n'))rmPopClose()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const p=$('#rmPop');if(p&&!p.hidden){rmPopClose(true);e.stopPropagation()}}});
+addEventListener('hashchange',()=>rmPopClose());
+/* ---- 기록 지우기 ---- */
+function rmResetL(L){L.problems.forEach(q=>{delete st.done[q.id];delete st.code[q.id];delete st.vals[q.id]});st.curs[L.no]=0;save()}
+async function rmResetAsk(L){if(!await lConfirm(_t('「{title}」 레슨의 기록을 지울까요?',{title:_t(L.title)}),_t('통과 기록과 작성한 코드가 모두 지워져요. 되돌릴 수 없어요.'),_t('지우기'),_t('취소')))return false;rmResetL(L);return true}
+function rmDlgRender(){
+  const d=$('#rmDlg'),{S}=rmState();
+  d.innerHTML=`<div class="rm-dh"><h3 id="rmDlgT">${esc(_t('학습 진행 관리'))}</h3><button type="button" class="rm-px" data-x aria-label="${esc(_t('닫기'))}">×</button></div>
+  <p>${esc(_t('레슨마다 통과 기록과 작성한 코드를 지울 수 있어요. 지운 기록은 되돌릴 수 없어요.'))}</p>
+  <ul class="rm-dl">${RM.map(r=>{const L=rmL(r.h),s=S[r.h];return`<li><span class="st${s.done?' d':s.prog?' p':''}" aria-hidden="true"></span><span class="ti"><span class="tn">${r.t+1}</span>${esc(_t(L.title))}</span><small class="${s.done?'ok':''}">${s.done?'✓ '+esc(_t('완료')):s.n?esc(_t('진행 중')):esc(_t('시작 전'))} · ${s.n}/${s.t}</small><button type="button" data-rs="${r.h}"${s.rec?'':' disabled'}>${esc(_t('초기화'))}</button></li>`}).join('')}</ul>
+  <div class="rm-df"><button type="button" class="rm-btn rm-dan" data-all${RM.some(r=>S[r.h].rec)?'':' disabled'}>${esc(_t('전체 학습 기록 초기화'))}</button><button type="button" class="rm-btn rm-cl" data-x>${esc(_t('닫기'))}</button></div>`;
+}
+function rmDlgOpen(){
+  let d=$('#rmDlg');if(d.parentElement!==document.body)document.body.append(d);
+  rmDlgRender();d.showModal();
+  d.onclick=async e=>{
+    if(e.target===d||e.target.closest('[data-x]')){d.close();return}
+    const b=e.target.closest('[data-rs]');if(b&&!b.disabled){if(await rmResetAsk(rmL(b.dataset.rs))){rmDlgRender();renderHome()}return}
+    if(e.target.closest('[data-all]')&&!e.target.closest('[data-all]').disabled){
+      if(!await lConfirm(_t('모든 레슨의 기록을 지울까요?'),_t('통과 기록과 작성한 코드가 모두 지워져요. 되돌릴 수 없어요.'),_t('지우기'),_t('취소')))return;
+      st.done={};st.code={};st.vals={};st.curs={};st.cur=0;save();rmDlgRender();renderHome();
+    }
+  };
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest)return;
+  const n=e.target.closest('#rm .rm-n');if(n){rmPopOpen(n.dataset.rm,n);return}
+  const g=e.target.closest('#rm [data-rmgo]');if(g){const L=rmL(g.dataset.rmgo);if(L)pvStart(L);return}
+  if(e.target.closest('#rmMng')){rmPopClose();rmDlgOpen()}
+});
+
+const DQ_POOL=[["Debug.Log(\"Hello, Thaniya!\");", "콘솔에 글자를 한 줄 출력해요.", [["Debug.Log", "콘솔 창에 메시지를 찍는 함수. 값을 눈으로 확인할 때 가장 먼저 써요."], ["문자열(string)", "큰따옴표 \" \" 로 감싼 글자 묶음."]]], ["Debug.Log(\"HP: \" + hp);", "글자와 변수 값을 + 로 이어 붙여 출력해요.", [["변수", "값을 담아 두는 이름 붙은 상자. hp처럼 이름으로 꺼내 써요."], ["문자열 연결", "글자 + 값을 하면 값이 글자로 바뀌어 이어 붙어요."]]], ["Debug.Log($\"{a} + {b} = {a + b}\");", "글자 앞에 $를 붙이면 중괄호 안의 식이 계산돼 글자에 들어가요.", [["문자열 보간", "$\"…{식}…\" 처럼 글자 안에 값이나 식을 바로 끼워 넣는 방법."]]], ["for (int i = 1; i <= 5; i++)", "i를 1부터 5까지 바꿔 가며 중괄호 안을 다섯 번 실행해요.", [["for 반복문", "시작값; 계속할 조건; 한 번 돌 때마다 할 일 — 세 칸으로 반복 횟수를 정해요."], ["i++", "i에 1을 더해요. i = i + 1 과 같아요."]]], ["Debug.LogWarning(\"체력이 낮아요\");", "콘솔에 노란색 경고로 알려요.", [["경고(Warning)", "멈추지는 않지만 확인이 필요한 일을 알릴 때 써요."]]], ["Debug.LogError(\"저장에 실패했어요\");", "콘솔에 빨간색 오류로 알려요.", [["오류(Error)", "무언가 잘못됐다는 표시. 콘솔에서 빨간색으로 눈에 띄어요."]]], ["Light light = GetComponent<Light>();", "이 오브젝트에 붙은 Light 컴포넌트를 꺼내요.", [["컴포넌트", "게임 오브젝트에 붙이는 기능 조각. 빛, 콜라이더, 스크립트 모두 컴포넌트예요."], ["GetComponent<T>()", "< > 안에 적은 종류의 컴포넌트를 찾아 돌려줘요. 없으면 null."]]], ["GameObject torch = GameObject.Find(\"횃불\");", "이름으로 다른 오브젝트를 찾아요.", [["GameObject", "씬에 놓인 모든 물체의 기본 틀. 이름과 위치(transform)를 가져요."], ["GameObject.Find", "계층 구조에서 이름이 같은 오브젝트를 찾아요. 매 프레임 부르면 느려요."]]], ["light.intensity = 0.3f;", "값을 대입하면 인스펙터와 게임 뷰가 바로 바뀌어요.", [["대입(=)", "오른쪽 값을 왼쪽 변수에 넣어요. 같다는 비교는 == 를 써요."], ["f 접미사", "0.3f처럼 소수 뒤에 f를 붙이면 float(실수) 값이에요."]]], ["light.enabled = false;", "컴포넌트를 끄면 빛이 꺼져요. 오브젝트 전체는 SetActive를 써요.", [["enabled", "컴포넌트 하나를 켜고 끄는 스위치."], ["bool", "true(참) 또는 false(거짓) 두 값만 담는 종류."]]], ["Camera.main.orthographicSize = 2;", "카메라 크기가 작을수록 화면이 더 확대돼요.", [["Camera.main", "씬의 주 카메라를 바로 꺼내는 지름길."], ["orthographicSize", "2D 카메라가 보여 주는 화면 높이의 절반(칸 수)."]]], ["slime.transform.position = hero.transform.position + Vector2.right;", "슬라임을 주인공의 오른쪽 한 칸 옆으로 옮겨요.", [["transform", "모든 오브젝트가 가진 위치 · 회전 · 크기 정보."], ["Vector2", "x, y 두 숫자를 한 묶음으로 다루는 좌표/방향 값."]]], ["hero.hp -= damage;", "hp에서 damage만큼 빼고 다시 저장해요.", [["복합 대입(-=)", "hp = hp - damage 를 줄여 쓴 것. += *= /= 도 있어요."]]], ["hero.hp = Mathf.Min(hero.hp + heal, limit);", "회복해도 한도를 넘지 않게 둘 중 작은 값을 골라요.", [["Mathf", "수학 함수 모음. Min, Max, Abs, Clamp 등이 들어 있어요."]]], ["coin.SetActive(false);", "오브젝트를 화면에서 치워요.", [["SetActive", "오브젝트 전체를 켜고 꺼요. 꺼지면 그리기 · 충돌 · 스크립트가 모두 멈춰요."]]], ["float d = Vector2.Distance(hero.transform.position, coin.transform.position);", "두 위치 사이의 거리를 재요.", [["float", "소수점이 있는 숫자 종류. 거리 · 속도 · 시간에 써요."], ["Vector2.Distance", "두 점 사이의 직선 거리를 돌려줘요."]]], ["public void OnClick()", "버튼의 클릭에 연결할 함수는 public void로 만들어요.", [["public", "다른 스크립트나 인스펙터에서 보이고 쓸 수 있게 열어 둔다는 뜻."], ["void", "돌려주는 값이 없는 함수라는 표시."]]], ["float h = Input.GetAxisRaw(\"Horizontal\");", "왼쪽은 -1, 오른쪽은 +1, 입력이 없으면 0으로 읽어요.", [["Input", "키보드 · 마우스 입력을 읽는 도구 모음."], ["축(Axis)", "방향 입력을 -1 ~ +1 숫자로 바꾼 것. Horizontal은 좌우, Vertical은 위아래."]]], ["hero.Move(dir * speed * Time.deltaTime);", "프레임 속도와 상관없이 같은 속도로 움직여요.", [["Time.deltaTime", "지난 프레임부터 지금까지 걸린 초. 곱하면 “1초에 얼마나”로 바뀌어요."], ["프레임", "화면을 한 번 새로 그리는 단위. 보통 1초에 60번."]]], ["dir = dir.normalized;", "방향의 길이를 1로 맞춰서 대각선이 더 빠르지 않게 해요.", [["정규화(normalized)", "방향은 그대로 두고 길이만 1로 맞춘 벡터."]]], ["if (Input.GetKeyDown(KeyCode.Space))", "키를 누른 순간에만 한 번 true가 돼요.", [["GetKeyDown", "누른 그 프레임에만 true. 누르고 있는 동안은 GetKey."], ["KeyCode", "키보드 키 이름 목록. KeyCode.Space, KeyCode.A …"]]], ["animator.SetTrigger(\"Hop\");", "애니메이터의 Hop 트리거를 발동해 깡충 뛰게 해요.", [["애니메이터", "상태와 전환으로 어떤 애니메이션을 틀지 정하는 컴포넌트."], ["트리거(Trigger)", "한 번 켜지면 전환에 쓰이고 저절로 꺼지는 파라미터."]]], ["void Start()", "게임이 시작될 때 딱 한 번 실행돼요. 처음 값을 정할 때 써요.", [["Start()", "오브젝트가 처음 켜질 때 한 번 불리는 엔진 메시지."], ["메서드(함수)", "이름 붙은 명령 묶음. 이름 뒤에 ( ) 를 붙여 불러요."]]], ["void Update()", "매 프레임마다 실행돼요. 입력 읽기와 이동은 여기서 해요.", [["Update()", "화면을 그릴 때마다(초당 수십 번) 불리는 엔진 메시지."]]], ["public class Coin : MonoBehaviour", "오브젝트에 붙일 수 있는 스크립트는 MonoBehaviour를 물려받아요.", [["class", "변수와 함수를 하나로 묶은 설계도."], ["MonoBehaviour", "Start · Update 같은 엔진 메시지를 받을 수 있게 해 주는 부모 클래스."], ["상속(:)", "콜론 뒤의 클래스 기능을 그대로 물려받아요."]]], ["int score = 0;", "정수를 담는 변수를 만들고 0으로 시작해요.", [["int", "소수점 없는 정수 종류. 점수 · 개수 · 횟수에 써요."], ["선언", "종류와 이름을 적어 변수를 새로 만드는 것."]]], ["string heroName = \"타니아\";", "글자를 담는 변수예요.", [["string", "글자(문자열)를 담는 종류."]]], ["bool isDead = hp <= 0;", "비교 결과(true/false)를 그대로 변수에 담아요.", [["비교 연산자", "== 같다, != 다르다, < > <= >= 크기 비교. 결과는 bool."]]], ["if (hp <= 0) { Die(); } else { Debug.Log(\"버텼다!\"); }", "조건이 참이면 앞 블록, 거짓이면 else 블록을 실행해요.", [["if / else", "조건에 따라 실행할 코드를 고르는 문장."], ["블록 { }", "중괄호로 묶은 여러 줄을 한 덩어리로 실행해요."]]], ["if (hasKey && !door.isOpen)", "열쇠가 있고(그리고) 문이 닫혀 있을 때만 참이에요.", [["&& (그리고)", "양쪽이 모두 참일 때만 참."], ["! (아님)", "참을 거짓으로, 거짓을 참으로 뒤집어요."], ["|| (또는)", "둘 중 하나만 참이어도 참."]]], ["while (count < 3) { count++; }", "조건이 참인 동안 계속 반복해요. 끝나는 조건을 꼭 만들어 주세요.", [["while 반복문", "횟수 대신 조건으로 반복을 정해요. 조건이 영원히 참이면 멈추지 않아요."]]], ["foreach (var enemy in enemies)", "목록에 든 것을 처음부터 하나씩 꺼내 반복해요.", [["foreach", "배열이나 리스트의 항목을 차례로 하나씩 꺼내는 반복문."], ["var", "오른쪽 값을 보고 종류를 컴파일러가 알아서 정해요."]]], ["int[] scores = { 10, 20, 30 };", "같은 종류의 값 여러 개를 한 줄로 담아요.", [["배열", "같은 종류 값을 번호 순서로 담은 묶음. 크기가 정해져 있어요."], ["인덱스", "배열의 칸 번호. 0부터 시작해요 — scores[0]은 10."]]], ["List<string> items = new List<string>();", "개수가 늘었다 줄었다 하는 목록을 만들어요.", [["List<T>", "크기가 자유로운 목록. Add로 넣고 Remove로 빼요."], ["new", "설계도(클래스)로 새 물건(인스턴스)을 만들어요."]]], ["items.Add(\"열쇠\");", "목록 맨 끝에 항목을 하나 넣어요.", [["Add", "리스트 끝에 값을 추가하는 메서드."], ["Count", "리스트에 든 항목 수. 배열은 Length."]]], ["if (items.Contains(\"열쇠\"))", "목록 안에 그 값이 있는지 확인해요.", [["Contains", "찾는 값이 있으면 true를 돌려주는 메서드."]]], ["int Add(int a, int b) { return a + b; }", "값을 받아 계산한 결과를 돌려주는 함수예요.", [["매개변수", "함수를 부를 때 넘겨주는 값을 받는 칸(a, b)."], ["return", "함수의 결과를 돌려주고 함수를 끝내요."]]], ["switch (dir) { case 0: GoUp(); break; default: Stay(); break; }", "값에 따라 여러 갈래 중 하나로 가요.", [["switch / case", "값 하나를 여러 경우와 비교해 맞는 곳을 실행해요."], ["break", "지금 case를 끝내고 switch 밖으로 나가요."], ["default", "어느 case에도 맞지 않을 때 실행돼요."]]], ["enum State { Idle, Walk, Attack }", "정해진 몇 가지 상태에 이름을 붙여요.", [["enum(열거형)", "숫자 대신 뜻이 보이는 이름으로 상태를 고르는 종류."]]], ["const int MaxHp = 100;", "절대 바뀌지 않는 값을 정해요.", [["const", "한 번 정하면 바꿀 수 없는 상수."]]], ["[SerializeField] private float speed = 3f;", "밖에서는 못 건드리지만 인스펙터에는 칸이 보여요.", [["private", "이 클래스 안에서만 쓸 수 있게 숨겨요."], ["[SerializeField]", "private 변수도 인스펙터에 보이게 하는 표시(어트리뷰트)."]]], ["[Header(\"이동\")] [Range(0, 10)] public float speed = 3f;", "인스펙터에 소제목을 달고, 슬라이더로 0~10만 고를 수 있게 해요.", [["어트리뷰트", "[ ] 로 붙이는 꼬리표. 변수나 클래스에 추가 정보를 줘요."], ["Range", "인스펙터 숫자 칸을 범위 슬라이더로 바꿔요."]]], ["[Tooltip(\"1초에 움직이는 칸 수\")]", "인스펙터에서 마우스를 올리면 설명이 떠요.", [["Tooltip", "인스펙터 칸 위에 마우스를 올렸을 때 보이는 도움말."]]], ["speed = Mathf.Clamp(speed, 0f, 10f);", "값이 0보다 작으면 0, 10보다 크면 10으로 묶어 둬요.", [["Mathf.Clamp", "값을 최솟값과 최댓값 사이로 가둬요."]]], ["int roll = Random.Range(1, 7);", "1부터 6까지 중 하나를 무작위로 골라요. 끝 값 7은 빠져요.", [["Random.Range", "무작위 수. 정수일 때 끝 값은 포함되지 않아요."]]], ["float gap = Mathf.Abs(a - b);", "음수든 양수든 크기만 남겨요. 두 값의 차이를 잴 때 써요.", [["Mathf.Abs", "절댓값. -3 → 3."]]], ["transform.position += new Vector3(0, 1, 0);", "지금 자리에서 위로 한 칸 옮겨요.", [["Vector3", "x, y, z 세 숫자 묶음. 2D에서는 z를 0으로 둬요."]]], ["transform.localScale = new Vector3(-1, 1, 1);", "x 크기를 -1로 하면 좌우가 뒤집혀 반대쪽을 봐요.", [["localScale", "오브젝트의 크기 배율. 음수면 그 축으로 뒤집혀요."]]], ["if (Input.GetKey(KeyCode.LeftShift)) speed *= 2;", "Shift를 누르고 있는 동안 두 배로 빨라져요.", [["GetKey", "키를 누르고 있는 동안 매 프레임 true."]]], ["if (Input.GetMouseButtonDown(0))", "마우스 왼쪽 버튼을 누른 순간을 알아내요.", [["GetMouseButtonDown", "0은 왼쪽, 1은 오른쪽, 2는 가운데 버튼."]]], ["animator.SetBool(\"IsMoving\", dir != Vector2.zero);", "움직이는 중인지 참/거짓을 애니메이터에 알려요.", [["파라미터", "애니메이터 전환 조건에 쓰는 값. Bool · Float · Int · Trigger."], ["Vector2.zero", "(0, 0). 아무 방향도 아닌 상태."]]], ["animator.SetFloat(\"Speed\", dir.magnitude);", "움직이는 빠르기를 숫자로 넘겨 걷기·달리기를 고르게 해요.", [["magnitude", "벡터의 길이. 방향 없이 크기만 알려 줘요."]]], ["void OnTriggerEnter2D(Collider2D other)", "트리거 콜라이더 안으로 무언가 들어온 순간 불려요.", [["트리거", "막지는 않고 겹침만 알려 주는 콜라이더 설정."], ["Collider2D", "2D 충돌 모양 컴포넌트. other는 들어온 상대."]]], ["if (other.CompareTag(\"Player\"))", "들어온 것이 주인공(Player 태그)인지 확인해요.", [["태그(Tag)", "오브젝트를 무리로 나누는 이름표. 이름보다 빠르고 안전하게 비교해요."]]], ["void OnCollisionEnter2D(Collision2D hit)", "단단한 콜라이더끼리 부딪힌 순간 불려요.", [["충돌(Collision)", "트리거가 아닌 콜라이더끼리 서로 막으며 부딪히는 것."]]], ["GameObject s = Instantiate(slimePrefab, pos, Quaternion.identity);", "프리팹으로 새 슬라임을 만들어 pos에 놓아요.", [["Instantiate", "원본(프리팹)을 복제해 씬에 새로 만들어요."], ["프리팹", "다시 쓰려고 저장해 둔 오브젝트 원본."], ["Quaternion.identity", "“회전 없음”을 뜻하는 회전 값."]]], ["Destroy(gameObject, 2f);", "2초 뒤에 이 오브젝트를 없애요.", [["Destroy", "오브젝트나 컴포넌트를 지워요. 두 번째 값은 기다릴 초."], ["gameObject", "이 스크립트가 붙은 오브젝트 자기 자신."]]], ["Invoke(\"Respawn\", 3f);", "3초 뒤에 Respawn 함수를 한 번 불러요.", [["Invoke", "함수 이름과 초를 주면 그만큼 기다렸다가 실행해요."]]], ["StartCoroutine(Blink());", "기다렸다 이어서 하는 일을 따로 실행해요.", [["코루틴", "yield로 중간에 쉬었다가 다음 프레임 · 몇 초 뒤에 이어서 실행되는 함수."]]], ["yield return new WaitForSeconds(0.5f);", "코루틴 안에서 0.5초 쉬었다가 다음 줄로 가요.", [["yield return", "코루틴을 잠깐 멈추고 엔진에 차례를 넘겨요."], ["IEnumerator", "코루틴 함수의 돌려주는 종류."]]], ["SceneManager.LoadScene(\"숲\");", "다른 씬으로 넘어가요.", [["씬(Scene)", "맵 · 화면 하나 단위. 마을, 숲, 메인 화면 등."], ["SceneManager", "씬을 불러오고 바꾸는 도구."]]], ["DontDestroyOnLoad(gameObject);", "씬이 바뀌어도 이 오브젝트(매니저)를 지우지 않고 남겨요.", [["매니저", "점수 · 소지품처럼 게임 전체가 함께 쓰는 정보를 맡는 오브젝트."]]], ["public static GameManager Instance;", "어디서든 GameManager.Instance로 바로 찾아 쓰게 해요.", [["static", "오브젝트마다가 아니라 클래스에 하나만 있는 값."], ["싱글턴", "게임에 딱 하나만 두고 어디서나 꺼내 쓰는 패턴."]]], ["if (target != null) target.SetActive(true);", "비어 있지 않을 때만 써서 오류를 막아요.", [["null", "아무것도 가리키지 않는 빈 상태. null인 것을 쓰면 오류가 나요."]]], ["dialogUI?.SetActive(false);", "?. 는 null이면 아무것도 안 하고 넘어가요.", [["?. (null 조건)", "앞이 null이면 뒤를 실행하지 않는 안전한 점."]]], ["label.text = \"점수: \" + score;", "UI 텍스트에 글자를 넣어 화면에 보여 줘요.", [["UI 텍스트", "화면 위에 글자를 보여 주는 UI 요소. text 값을 바꾸면 바로 바뀌어요."]]], ["UIScreen.Show(\"메인 화면\");", "이름으로 UI 화면(그룹)을 띄워요.", [["UI 그룹", "여러 UI 요소를 묶어 한꺼번에 보이고 숨기는 단위."]]], ["UIScreen.SetText(dialogUI.name, \"대사\", line);", "대화창 그룹의 「대사」 칸 글자를 바꿔요.", [["SetText", "그룹 이름 · 요소 이름 · 넣을 글자 순서로 UI 글자를 바꿔요."]]], ["public void OnInteract()", "주인공이 말을 걸면(상호작용 키) 엔진이 불러 줘요.", [["상호작용", "주인공이 가까이서 키를 눌러 NPC · 상자 등에 반응하는 것."]]], ["director.Play();", "플레이어블 디렉터가 타임라인(컷씬)을 재생해요.", [["타임라인", "시간 막대 위에 애니메이션 · 소리 · 켜기/끄기를 배치한 연출."], ["플레이어블 디렉터", "타임라인을 재생하는 컴포넌트."]]], ["audioSource.PlayOneShot(coinSfx);", "효과음을 한 번 재생해요. 다른 소리를 끊지 않아요.", [["AudioSource", "오브젝트에서 소리를 내는 컴포넌트."], ["AudioClip", "소리 파일 하나."]]], ["transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);", "목표 지점까지 일정한 속도로 조금씩 다가가요.", [["MoveTowards", "현재 값에서 목표 쪽으로 최대 거리만큼만 움직인 값을 돌려줘요."]]], ["Vector2 dir = (hero.position - transform.position).normalized;", "나에게서 주인공 쪽을 가리키는 방향을 구해요.", [["벡터 빼기", "목표 - 나 = 나에서 목표로 향하는 화살표."]]], ["timer += Time.deltaTime; if (timer >= 1f) { timer = 0f; Tick(); }", "1초마다 한 번씩 일을 하게 만드는 타이머예요.", [["타이머", "흐른 시간을 더해 가다 기준을 넘으면 실행하고 다시 0으로."]]], ["string msg = hp > 50 ? \"괜찮아\" : \"위험해\";", "조건이 참이면 앞 값, 거짓이면 뒤 값을 골라요.", [["삼항 연산자", "조건 ? 참일 때 : 거짓일 때 — if/else를 한 줄로."]]], ["int n = int.Parse(\"42\");", "글자 \"42\"를 숫자 42로 바꿔요.", [["형 변환", "값의 종류를 바꾸는 것. 글자→숫자는 Parse, 숫자→글자는 ToString()."]]], ["// 주인공이 문에 닿으면 열기", "// 뒤의 글은 실행되지 않는 메모(주석)예요.", [["주석", "사람이 읽으려고 남기는 메모. // 한 줄, /* */ 여러 줄."]]]];
+/* 날마다 바뀌는 오늘의 코드 (‹ › 로 넘겨 보기 · 다른 코드는 무작위) */
+let DQ_I=Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5)%DQ_POOL.length;
+function dqRender(){
+  const p=DQ_POOL[DQ_I],tm=p[2]||[];
+  $('#dq').innerHTML=`<p class="dq-l" id="dqT">${esc(_t('오늘의 코드 한 줄'))}<span class="dq-n">${DQ_I+1} / ${DQ_POOL.length}</span></p><blockquote><span class="dq-q" aria-hidden="true">“</span><code class="dq-c" translate="no">${csHighlight(p[0]).replace(/\n\s*$/,'')}</code><span class="dq-q" aria-hidden="true">”</span></blockquote><figcaption>${esc(p[1])}</figcaption>${tm.length?`<dl class="dq-tm" aria-label="${esc(_t('용어'))}">${tm.map(([k,v])=>`<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>`:''}<div class="dq-nav"><button type="button" data-dq="-1" aria-label="${esc(_t('이전 코드'))}" title="${esc(_t('이전 코드'))}">‹</button><button type="button" data-dq="r">↻ ${esc(_t('다른 코드'))}</button><button type="button" data-dq="1" aria-label="${esc(_t('다음 코드'))}" title="${esc(_t('다음 코드'))}">›</button></div>`;
+}
+$('#dq').addEventListener('click',e=>{const b=e.target.closest('[data-dq]');if(!b)return;const k=b.dataset.dq,N=DQ_POOL.length;
+  if(k==='r'){let j=DQ_I;if(N>1)while(j===DQ_I)j=Math.floor(Math.random()*N);DQ_I=j}else DQ_I=(DQ_I+ +k+N)%N;
+  dqRender();const f=$('#dq [data-dq="'+k+'"]');if(f)f.focus({preventScroll:true})});
 function renderHome(refocus){
   dqRender();
+  rmRender();
   renderLvBar(refocus);
   const shown=LORDER.filter(L=>inCat(L,LCF));
   $('#cards').innerHTML=shown.map(L=>{
     const n=L.problems.filter(p=>st.done[p.id]).length,t=L.problems.length,done=n===t;
-    const label=done?'다시 보기':n?'이어하기':'시작하기',state=done?'완료':n?'진행 중':'시작 전';
+    const label=done?'다시하기':n?'이어하기':'시작하기',state=done?'완료':n?'진행 중':'시작 전';
     return`<button type="button" class="card" data-go="${L.hash}" aria-label="${esc(_t('난이도'))} ${esc(lvName(L))} · ${esc(L.title)} · ${esc(_t(state))}">
       <div class="ctop">${lvChip(L)}${catChips(L)}<span class="state${done?' done':''}">${done?'✓ ':''}${state}</span></div>
       <h2>${esc(L.title)}</h2><p title="${esc(L.lead)}">${esc(L.lead)}</p>${kwList(L)}<pre>${csHighlight(L.preview)}</pre>
       <div class="cfoot"><div class="cbar"><i style="width:${n/t*100}%"></i></div><span class="cnum">${esc(_t('{n} / {t} 문제',{n,t}))}</span><span class="go">${label}</span></div></button>`;
   }).join('')+(shown.length?(LCF==='all'?`<div class="card soon" aria-hidden="true"><p>다음 레슨을 준비하고 있어요</p></div>`:''):`<div class="card soon empty-cat"><div class="ec-ic" aria-hidden="true">${lcatSvg(LCF)}</div><p><b>${esc(_t(LCF==='vs'?'비주얼 스크립트 레슨을 준비하고 있어요':'다음 레슨을 준비하고 있어요'))}</b>${LCF==='vs'?`<span>${esc(_t('노드를 선으로 이어 만드는 레슨이 곧 나와요. 그동안 엔진의 「비주얼 스크립트」 창에서 먼저 만들어 보세요.'))}</span>`:''}</p></div>`);
   $('#cards').hidden=RV_ON;$('#rvList').hidden=!RV_ON;if(RV_ON)rvRender();
-  $('#tools').innerHTML=`<button type="button" class="card tool" data-go="search" aria-label="도구 · 코드 검색 · 코드를 넣으면 설명과 예시를 보여 줘요">
-      <div class="tl">
-        <div class="ctop"><span class="chip">레슨 아님 · 찾아보기</span></div>
-        <h2>코드 검색</h2><p>스크립트에 코드를 넣으면 쓰인 코드마다 설명과 예시, 출력을 보여줍니다.</p>
-      </div>
-      <pre>${csHighlight('Debug.Log("HP: " + hp);\n→ 콘솔에 글을 출력합니다')}</pre></button>`;
+  qkRender();
 }
 $('#cards').addEventListener('click',e=>{const c=e.target.closest('[data-go]');if(c)location.hash=(window.PV_DATA&&PV_DATA[c.dataset.go]?'about-':'')+c.dataset.go});
-$('#tools').addEventListener('click',e=>{const c=e.target.closest('[data-go]');if(c)location.hash=c.dataset.go});
-$('#toHome').onclick=()=>{location.hash=''};
+$('#toHome').onclick=()=>{location.hash='lessons'};
 $('#lvHome').onclick=e=>{e.preventDefault();location.hash=''};
 (function(){
   const K='thaniya.learn.topclosed',tg=$('#topTg'),bx=$('#topx');
@@ -5681,6 +6253,7 @@ function svOpen(){
     const a=ta.selectionStart,b=ta.selectionEnd,v=ta.value;
     if(e.key==='Tab'&&!e.ctrlKey&&!e.altKey){
       e.preventDefault();
+      if(typeof edTabStop==='function'){edTabStop(ta,e.shiftKey);return}
       if(e.shiftKey){const ls=v.lastIndexOf('\n',a-1)+1,m=/^( {1,4}|\t)/.exec(v.slice(ls));if(m)ta.setRangeText('',ls,ls+m[0].length,'end')}
       else ta.setRangeText('    ',a,b,'end');
       ta.dispatchEvent(new Event('input'));
@@ -5817,14 +6390,15 @@ $('#pvStartT').onclick=()=>pvStart();
 function pvUpSync(){const b=$('#pvUp');if(b)b.classList.toggle('show',!$('#pvView').hidden&&scrollY>360)}
 addEventListener('scroll',pvUpSync,{passive:true});
 $('#pvUp').onclick=()=>{window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});$('#pvStartT').focus({preventScroll:true})};
-$('#pvList').onclick=()=>{location.hash=''};
-$('#pvBack').onclick=()=>{location.hash=''};
+$('#pvList').onclick=()=>{location.hash='lessons'};
+$('#pvBack').onclick=()=>{location.hash='lessons'};
+$('#hmBack').onclick=()=>{location.hash=''};$('#exBack').onclick=()=>{location.hash=''};$('#exHome').onclick=e=>{e.preventDefault();location.hash=''};
 $('#pvHome').onclick=e=>{e.preventDefault();location.hash=''};
 function route(){
-  const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search',PVL=LESSONS.find(x=>'#about-'+x.hash===location.hash);
-  $('#home').hidden=!!L||S||!!PVL;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;$('#pvView').hidden=!PVL;
+  const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search',PVL=LESSONS.find(x=>'#about-'+x.hash===location.hash),X=location.hash==='#examples',LS=location.hash==='#lessons';
+  $('#home').hidden=!!L||S||!!PVL||X;$('#home').dataset.page=LS?'lessons':'hub';$('#exView').hidden=!X;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;$('#pvView').hidden=!PVL;
   if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
-  else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);if(VSON)vsSetup(null);if(EN.on)enSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else renderHome()}
+  else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);if(VSON)vsSetup(null);if(EN.on)enSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':X?'Thaniya Engine Edu · '+_t('예제'):LS?'Thaniya Engine Edu · '+_t('레슨'):'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else if(X)exRender();else renderHome()}
   window.scrollTo(0,0);
 }
 let tkPass=false;
@@ -5837,6 +6411,128 @@ addEventListener('hashchange',async e=>{
   tkPass=false;route();
 });
 route();
+/* ===================== 학습 노트 창: 왼쪽 학습 내용 + 해야 할 일을 합쳐 따로 떠 있는 새 창으로 =====================
+   새 창은 이 페이지가 직접 그리는 빈 창(about:blank). 원래 #brief · #tkList 등은 그대로 두고 내용만 비춰 보여 줌(MutationObserver).
+   새 창에서 누른 버튼은 같은 자리의 원래 버튼을 대신 눌러 줌 → 힌트 보기 · 위치 보기 · 확인하기가 원래와 똑같이 동작 */
+let bfWin=null,bfMO=null,bfPoll=0,bfRaf=0;
+const BF_SRC={brief:'#brief',tkList:'#tkList',tkStat:'#tkStat',verdict:'#verdict'};
+if(window.TI18N)TI18N.add({"새 창":["Pop out","別ウィンドウ","新窗口"],"학습 내용과 해야 할 일을 새 창으로 따로 보기":["Open the lesson guide and to-do list in a separate window","学習内容とやることを別ウィンドウで見る","在新窗口中单独查看学习内容和待办事项"],
+ "학습 노트":["Lesson notes","学習ノート","学习笔记"],"학습 노트 · 새 창":["Notes · pop-out","学習ノート · 別ウィンドウ","学习笔记 · 新窗口"],"학습 내용과 해야 할 일이 새 창에 열려 있어요":["The lesson guide and to-do list are open in a separate window","学習内容とやることは別ウィンドウで開いています","学习内容和待办事项已在新窗口中打开"],
+ "새 창 보기":["Show window","ウィンドウを表示","显示窗口"],"다시 합치기":["Dock back","元に戻す","合并回来"],"원래 화면으로 합치기":["Dock back into the lesson","元の画面に戻す","合并回原界面"],
+ "해야 할 일":["To do","やること","待办事项"],"이전 문제":["Previous","前の問題","上一题"],"다음 문제":["Next","次の問題","下一题"],"실행하고 채점":["Run & grade","実行して採点","运行并评分"],"확인하기":["Check","確認する","检查"],
+ "레슨을 열면 여기에 학습 내용이 보여요.":["Open a lesson to see its guide here.","レッスンを開くとここに学習内容が表示されます。","打开课程后，学习内容会显示在这里。"],
+ "팝업이 차단됐어요. 브라우저에서 이 페이지의 팝업을 허용해 주세요":["The pop-up was blocked. Allow pop-ups for this page in your browser.","ポップアップがブロックされました。このページのポップアップを許可してください","弹出窗口被拦截。请在浏览器中允许此页面的弹出窗口"]});
+const bfOn=()=>!!(bfWin&&!bfWin.closed);
+function bfOpen(){
+  if(bfOn()){try{bfWin.focus()}catch(e){}return}
+  const W=440,H=Math.min(900,Math.max(480,(screen.availHeight||900)-60));
+  const sx=window.screenX||0,sl=screen.availLeft||0;
+  const l=sx-W-8>=sl?sx-W-8:sx+16,t=(window.screenY||0)+30;
+  const feat='popup=yes,width='+W+',height='+H+',left='+Math.round(l)+',top='+Math.round(t);
+  let w=window.open('','thaniya-brief',feat);
+  if(!w){alert(_t('팝업이 차단됐어요. 브라우저에서 이 페이지의 팝업을 허용해 주세요'));return}
+  try{void w.document.body}catch(e){try{w.close()}catch(_){ }w=window.open('','thaniya-brief-'+Date.now(),feat)}  /* 예전 페이지가 연 창이면 다시 엶 */
+  if(!w)return;
+  bfWin=w;bfBuild();bfSet(true);
+  try{w.focus()}catch(e){}
+}
+function bfBuild(){
+  const d=bfWin.document,css=[...document.querySelectorAll('style')].map(s=>'<style>'+s.textContent+'</style>').join('')+[...document.querySelectorAll('link[rel="stylesheet"]')].map(l=>`<link rel="stylesheet" href="${esc(l.href)}">`).join('');
+  d.open();d.write(`<!doctype html><html lang="${esc(document.documentElement.lang||'ko')}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(_t('학습 노트'))} · Thaniya Engine Edu</title>${css}<style>${BF_CSS}</style></head>
+<body class="bfwin ws"><header class="bfw-top"><div class="bfw-tt"><b id="bwNo"></b><span id="bwTitle"></span></div><div class="bfw-pg"><span id="bwProg"></span><span class="bfw-bar"><i id="bwBar"></i></span></div></header>
+<nav class="bfw-nav"><button type="button" data-nav="-1">‹ <span>${esc(_t('이전 문제'))}</span></button><span id="bwStep"></span><button type="button" data-nav="1"><span>${esc(_t('다음 문제'))}</span> ›</button></nav>
+<main class="bfw-main" id="bwMain"><section class="brief-pn" data-src="brief"></section>
+<section class="bfw-tk" id="bwTk"><div class="bfw-tkh"><b>${esc(_t('해야 할 일'))}</b><span data-src="tkStat"></span></div><ol class="tklist" data-src="tkList"></ol></section>
+<div class="verdict" data-src="verdict" role="status"></div><p class="bfw-empty" id="bwEmpty" hidden>${esc(_t('레슨을 열면 여기에 학습 내용이 보여요.'))}</p></main>
+<footer class="bfw-foot"><button type="button" class="bfw-act" id="bwAct"></button><button type="button" class="bfw-dock" data-dock>⇤ ${esc(_t('원래 화면으로 합치기'))}</button></footer></body></html>`);
+  d.close();
+  d.addEventListener('click',bfClick);
+  d.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&(e.key==='p'||e.key==='P')){e.preventDefault();bfAct()}
+  });
+  bfWin.addEventListener('pagehide',()=>setTimeout(()=>{if(!bfOn())bfSet(false)},50));
+  bfSync(true);
+}
+/* 새 창에서 누른 것 → 원래 화면의 같은 자리 버튼을 누름 */
+function bfClick(e){
+  const t=e.target;if(!t.closest)return;
+  if(t.closest('[data-dock]')){bfClose();return}
+  if(t.closest('#bwAct')){bfAct();return}
+  const nv=t.closest('[data-nav]');if(nv){const b=document.querySelector(`#steps .step[data-i="${st.cur+ +nv.dataset.nav}"]`);if(b)b.click();bfFocusMain();return}
+  const el=t.closest('button,a,summary,[role="button"],.tkloc');if(!el)return;
+  const box=el.closest('[data-src]');if(!box)return;const src=$(BF_SRC[box.dataset.src]);if(!src)return;
+  const path=[];for(let n=el;n!==box;n=n.parentElement)path.unshift([...n.parentElement.children].indexOf(n));
+  let m=src;for(const i of path){m=m&&m.children[i]}
+  if(m){e.preventDefault();m.click();if(m.classList.contains('tkloc')||m.closest('.goalloc'))bfFocusMain()}
+}
+function bfFocusMain(){try{window.focus()}catch(e){}}
+function bfAct(){const p=P();if(!p)return;const b=p.task?$('#tkCheck'):$('#run');if(b&&!b.disabled)b.click()}
+/* 원래 화면: 문제 칸 자리에 「새 창에 열려 있어요」 표시, 문제 칸 숨김 */
+function bfSet(on){
+  const ws=$('#lessonView>.ws');if(ws)ws.classList.toggle('bf-out',on);
+  $('#bfStub').hidden=!on;
+  if(on){if(!bfMO){bfMO=new MutationObserver(()=>bfSync());}
+    ['#brief','#tkList','#tkStat','#taskPn','#verdict','#lNo','#lTitle','#progT','#steps','#lessonView'].forEach(s=>{const n=$(s);if(n)bfMO.observe(n,{subtree:true,childList:true,characterData:true,attributes:true})});
+    bfMO.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme','lang']});
+    clearInterval(bfPoll);bfPoll=setInterval(()=>{if(!bfOn())bfSet(false)},700);
+  }else{if(bfMO)bfMO.disconnect();clearInterval(bfPoll);bfWin=null}
+  dispatchEvent(new Event('resize'));
+}
+function bfClose(){const w=bfWin;bfSet(false);try{if(w&&!w.closed)w.close()}catch(e){}bfFocusMain()}
+function bfSync(now){
+  if(!bfOn())return;
+  if(!now){if(bfRaf)return;bfRaf=requestAnimationFrame(()=>{bfRaf=0;bfSync(true)});return}
+  let d;try{d=bfWin.document}catch(e){bfSet(false);return}
+  if(!d||!d.body)return;
+  const he=d.documentElement,th=document.documentElement.dataset.theme;
+  if(th)he.dataset.theme=th;else delete he.dataset.theme;
+  const on=!$('#lessonView').hidden,p=on&&P();
+  d.getElementById('bwEmpty').hidden=!!p;
+  const q=s=>d.querySelector(s),set=(el,h)=>{if(el&&el.innerHTML!==h)el.innerHTML=h};
+  q('.bfw-top').hidden=q('.bfw-nav').hidden=q('.bfw-foot .bfw-act').hidden=!p;
+  [...d.querySelectorAll('[data-src]')].forEach(el=>{const src=$(BF_SRC[el.dataset.src]);set(el,p&&src?src.innerHTML:'');if(src&&el.dataset.src!=='brief')el.className=src.className});
+  q('#bwTk').hidden=!p||!p.task||$('#taskPn').hidden;
+  if(!p){d.title=_t('학습 노트')+' · Thaniya Engine Edu';return}
+  q('#bwNo').textContent=$('#lNo').textContent;q('#bwTitle').textContent=$('#lTitle').textContent;q('#bwProg').textContent=$('#progT').textContent;
+  q('#bwBar').style.width=$('#progB').style.width;
+  q('#bwStep').textContent=(st.cur+1)+' / '+PROBLEMS.length;
+  q('[data-nav="-1"]').disabled=st.cur<=0;q('[data-nav="1"]').disabled=st.cur>=PROBLEMS.length-1;
+  const a=q('#bwAct'),at=_t(p.task?'확인하기':'실행하고 채점')+'  Ctrl P';if(a.textContent!==at)a.textContent=at;
+  d.title=_t('학습 노트')+' · '+LESSON.title;
+}
+addEventListener('pagehide',()=>{try{if(bfOn())bfWin.close()}catch(e){}});
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('#bfPop,#bfStubShow,#bfStubDock');if(!t)return;
+  if(t.id==='bfStubDock')bfClose();else bfOpen()});
+const BF_CSS=`
+html,body{height:100%}
+body.bfwin.ws{margin:0;padding:0;gap:0;display:flex;flex-direction:column;align-items:stretch;background:var(--bg);color:var(--tx);font:14px/1.65 var(--f)}
+.bfw-top{flex:none;display:flex;flex-direction:column;gap:6px;padding:12px 16px 10px;border-bottom:1px solid var(--line);background:var(--panel)}
+.bfw-tt{display:flex;align-items:baseline;gap:8px;min-width:0}
+.bfw-tt b{flex:none;font-size:11.5px;color:var(--y);font-weight:600}
+.bfw-tt span{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bfw-pg{display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--mut)}
+.bfw-bar{flex:1;height:5px;border-radius:99px;background:var(--raised);overflow:hidden}.bfw-bar i{display:block;height:100%;background:var(--ok);border-radius:inherit}
+.bfw-nav{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.bfw-nav span#bwStep{flex:1;text-align:center;font:600 12px var(--m);color:var(--mut)}
+.bfw-nav button,.bfw-foot button{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--raised);color:var(--tx);font-size:12.5px}
+.bfw-nav button:hover:not(:disabled),.bfw-foot .bfw-dock:hover{border-color:var(--y)}
+.bfw-nav button:disabled{opacity:.4;cursor:default}
+.bfw-main{flex:1;min-height:0;overflow:auto;padding:0 0 12px;scrollbar-width:thin}
+.bfw-main .brief-pn{display:block;padding:16px 16px 6px;font-size:13.5px;background:none;border:0;box-shadow:none;border-radius:0}
+.bfw-main .brief-pn h1{font-size:17px;padding-right:0}
+.bfw-main .bfpop{display:none!important}
+.bfw-tk{margin:6px 12px 0;border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
+.bfw-tk[hidden]{display:none}
+.bfw-tkh{display:flex;align-items:center;gap:10px;padding:9px 13px;border-bottom:1px solid var(--line);font-size:12.5px}
+.bfw-tkh span{margin-left:auto;color:var(--mut);font-size:11.5px}
+.bfw-tk .tklist{padding:10px}
+.bfw-main .verdict{margin:10px 12px 0}.bfw-main .verdict:empty{display:none}
+.bfw-empty{margin:40px 20px;text-align:center;color:var(--mut)}
+.bfw-foot{flex:none;display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel)}
+.bfw-foot .bfw-act{flex:1;border:0;background:linear-gradient(180deg,#ffdd5a,#e9bd0c);color:#1a1400;font-weight:700}
+.bfw-foot .bfw-act[hidden]{display:none}
+.bfw-foot .bfw-dock{margin-left:auto}
+`;
 /* 코드 검색을 따로 떠 있는 새 창(단독 창)으로 열기 · 같은 창이 있으면 그 창을 다시 씀 */
 function openSearchWin(){
   const w=Math.min(1000,Math.max(480,(screen.availWidth||1200)-80)),h=Math.min(780,Math.max(420,(screen.availHeight||900)-80));
@@ -5885,7 +6581,7 @@ function resetLesson(){
 function resetAll(){
   if(!confirm(_t('모든 레슨의 통과 기록과 작성한 코드를 지울까요? 되돌릴 수 없어요.')))return;
   st.done={};st.code={};st.vals={};st.curs={};st.cur=0;save();
-  if(location.hash)show(0);else renderHome();
+  if(!$('#lessonView').hidden)show(0);else renderHome();
 }
 $('#topReset').onclick=e=>popMenu(e.currentTarget,[
   {t:'이 문제 처음 상태로',ic:'select',fn:resetProblem},
