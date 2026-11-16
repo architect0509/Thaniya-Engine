@@ -2024,7 +2024,7 @@ body.popbody .pcol{display:none}
 </div>
 
 <script src="script-engine.js?v=20261110a"></script>
-<script src="script-editor.js?v=20261111b"></script>
+<script src="script-editor.js?v=20261116a"></script>
 <script src="anim-editor.js?v=20261107h"></script>
 <script src="timeline.js?v=20261110a"></script>
 <script src="ui-builder.js?v=20261107a"></script>
@@ -5844,7 +5844,8 @@ function startRename(rk){
     renderHier();renderInsp();
   };
   inp.addEventListener('keydown',ev=>{ev.stopPropagation();if(ev.key==='Enter')fin(true);else if(ev.key==='Escape')fin(false)});
-  inp.addEventListener('blur',()=>fin(true));
+  /* 이름 번역기(우클릭 → 번역기)가 이 칸을 붙잡고 있는 동안은 확정하지 않음 — 적용하면 이 칸으로 돌아옴 */
+  inp.addEventListener('blur',()=>{if(window.NAMETR&&NAMETR.holds(inp))return;fin(true)});
   inp.addEventListener('click',ev=>ev.stopPropagation());
   inp.addEventListener('dblclick',ev=>ev.stopPropagation());
 }
@@ -6689,7 +6690,7 @@ function renderEditor(){
   const popped=POPPED.has('script');
   box.innerHTML=`<div class="sedbar">${spkBtn()}<div class="sedtabs">${tabs}</div><span class="spacer"></span><span class="sedsaved" id="edSaved" aria-live="polite"></span>${popped?'':`<button class="btn sm" id="edDock">${floating?'패널로 축소':'큰 창으로 확대'}</button>`}${setv.ko?'<button class="btn sm" id="edKo" title="이 스크립트를 한글 코드 ↔ 영어(C#) 코드로 바꿉니다">한↔영</button>':''}<button class="btn sm pri" id="edSave">저장 <kbd>Ctrl S</kbd></button></div>
   <div class="edwrap"><pre class="gut" id="edGut"></pre><div class="edcode"><pre class="hl" id="edHl" aria-hidden="true"></pre><textarea id="edTa" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea></div></div>
-  <div class="sedfoot"><span id="edStat"></span><span class="spacer"></span><span id="edOcc" class="edocc"></span><span id="edPos">줄 1, 열 1</span><span>Ctrl Space 자동완성</span><span>C# · UTF-8</span></div>`;
+  <div class="sedfoot"><span id="edStat"></span><span class="spacer"></span><span id="edOcc" class="edocc"></span><span id="edPos">줄 1, 열 1</span><span>Ctrl Space 자동완성</span><span title="빈 줄에 help 를 치거나 F1을 누르면 예시 코드 도움말이 열립니다">help 도움말</span><span>C# · UTF-8</span></div>`;
   const ta=box.querySelector('#edTa'),hl=box.querySelector('#edHl'),gut=box.querySelector('#edGut'),st=box.querySelector('#edStat'),pos=box.querySelector('#edPos');
   ta.value=code;
   const paint=()=>{
@@ -10255,6 +10256,7 @@ function popOut(id,at){
   WIN_LS.forEach(([t,f,o])=>{try{w.addEventListener(t,f,o)}catch(e){}});
   el.classList.remove('float','nhide','collapsed','pjmax');el.style.cssText='';el.classList.add('popped');
   d.body.append(el);popTitle(el,true);if(window.TI18N)TI18N.attach(d.documentElement);
+  if(window.NAMETR)NAMETR.attach(d);   /* 꺼낸 창에서도 이름 칸 우클릭 → 번역기 */
   saveLayout();renderLayout();
   const back=()=>{if(POPPED.get(id)===rec)popIn(id)};
   w.addEventListener('pagehide',back);w.addEventListener('beforeunload',back);

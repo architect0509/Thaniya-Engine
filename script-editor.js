@@ -3,6 +3,7 @@
  *   엔진(edit.html)과 학습(learning.html)이 함께 씁니다. 여기만 고치면 두 화면의 편집기가 똑같이 바뀝니다.
  *  [포함]  코드 색칠(csHighlight) · 자동완성 데이터(CS_API · AC_DOC …) · 자동완성 계산·목록 상자 ·
  *          한/영 자판 보정(ko2key) · 대소문자 자동 보정(acFix) · 편집기 실행 취소(edUndo) · 입력칸 연결(acHook)
+ *          도움 기능: 이름 번역기(NAMETR · 이름 칸 우클릭) · 스크립트 도움말(EDHELP · help / F1)
  *  [필요]  script-engine.js (parseCS · csBlank · 한글 스크립트 사전) 를 먼저 불러옵니다.
  *  [호스트가 CSED.use({...}) 로 넘기는 것]
  *     scripts()   프로젝트의 C# 스크립트 목록 [{name, code}] — 직접 만든 클래스를 자동완성에 보여 줌
@@ -856,6 +857,7 @@ function acHook(ta){
   ta.addEventListener('blur',()=>setTimeout(acHide,120));
   ta.addEventListener('click',acHide);
   ta.addEventListener('scroll',()=>{if(ac.on&&ac.ta===ta)acPlace()});
+  edHelpHook(ta);   /* help / 도움말 / F1 → 스크립트 도움말 창 */
 }
 /* ---- 학습 화면에서 다듬어 둔 API·설명 합치기 (엔진에 없던 멤버는 추가, 설명이 없던 항목에는 학습용 설명) ---- */
 (function csedMerge(M){
@@ -994,3 +996,659 @@ function edTabStop(ta,shift,W){
   if(shift){const n=/^ */.exec(v.slice(ls))[0].length;if(!n)return true;const m=down(n);ta.setRangeText('',ls+m,ls+n,'preserve');const c=Math.max(ls+m,a-(n-m));ta.setSelectionRange(c,c);ta.dispatchEvent(new Event('input'));return true}
   const col=a-ls,add=W-col%W;ta.setRangeText(' '.repeat(add),a,b,'end');ta.dispatchEvent(new Event('input'));return true;
 }
+
+/* ============================================================================
+ *  도움 기능 (2026-11-16) — 엔진 · 학습 화면 공용
+ *   ① 이름 번역기 NAMETR : 이름 입력칸 우클릭 → 「번역기」 → 작은 번역기 창 → 변환 → 적용
+ *        · 한글(일본어·중국어도)로 쓴 이름을 영어 이름으로 바꿈 (스크립트 이름 = PlayerMove, 오브젝트 이름 = Player Move …)
+ *        · 게임 낱말은 내장 사전(주인공 → Hero)으로 바로, 나머지는 인터넷 번역(Google → MyMemory), 안 되면 사전 + 로마자
+ *        · Shift+우클릭은 브라우저 기본 메뉴
+ *   ② 스크립트 도움말 EDHELP : 편집기의 빈 줄에 help(또는 도움말)를 치거나 F1 → 작은 도움말 창
+ *        · 검색칸에 치는 대로 목록이 바로 줄어듦 (제목 · 설명 · 낱말 · 코드 · 초성 ㅋㅍㄴㅌ)
+ *        · 항목을 누르면 예시 코드 미리 보기 · Tab / Enter / 「적용」 / 더블클릭 = 커서 자리에 코드 넣기 (들여쓰기 맞춤)
+ * ========================================================================== */
+const ASSIST_CSS_ID='csAssistCss';
+function assistCss(d){
+  if(!d||d.getElementById(ASSIST_CSS_ID))return;
+  const st=d.createElement('style');st.id=ASSIST_CSS_ID;st.textContent=
+  /* 공통 떠 있는 작은 창 */
+  '.aswin{position:fixed;z-index:2147482990;display:flex;flex-direction:column;background:#202027;color:#ececf1;border:1px solid rgba(255,255,255,.14);border-radius:12px;box-shadow:0 18px 48px rgba(0,0,0,.55);font:12.5px/1.45 var(--f-body,"IBM Plex Sans KR","Malgun Gothic",system-ui,sans-serif);overflow:hidden}'+
+  '.aswin .ashd{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 12px;background:rgba(255,255,255,.045);border-bottom:1px solid rgba(255,255,255,.08);cursor:move;user-select:none;touch-action:none}'+
+  '.aswin .ashd b{font-size:12.5px;font-weight:700}.aswin .ashd .asic{display:grid;place-items:center;width:20px;height:20px;border-radius:6px;background:#e9bd0c;color:#1a1400;font:700 11px var(--f-mono,monospace)}'+
+  '.aswin .ashd small{color:#9b9ba6;font-size:11px}.aswin .ashd .sp{flex:1}'+
+  '.aswin .asx{width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:#b9b9c3;cursor:pointer;font:13px/1 system-ui}.aswin .asx:hover{background:rgba(255,255,255,.1);color:#fff}'+
+  '.aswin input[type=text],.aswin input[type=search]{width:100%;height:30px;padding:0 9px;border-radius:7px;border:1px solid rgba(255,255,255,.14);background:#131317;color:#f4f4f7;font:13px var(--f-body,system-ui);outline:0}'+
+  '.aswin input:focus{border-color:#e9bd0c;box-shadow:0 0 0 2px rgba(233,189,12,.18)}'+
+  '.aswin .asbtn{height:28px;padding:0 12px;border-radius:7px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#ececf1;font:600 12px var(--f-body,system-ui);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}'+
+  '.aswin .asbtn:hover{background:rgba(255,255,255,.15)}.aswin .asbtn.pri{background:#e9bd0c;border-color:#e9bd0c;color:#1a1400}.aswin .asbtn.pri:hover{filter:brightness(1.08)}.aswin .asbtn:disabled{opacity:.45;cursor:default}'+
+  '.aswin kbd{font:600 10px var(--f-mono,monospace);padding:1px 4px;border-radius:4px;background:rgba(0,0,0,.22);border:1px solid rgba(0,0,0,.18)}'+
+  /* 우클릭 작은 메뉴 */
+  '.asmenu{position:fixed;z-index:2147482995;min-width:210px;padding:4px;background:#24242b;border:1px solid rgba(255,255,255,.14);border-radius:9px;box-shadow:0 12px 30px rgba(0,0,0,.5);font:12.5px var(--f-body,system-ui,sans-serif);color:#ececf1}'+
+  '.asmenu button{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border:0;border-radius:6px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}'+
+  '.asmenu button:hover,.asmenu button:focus-visible{background:#e9bd0c;color:#1a1400;outline:0}.asmenu button:hover small{color:#4a3a00}'+
+  '.asmenu .asic{display:grid;place-items:center;width:18px;height:18px;border-radius:5px;background:rgba(233,189,12,.2);color:#e9bd0c;font:700 10px var(--f-mono,monospace)}.asmenu button:hover .asic{background:rgba(0,0,0,.15);color:#1a1400}'+
+  '.asmenu small{margin-left:auto;color:#8d8d98;font-size:10.5px}.asmenu .ashint{padding:5px 10px 4px;color:#8d8d98;font-size:10.5px;border-top:1px solid rgba(255,255,255,.07);margin-top:3px}'+
+  /* 번역기 */
+  '.ntwin{width:340px}.ntwin .ntb{display:flex;flex-direction:column;gap:9px;padding:11px 12px 12px}'+
+  '.ntwin .ntrow{display:flex;gap:6px;align-items:center}.ntwin .ntl{font-size:11px;color:#9b9ba6;margin-bottom:-4px}'+
+  '.ntwin .ntst{display:flex;flex-wrap:wrap;gap:4px}.ntwin .ntst button{height:24px;padding:0 8px;border-radius:6px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#c9c9d1;font:11.5px var(--f-mono,monospace);cursor:pointer}'+
+  '.ntwin .ntst button.on{background:rgba(233,189,12,.18);border-color:#e9bd0c;color:#ffe27a}.ntwin .ntst button:hover{border-color:rgba(255,255,255,.3)}'+
+  '.ntwin .ntout{font:600 14px var(--f-mono,monospace)!important;color:#ffe27a!important}'+
+  '.ntwin .ntalt{display:flex;flex-wrap:wrap;gap:4px;min-height:0}.ntwin .ntalt:empty{display:none}.ntwin .ntalt button{height:22px;padding:0 7px;border-radius:11px;border:1px dashed rgba(255,255,255,.22);background:transparent;color:#c9c9d1;font:11px var(--f-mono,monospace);cursor:pointer}.ntwin .ntalt button:hover{border-style:solid;border-color:#e9bd0c;color:#ffe27a}'+
+  '.ntwin .ntmsg{font-size:11px;color:#9b9ba6;min-height:15px}.ntwin .ntmsg.bad{color:#ff8a96}.ntwin .ntmsg.ok{color:#7fdca4}'+
+  '.ntwin .ntfoot{display:flex;gap:6px;justify-content:flex-end}'+
+  '@keyframes asSpin{to{transform:rotate(360deg)}}.ntwin .spin{display:inline-block;width:10px;height:10px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:asSpin .7s linear infinite;vertical-align:-1px;margin-right:4px}'+
+  /* 스크립트 도움말 */
+  '.ehwin{width:430px;height:470px;min-width:320px;min-height:300px;resize:both}'+
+  '.ehwin .ehq{padding:9px 10px 7px;display:flex;gap:6px;align-items:center}.ehwin .ehq input{flex:1}'+
+  '.ehwin .ehcats{display:flex;gap:4px;padding:0 10px 7px;overflow-x:auto;scrollbar-width:none}.ehwin .ehcats::-webkit-scrollbar{display:none}'+
+  '.ehwin .ehcats button{flex:none;height:22px;padding:0 8px;border-radius:11px;border:1px solid rgba(255,255,255,.12);background:transparent;color:#b9b9c3;font:11px var(--f-body,system-ui);cursor:pointer}.ehwin .ehcats button.on{background:#e9bd0c;border-color:#e9bd0c;color:#1a1400;font-weight:700}'+
+  '.ehwin .ehlist{flex:1 1 45%;min-height:90px;overflow:auto;padding:0 6px 6px;border-bottom:1px solid rgba(255,255,255,.08)}'+
+  '.ehwin .ehi{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;border:0;border-radius:7px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}'+
+  '.ehwin .ehi:hover{background:rgba(255,255,255,.06)}.ehwin .ehi.on{background:rgba(233,189,12,.16);box-shadow:inset 2px 0 0 #e9bd0c}'+
+  '.ehwin .ehi .c{flex:none;min-width:44px;font-size:10px;color:#9b9ba6;text-align:center;padding:1px 5px;border-radius:5px;background:rgba(255,255,255,.06)}'+
+  '.ehwin .ehi .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ehwin .ehi .t em{font-style:normal;color:#ffe27a;background:rgba(233,189,12,.16);border-radius:3px}'+
+  '.ehwin .ehi .k{flex:none;font:10.5px var(--f-mono,monospace);color:#7fb9ff;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '.ehwin .ehnone{padding:22px 10px;text-align:center;color:#8d8d98}'+
+  '.ehwin .ehprev{flex:1 1 55%;min-height:110px;display:flex;flex-direction:column;overflow:hidden}'+
+  '.ehwin .ehd{padding:8px 12px 6px;color:#d4d4dc;font-size:12px}.ehwin .ehd b{color:#fff}.ehwin .ehd .w{display:inline-block;margin-left:6px;font-size:10.5px;color:#7fdca4;border:1px solid rgba(127,220,164,.35);border-radius:5px;padding:0 5px}'+
+  '.ehwin pre.ehcode{flex:1;margin:0 10px;padding:9px 10px;overflow:auto;background:#141418;border:1px solid rgba(255,255,255,.08);border-radius:8px;font:12px/1.55 var(--f-mono,monospace);color:#e6e6ea;white-space:pre;tab-size:4}'+
+  '.ehwin .ehfoot{display:flex;align-items:center;gap:8px;padding:8px 10px}.ehwin .ehfoot .h{flex:1;font-size:10.5px;color:#8d8d98}'+
+  /* 밝은 테마 */
+  'html[data-theme="light"] .aswin,html[data-theme="light"] .asmenu{background:#fff;color:#1d1d22;border-color:rgba(0,0,0,.14);box-shadow:0 14px 36px rgba(0,0,0,.18)}'+
+  'html[data-theme="light"] .aswin .ashd{background:#f4f5f7;border-color:rgba(0,0,0,.08)}html[data-theme="light"] .aswin input[type=text],html[data-theme="light"] .aswin input[type=search]{background:#f4f5f7;border-color:rgba(0,0,0,.16);color:#121217}'+
+  'html[data-theme="light"] .aswin .asbtn{background:#f0f1f4;border-color:rgba(0,0,0,.14);color:#222}html[data-theme="light"] .aswin .asbtn.pri{background:#e9bd0c;color:#1a1400}'+
+  'html[data-theme="light"] .ntwin .ntout{color:#8a6a00!important}html[data-theme="light"] .ntwin .ntst button{color:#444;border-color:rgba(0,0,0,.15)}html[data-theme="light"] .ntwin .ntst button.on{color:#6b5200;background:rgba(233,189,12,.22)}'+
+  'html[data-theme="light"] .ntwin .ntalt button{color:#444;border-color:rgba(0,0,0,.25)}html[data-theme="light"] .ehwin .ehcats button{color:#444;border-color:rgba(0,0,0,.15)}'+
+  'html[data-theme="light"] .ehwin .ehi:hover{background:rgba(0,0,0,.05)}html[data-theme="light"] .ehwin .ehi.on{background:rgba(233,189,12,.2)}html[data-theme="light"] .ehwin .ehi .t em{color:#6b5200}'+
+  'html[data-theme="light"] .ehwin .ehd{color:#333}html[data-theme="light"] .ehwin .ehd b{color:#000}html[data-theme="light"] .ehwin .ehi .k{color:#2a6fd6}html[data-theme="light"] .asmenu button:hover{color:#1a1400}'+
+  'html[data-theme="light"] .ehwin pre.ehcode{background:#1b1b21;color:#e6e6ea}'+
+  '@media (prefers-reduced-motion:reduce){.ntwin .spin{animation:none}}';
+  d.head.appendChild(st);
+}
+/* 창 끌기 (제목 줄) · 화면 안으로 */
+function assistPlace(el,x,y){
+  const w=el.ownerDocument.defaultView||window,W=el.offsetWidth,H=el.offsetHeight;
+  el.style.left=Math.round(clamp(x,6,Math.max(6,w.innerWidth-W-6)))+'px';
+  el.style.top=Math.round(clamp(y,6,Math.max(6,w.innerHeight-H-6)))+'px';
+}
+function assistDrag(el,head){
+  head.addEventListener('pointerdown',e=>{
+    if(e.button!==0||e.target.closest('button,input'))return;
+    e.preventDefault();const r=el.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top;
+    try{head.setPointerCapture(e.pointerId)}catch(_){}
+    const mv=ev=>assistPlace(el,ev.clientX-dx,ev.clientY-dy);
+    const up=()=>{head.removeEventListener('pointermove',mv);head.removeEventListener('pointerup',up);head.removeEventListener('pointercancel',up)};
+    head.addEventListener('pointermove',mv);head.addEventListener('pointerup',up);head.addEventListener('pointercancel',up);
+  });
+}
+/* 값을 넣고 화면 쪽 이벤트(input · change)를 보냄 */
+function assistSetValue(inp,v){
+  const P=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(inp),'value');
+  if(P&&P.set)P.set.call(inp,v);else inp.value=v;
+  inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));
+}
+
+/* =========================== ① 이름 번역기 =========================== */
+/* 게임에서 자주 쓰는 낱말 (긴 낱말부터 맞춤 · 엔진 용어에 맞춤: 주인공 = Hero) */
+const NT_DICT={
+ '주인공':'Hero','플레이어':'Player','캐릭터':'Character','적':'Enemy','몬스터':'Monster','보스':'Boss','슬라임':'Slime','엔피씨':'Npc','상인':'Merchant','마을사람':'Villager','주민':'Villager',
+ '이동':'Move','움직임':'Movement','컨트롤러':'Controller','조작':'Control','공격':'Attack','점프':'Jump','달리기':'Run','걷기':'Walk','대시':'Dash','방어':'Defend','회피':'Dodge',
+ '체력바':'HealthBar','체력':'Health','생명':'Life','에이치피':'Hp','데미지':'Damage','피해':'Damage','회복':'Heal','부활':'Respawn','죽음':'Death','쓰러짐':'Death','사망':'Death',
+ '아이템':'Item','열쇠':'Key','보물상자':'TreasureChest','상자':'Chest','보물':'Treasure','동전':'Coin','코인':'Coin','돈':'Money','골드':'Gold','보석':'Gem','물약':'Potion','포션':'Potion','약초':'Herb',
+ '점수':'Score','최고점수':'HighScore','시간':'Time','타이머':'Timer','카운트다운':'Countdown','카메라':'Camera','배경음악':'Bgm','배경':'Background','음악':'Music','효과음':'Sfx','소리':'Sound','사운드':'Sound','소리크기':'Volume','볼륨':'Volume',
+ '버튼':'Button','메뉴':'Menu','시작화면':'TitleScreen','시작':'Start','종료':'Quit','끝':'End','게임오버':'GameOver','게임':'Game','매니저':'Manager','관리자':'Manager','관리':'Manager',
+ '대화창':'DialogBox','대화':'Dialog','텍스트':'Text','글자':'Text','문구':'Label','이름':'Name','화면':'Screen','창':'Window','패널':'Panel','바':'Bar','표시':'Display','아이콘':'Icon','그림':'Image','이미지':'Image',
+ '총알':'Bullet','화살':'Arrow','무기':'Weapon','칼':'Sword','검':'Sword','활':'Bow','방패':'Shield','마법':'Magic','스킬':'Skill','불꽃':'Flame','불':'Fire','물':'Water','바람':'Wind','얼음':'Ice','번개':'Lightning',
+ '땅':'Ground','벽':'Wall','바닥':'Floor','함정':'Trap','가시':'Spike','발판':'Platform','사다리':'Ladder','포탈':'Portal','출구':'Exit','입구':'Entrance','문':'Door',
+ '숲':'Forest','동굴':'Cave','성':'Castle','집':'House','마을':'Village','나무':'Tree','돌':'Stone','바위':'Rock','풀':'Grass','꽃':'Flower','하늘':'Sky','구름':'Cloud','강':'River','바다':'Sea','산':'Mountain','다리':'Bridge','길':'Road',
+ '조명':'Light','빛':'Light','그림자':'Shadow','어둠':'Darkness','손전등':'Flashlight',
+ '레벨업':'LevelUp','레벨':'Level','단계':'Stage','스테이지':'Stage','씬':'Scene','장면':'Scene','저장':'Save','불러오기':'Load','설정':'Settings','일시정지':'Pause','다시시작':'Restart','재시작':'Restart','승리':'Victory','패배':'Defeat','클리어':'Clear',
+ '생성기':'Spawner','생성':'Spawn','스폰':'Spawn','소환':'Summon','따라가기':'Follow','추적':'Chase','순찰':'Patrol','도망':'Flee','회전':'Rotate','흔들림':'Shake','깜빡임':'Blink','사라짐':'Disappear','나타남':'Appear',
+ '열기':'Open','닫기':'Close','열림':'Open','닫힘':'Closed','상태':'State','정보':'Info','인벤토리':'Inventory','가방':'Bag','소지품':'Inventory','상점':'Shop','가게':'Shop','퀘스트':'Quest','임무':'Mission','목표':'Goal',
+ '미니맵':'Minimap','지도':'Map','맵':'Map','타일맵':'Tilemap','타일':'Tile','애니메이션':'Animation','효과':'Effect','파티클':'Particle','폭발':'Explosion','충돌':'Collision','감지':'Detector','센서':'Sensor','트리거':'Trigger','이벤트':'Event',
+ '스위치':'Switch','레버':'Lever','발사기':'Launcher','발사':'Shoot','대포':'Cannon','속도':'Speed','빠른':'Fast','느린':'Slow','큰':'Big','작은':'Small','새로운':'New','첫번째':'First','두번째':'Second','세번째':'Third','마지막':'Last','메인':'Main',
+ '빨간':'Red','빨강':'Red','파란':'Blue','파랑':'Blue','초록':'Green','노란':'Yellow','노랑':'Yellow','검은':'Black','검정':'Black','흰':'White','하얀':'White',
+ '고양이':'Cat','강아지':'Dog','물고기':'Fish','용':'Dragon','유령':'Ghost','해골':'Skeleton','좀비':'Zombie','기사':'Knight','마법사':'Wizard','왕':'King','공주':'Princess','친구':'Friend','펫':'Pet','새':'Bird','박쥐':'Bat','거미':'Spider','늑대':'Wolf',
+ '위':'Up','아래':'Down','왼쪽':'Left','오른쪽':'Right','앞':'Front','뒤':'Back','가운데':'Center',
+ '그룹':'Group','오브젝트':'Object','스크립트':'Script','데이터':'Data','목록':'List','리스트':'List','키':'Key','입력':'Input','마우스':'Mouse','클릭':'Click','터치':'Touch','확인':'Confirm','취소':'Cancel',
+ '도움말':'Help','튜토리얼':'Tutorial','안내':'Guide','경고':'Warning','알림':'Notice','메시지':'Message','로고':'Logo','제목':'Title','타이틀':'Title','크레딧':'Credits','순위':'Rank','랭킹':'Ranking','기록':'Record',
+ '경험치':'Exp','공격력':'AttackPower','방어력':'Defense','마나':'Mana','에너지':'Energy','스태미나':'Stamina','배고픔':'Hunger','날씨':'Weather','비':'Rain','눈':'Snow','낮':'Day','밤':'Night','하루':'Day'
+};
+const NT_PART=new Set(['의','을','를','은','는','이','가','에','에서','로','으로','와','과','도','만','하기','하는','하다','기','용','한','할','된','되는']);
+const NT_MAXK=Math.max(...Object.keys(NT_DICT).map(k=>k.length));
+/* 한글 → 로마자 (사전에 없는 낱말) */
+function ntRoman(s){
+  const C=['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'],
+        V=['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo','u','wo','we','wi','yu','eu','ui','i'],
+        F=['','k','k','k','n','n','n','t','l','k','m','l','l','l','p','l','m','p','p','t','t','ng','t','t','k','t','p','t'];
+  let o='';for(const ch of s){const c=ch.charCodeAt(0)-0xAC00;if(c<0||c>11171){o+=ch;continue}o+=C[(c/588)|0]+V[((c%588)/28)|0]+F[c%28]}
+  return o;
+}
+/* 사전으로 낱말 나누기 → {words:[…], sure: 모든 한글 낱말을 사전에서 찾았는지} */
+function ntDict(src){
+  const words=[];let sure=true;
+  String(src).split(/[\s_\-·.,/]+/).filter(Boolean).forEach(tok=>{
+    if(!/[가-힣]/.test(tok)){words.push(...tok.split(/[^A-Za-z0-9]+/).filter(Boolean));return}
+    let i=0,unk='';
+    const flush=()=>{if(!unk)return;if(!NT_PART.has(unk)){words.push(ntRoman(unk));sure=false}unk=''};
+    while(i<tok.length){
+      if(!/[가-힣]/.test(tok[i])){flush();let j=i;while(j<tok.length&&!/[가-힣]/.test(tok[j]))j++;words.push(...tok.slice(i,j).split(/[^A-Za-z0-9]+/).filter(Boolean));i=j;continue}
+      let hit=null;for(let L=Math.min(NT_MAXK,tok.length-i);L>0;L--){const k=tok.slice(i,i+L);if(NT_DICT[k]){hit=k;break}}
+      if(hit){flush();words.push(NT_DICT[hit]);i+=hit.length}else{unk+=tok[i];i++}
+    }
+    flush();
+  });
+  return{words,sure:sure&&words.length>0};
+}
+/* 영어 낱말 → 이름 꼴 */
+const NT_STYLES=[['pascal','PlayerMove'],['camel','playerMove'],['title','Player Move'],['snake','player_move']];
+function ntWords(text){
+  let w=String(text||'').replace(/[’']/g,'').split(/[^A-Za-z0-9]+/).filter(Boolean);
+  /* PascalCase로 붙어 온 낱말은 나눔: PlayerMove → Player Move */
+  w=w.flatMap(x=>x.replace(/([a-z0-9])([A-Z])/g,'$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g,'$1 $2').split(' '));
+  if(w.length>1&&/^(the|a|an)$/i.test(w[0]))w.shift();
+  return w;
+}
+function ntFormat(text,style,code){
+  const w=ntWords(text);if(!w.length)return'';
+  const cap=x=>/^[A-Z0-9]{2,4}$/.test(x)?x:x.charAt(0).toUpperCase()+x.slice(1).toLowerCase();
+  let out;
+  if(style==='camel')out=w.map((x,i)=>i?cap(x):x.toLowerCase()).join('');
+  else if(style==='snake')out=w.map(x=>x.toLowerCase()).join('_');
+  else if(style==='title')out=w.map(cap).join(' ');
+  else out=w.map(cap).join('');
+  if(code){out=out.replace(/\s+/g,'');if(/^\d/.test(out))out='_'+out}
+  return out;
+}
+/* 인터넷 번역 (Google → MyMemory) · 4.5초 안에 답이 없으면 다음으로 */
+async function ntFetch(url,pick){
+  const ac=typeof AbortController==='function'?new AbortController():null,t=setTimeout(()=>{try{ac&&ac.abort()}catch(_){}},4500);
+  try{const r=await fetch(url,ac?{signal:ac.signal}:{});if(!r.ok)throw new Error('http '+r.status);const v=pick(await r.json());if(!v||!String(v).trim())throw new Error('empty');return String(v)}
+  finally{clearTimeout(t)}
+}
+async function ntOnline(src){
+  const q=encodeURIComponent(src);
+  try{return await ntFetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q='+q,j=>(j&&j[0]||[]).map(x=>x&&x[0]||'').join(''))}catch(e){}
+  const lp=/[가-힣]/.test(src)?'ko':/[぀-ヿ]/.test(src)?'ja':/[一-鿿]/.test(src)?'zh':'ko';
+  return await ntFetch('https://api.mymemory.translated.net/get?q='+q+'&langpair='+lp+'|en',j=>{const v=j&&j.responseData&&j.responseData.translatedText;return v&&!/MYMEMORY WARNING|INVALID/i.test(v)?v:''});
+}
+const NT_KEY='thaniya.nametr.v1';
+const NT={win:null,target:null,menu:null,kind:'name',seq:0,src:''};
+const ntPrefs=()=>{try{return JSON.parse(localStorage.getItem(NT_KEY))||{}}catch(e){return{}}};
+const ntSavePref=(k,v)=>{const p=ntPrefs();p[k]=v;try{localStorage.setItem(NT_KEY,JSON.stringify(p))}catch(e){}};
+/* 이 입력칸이 「이름」 칸인지 */
+function ntIsName(el){
+  if(!el||el.tagName!=='INPUT')return false;
+  const ty=(el.getAttribute('type')||'text').toLowerCase();if(ty!=='text')return false;
+  if(el.readOnly||el.disabled||el.closest('.aswin'))return false;
+  if(el.dataset.nameInput==='0'||el.closest('[data-no-nametr]'))return false;
+  if(el.dataset.nameInput)return true;
+  if(el.classList.contains('rn')||el.classList.contains('iname'))return true;
+  if(/name$/i.test(el.id||''))return true;
+  for(const k in el.dataset)if(el.dataset[k]==='name')return true;
+  if(/이름|\bname\b/i.test((el.getAttribute('aria-label')||'')+' '+(el.getAttribute('placeholder')||'')))return true;
+  const fr=el.closest('.fr,.field');if(fr){const lb=fr.querySelector('label');if(lb&&!lb.contains(el)&&/이름|\bname\b/i.test(lb.textContent))return true}
+  const lb=el.closest('label');if(lb&&/이름|\bname\b/i.test(lb.textContent))return true;
+  return false;
+}
+/* 코드 이름(스크립트 · 클래스 · 변수) 칸이면 띄어쓰기 없는 꼴만 */
+function ntIsCode(el){
+  if(el.dataset.nameInput==='code'||el.id==='nsName')return true;
+  const fr=el.closest('.fr,.field,label'),t=((fr&&fr.textContent)||'')+' '+(el.getAttribute('aria-label')||'');
+  return /스크립트|클래스|변수|script|class|variable/i.test(t);
+}
+function ntHideMenu(){if(NT.menu){NT.menu.remove();NT.menu=null}NT.menuFor=null}
+function ntMenu(inp,x,y){
+  const d=inp.ownerDocument;assistCss(d);ntHideMenu();
+  const m=d.createElement('div');m.className='asmenu';m.setAttribute('role','menu');
+  m.innerHTML=`<button type="button" role="menuitem" data-a="tr"><span class="asic">A</span>${csedEsc(csedT('번역기'))}<small>${csedEsc(csedT('영어 이름 만들기'))}</small></button>`+
+    `<button type="button" role="menuitem" data-a="all"><span class="asic">⌘</span>${csedEsc(csedT('모두 선택'))}</button>`+
+    `<div class="ashint">${csedEsc(csedT('Shift+우클릭 = 브라우저 기본 메뉴'))}</div>`;
+  d.body.append(m);assistPlace(m,x,y);NT.menu=m;
+  m.addEventListener('mousedown',e=>e.preventDefault());   /* 이름 칸의 포커스를 지킴 (인라인 이름 바꾸기가 닫히지 않게) */
+  m.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;ntHideMenu();
+    if(b.dataset.a==='tr')NAMETR.open(inp);else{inp.focus();inp.select()}});
+  const off=e=>{if(!m.contains(e.target)){ntHideMenu();d.removeEventListener('pointerdown',off,true);d.removeEventListener('keydown',kd,true)}};
+  const kd=e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();ntHideMenu();d.removeEventListener('pointerdown',off,true);d.removeEventListener('keydown',kd,true)}};
+  setTimeout(()=>{d.addEventListener('pointerdown',off,true);d.addEventListener('keydown',kd,true)},0);
+  NT.menuFor=inp;   /* 메뉴에 포커스를 옮기지 않음 → 이름 칸이 blur 되지 않음 (인라인 이름 바꾸기 유지) */
+}
+const NAMETR={
+  /* 다른 문서(엔진 밖으로 꺼낸 창)에도 우클릭 연결 */
+  attach(d){
+    if(!d||d.__ntOn)return;d.__ntOn=true;
+    d.addEventListener('contextmenu',e=>{
+      const inp=e.target;if(e.shiftKey||!ntIsName(inp))return;
+      e.preventDefault();e.stopPropagation();ntMenu(inp,e.clientX+2,e.clientY+2);
+    },true);
+  },
+  /* 번역기 창이 이 입력칸을 붙잡고 있는지 (인라인 이름 바꾸기는 blur 때 확정하므로 이때는 확정하지 않음) */
+  holds(el){return !!((NT.win&&NT.win.isConnected&&NT.target===el)||(NT.menu&&NT.menuFor===el))},
+  close(back){
+    const w=NT.win,t=NT.target;NT.win=null;NT.target=null;NT.seq++;if(w)w.remove();
+    if(back&&t&&t.isConnected){try{t.focus({preventScroll:true})}catch(_){}}
+  },
+  open(inp){
+    const d=inp.ownerDocument;assistCss(d);this.close(false);
+    NT.target=inp;NT.kind=ntIsCode(inp)?'code':'name';
+    const pr=ntPrefs(),styles=NT.kind==='code'?NT_STYLES.filter(s=>s[0]!=='title'):NT_STYLES;
+    let style=pr[NT.kind]||(NT.kind==='code'?'pascal':'title');if(!styles.some(s=>s[0]===style))style=styles[0][0];
+    const cur=inp.value||'',pre=/[^\x00-\x7f]/.test(cur)?cur:'';
+    const w=d.createElement('div');w.className='aswin ntwin';w.setAttribute('role','dialog');w.setAttribute('aria-label',csedT('이름 번역기'));
+    w.innerHTML=`<div class="ashd"><span class="asic">A</span><b>${csedEsc(csedT('이름 번역기'))}</b><small>${csedEsc(NT.kind==='code'?csedT('코드 이름'):csedT('오브젝트 이름'))}</small><span class="sp"></span><button type="button" class="asx" data-a="x" aria-label="${csedEsc(csedT('닫기'))}">✕</button></div>
+      <div class="ntb">
+        <div class="ntl">${csedEsc(csedT('바꿀 말 (한글 등)'))}</div>
+        <div class="ntrow"><input type="text" class="ntin" data-i18n-skip spellcheck="false" autocomplete="off" placeholder="${csedEsc(csedT('예: 플레이어 이동, 보물 상자'))}" value="${csedEsc(pre)}"><button type="button" class="asbtn pri" data-a="go">${csedEsc(csedT('변환'))}</button></div>
+        <div class="ntst" role="radiogroup" aria-label="${csedEsc(csedT('이름 모양'))}">${styles.map(s=>`<button type="button" role="radio" data-st="${s[0]}" aria-checked="${s[0]===style}" class="${s[0]===style?'on':''}">${s[1]}</button>`).join('')}</div>
+        <div class="ntl">${csedEsc(csedT('영어 이름'))}</div>
+        <input type="text" class="ntout" data-i18n-skip spellcheck="false" autocomplete="off" placeholder="—">
+        <div class="ntalt"></div>
+        <div class="ntmsg" aria-live="polite"></div>
+        <div class="ntfoot"><button type="button" class="asbtn" data-a="copy">${csedEsc(csedT('복사'))}</button><button type="button" class="asbtn pri" data-a="apply" disabled>${csedEsc(csedT('적용'))} <kbd>Enter</kbd></button></div>
+      </div>`;
+    d.body.append(w);NT.win=w;
+    const r=inp.getBoundingClientRect();assistPlace(w,r.left,r.bottom+6);
+    if(r.bottom+6+w.offsetHeight>(d.defaultView||window).innerHeight-6)assistPlace(w,r.left,r.top-w.offsetHeight-6);
+    assistDrag(w,w.querySelector('.ashd'));
+    const src=w.querySelector('.ntin'),out=w.querySelector('.ntout'),msg=w.querySelector('.ntmsg'),alt=w.querySelector('.ntalt'),ap=w.querySelector('[data-a="apply"]');
+    let raw=[];   /* 후보: [영어 원문, 출처] — 모양을 바꾸면 다시 꾸밈 */
+    const say=(t,c)=>{msg.className='ntmsg'+(c?' '+c:'');msg.innerHTML=t};
+    const fmt=t=>ntFormat(t,style,NT.kind==='code');
+    const show=()=>{
+      const seen=new Set(),list=raw.map(([t,s])=>[fmt(t),s]).filter(([f])=>f&&!seen.has(f)&&seen.add(f));
+      if(list.length&&!out.dataset.touched)out.value=list[0][0];
+      alt.innerHTML=list.filter(([f])=>f!==out.value).map(([f,s])=>`<button type="button" data-alt="${csedEsc(f)}" title="${csedEsc(s)}">${csedEsc(f)}</button>`).join('');
+      ap.disabled=!out.value.trim();
+    };
+    const go=async()=>{
+      const s=src.value.trim();if(!s){say(csedEsc(csedT('바꿀 말을 입력하세요')),'bad');src.focus();return}
+      const my=++NT.seq;raw=[];delete out.dataset.touched;out.value='';alt.innerHTML='';ap.disabled=true;
+      if(!/[^\x00-\x7f]/.test(s)){raw=[[s,csedT('입력한 그대로')]];show();say(csedEsc(csedT('영어 낱말을 이름 모양으로 맞췄어요')),'ok');return}
+      const D=ntDict(s),dict=D.words.join(' ');
+      if(D.sure){raw=[[dict,csedT('내장 사전')]];show();say(csedEsc(csedT('✓ 게임 낱말 사전으로 바꿨어요 · 다른 후보를 찾는 중…')),'ok')}
+      else say('<span class="spin"></span>'+csedEsc(csedT('번역하는 중…')));
+      let net='';try{net=await ntOnline(s)}catch(e){net=''}
+      if(my!==NT.seq||!NT.win)return;
+      if(net)raw.push([net,csedT('인터넷 번역')]);
+      if(!D.sure&&dict)raw.push([dict,csedT('내장 사전 + 로마자')]);
+      show();
+      if(!raw.length){say(csedEsc(csedT('바꿀 수 없었어요. 다른 말로 입력해 보세요')),'bad');return}
+      say(csedEsc(D.sure?csedT('✓ 변환했어요 · 아래 후보를 눌러 바꿀 수 있어요'):net?csedT('✓ 인터넷 번역으로 바꿨어요'):csedT('인터넷 번역을 쓸 수 없어 내장 사전과 로마자로 바꿨어요')),net||D.sure?'ok':'bad');
+      out.focus({preventScroll:true});out.select();
+    };
+    const apply=()=>{
+      let v=out.value.trim();if(!v)return;
+      const t=NT.target;if(NT.kind==='code')v=v.replace(/\s+/g,'');
+      if(t&&t.maxLength>0)v=v.slice(0,t.maxLength);
+      if(!t||!t.isConnected){
+        try{navigator.clipboard.writeText(v)}catch(_){}
+        say(csedEsc(csedT('이름 칸이 닫혀서 복사해 두었어요 · 붙여넣기 하세요')),'bad');return}
+      this.close(false);
+      try{t.focus({preventScroll:true})}catch(_){}
+      assistSetValue(t,v);try{t.setSelectionRange(v.length,v.length)}catch(_){}
+    };
+    w.addEventListener('click',e=>{
+      const a=e.target.closest('[data-a]'),st=e.target.closest('[data-st]'),al=e.target.closest('[data-alt]');
+      if(st){style=st.dataset.st;ntSavePref(NT.kind,style);w.querySelectorAll('[data-st]').forEach(b=>{const on=b===st;b.classList.toggle('on',on);b.setAttribute('aria-checked',on)});delete out.dataset.touched;show();return}
+      if(al){out.value=al.dataset.alt;out.dataset.touched='1';show();out.focus();return}
+      if(!a)return;
+      if(a.dataset.a==='x')this.close(true);
+      else if(a.dataset.a==='go')go();
+      else if(a.dataset.a==='apply')apply();
+      else if(a.dataset.a==='copy'){const v=out.value.trim();if(!v)return;try{navigator.clipboard.writeText(v);say(csedEsc(csedT('복사했어요')),'ok')}catch(_){out.select()}}
+    });
+    out.addEventListener('input',()=>{out.dataset.touched='1';ap.disabled=!out.value.trim()});
+    w.addEventListener('keydown',e=>{
+      e.stopPropagation();   /* 엔진 단축키(삭제 · F2 …)가 먹지 않게 */
+      if(e.key==='Escape'){e.preventDefault();this.close(true);return}
+      if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229){
+        e.preventDefault();
+        if(e.target===src&&!(e.ctrlKey||e.metaKey))go();else apply();
+      }
+    });
+    src.focus();src.select();
+    if(pre)go();
+  }
+};
+NAMETR.attach(document);
+window.NAMETR=NAMETR;
+
+/* =========================== ② 스크립트 도움말 =========================== */
+/* [분류, 제목, 설명, 찾을 낱말, 넣는 곳(c: 클래스 안 · m: 함수 안), 코드] */
+const EH_ITEMS=[
+ ['기본','콘솔에 글 출력하기','콘솔 창에 글이나 값을 보여 줍니다. 값이 어떻게 바뀌는지 확인할 때 써요.','debug log 로그 출력 print 콘솔','m','Debug.Log("안녕하세요!");\nDebug.Log("지난 시간: " + Time.time);\nDebug.LogWarning("조심하세요");\nDebug.LogError("문제가 생겼어요");'],
+ ['기본','인스펙터에 보이는 변수 만들기','public 변수는 인스펙터에 나타나서 값을 바로 바꿀 수 있어요. [Header]로 제목을 붙일 수 있어요.','변수 public field header serializefield 인스펙터','c','[Header("설정")]\npublic float speed = 3f;\npublic int maxHp = 100;\npublic string displayName = "용사";\n[SerializeField] private bool canJump = true;'],
+ ['기본','Start · Update 기본 틀','Start는 시작할 때 한 번, Update는 매 프레임 불립니다.','start update 시작 매프레임 틀 기본','c','void Start()\n{\n    // 처음 한 번\n}\n\nvoid Update()\n{\n    // 매 프레임\n}'],
+ ['컴포넌트','컴포넌트 불러오기','GetComponent<T>()로 이 오브젝트에 붙은 컴포넌트를 가져와 변수에 담아 둡니다.','getcomponent 컴포넌트 가져오기 불러오기 component animator audiosource','c','Animator animator;\nAudioSource audioSource;\n\nvoid Start()\n{\n    animator = GetComponent<Animator>();\n    audioSource = GetComponent<AudioSource>();\n}'],
+ ['컴포넌트','다른 오브젝트 찾기','이름으로 씬의 게임 오브젝트를 찾습니다. UI 요소 이름도 찾을 수 있어요.','gameobject find 찾기 이름 오브젝트','m','GameObject door = GameObject.Find("문");\nif (door != null)\n    Debug.Log(door.name + "을(를) 찾았어요");'],
+ ['컴포넌트','다른 오브젝트의 컴포넌트 쓰기','찾은 오브젝트에서 GetComponent로 컴포넌트를 꺼냅니다.','find getcomponent 다른 오브젝트 컴포넌트','m','GameObject lamp = GameObject.Find("램프");\nLight light = lamp.GetComponent<Light>();\nlight.intensity = 2f;'],
+ ['컴포넌트','오브젝트 켜고 끄기','SetActive(false)로 숨기고 true로 다시 보이게 합니다.','setactive 켜기 끄기 숨기기 보이기 active','m','gameObject.SetActive(false);\n\nGameObject wall = GameObject.Find("비밀 벽");\nwall.SetActive(!wall.activeSelf);'],
+ ['컴포넌트','오브젝트 없애기','Destroy로 오브젝트를 씬에서 지웁니다. (아이템 먹기 · 적 처치)','destroy 삭제 없애기 지우기 제거','m','Destroy(gameObject);'],
+ ['컴포넌트','주인공 가져오기','Hero.main은 씬의 주인공입니다. 몬스터 · NPC 스크립트에서 주인공 위치나 체력을 볼 때 써요.','hero main 주인공 플레이어 player','m','Hero hero = Hero.main;\nDebug.Log("주인공 위치: " + hero.position);\nDebug.Log("주인공 체력: " + hero.hp);'],
+ ['입력','키를 눌렀을 때','GetKeyDown은 키를 누른 그 순간 한 번만 true입니다.','input getkeydown 키 누르기 키보드 keycode','m','if (Input.GetKeyDown(KeyCode.Space))\n{\n    Debug.Log("스페이스를 눌렀어요");\n}'],
+ ['입력','키를 누르고 있는 동안','GetKey는 누르고 있는 동안 계속 true입니다. GetKeyUp은 뗀 순간이에요.','input getkey getkeyup 누르고있는 동안 키보드','m','if (Input.GetKey(KeyCode.LeftShift))\n{\n    Debug.Log("Shift를 누르고 있어요");\n}\nif (Input.GetKeyUp(KeyCode.LeftShift))\n{\n    Debug.Log("Shift에서 손을 뗐어요");\n}'],
+ ['입력','방향키 · WASD로 움직이기','GetAxisRaw로 -1~1 방향을 읽고, 주인공 컴포넌트의 Move로 움직입니다.','방향키 wasd getaxis horizontal vertical 이동 움직이기 move','c','public float speed = 4f;\nHero hero;\n\nvoid Start()\n{\n    hero = GetComponent<Hero>();\n}\n\nvoid Update()\n{\n    float h = Input.GetAxisRaw("Horizontal");\n    float v = Input.GetAxisRaw("Vertical");\n    Vector2 dir = new Vector2(h, v);\n    if (dir.magnitude > 0)\n    {\n        hero.Face(dir);\n        hero.Move(dir.normalized * speed * Time.deltaTime);\n    }\n}'],
+ ['입력','마우스 클릭','GetMouseButtonDown(0)은 왼쪽, (1)은 오른쪽 버튼입니다.','mouse 마우스 클릭 click getmousebuttondown','m','if (Input.GetMouseButtonDown(0))\n{\n    Debug.Log("왼쪽 클릭!");\n}'],
+ ['이동','위치 바꾸기','transform.position에 새 좌표를 넣으면 바로 그 자리로 옮겨집니다.','transform position 위치 순간이동 좌표 vector','m','transform.position = new Vector3(3, 2, 0);'],
+ ['이동','일정한 속도로 움직이기','Time.deltaTime을 곱하면 컴퓨터 속도와 상관없이 1초에 speed만큼 움직여요.','translate 이동 속도 deltatime 움직이기 speed','c','public float speed = 2f;\n\nvoid Update()\n{\n    transform.Translate(new Vector3(speed * Time.deltaTime, 0, 0));\n}'],
+ ['이동','목표 지점으로 다가가기','MoveTowards는 목표를 넘어가지 않게 한 걸음씩 다가갑니다.','movetowards 목표 다가가기 따라가기 target','c','public Vector3 target = new Vector3(5, 0, 0);\npublic float speed = 2f;\n\nvoid Update()\n{\n    transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);\n}'],
+ ['이동','두 위치 사이 거리','Vector2.Distance로 두 점 사이의 거리(칸)를 잽니다.','distance 거리 가까이 멀리 vector2','m','float d = Vector2.Distance(transform.position, Hero.main.position);\nif (d < 2f)\n{\n    Debug.Log("주인공이 가까이 있어요");\n}'],
+ ['이동','주인공 따라가기','주인공이 가까이 오면 그쪽으로 다가갑니다. (몬스터 · 펫)','따라가기 추적 chase follow 몬스터 펫 주인공','c','public float speed = 1.5f;\npublic float sight = 5f;\n\nvoid Update()\n{\n    Vector3 target = Hero.main.position;\n    if (Vector2.Distance(transform.position, target) < sight)\n    {\n        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);\n    }\n}'],
+ ['이동','왔다 갔다 순찰하기','두 지점 사이를 계속 오갑니다. (움직이는 발판 · 순찰 적)','순찰 patrol 왕복 왔다갔다 발판 pingpong','c','public Vector3 a = new Vector3(0, 0, 0);\npublic Vector3 b = new Vector3(4, 0, 0);\npublic float speed = 2f;\nbool toB = true;\n\nvoid Update()\n{\n    Vector3 goal = toB ? b : a;\n    transform.position = Vector3.MoveTowards(transform.position, goal, speed * Time.deltaTime);\n    if (Vector2.Distance(transform.position, goal) < 0.01f)\n        toB = !toB;\n}'],
+ ['이동','빙글빙글 돌리기','Rotate로 매 프레임 조금씩 돌립니다.','rotate 회전 돌리기 빙글','c','public float turnSpeed = 90f;\n\nvoid Update()\n{\n    transform.Rotate(turnSpeed * Time.deltaTime);\n}'],
+ ['이동','크기 바꾸기','localScale로 크기를 바꿉니다. 1이 원래 크기예요.','scale localscale 크기 커지기 작아지기','m','transform.localScale = new Vector3(2, 2, 1);'],
+ ['연출','좌우 뒤집기','localScale의 x를 -1로 하면 그림이 좌우로 뒤집힙니다. (바라보는 방향)','flip 뒤집기 좌우 방향 localscale 반전','m','float h = Input.GetAxisRaw("Horizontal");\nif (h < 0)\n    transform.localScale = new Vector3(-1, 1, 1);\nelse if (h > 0)\n    transform.localScale = new Vector3(1, 1, 1);'],
+ ['연출','카메라 확대 · 축소','시작 카메라의 orthographicSize를 바꿉니다. 작을수록 크게 보여요.','camera 카메라 줌 zoom 확대 축소 orthographicsize','m','Camera cam = Camera.main;\nif (Input.GetKeyDown(KeyCode.Q))\n    cam.orthographicSize = 3f;\nif (Input.GetKeyDown(KeyCode.E))\n    cam.orthographicSize = 6f;'],
+ ['연출','애니메이션 바꾸기','Animator의 파라미터를 바꿔 애니메이터 창의 전환을 일으킵니다.','animator 애니메이션 setbool settrigger play 전환','m','Animator animator = GetComponent<Animator>();\nanimator.SetBool("isWalking", true);\nanimator.SetTrigger("Attack");\n// 바로 재생: animator.Play("Idle");'],
+ ['연출','소리 재생하기','AudioSource 컴포넌트에서 고른 소리를 재생합니다.','audiosource 소리 효과음 음악 재생 play sound','m','AudioSource audioSource = GetComponent<AudioSource>();\nif (!audioSource.isPlaying)\n    audioSource.Play();'],
+ ['연출','빛 밝기 바꾸기','Light 컴포넌트의 밝기 · 색을 바꿉니다.','light 빛 조명 밝기 intensity','m','Light light = GetComponent<Light>();\nlight.intensity = 1.5f;\nlight.color = Color.yellow;'],
+ ['시간','타이머 (몇 초마다)','시간을 더해 가다가 정해 둔 초가 지나면 할 일을 하고 0으로 되돌립니다.','타이머 timer 초마다 반복 시간 deltatime interval','c','public float interval = 2f;\nfloat timer = 0f;\n\nvoid Update()\n{\n    timer += Time.deltaTime;\n    if (timer >= interval)\n    {\n        timer = 0f;\n        Debug.Log(interval + "초가 지났어요");\n    }\n}'],
+ ['시간','몇 초 뒤에 한 번','남은 시간을 줄여 가다가 0이 되면 한 번만 실행합니다.','지연 delay 몇초뒤 나중에 한번 invoke','c','public float delay = 3f;\nbool done = false;\n\nvoid Update()\n{\n    if (done) return;\n    delay -= Time.deltaTime;\n    if (delay <= 0f)\n    {\n        done = true;\n        Message.Show("3초가 지났어요!", 2f);\n    }\n}'],
+ ['충돌','영역에 들어왔을 때 (트리거)','박스 콜라이더 2D의 트리거를 켜면 주인공이 들어올 때 OnTriggerEnter2D, 나갈 때 OnTriggerExit2D가 불립니다.','ontriggerenter2d ontriggerexit2d 트리거 trigger 닿았을때 영역 콜라이더','c','void OnTriggerEnter2D(Collider2D other)\n{\n    Message.Show("주인공이 들어왔어요", 2f);\n}\n\nvoid OnTriggerExit2D(Collider2D other)\n{\n    Debug.Log("주인공이 나갔어요");\n}'],
+ ['충돌','공격을 맞았을 때','주인공이 공격(휘두르기)으로 이 오브젝트를 맞히면 OnHit이 불립니다. (항아리 · 상자 부수기)','onhit 공격 맞음 부수기 때리기 hit','c','public int hits = 3;\n\nvoid OnHit()\n{\n    hits--;\n    if (hits <= 0)\n    {\n        Message.Show("부서졌다!", 1f);\n        Destroy(gameObject);\n    }\n}'],
+ ['충돌','주인공이 닿았을 때 (엔진 전용)','주인공이 이 오브젝트 칸에 들어오고 나갈 때 불립니다.','onheroenter onheroexit 주인공 닿음 밟음','c','void OnHeroEnter()\n{\n    Message.Show("반짝이는 무언가가 있다", 2f);\n}\n\nvoid OnHeroExit()\n{\n    Debug.Log("주인공이 떠났어요");\n}'],
+ ['충돌','말 걸었을 때 (NPC)','주인공이 가까이서 말 걸기(Space)를 하면 OnInteract가 불립니다.','oninteract 말걸기 npc 상호작용 대화','c','void OnInteract()\n{\n    Dialog.Show("마을 사람", "안녕! 오늘 날씨 좋네.");\n}'],
+ ['게임','대화창 띄우기','대화창을 엽니다. 열려 있는 동안 게임이 멈추고 Space로 닫혀요.','dialog 대화창 대화 말 npc show','m','Dialog.Show("상인", "어서 오세요!");'],
+ ['게임','알림 메시지 띄우기','화면 아래에 짧은 메시지를 몇 초 동안 보여 줍니다.','message 알림 메시지 안내 show 토스트','m','Message.Show("열쇠를 얻었다!", 2f);'],
+ ['게임','아이템 얻기 · 쓰기','Inventory로 소지품을 더하고 빼고 개수를 셉니다.','inventory 인벤토리 아이템 소지품 add remove count','m','Inventory.Add("약초", 1);\nint n = Inventory.Count("약초");\nif (Inventory.Remove("약초", 1))\n{\n    Hero.main.Heal(20);\n}'],
+ ['게임','열쇠가 있으면 문 열기','소지품에 열쇠가 있는지 보고 문을 엽니다.','열쇠 key 문 door has 조건 inventory','c','void OnInteract()\n{\n    if (Inventory.Has("열쇠"))\n    {\n        Inventory.Remove("열쇠", 1);\n        Message.Show("문이 열렸다!", 2f);\n        gameObject.SetActive(false);\n    }\n    else\n    {\n        Message.Show("잠겨 있다. 열쇠가 필요해", 2f);\n    }\n}'],
+ ['게임','아이템 먹기','주인공이 닿으면 소지품에 넣고 사라집니다.','아이템 먹기 줍기 코인 동전 pickup collect','c','public string itemName = "동전";\n\nvoid OnHeroEnter()\n{\n    Inventory.Add(itemName, 1);\n    Message.Show(itemName + " +1", 1f);\n    Destroy(gameObject);\n}'],
+ ['게임','주인공 체력 깎기 · 회복','TakeDamage로 피해를 주고 Heal로 회복합니다.','takedamage heal 체력 데미지 피해 회복 hp','m','Hero.main.TakeDamage(10);\nHero.main.Heal(20);\nif (Hero.main.hp <= 0)\n    Debug.Log("쓰러졌어요");'],
+ ['게임','함정 (닿으면 피해)','주인공이 닿을 때마다 피해를 줍니다.','함정 trap 가시 spike 피해 데미지','c','public int damage = 15;\n\nvoid OnHeroEnter()\n{\n    Hero.main.TakeDamage(damage);\n    Message.Show("아야!", 1f);\n}'],
+ ['게임','씬 이동하기','이름으로 다른 씬을 불러옵니다.','scenemanager loadscene 씬 이동 장면 맵','m','SceneManager.LoadScene("숲 입구");'],
+ ['게임','게임 다시 시작','체력을 채우고 시작 씬에서 다시 시작합니다.','restart 다시시작 재시작 restartgame 게임오버','m','SceneManager.RestartGame();'],
+ ['게임','UI 그룹 보이기 · 숨기기','계층 구조의 UI 그룹을 찾아 한 번에 보이거나 숨깁니다.','uigroup ui 그룹 메뉴 창 보이기 숨기기 find','m','UIGroup menu = UIGroup.Find("메뉴");\nmenu.SetActive(true);'],
+ ['문법','조건문 (if · else)','조건이 맞을 때와 아닐 때 다른 일을 합니다.','if else 조건 만약 아니면 비교','m','int hp = Hero.main.hp;\nif (hp <= 0)\n{\n    Debug.Log("쓰러짐");\n}\nelse if (hp < 30)\n{\n    Debug.Log("위험해요");\n}\nelse\n{\n    Debug.Log("괜찮아요");\n}'],
+ ['문법','반복문 (for)','정해진 횟수만큼 되풀이합니다.','for 반복 되풀이 loop 횟수','m','for (int i = 0; i < 5; i++)\n{\n    Debug.Log(i + "번째");\n}'],
+ ['문법','글자 이어 붙이기','+ 나 $"…{값}…" 으로 글자와 값을 이어 붙입니다.','string 문자열 글자 이어붙이기 보간 interpolation 텍스트','m','string monster = "슬라임";\nint hp = 30;\nDebug.Log(monster + "의 체력: " + hp);\nDebug.Log($"{monster}의 체력은 {hp}입니다");'],
+ ['문법','상태 나누기 (switch)','값에 따라 여러 경우로 나눕니다.','switch case 상태 state 경우','m','int state = Random.Range(0, 3);\nswitch (state)\n{\n    case 0:\n        Debug.Log("대기");\n        break;\n    case 1:\n        Debug.Log("공격");\n        break;\n    default:\n        Debug.Log("알 수 없음");\n        break;\n}'],
+ ['문법','무작위 값','Random.Range로 정해진 범위 안의 값을 뽑습니다. 정수는 끝 값이 나오지 않아요.','random range 랜덤 무작위 주사위 확률','m','int dice = Random.Range(1, 7);\nfloat x = Random.Range(-3f, 3f);\nif (Random.value < 0.3f)\n    Debug.Log("30% 확률 당첨!");'],
+ ['문법','함수 만들기','같은 일을 이름 붙여 묶어 두고 여러 번 부릅니다.','함수 method 메서드 function void return','c','int Add(int a, int b)\n{\n    return a + b;\n}\n\nvoid Start()\n{\n    Debug.Log(Add(2, 3));\n}']
+];
+const EH_CATS=['전체',...[...new Set(EH_ITEMS.map(x=>x[0]))]];
+const EH_KO_CHO='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+const ehCho=s=>String(s).replace(/[가-힣]/g,c=>EH_KO_CHO[((c.charCodeAt(0)-0xAC00)/588)|0]);
+const ehNorm=s=>String(s).toLowerCase().replace(/\s+/g,'');
+const EH={win:null,ta:null,q:'',cat:'전체',sel:0,list:[]};
+function ehCode(it){
+  let c=it[5];
+  try{if(csedSet().ko&&typeof enToKo==='function')c=enToKo(c)}catch(_){}
+  return c;
+}
+function ehFilter(){
+  const terms=EH.q.trim().split(/\s+/).filter(Boolean).map(t=>t.toLowerCase());
+  const jamo=t=>/^[ㄱ-ㅎ]+$/.test(t);
+  return EH_ITEMS.map((it,i)=>({it,i})).filter(({it})=>{
+    if(EH.cat!=='전체'&&it[0]!==EH.cat)return false;
+    if(!terms.length)return true;
+    const tr=csedT(it[1]),hay=ehNorm(it[0]+' '+it[1]+' '+tr+' '+it[2]+' '+it[3]+' '+it[5]),cho=ehCho(hay);
+    return terms.every(t=>{const n=ehNorm(t);if(hay.includes(n))return true;if(jamo(n)&&cho.includes(n))return true;
+      /* 한글 자판 상태로 친 영어 (ㅎㄷㅅ → get) */
+      try{if(/[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(n)&&typeof ko2key==='function'){const k=ko2key(n).toLowerCase();if(k&&k!==n&&hay.includes(k))return true}}catch(_){}
+      return false});
+  }).map(({it,i})=>{
+    /* 제목에 맞으면 위로 */
+    const tt=ehNorm(it[1]+' '+csedT(it[1]));let sc=0;terms.forEach(t=>{const n=ehNorm(t);if(tt.includes(n))sc-=2;else if(ehNorm(it[3]).includes(n))sc-=1});
+    return{it,i,sc};
+  }).sort((a,b)=>a.sc-b.sc||a.i-b.i).map(x=>x.it);
+}
+function ehMark(t){
+  const e=csedEsc(t),terms=EH.q.trim().split(/\s+/).filter(x=>x&&!/^[ㄱ-ㅎ]+$/.test(x));
+  if(!terms.length)return e;
+  const re=new RegExp('('+terms.map(x=>csedEsc(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','gi');
+  return e.replace(re,'<em>$1</em>');
+}
+function ehRender(keepScroll){
+  const w=EH.win;if(!w)return;
+  EH.list=ehFilter();EH.sel=Math.max(0,Math.min(EH.sel,EH.list.length-1));
+  const L=w.querySelector('.ehlist'),st=L.scrollTop;
+  w.querySelector('.ehn').textContent=csedT('{n}개',{n:EH.list.length});
+  w.querySelectorAll('.ehcats [data-cat]').forEach(b=>b.classList.toggle('on',b.dataset.cat===EH.cat));
+  L.innerHTML=EH.list.length?EH.list.map((it,i)=>{const api=(/\b([A-Z]\w+\.[A-Z]\w+|GetComponent|OnTrigger\w+|OnCollision\w+|On[A-Z]\w+|Destroy|SetActive|List)\b/.exec(it[5])||[''])[0];
+    return `<button type="button" class="ehi${i===EH.sel?' on':''}" data-i="${i}" role="option" aria-selected="${i===EH.sel}"><span class="c">${csedEsc(csedT(it[0]))}</span><span class="t">${ehMark(csedT(it[1]))}</span><span class="k" data-i18n-skip>${csedEsc(api)}</span></button>`}).join('')
+    :`<div class="ehnone">${csedEsc(csedT('맞는 도움말이 없어요'))}<br><small>${csedEsc(csedT('다른 낱말로 찾아보세요 (예: 이동, 키, 소리)'))}</small></div>`;
+  if(keepScroll)L.scrollTop=st;
+  ehPreview();
+}
+function ehPreview(){
+  const w=EH.win;if(!w)return;const it=EH.list[EH.sel],d=w.querySelector('.ehd'),pre=w.querySelector('.ehcode'),ap=w.querySelector('[data-a="apply"]');
+  ap.disabled=!it;
+  if(!it){d.innerHTML='';pre.innerHTML='';return}
+  d.innerHTML=`<b>${csedEsc(csedT(it[1]))}</b><span class="w">${csedEsc(it[4]==='c'?csedT('클래스 안에 넣기'):csedT('함수 안에 넣기'))}</span><br>${csedEsc(csedT(it[2]))}`;
+  pre.innerHTML=csHighlight(ehCode(it)).replace(/\n $/,'');
+  const on=w.querySelector('.ehi.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+/* 중괄호 블록 찾기 (문자열 · 주석 안은 건너뜀) → [{o: 여는 위치, c: 닫는 위치, d: 깊이(0 = 바깥)}] */
+function ehBlocks(v){
+  const out=[],st=[],n=v.length;let i=0;
+  while(i<n){const c=v[i],d=v[i+1];
+    if(c==='/'&&d==='/'){const j=v.indexOf('\n',i);i=j<0?n:j;continue}
+    if(c==='/'&&d==='*'){const j=v.indexOf('*/',i+2);i=j<0?n:j+2;continue}
+    if(c==='"'||c==="'"){const q=c;i++;while(i<n&&v[i]!==q&&v[i]!=='\n'){if(v[i]==='\\')i++;i++}i++;continue}
+    if(c==='{')st.push(i);else if(c==='}'&&st.length){const o=st.pop();out.push({o,c:i,d:st.length})}
+    i++}
+  return out.sort((x,y)=>x.o-y.o);
+}
+const ehLS=(v,p)=>v.lastIndexOf('\n',p-1)+1;
+const ehIndOf=(v,p)=>/^[ \t]*/.exec(v.slice(ehLS(v,p)))[0];
+/* 블록 앞의 머리(함수 선언 줄) 시작 위치와 이름 */
+function ehHead(v,b){
+  let k=b.o-1;while(k>=0&&!';{}'.includes(v[k]))k--;
+  let h=k+1;while(h<b.o&&/\s/.test(v[h]))h++;
+  /* 머리 앞의 // 주석 줄도 함께 (예: // 매 프레임 호출됩니다) */
+  let hs=ehLS(v,h);
+  for(;;){const pl=ehLS(v,hs-1);if(hs===0)break;const line=v.slice(pl,hs-1);if(/^\s*\/\//.test(line)&&pl>k)hs=pl;else break}
+  const head=v.slice(h,b.o).trim(),m=/([\p{L}_][\p{L}\p{N}_]*)\s*\([^()]*\)\s*$/u.exec(head);
+  return{start:hs,hStart:ehLS(v,h),name:m?m[1]:null};
+}
+/* 예시 코드를 클래스 안에 알맞게 놓기 */
+function ehPlace(v,a,b,code,kind){
+  const B=ehBlocks(v),cls=B.find(x=>x.d===0&&/\bclass\b|클래스/.test(v.slice(Math.max(0,x.o-200),x.o)))||B.find(x=>x.d===0);
+  if(!cls||a<=cls.o||a>cls.c)return null;
+  const inner=B.filter(x=>x.o>cls.o&&x.c<cls.c),depth=1+inner.filter(x=>x.o<a&&a<=x.c).length;
+  if(kind==='m'&&depth>=2)return null;                       /* 함수 안 예시를 함수 안에 → 커서 자리 */
+  if(kind==='m')code='void Start()\n{\n'+code.split('\n').map(l=>l?'    '+l:l).join('\n')+'\n}';   /* 함수 밖에서 고르면 Start() 안으로 */
+  /* 예시를 변수 줄 · 함수로 나눔 */
+  const SB=ehBlocks(code).filter(x=>x.d===0),meth=[],fieldTxt=[];let last=0;
+  SB.forEach(x=>{const h=ehHead(code,x);fieldTxt.push(code.slice(last,h.hStart));meth.push({name:h.name,full:code.slice(h.hStart,x.c+1),body:code.slice(x.o+1,x.c)});last=x.c+1});
+  fieldTxt.push(code.slice(last));
+  const members=inner.filter(x=>x.d===1).map(x=>Object.assign({b:x},ehHead(v,x)));
+  const memInd=members.length?ehIndOf(v,members[0].hStart):ehIndOf(v,cls.o)+'    ';
+  const clsTxt=v.slice(cls.o,cls.c);
+  /* 이미 있는 변수는 빼기 */
+  const fields=fieldTxt.join('\n').split('\n').filter(l=>{
+    const m=/^\s*(?:\[[^\]]*\]\s*)*(?:(?:public|private|protected|internal|static|readonly|const)\s+)*[\p{L}_][\p{L}\p{N}_<>,\[\]]*\s+([\p{L}_][\p{L}\p{N}_]*)\s*(?:=|;)/u.exec(l);
+    return !(m&&new RegExp('[\\p{L}\\p{N}_>\\]]\\s+'+m[1]+'\\s*[=;]','u').test(clsTxt));
+  }).join('\n').replace(/^\n+|\n+$/g,'').replace(/\n{3,}/g,'\n\n');
+  /* 고칠 일 목록 (뒤에서부터 적용해야 위치가 안 밀림) */
+  const edits=[];let focus=null;
+  const addBody=(mb,body)=>{   /* 이미 있는 함수 끝에 몸통 이어 붙이기 */
+    const lines=body.replace(/^\s*\n|\s+$/g,'').split('\n'),hi=ehIndOf(v,mb.hStart);
+    const txt=lines.map(l=>l.trim()?hi+l.replace(/^ {4}/,'    '):'').join('\n');
+    const cl=ehLS(v,mb.b.c),cur=v.slice(mb.b.o+1,cl);
+    if(!v.slice(cl,mb.b.c).trim()){
+      if(!cur.trim()){edits.push([mb.b.o+1,cl,'\n'+txt+'\n',1+txt.length])}
+      else edits.push([cl,cl,(cur.endsWith('\n')?'':'\n')+txt+'\n',txt.length])}
+    else edits.push([mb.b.c,mb.b.c,'\n'+txt+'\n'+hi,txt.length+1]);
+  };
+  const newM=[];
+  meth.forEach(m=>{const ex=m.name&&members.find(x=>x.name===m.name);if(ex)addBody(ex,m.body);else newM.push(m.full)});
+  const ind=t=>t.split('\n').map(l=>l.trim()?memInd+l:'').join('\n');
+  const enc=depth>=2?members.find(x=>x.b.o<a&&a<=x.b.c):null;
+  if(enc){
+    if(fields)edits.push([enc.start,enc.start,ind(fields)+'\n\n',ind(fields).length]);
+    if(newM.length){const e=v.indexOf('\n',enc.b.c),p=e<0?v.length:e;const t='\n\n'+ind(newM.join('\n\n'));edits.push([p,p,t,t.length])}
+  }else{
+    const parts=[fields,...newM].filter(Boolean);
+    if(parts.length){
+      const ls=ehLS(v,a),le0=v.indexOf('\n',b),le=le0<0?v.length:le0,blank=!v.slice(ls,le).trim();
+      const t=ind(parts.join('\n\n'));
+      const prev=v.slice(0,ls).replace(/\s+$/,''),gap=/[}\]);]$/.test(prev)&&!/\n[ \t]*\n[ \t]*$/.test(v.slice(0,ls))?'\n':'';
+      if(blank)edits.push([ls,le,gap+t,gap.length+t.length]);else{const p=le;edits.push([p,p,'\n'+t,t.length+1])}
+    }
+  }
+  if(!edits.length)return{v,pos:a};
+  /* 먼저 나오는 곳에 커서 · 뒤에서부터 고침 */
+  edits.sort((x,y)=>x[0]-y[0]);focus=edits[0];
+  let out=v,shift=0;
+  edits.slice().sort((x,y)=>y[0]-x[0]).forEach(([s,e,t])=>{out=out.slice(0,s)+t+out.slice(e)});
+  edits.forEach(([s,e,t])=>{if(s<focus[0])shift+=t.length-(e-s)});
+  return{v:out,pos:focus[0]+shift+focus[3]};
+}
+const EDHELP={
+  isOpen(){return !!(EH.win&&EH.win.isConnected)},
+  close(back){const w=EH.win,ta=EH.ta;EH.win=null;if(w)w.remove();if(back&&ta&&ta.isConnected){try{ta.focus({preventScroll:true})}catch(_){}}},
+  /* 고른 예시를 넣음 — 함수 안 예시는 커서 자리(들여쓰기 맞춤), 클래스 안 예시는 지금 함수 옆에 놓고
+     같은 이름의 함수(Start · Update …)가 이미 있으면 그 안에 이어 붙임 · 이미 있는 변수는 다시 만들지 않음 */
+  apply(){
+    const it=EH.list[EH.sel],ta=EH.ta;if(!it||!ta||!ta.isConnected){this.close(false);return}
+    this.close(false);ta.focus({preventScroll:true});
+    const old=ta.value;let nv=null,pos=0;
+    try{const r=ehPlace(old,ta.selectionStart,ta.selectionEnd,ehCode(it),it[4]);if(r){nv=r.v;pos=r.pos}}catch(e){nv=null}
+    if(nv==null){   /* 클래스를 못 찾음 → 커서 자리에 그대로 */
+      const a=ta.selectionStart,b=ta.selectionEnd,ls=old.lastIndexOf('\n',a-1)+1,before=old.slice(ls,a),ind=/^[ \t]*/.exec(before)[0];
+      let code=ehCode(it).replace(/\n/g,'\n'+ind),pre=before.trim()?'\n'+ind:'';
+      const le=old.indexOf('\n',b),after=old.slice(b,le<0?old.length:le);if(after.trim())code+='\n'+ind;
+      nv=old.slice(0,a)+pre+code+old.slice(b);pos=a+pre.length+code.length;
+    }
+    /* 바뀐 가운데만 갈아 끼움 (실행 취소 · 스크롤 유지) */
+    let p0=0;while(p0<old.length&&p0<nv.length&&old[p0]===nv[p0])p0++;
+    let e0=old.length,e1=nv.length;while(e0>p0&&e1>p0&&old[e0-1]===nv[e1-1]){e0--;e1--}
+    ta.setRangeText(nv.slice(p0,e1),p0,e0,'end');ta.setSelectionRange(pos,pos);
+    try{ac.mute=true;ta.dispatchEvent(new InputEvent('input',{bubbles:true,inputType:'insertFromPaste'}))}catch(_){ta.dispatchEvent(new Event('input',{bubbles:true}))}finally{ac.mute=false}
+    try{acHide()}catch(_){}
+    /* 넣은 곳이 보이게 */
+    try{const lh=parseFloat(csedWin(ta).getComputedStyle(ta).lineHeight)||20,ln=nv.slice(0,pos).split('\n').length-1,top=ln*lh;
+      if(top<ta.scrollTop||top>ta.scrollTop+ta.clientHeight-2*lh){ta.scrollTop=Math.max(0,top-ta.clientHeight/3);ta.dispatchEvent(new Event('scroll'))}}catch(_){}
+  },
+  open(ta,q){
+    const d=ta.ownerDocument;assistCss(d);this.close(false);try{acHide()}catch(_){}
+    EH.ta=ta;EH.q=q||'';EH.sel=0;if(!EH_CATS.includes(EH.cat))EH.cat='전체';
+    const w=d.createElement('div');w.className='aswin ehwin';w.setAttribute('role','dialog');w.setAttribute('aria-label',csedT('스크립트 도움말'));
+    w.innerHTML=`<div class="ashd"><span class="asic">?</span><b>${csedEsc(csedT('스크립트 도움말'))}</b><small class="ehn"></small><span class="sp"></span><button type="button" class="asx" data-a="x" aria-label="${csedEsc(csedT('닫기'))}">✕</button></div>
+      <div class="ehq"><input type="search" data-i18n-skip spellcheck="false" autocomplete="off" placeholder="${csedEsc(csedT('무엇을 하고 싶나요? (예: 컴포넌트, 이동, 대화)'))}" aria-label="${csedEsc(csedT('도움말 검색'))}" value="${csedEsc(EH.q)}"></div>
+      <div class="ehcats">${EH_CATS.map(c=>`<button type="button" data-cat="${csedEsc(c)}">${csedEsc(csedT(c))}</button>`).join('')}</div>
+      <div class="ehlist" role="listbox" aria-label="${csedEsc(csedT('도움말 목록'))}"></div>
+      <div class="ehprev"><div class="ehd"></div><pre class="ehcode" data-i18n-skip></pre></div>
+      <div class="ehfoot"><span class="h">${csedEsc(csedT('↑↓ 고르기 · Tab 적용 · Esc 닫기'))}</span><button type="button" class="asbtn" data-a="copy">${csedEsc(csedT('복사'))}</button><button type="button" class="asbtn pri" data-a="apply">${csedEsc(csedT('적용'))} <kbd>Tab</kbd></button></div>`;
+    d.body.append(w);EH.win=w;
+    /* 커서 아래(자리가 없으면 위)에 띄움 */
+    let x=0,y=0;try{const p=fxCaret(ta);x=p.x-20;y=p.y+14;const H=w.offsetHeight,vh=(d.defaultView||window).innerHeight;if(y+H>vh-6)y=Math.max(6,p.y-14-H)}catch(_){const r=ta.getBoundingClientRect();x=r.right-w.offsetWidth-16;y=r.top+10}
+    assistPlace(w,x,y);assistDrag(w,w.querySelector('.ashd'));
+    const inp=w.querySelector('.ehq input');
+    inp.addEventListener('input',()=>{EH.q=inp.value;EH.sel=0;ehRender(false)});
+    w.addEventListener('keydown',e=>{
+      e.stopPropagation();
+      const n=EH.list.length,mv=dd=>{e.preventDefault();if(!n)return;EH.sel=(EH.sel+dd+n)%n;ehRender(true)};
+      if(e.key==='Escape'){e.preventDefault();this.close(true)}
+      else if(e.key==='ArrowDown')mv(1);
+      else if(e.key==='ArrowUp')mv(-1);
+      else if(e.key==='PageDown'){e.preventDefault();EH.sel=Math.min(n-1,EH.sel+6);ehRender(true)}
+      else if(e.key==='PageUp'){e.preventDefault();EH.sel=Math.max(0,EH.sel-6);ehRender(true)}
+      else if((e.key==='Tab'&&!e.shiftKey)||(e.key==='Enter'&&e.target===inp&&!e.isComposing&&e.keyCode!==229)){e.preventDefault();this.apply()}
+      else if(e.key==='Tab'&&e.shiftKey){e.preventDefault();const i=EH_CATS.indexOf(EH.cat);EH.cat=EH_CATS[(i+1)%EH_CATS.length];EH.sel=0;ehRender(false)}
+    });
+    w.addEventListener('mousedown',e=>{if(e.target.closest('.ehi,[data-cat],[data-a]'))e.preventDefault()});
+    w.addEventListener('click',e=>{
+      const r=e.target.closest('.ehi'),c=e.target.closest('[data-cat]'),a=e.target.closest('[data-a]');
+      if(r){EH.sel=+r.dataset.i;ehRender(true);inp.focus({preventScroll:true});return}
+      if(c){EH.cat=c.dataset.cat;EH.sel=0;ehRender(false);inp.focus({preventScroll:true});return}
+      if(!a)return;
+      if(a.dataset.a==='x')this.close(true);
+      else if(a.dataset.a==='apply')this.apply();
+      else if(a.dataset.a==='copy'){const it=EH.list[EH.sel];if(it){try{navigator.clipboard.writeText(ehCode(it))}catch(_){}const s=w.querySelector('.ehfoot .h');s.textContent=csedT('복사했어요');setTimeout(()=>{if(s.isConnected)s.textContent=csedT('↑↓ 고르기 · Tab 적용 · Esc 닫기')},1400)}}
+    });
+    w.addEventListener('dblclick',e=>{if(e.target.closest('.ehi'))this.apply()});
+    ehRender(false);inp.focus({preventScroll:true});inp.select();
+  }
+};
+window.EDHELP=EDHELP;
+/* 편집기 연결: 빈 줄에 help / 도움말 을 치면 그 글자를 지우고 도움말 창 · F1 */
+function edHelpHook(ta){
+  if(!ta||ta.tagName!=='TEXTAREA'||ta._ehOn)return;ta._ehOn=true;
+  const check=()=>{
+    if(ta.selectionStart!==ta.selectionEnd)return false;
+    const v=ta.value,a=ta.selectionStart,ls=v.lastIndexOf('\n',a-1)+1,le0=v.indexOf('\n',a),le=le0<0?v.length:le0;
+    const line=v.slice(ls,le),m=/^([ \t]*)(help|도움말)[ \t]*$/i.exec(line);
+    if(!m||a<ls+m[1].length+m[2].length)return false;
+    const s=ls+m[1].length;ta.setRangeText('',s,le,'end');ta.setSelectionRange(s,s);
+    try{ac.mute=true;ta.dispatchEvent(new Event('input',{bubbles:true}))}finally{ac.mute=false}
+    EDHELP.open(ta);return true;
+  };
+  ta.addEventListener('input',e=>{if(e.isComposing||e.inputType==='insertCompositionText')return;if(e.inputType==='insertText'&&/[pP]/.test(e.data||''))setTimeout(check,0)});
+  ta.addEventListener('compositionend',()=>setTimeout(check,0));
+  ta.addEventListener('keydown',e=>{if(e.key==='F1'&&!e.ctrlKey&&!e.altKey&&!e.metaKey){e.preventDefault();e.stopPropagation();EDHELP.open(ta)}});
+}
+/* ---- 번역 (영어 · 日本語 · 中文) ---- */
+if(window.TI18N)TI18N.add({
+ '번역기':['Translator','翻訳機','翻译器'],'영어 이름 만들기':['Make English name','英語の名前を作る','生成英文名称'],'모두 선택':['Select all','すべて選択','全选'],
+ 'Shift+우클릭 = 브라우저 기본 메뉴':['Shift+right-click = browser menu','Shift+右クリック = ブラウザのメニュー','Shift+右键 = 浏览器菜单'],
+ '이름 번역기':['Name translator','名前翻訳機','名称翻译器'],'코드 이름':['Code name','コード名','代码名称'],'오브젝트 이름':['Object name','オブジェクト名','对象名称'],
+ '바꿀 말 (한글 등)':['Text to convert (Korean, etc.)','変換する言葉（韓国語など）','要转换的文字（韩文等）'],'예: 플레이어 이동, 보물 상자':['e.g. 플레이어 이동, 보물 상자','例: プレイヤー移動、宝箱','例：玩家移动、宝箱'],
+ '변환':['Convert','変換','转换'],'이름 모양':['Name style','名前の形','名称样式'],'영어 이름':['English name','英語の名前','英文名称'],'복사':['Copy','コピー','复制'],'적용':['Apply','適用','应用'],'닫기':['Close','閉じる','关闭'],
+ '바꿀 말을 입력하세요':['Type something to convert','変換する言葉を入力してください','请输入要转换的文字'],'입력한 그대로':['As typed','入力のまま','按输入'],
+ '영어 낱말을 이름 모양으로 맞췄어요':['Formatted the English words as a name','英単語を名前の形に整えました','已将英文单词整理为名称格式'],
+ '내장 사전':['Built-in dictionary','内蔵辞書','内置词典'],'✓ 게임 낱말 사전으로 바꿨어요 · 다른 후보를 찾는 중…':['✓ Converted with the game dictionary · looking for more…','✓ ゲーム用語辞書で変換しました · 他の候補を検索中…','✓ 已用游戏词典转换 · 正在查找其他候选…'],
+ '번역하는 중…':['Translating…','翻訳中…','正在翻译…'],'인터넷 번역':['Online translation','オンライン翻訳','在线翻译'],'내장 사전 + 로마자':['Dictionary + romanization','辞書 + ローマ字','词典 + 罗马字'],
+ '바꿀 수 없었어요. 다른 말로 입력해 보세요':['Couldn’t convert. Try different words','変換できませんでした。別の言葉で試してください','无法转换。请换个说法试试'],
+ '✓ 변환했어요 · 아래 후보를 눌러 바꿀 수 있어요':['✓ Converted · click a suggestion below to switch','✓ 変換しました · 下の候補を押して変更できます','✓ 已转换 · 可点击下方候选替换'],
+ '✓ 인터넷 번역으로 바꿨어요':['✓ Converted with online translation','✓ オンライン翻訳で変換しました','✓ 已通过在线翻译转换'],
+ '인터넷 번역을 쓸 수 없어 내장 사전과 로마자로 바꿨어요':['Online translation unavailable · used the dictionary and romanization','オンライン翻訳が使えないため辞書とローマ字で変換しました','无法使用在线翻译 · 已用词典和罗马字转换'],
+ '이름 칸이 닫혀서 복사해 두었어요 · 붙여넣기 하세요':['The name field closed, so it was copied · paste it','名前欄が閉じたのでコピーしました · 貼り付けてください','名称栏已关闭，已复制 · 请粘贴'],'복사했어요':['Copied','コピーしました','已复制'],
+ '스크립트 도움말':['Script help','スクリプトヘルプ','脚本帮助'],'무엇을 하고 싶나요? (예: 컴포넌트, 이동, 대화)':['What do you want to do? (e.g. component, move, dialog)','何をしたいですか？（例: コンポーネント、移動、会話）','想做什么？（例：组件、移动、对话）'],
+ '도움말 검색':['Search help','ヘルプ検索','搜索帮助'],'도움말 목록':['Help list','ヘルプ一覧','帮助列表'],'↑↓ 고르기 · Tab 적용 · Esc 닫기':['↑↓ choose · Tab apply · Esc close','↑↓ 選択 · Tab 適用 · Esc 閉じる','↑↓ 选择 · Tab 应用 · Esc 关闭'],
+ '{n}개':['{n}','{n}件','{n}项'],'맞는 도움말이 없어요':['No matching help','該当するヘルプがありません','没有匹配的帮助'],'다른 낱말로 찾아보세요 (예: 이동, 키, 소리)':['Try other words (e.g. move, key, sound)','別の言葉で探してください（例: 移動、キー、音）','请换个词搜索（例：移动、按键、声音）'],
+ '클래스 안에 넣기':['Goes inside the class','クラスの中に入れる','放在类中'],'함수 안에 넣기':['Goes inside a method','関数の中に入れる','放在函数中'],
+ '전체':['All','すべて','全部'],'기본':['Basics','基本','基础'],'컴포넌트':['Components','コンポーネント','组件'],'입력':['Input','入力','输入'],'이동':['Movement','移動','移动'],'연출':['Effects','演出','表现'],'시간':['Time','時間','时间'],'충돌':['Collision','衝突','碰撞'],'게임':['Game','ゲーム','游戏'],'문법':['Syntax','文法','语法'],
+ '콘솔에 글 출력하기':['Print to the console','コンソールに出力','输出到控制台'],'콘솔 창에 글이나 값을 보여 줍니다. 값이 어떻게 바뀌는지 확인할 때 써요.':['Shows text or values in the console. Useful for checking how values change.','コンソールに文字や値を表示します。値の変化を確かめるときに使います。','在控制台显示文字或数值，用于检查数值变化。'],
+ '인스펙터에 보이는 변수 만들기':['Variables shown in the Inspector','インスペクターに表示される変数','在检查器中显示的变量'],'public 변수는 인스펙터에 나타나서 값을 바로 바꿀 수 있어요. [Header]로 제목을 붙일 수 있어요.':['Public variables appear in the Inspector so you can edit them. [Header] adds a heading.','public 変数はインスペクターに表示され、すぐ値を変えられます。[Header] で見出しを付けられます。','public 变量会显示在检查器中，可直接修改。[Header] 可加标题。'],
+ 'Start · Update 기본 틀':['Start · Update template','Start · Update の基本形','Start · Update 基本框架'],'Start는 시작할 때 한 번, Update는 매 프레임 불립니다.':['Start runs once at the beginning, Update runs every frame.','Start は最初に一度、Update は毎フレーム呼ばれます。','Start 在开始时调用一次，Update 每帧调用。'],
+ '다른 오브젝트 찾기':['Find another object','他のオブジェクトを探す','查找其他对象'],'이름으로 씬의 게임 오브젝트를 찾습니다. UI 요소 이름도 찾을 수 있어요.':['Finds a game object in the scene by name. UI element names work too.','名前でシーンのゲームオブジェクトを探します。UI 要素の名前も探せます。','按名称查找场景中的游戏对象，也可查找 UI 元素。'],
+ '다른 오브젝트의 컴포넌트 쓰기':['Use another object’s component','他のオブジェクトのコンポーネントを使う','使用其他对象的组件'],'찾은 오브젝트에서 GetComponent로 컴포넌트를 꺼냅니다.':['Gets a component from a found object with GetComponent.','見つけたオブジェクトから GetComponent でコンポーネントを取り出します。','用 GetComponent 从找到的对象取出组件。'],
+ '오브젝트 켜고 끄기':['Turn objects on and off','オブジェクトのオン・オフ','开启和关闭对象'],'SetActive(false)로 숨기고 true로 다시 보이게 합니다.':['SetActive(false) hides it, true shows it again.','SetActive(false) で隠し、true で再表示します。','SetActive(false) 隐藏，true 重新显示。'],
+ '오브젝트 없애기':['Destroy an object','オブジェクトを消す','销毁对象'],'Destroy로 오브젝트를 씬에서 지웁니다. (아이템 먹기 · 적 처치)':['Destroy removes the object from the scene. (picking up items · defeating enemies)','Destroy でオブジェクトをシーンから消します。（アイテム取得・敵の撃破）','Destroy 从场景中移除对象。（拾取物品 · 击败敌人）'],
+ '주인공 가져오기':['Get the hero','主人公を取得','获取主角'],'Hero.main은 씬의 주인공입니다. 몬스터 · NPC 스크립트에서 주인공 위치나 체력을 볼 때 써요.':['Hero.main is the scene’s hero. Use it in monster or NPC scripts to read the hero’s position or HP.','Hero.main はシーンの主人公です。モンスター・NPC のスクリプトで主人公の位置や体力を見るときに使います。','Hero.main 是场景的主角。在怪物 · NPC 脚本中查看主角位置或体力时使用。'],
+ '키를 눌렀을 때':['When a key is pressed','キーを押したとき','按下按键时'],'GetKeyDown은 키를 누른 그 순간 한 번만 true입니다.':['GetKeyDown is true only on the frame the key is pressed.','GetKeyDown はキーを押した瞬間だけ true です。','GetKeyDown 只在按下的那一帧为 true。'],
+ '키를 누르고 있는 동안':['While a key is held','キーを押している間','按住按键期间'],'GetKey는 누르고 있는 동안 계속 true입니다. GetKeyUp은 뗀 순간이에요.':['GetKey stays true while held. GetKeyUp is the moment it’s released.','GetKey は押している間ずっと true です。GetKeyUp は離した瞬間です。','GetKey 在按住期间一直为 true，GetKeyUp 是松开的瞬间。'],
+ '방향키 · WASD로 움직이기':['Move with arrows · WASD','矢印キー・WASD で移動','用方向键 · WASD 移动'],'GetAxisRaw로 -1~1 방향을 읽고, 주인공 컴포넌트의 Move로 움직입니다.':['Reads a -1~1 direction with GetAxisRaw and moves with the Hero component’s Move.','GetAxisRaw で -1~1 の方向を読み、主人公コンポーネントの Move で動かします。','用 GetAxisRaw 读取 -1~1 方向，并用主角组件的 Move 移动。'],
+ '마우스 클릭':['Mouse click','マウスクリック','鼠标点击'],'GetMouseButtonDown(0)은 왼쪽, (1)은 오른쪽 버튼입니다.':['GetMouseButtonDown(0) is the left button, (1) is the right.','GetMouseButtonDown(0) は左、(1) は右ボタンです。','GetMouseButtonDown(0) 为左键，(1) 为右键。'],
+ '위치 바꾸기':['Set the position','位置を変える','改变位置'],'transform.position에 새 좌표를 넣으면 바로 그 자리로 옮겨집니다.':['Assigning transform.position moves it there instantly.','transform.position に新しい座標を入れるとすぐ移動します。','给 transform.position 赋新坐标即可立即移动。'],
+ '일정한 속도로 움직이기':['Move at a steady speed','一定の速さで動かす','匀速移动'],'Time.deltaTime을 곱하면 컴퓨터 속도와 상관없이 1초에 speed만큼 움직여요.':['Multiplying by Time.deltaTime moves speed units per second on any computer.','Time.deltaTime を掛けるとパソコンの速さに関係なく 1 秒に speed だけ動きます。','乘以 Time.deltaTime 后，无论电脑快慢每秒都移动 speed。'],
+ '목표 지점으로 다가가기':['Move toward a target','目標へ近づく','向目标靠近'],'MoveTowards는 목표를 넘어가지 않게 한 걸음씩 다가갑니다.':['MoveTowards steps closer without overshooting the target.','MoveTowards は目標を越えないように少しずつ近づきます。','MoveTowards 逐步靠近且不会越过目标。'],
+ '두 위치 사이 거리':['Distance between two points','2 点間の距離','两点之间的距离'],'Vector2.Distance로 두 점 사이의 거리(칸)를 잽니다.':['Vector2.Distance measures the distance (in tiles) between two points.','Vector2.Distance で 2 点間の距離（マス）を測ります。','用 Vector2.Distance 测量两点间的距离（格）。'],
+ '주인공 따라가기':['Follow the hero','主人公を追いかける','跟随主角'],'주인공이 가까이 오면 그쪽으로 다가갑니다. (몬스터 · 펫)':['Moves toward the hero when it gets close. (monsters · pets)','主人公が近づくとそちらへ向かいます。（モンスター・ペット）','主角靠近时向其移动。（怪物 · 宠物）'],
+ '왔다 갔다 순찰하기':['Patrol back and forth','行ったり来たり巡回','来回巡逻'],'두 지점 사이를 계속 오갑니다. (움직이는 발판 · 순찰 적)':['Keeps moving between two points. (moving platforms · patrolling enemies)','2 点の間を往復し続けます。（動く足場・巡回する敵）','在两点之间来回移动。（移动平台 · 巡逻敌人）'],
+ '빙글빙글 돌리기':['Spin around','くるくる回す','旋转'],'Rotate로 매 프레임 조금씩 돌립니다.':['Rotate turns it a little every frame.','Rotate で毎フレーム少しずつ回します。','用 Rotate 每帧旋转一点。'],
+ '크기 바꾸기':['Change the size','大きさを変える','改变大小'],'localScale로 크기를 바꿉니다. 1이 원래 크기예요.':['Change size with localScale. 1 is the original size.','localScale で大きさを変えます。1 が元の大きさです。','用 localScale 改变大小，1 为原始大小。'],
+ '애니메이션 바꾸기':['Change animation','アニメーションを変える','切换动画'],'Animator의 파라미터를 바꿔 애니메이터 창의 전환을 일으킵니다.':['Change Animator parameters to trigger transitions from the Animator window.','Animator のパラメーターを変えてアニメーター画面の遷移を起こします。','修改 Animator 参数以触发动画器窗口中的过渡。'],
+ '소리 재생하기':['Play a sound','音を再生','播放声音'],'AudioSource 컴포넌트에서 고른 소리를 재생합니다.':['Plays the sound chosen in the AudioSource component.','AudioSource コンポーネントで選んだ音を再生します。','播放 AudioSource 组件中选择的声音。'],
+ '빛 밝기 바꾸기':['Change light brightness','光の明るさを変える','改变灯光亮度'],'Light 컴포넌트의 밝기 · 색을 바꿉니다.':['Changes the Light component’s brightness · color.','Light コンポーネントの明るさ・色を変えます。','改变 Light 组件的亮度 · 颜色。'],
+ '타이머 (몇 초마다)':['Timer (every N seconds)','タイマー（N 秒ごと）','计时器（每隔 N 秒）'],'시간을 더해 가다가 정해 둔 초가 지나면 할 일을 하고 0으로 되돌립니다.':['Adds up time and, once the set seconds pass, does the job and resets to 0.','時間を足していき、決めた秒数が過ぎたら処理して 0 に戻します。','累加时间，达到设定秒数后执行并归零。'],
+ '몇 초 뒤에 한 번':['Once after N seconds','N 秒後に一度','N 秒后执行一次'],'남은 시간을 줄여 가다가 0이 되면 한 번만 실행합니다.':['Counts down and runs once when it reaches 0.','残り時間を減らしていき、0 になったら一度だけ実行します。','倒计时到 0 时只执行一次。'],
+ '주인공이 닿았을 때 (엔진 전용)':['When the hero touches (engine only)','主人公が触れたとき（エンジン専用）','主角接触时（引擎专用）'],'주인공이 이 오브젝트 칸에 들어오고 나갈 때 불립니다.':['Called when the hero enters and leaves this object’s tile.','主人公がこのオブジェクトのマスに入る・出るときに呼ばれます。','主角进入和离开此对象所在格时调用。'],
+ '말 걸었을 때 (NPC)':['When talked to (NPC)','話しかけられたとき（NPC）','被搭话时（NPC）'],'주인공이 가까이서 말 걸기(Space)를 하면 OnInteract가 불립니다.':['OnInteract is called when the hero talks nearby (Space).','主人公が近くで話しかける（Space）と OnInteract が呼ばれます。','主角在附近搭话（Space）时调用 OnInteract。'],
+ '대화창 띄우기':['Show a dialog','会話ウィンドウを表示','显示对话框'],'대화창을 엽니다. 열려 있는 동안 게임이 멈추고 Space로 닫혀요.':['Opens the dialog box. The game pauses while it’s open; Space closes it.','会話ウィンドウを開きます。開いている間はゲームが止まり、Space で閉じます。','打开对话框。打开期间游戏暂停，按 Space 关闭。'],
+ '알림 메시지 띄우기':['Show a message','お知らせメッセージを表示','显示提示消息'],'화면 아래에 짧은 메시지를 몇 초 동안 보여 줍니다.':['Shows a short message at the bottom of the screen for a few seconds.','画面下に短いメッセージを数秒表示します。','在屏幕下方显示简短消息几秒。'],
+ '아이템 얻기 · 쓰기':['Get · use items','アイテムを得る・使う','获得 · 使用物品'],'Inventory로 소지품을 더하고 빼고 개수를 셉니다.':['Inventory adds, removes and counts items.','Inventory で持ち物を増やし、減らし、数えます。','用 Inventory 添加、移除和统计物品。'],
+ '열쇠가 있으면 문 열기':['Open a door with a key','鍵があれば扉を開ける','有钥匙就开门'],'소지품에 열쇠가 있는지 보고 문을 엽니다.':['Checks the inventory for a key and opens the door.','持ち物に鍵があるか調べて扉を開けます。','检查背包中是否有钥匙并开门。'],
+ '아이템 먹기':['Pick up an item','アイテムを拾う','拾取物品'],'주인공이 닿으면 소지품에 넣고 사라집니다.':['When the hero touches it, it goes into the inventory and disappears.','主人公が触れると持ち物に入り、消えます。','主角接触后放入背包并消失。'],
+ '주인공 체력 깎기 · 회복':['Damage · heal the hero','主人公の体力を減らす・回復','扣除 · 恢复主角体力'],'TakeDamage로 피해를 주고 Heal로 회복합니다.':['TakeDamage deals damage and Heal restores HP.','TakeDamage でダメージを与え、Heal で回復します。','用 TakeDamage 造成伤害，用 Heal 恢复。'],
+ '함정 (닿으면 피해)':['Trap (damage on touch)','罠（触れるとダメージ）','陷阱（接触受伤）'],'주인공이 닿을 때마다 피해를 줍니다.':['Damages the hero each time it touches.','主人公が触れるたびにダメージを与えます。','主角每次接触都会受伤。'],
+ '씬 이동하기':['Change scenes','シーンを移動','切换场景'],'이름으로 다른 씬을 불러옵니다.':['Loads another scene by name.','名前で別のシーンを読み込みます。','按名称加载其他场景。'],
+ '게임 다시 시작':['Restart the game','ゲームを再スタート','重新开始游戏'],'체력을 채우고 시작 씬에서 다시 시작합니다.':['Refills HP and restarts from the start scene.','体力を回復して開始シーンから再スタートします。','恢复体力并从起始场景重新开始。'],
+ 'UI 그룹 보이기 · 숨기기':['Show · hide a UI group','UI グループの表示・非表示','显示 · 隐藏 UI 组'],'계층 구조의 UI 그룹을 찾아 한 번에 보이거나 숨깁니다.':['Finds a UI group in the hierarchy and shows or hides it all at once.','ヒエラルキーの UI グループを探し、まとめて表示・非表示にします。','查找层级中的 UI 组并一次性显示或隐藏。'],
+ '조건문 (if · else)':['Conditions (if · else)','条件文（if · else）','条件语句（if · else）'],'조건이 맞을 때와 아닐 때 다른 일을 합니다.':['Does different things depending on whether a condition is true.','条件が合うときと合わないときで別の処理をします。','根据条件是否成立执行不同操作。'],
+ '반복문 (for)':['Loops (for)','繰り返し（for）','循环（for）'],'정해진 횟수만큼 되풀이합니다.':['Repeats a set number of times.','決まった回数だけ繰り返します。','重复指定次数。'],
+ '상태 나누기 (switch)':['Branch by state (switch)','状態で分ける（switch）','按状态分支（switch）'],'값에 따라 여러 경우로 나눕니다.':['Splits into several cases depending on a value.','値によっていくつかの場合に分けます。','根据值分成多种情况。'],
+ '무작위 값':['Random values','ランダムな値','随机值'],'Random.Range로 정해진 범위 안의 값을 뽑습니다. 정수는 끝 값이 나오지 않아요.':['Random.Range picks a value in a range. For integers the max is excluded.','Random.Range で範囲内の値を選びます。整数では最大値は出ません。','用 Random.Range 在范围内取值。整数不包含最大值。'],
+ '함수 만들기':['Write a method','関数を作る','编写函数'],'같은 일을 이름 붙여 묶어 두고 여러 번 부릅니다.':['Groups work under a name so you can call it many times.','同じ処理に名前を付けてまとめ、何度も呼び出します。','给相同操作命名封装，便于多次调用。'],
+ '좌우 뒤집기':['Flip horizontally','左右反転','左右翻转'],'localScale의 x를 -1로 하면 그림이 좌우로 뒤집힙니다. (바라보는 방향)':['Setting localScale x to -1 mirrors the sprite. (facing direction)','localScale の x を -1 にすると左右反転します。（向き）','将 localScale 的 x 设为 -1 即可左右翻转。（朝向）'],
+ '카메라 확대 · 축소':['Camera zoom in · out','カメラのズーム','摄像机缩放'],'시작 카메라의 orthographicSize를 바꿉니다. 작을수록 크게 보여요.':['Changes the start camera’s orthographicSize. Smaller means closer.','開始カメラの orthographicSize を変えます。小さいほど大きく見えます。','修改起始摄像机的 orthographicSize，数值越小看起来越大。'],
+ '박스 콜라이더 2D의 트리거를 켜면 주인공이 들어올 때 OnTriggerEnter2D, 나갈 때 OnTriggerExit2D가 불립니다.':['With Box Collider 2D’s trigger on, OnTriggerEnter2D runs when the hero enters and OnTriggerExit2D when it leaves.','Box Collider 2D のトリガーをオンにすると、主人公が入ると OnTriggerEnter2D、出ると OnTriggerExit2D が呼ばれます。','开启 Box Collider 2D 的触发器后，主角进入时调用 OnTriggerEnter2D，离开时调用 OnTriggerExit2D。'],
+ '공격을 맞았을 때':['When hit by an attack','攻撃を受けたとき','被攻击时'],'주인공이 공격(휘두르기)으로 이 오브젝트를 맞히면 OnHit이 불립니다. (항아리 · 상자 부수기)':['OnHit runs when the hero’s attack hits this object. (breaking pots · crates)','主人公の攻撃がこのオブジェクトに当たると OnHit が呼ばれます。（壺・箱を壊す）','主角的攻击击中此对象时调用 OnHit。（打碎罐子 · 箱子）'],
+ '글자 이어 붙이기':['Join text','文字をつなげる','拼接文字'],'+ 나 $"…{값}…" 으로 글자와 값을 이어 붙입니다.':['Join text and values with + or $"…{value}…".','+ や $"…{値}…" で文字と値をつなげます。','用 + 或 $"…{值}…" 拼接文字和数值。'],
+ '컴포넌트 불러오기':['Get a component','コンポーネントを取得','获取组件'],'GetComponent<T>()로 이 오브젝트에 붙은 컴포넌트를 가져와 변수에 담아 둡니다.':['Use GetComponent<T>() to get a component on this object and keep it in a variable.','GetComponent<T>() でこのオブジェクトのコンポーネントを取得して変数に入れます。','用 GetComponent<T>() 获取此对象上的组件并存入变量。'],
+ '영역에 들어왔을 때 (트리거)':['Entering an area (trigger)','範囲に入ったとき（トリガー）','进入区域时（触发器）'],
+ 'help 도움말':['help = Help','help ヘルプ','help 帮助']
+});
