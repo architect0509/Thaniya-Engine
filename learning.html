@@ -1535,6 +1535,25 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 .smcode{margin:8px 0 0;max-height:240px;overflow:auto;padding:8px 10px;border-radius:9px;background:var(--field);font:11px/1.5 var(--fm);white-space:pre}
 .smguide{font-size:12.5px;line-height:1.6}.smguide ul{padding-left:18px;margin:6px 0}
 @media (max-width:860px){.smmain{flex-direction:column}.smside{width:auto;border-left:0;border-top:1px solid var(--line);max-height:260px}}
+
+/* ===== 학습 메뉴 (홈 · 레슨 · 코드 검색 · 예제) — 모든 화면 머리줄 ===== */
+.lnav{display:inline-flex;align-items:center;gap:2px;height:30px;padding:2px;border-radius:999px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);flex:none}
+.lnav button{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 11px;border:0;border-radius:999px;background:none;color:#b9bdc8;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.lnav button:hover{background:rgba(255,255,255,.08);color:#f2f2f5}
+.lnav button.on{background:rgba(233,189,12,.16);color:#ffd84a;box-shadow:inset 0 0 0 1px rgba(233,189,12,.38)}
+.lnav button.lhome{background:#e9bd0c;color:#1a1400}
+.lnav button.lhome:hover{background:#ffd23a;color:#1a1400}
+.lnav button.lhome.on{box-shadow:0 0 0 2px rgba(233,189,12,.35)}
+.lnav svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:900px){.lnav button:not(.lhome) span{display:none}.lnav button{padding:0 9px}}
+#lessonView .top .lnav button:not(.lhome):not(.on) span{display:none}
+#hmBack,#exBack,#svBack{display:none!important}
+.lfs{display:inline-flex;align-items:center;gap:5px}
+html[data-theme="light"] .lnav{background:rgba(0,0,0,.04);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+html[data-theme="light"] .lnav button{color:#5b606c}
+html[data-theme="light"] .lnav button:hover{background:rgba(0,0,0,.06);color:#16171c}
+html[data-theme="light"] .lnav button.on{background:rgba(233,189,12,.18);color:#7a5c00;box-shadow:inset 0 0 0 1px rgba(201,154,6,.45)}
+html[data-theme="light"] .lnav button.lhome{background:#e9bd0c;color:#1a1400}
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -1569,6 +1588,7 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
   <div class="prog"><span id="progT"></span><div class="bar"><i id="progB"></i></div></div>
   <span class="thost"></span><span class="lhost"></span>
   <button class="treset" type="button" id="topSearchWin" title="코드 검색을 따로 떠 있는 새 창으로 열기" aria-label="코드 검색을 새 창으로 열기">코드 검색 ↗</button>
+  <button class="treset lfs" type="button" id="lFull" title="전체 화면 (F11)" aria-label="전체 화면">⛶ <span>전체 화면</span></button>
   <button class="treset" type="button" id="topReset" aria-haspopup="menu" title="초기화">초기화</button>
   <button class="tg" type="button" id="topTg" aria-expanded="true" aria-controls="topx" title="안내·문제 목록 접기/펼치기" aria-label="안내와 문제 목록 접기/펼치기"></button>
 </header>
@@ -1726,13 +1746,13 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 </main>
 </div>
 
-<script src="script-engine.js?v=20261110a"></script>
-<script src="script-editor.js?v=20261116a"></script>
+<script src="script-engine.js?v=20261118a"></script>
+<script src="script-editor.js?v=20261118a"></script>
 <script src="anim-editor.js?v=20261107f"></script>
 <script src="ui-builder.js?v=20261105d"></script>
 <script src="visual-script.js?v=20261108d"></script>
-<script src="learn-preview.js?v=20261110a"></script>
-<script src="examples/examples.js?v=20261111a"></script>
+<script src="learn-preview.js?v=20261118b"></script>
+<script src="examples/examples.js?v=20261118b"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
@@ -3501,6 +3521,167 @@ const L14P=[
  hint:'편집기는 Ctrl+S로 저장하고 오른쪽 위 「숨기기」로 닫아요.\n\nCutsceneTrigger.cs 전체 코드:\n\nusing UnityEngine;\n\npublic class CutsceneTrigger : MonoBehaviour\n{\n    public PlayableDirector director;\n    private bool played = false;\n\n    void OnTriggerEnter2D(Collider2D other)\n    {\n        if (played)\n        {\n            return;\n        }\n        played = true;\n        director.Play();\n    }\n}\n\nplayed 변수는 컷씬이 한 번만 재생되게 막아요.\n「광장 입구」는 길 위 X 5에 있어요. 박스 콜라이더 2D의 크기(칸) H를 3으로 키우면 길 폭 전체가 입구가 돼요(트리거라 막히지 않고 지나가요).'}
 ];
 
+/* ===== 레슨 15: 볼륨으로 화면 분위기 바꾸기 (입문) — 진짜 엔진(edit.html?learn=1) 실습장 =====
+   달빛 마을(22×12) · 왼쪽 마을 · 오른쪽 「폐가 마당」(돌바닥 · 벽돌 담 · 우물 · 횃불).
+   전역 볼륨(색 보정 · 비네트 · 프리셋 · 무게) → 지역 볼륨(아날로그 호러 · 섞는 거리 · 우선순위) → 볼록 렌즈 볼륨(우선순위 겹침). 확인은 EN.P와 en:vol:… 이벤트 */
+function labMoon(n){
+  const m=labMap('moon','달빛 마을',22,12,P=>{
+    P.rect(0,1,5,12,6,'base_dirt:0');
+    P.rect(0,13,2,20,9,'base_stone_floor:0');
+    for(let x=12;x<=20;x++)P.set(1,x,1,'base_brick_wall:0');
+    for(let y=1;y<=10;y++)if(y<5||y>6)P.set(1,12,y,'base_brick_wall:0');
+    P.rect(2,2,8,5,9,'base_tall_grass:0');P.rect(2,18,8,19,9,'base_tall_grass:0');
+  });
+  m.groups=[{id:'gdeco',name:'마을 장식'},{id:'gyard',name:'폐가 마당 장식'}];
+  m.objs=[
+    labObj('hero','spawn','주인공',2,5,{start:true}),
+    labDeco('sign','출입 금지 표지판','base_sign',11,4,null),
+    labDeco('well','우물','base_well',16,4,'gyard'),
+    labDeco('y1','횃불','base_torch',13,2,'gyard'),labDeco('y2','횃불 2','base_torch',19,2,'gyard'),labDeco('y3','나무통','base_barrel',14,8,'gyard'),
+    labDeco('y4','항아리','base_pot',18,8,'gyard'),labDeco('y5','나무 상자','base_crate',19,6,'gyard'),labDeco('y6','버섯','base_mushroom',15,9,'gyard'),labDeco('y7','소나무','base_pine',20,8,'gyard'),
+    labDeco('v1','나무','base_tree',3,2,'gdeco'),labDeco('v2','꽃','base_flowers',6,3,'gdeco'),labDeco('v3','꽃 2','base_flowers',8,8,'gdeco'),
+    labDeco('v4','덤불','base_bush',9,9,'gdeco'),labDeco('v5','울타리','base_fence',4,8,'gdeco'),labDeco('v6','바위','base_rock',10,2,'gdeco')
+  ];
+  const fx=(k,p)=>({k,on:true,p}),vol=(id,name,x,y,v,box)=>{const o=labObj(id,'empty',name,x,y,{volume:v});if(box)o.props.box=box;return o};
+  if(n>=2)m.objs.push(vol('gvol','전역 볼륨 1',1,1,{mode:'global',weight:1,priority:0,blend:1,fx:[fx('color',{exposure:0,contrast:0,saturation:0,hue:0,temp:35,tint:0,filter:'#ffffff'}),fx('vignette',{intensity:.35,smooth:.45,color:'#000000'})]}));
+  if(n>=3){const g=m.objs.find(o=>o.id==='gvol');g.props.volume.fx=[fx('color',{exposure:.1,contrast:8,saturation:12,hue:0,temp:35,tint:0,filter:'#ffffff'}),fx('vignette',{intensity:.25,smooth:.5,color:'#000000'})]}
+  if(n>=4)m.objs.push(vol('lvol','지역 볼륨 1',16,5,{mode:'local',weight:1,priority:1,blend:2,fx:[
+    fx('color',{exposure:-.35,contrast:20,saturation:-60,hue:0,temp:-15,tint:0,filter:'#d8e6d0'}),fx('vhs',{wobble:.6,bleed:.7,track:.6,noise:.55,osd:true,text:'● REC'}),
+    fx('glitch',{intensity:.35,freq:.3,block:.6}),fx('grain',{type:'grain',intensity:.45,size:1}),fx('chroma',{intensity:.5}),fx('lens',{intensity:.15,scale:1,cx:.5,cy:.5}),fx('vignette',{intensity:.6,smooth:.5,color:'#000000'})]},{trigger:true,w:7,h:7,ox:0,oy:0}));
+  return labProj('달빛 마을 볼륨',[m]);
+}
+const enVols=mode=>enObjs().filter(o=>o.props&&o.props.volume&&(!mode||o.props.volume.mode===mode));
+const enFx=(o,k)=>o&&o.props&&o.props.volume?(o.props.volume.fx||[]).find(f=>f.k===k&&f.on!==false)||null:null;
+const enGVol=()=>enVols('global')[0]||null;
+const enGVolFx=(k,pred)=>enVols('global').some(o=>{const f=enFx(o,k);return!!f&&(!pred||pred(f.p,o.props.volume))});
+/* 지역 볼륨 상자(박스 콜라이더 2D)가 칸 좌표 (x, y) 를 덮는지 — 오브젝트 칸의 가운데가 (x+0.5, y+0.5) */
+function enVolCovers(o,x,y){const b=o&&o.props&&o.props.box;if(!b)return false;const cx=o.x+.5+(+b.ox||0),cy=o.y+.5+(+b.oy||0);return Math.abs(cx-x)<=(+b.w||1)/2&&Math.abs(cy-y)<=(+b.h||1)/2}
+const enYardVol=()=>enVols('local').find(o=>enFx(o,'vhs'))||null;
+const enWellVol=()=>enVols('local').find(o=>enIs(o.name,'우물 렌즈'))||null;
+const enWellAt=()=>{const w=enO('우물');return w?{x:w.x+.5,y:w.y+.5}:{x:16.5,y:4.5}};
+const L15={no:15,title:'볼륨으로 화면 분위기 바꾸기',clear:'통과했어요. 레슨 15 완료! 전역 볼륨으로 마을 전체의 색감을 바꾸고, 프리셋과 무게로 효과를 섞고, 지역 볼륨으로 폐가 마당에 들어설 때만 화면이 으스스하게 변하게 했어요. 겹친 볼륨은 우선순위가 큰 쪽이 이긴다는 것도 확인했어요. 내 게임에서도 「게임 오브젝트」 창의 전역 볼륨 · 지역 볼륨으로 바로 쓸 수 있어요.',
+ lead:'영화나 게임에서 장면마다 색감과 분위기가 달라지는 건 대부분 「후처리」 덕분이에요. 볼륨(Volume)은 카메라 화면에 색 보정 · 비네트 · 노이즈 · 렌즈 왜곡 같은 효과를 입히는 컴포넌트예요. 이 레슨은 진짜 엔진 화면에서 마을 전체와 폐가 마당의 분위기를 바꿔 봐요.'};
+const L15P=[
+{id:'vol-global',task:true,en:{proj:()=>labMoon(1)},title:'전역 볼륨으로 마을을 따뜻하게',
+ desc:'오른쪽 큰 화면은 <b>진짜 Thaniya Engine</b>이에요(실습 전용 프로젝트라 내 프로젝트는 바뀌지 않아요). <b>볼륨</b>은 화면 전체를 한 장의 사진처럼 보고 그 위에 필터를 씌우는 컴포넌트예요. 이런 효과를 <b>후처리</b>(Post Processing)라고 불러요. <b>전역 볼륨</b>은 주인공이 어디에 있든 화면 전체에 효과를 줘요.<br><br>볼륨 안에는 <b>효과</b>를 여러 개 넣을 수 있어요. <b>색 보정</b>의 <b>색온도</b>를 올리면 노을처럼 따뜻해지고, <b>비네트</b>는 화면 가장자리를 어둡게 감싸 시선을 가운데로 모아요. 결과는 씬 뷰 위의 <b>게임</b> 탭이나 <b>▶ 플레이</b>에서 보여요.',
+ goal:'전역 볼륨을 만들어 마을을 따뜻한 색감으로 바꾸고, 가장자리를 살짝 어둡게 하세요.',
+ checks:[
+  {t:'<b>게임 오브젝트</b> 창의 <b>전역 볼륨</b> 블록 누르기 (계층 구조 우클릭 › 게임 오브젝트 › 전역 볼륨도 돼요)',ok:()=>enVols('global').length>0},
+  {t:'<b>인스펙터</b> 볼륨의 <b>＋ 효과 추가</b> › <b>색 보정</b>',ok:()=>enGVolFx('color')},
+  {t:'색 보정의 <b>색온도</b>를 <b>30 이상</b>으로 (슬라이더를 끌거나 숫자를 넣어요)',ok:()=>enGVolFx('color',p=>+p.temp>=30)},
+  {t:'<b>＋ 효과 추가</b> › <b>비네트</b>를 넣고 <b>강도</b>를 <b>0.3 이상</b>으로',ok:()=>enGVolFx('vignette',p=>+p.intensity>=.3)},
+  {t:'<b>▶ 플레이</b>로 따뜻해진 마을 보기 (게임 탭에서 미리 봐도 좋아요)',ok:()=>enEv('play')&&enGVolFx('color',p=>+p.temp>=30)&&enGVolFx('vignette',p=>+p.intensity>=.3)}],
+ hint:'게임 오브젝트 창은 왼쪽 위 계층 구조 옆 탭이에요. 블록을 누르면 씬 뷰 가운데에 볼륨 오브젝트가 생기고 바로 선택돼요.\n전역 볼륨은 위치와 상관없이 화면 전체에 효과를 줘요. 그래서 어디에 두어도 돼요.\n효과 카드의 머리줄을 누르면 접혀요. ✕는 효과 빼기, ↑↓는 순서 바꾸기예요.\n유니티(URP)에서도 Hierarchy › Volume › Global Volume으로 똑같이 만들어요.'},
+{id:'vol-preset',task:true,en:{proj:()=>labMoon(2),sel:'gvol'},title:'프리셋과 무게로 효과 섞기',
+ desc:'효과를 하나하나 넣지 않고 <b>프리셋</b>으로 한 번에 불러올 수도 있어요. 「오래된 필름」 프리셋은 누렇게 바랜 색 · 긁힌 자국 · 먼지 · 깜빡임을 한꺼번에 넣어요. 불러온 다음에는 값을 마음대로 고치고, 필요 없는 효과는 ✕로 빼요.<br><br><b>무게</b>(Weight)는 볼륨 전체를 얼마나 섞을지예요. 1이면 효과가 전부, 0이면 없음, 0.5면 원래 화면과 반반 섞여요. 효과를 은은하게 쓰고 싶을 때 무게를 낮춰요.',
+ goal:'전역 볼륨에 「오래된 필름」 프리셋을 불러와 긁힘을 강하게 하고, 노이즈는 빼고, 무게를 0.5로 은은하게 섞으세요.',
+ checks:[
+  {t:'계층 구조에서 <b>전역 볼륨 1</b>을 고르고 인스펙터 <b>프리셋</b> 칸에서 <b>오래된 필름</b> 고르기',ok:()=>enGVolFx('oldfilm')},
+  {t:'오래된 필름의 <b>긁힘</b>을 <b>0.8 이상</b>으로',ok:()=>enGVolFx('oldfilm',p=>+p.scratch>=.8)},
+  {t:'<b>노이즈 · 필름 그레인</b> 카드의 <b>✕</b>로 효과 빼기',ok:()=>{const o=enGVol();return!!o&&!!enFx(o,'oldfilm')&&!(o.props.volume.fx||[]).some(f=>f.k==='grain')}},
+  {t:'볼륨 <b>무게</b>를 <b>0.5</b>로 (0.45 ~ 0.55)',ok:()=>{const o=enGVol();return!!o&&+o.props.volume.weight>=.45&&+o.props.volume.weight<=.55}},
+  {t:'<b>▶ 플레이</b>로 은은한 옛날 영화 느낌 보기',ok:()=>{const o=enGVol();return enEv('play')&&!!o&&!!enFx(o,'oldfilm')&&+o.props.volume.weight<=.55}}],
+ hint:'프리셋을 고르면 지금 효과 목록이 프리셋으로 바뀌어요. 마음에 안 들면 Ctrl+Z로 되돌려요.\n무게 칸은 슬라이더와 숫자 칸이 짝이에요. 숫자 칸에 0.5를 넣고 Enter를 눌러도 돼요.\n효과 카드 왼쪽 체크를 끄면 빼지 않고 잠깐 꺼 둘 수 있어요.'},
+{id:'vol-local',task:true,en:{proj:()=>labMoon(3)},title:'지역 볼륨으로 폐가 마당만 으스스하게',
+ desc:'<b>지역 볼륨</b>은 <b>박스 콜라이더 2D</b> 상자 안에서만 효과를 줘요. 주인공이 상자에 들어서면 효과가 켜지고, 나오면 꺼져요. <b>섞는 거리</b>(칸)를 주면 상자에 다가갈수록 효과가 <b>서서히</b> 짙어져요. 씬 뷰에서 볼륨을 고르면 상자는 보라색, 섞는 거리는 보라 점선으로 보여요.<br><br>전역 볼륨과 지역 볼륨이 겹치면 <b>우선순위</b>가 큰 볼륨이 나중에 섞여서 이겨요. 보통 전역은 0, 지역은 1 이상으로 둬요. 「아날로그 호러」 프리셋은 비디오테이프 노이즈 · 색 번짐 · 글리치 · 어두운 색감을 한 번에 넣어요.',
+ goal:'오른쪽 폐가 마당을 덮는 지역 볼륨을 만들어, 주인공이 마당에 들어서면 화면이 오래된 녹화 테이프처럼 변하게 하세요.',
+ checks:[
+  {t:'<b>게임 오브젝트</b> 창의 <b>지역 볼륨</b> 블록 누르기 (박스 콜라이더 2D가 함께 붙어요)',ok:()=>enVols('local').some(o=>o.props.box)},
+  {t:'지역 볼륨을 <b>폐가 마당 가운데</b>(우물 근처)로 옮기고, 박스 콜라이더 2D <b>크기</b>를 <b>W 6 · H 6 이상</b>으로 키워 마당 덮기',ok:()=>enVols('local').some(o=>enVolCovers(o,16.5,5.5)&&+o.props.box.w>=6&&+o.props.box.h>=6)},
+  {t:'그 지역 볼륨의 <b>프리셋</b>에서 <b>아날로그 호러</b> 고르기',ok:()=>enVols('local').some(o=>enFx(o,'vhs')&&enVolCovers(o,16.5,5.5))},
+  {t:'<b>섞는 거리</b>를 <b>2칸 이상</b>, <b>우선순위</b>를 <b>1 이상</b>으로',ok:()=>{const o=enYardVol();return!!o&&+o.props.volume.blend>=2&&+o.props.volume.priority>=1}},
+  {t:'<b>▶ 플레이</b> → 방향키로 마당 입구에 다가가며 화면이 서서히 변하는 것 보기 · 마당 안까지 들어가기',ok:()=>{const o=enYardVol();return!!o&&enEv('vol:enter:'+o.name)}}],
+ hint:'볼륨 오브젝트는 이동 도구로 끌어 옮기거나, 인스펙터 변환의 위치를 X 16 · Y 5 근처로 넣어요.\n박스 콜라이더 2D의 크기(칸) W · H는 인스펙터에서 바꿔요. 씬 뷰의 보라 상자가 마당을 덮으면 돼요.\n마당 입구는 벽돌 담의 왼쪽 가운데(X 12, Y 5 ~ 6)에 뚫려 있어요.\n지역 볼륨은 주인공 위치로 재요. 유니티에서는 카메라의 Volume Trigger를 주인공으로 둔 것과 같아요.'},
+{id:'vol-lens',task:true,en:{proj:()=>labMoon(4)},title:'우물 앞 볼록 렌즈 (우선순위)',
+ desc:'<b>렌즈 왜곡</b>은 화면을 렌즈로 본 것처럼 휘게 해요. 강도가 <b>+</b>면 <b>볼록렌즈</b>처럼 가운데가 부풀고, <b>-</b>면 오목렌즈처럼 가장자리가 늘어나요. <b>색수차</b>를 함께 넣으면 가장자리 색이 어긋나 진짜 렌즈 같아져요.<br><br>그런데 폐가 마당의 「아날로그 호러」 볼륨에도 렌즈 왜곡(강도 0.15)이 들어 있어요. 두 볼륨이 같은 효과를 가지고 겹치면 <b>우선순위가 큰 볼륨의 값</b>이 이겨요. 우물 볼륨의 우선순위가 폐가 볼륨보다 작으면 0.15가 덮어써서 볼록렌즈가 거의 안 보여요.',
+ goal:'우물 둘레에만 작은 지역 볼륨 「우물 렌즈」를 만들어, 우물 앞에 서면 화면이 볼록렌즈처럼 부풀게 하세요.',
+ checks:[
+  {t:'지역 볼륨을 하나 더 만들고 인스펙터 맨 위 이름을 <b>우물 렌즈</b>로',ok:()=>!!enWellVol()},
+  {t:'우물 렌즈를 <b>우물</b> 위로 옮기고 상자 <b>크기</b>를 <b>W · H 3 이하</b>로 줄이기',ok:()=>{const o=enWellVol(),w=enWellAt();return!!o&&enVolCovers(o,w.x,w.y)&&+o.props.box.w<=3&&+o.props.box.h<=3}},
+  {t:'<b>＋ 효과 추가</b> › <b>렌즈 왜곡</b> · 강도 <b>0.6 이상</b> (볼록)',ok:()=>{const f=enFx(enWellVol(),'lens');return!!f&&+f.p.intensity>=.6}},
+  {t:'<b>＋ 효과 추가</b> › <b>색수차</b>',ok:()=>!!enFx(enWellVol(),'chroma')},
+  {t:'우물 렌즈의 <b>우선순위</b>를 폐가 마당 볼륨보다 <b>크게</b> (예: 2)',ok:()=>{const o=enWellVol(),y=enYardVol();return!!o&&+o.props.volume.priority>(y?+y.props.volume.priority||0:0)}},
+  {t:'<b>▶ 플레이</b> → 우물 바로 앞까지 걸어가 화면이 부푸는 것 보기',ok:()=>{const o=enWellVol();return!!o&&enEv('vol:enter:'+o.name)&&!!enFx(o,'lens')}}],
+ hint:'이름은 인스펙터 맨 위 글자 칸에서 바꿔요.\n상자가 우물 그림을 덮도록 볼륨 위치를 우물과 같은 칸(X 16 · Y 4)에 두면 쉬워요. 섞는 거리를 1로 두면 우물에 다가갈 때 부드럽게 부풀어요.\n렌즈 왜곡의 「배율」을 1보다 크게 하면 렌즈 속 화면이 확대돼요. 「중심 X · Y」로 부푸는 곳을 옮길 수도 있어요.\n우선순위를 1(폐가 볼륨과 같거나 작게)로 두고 다시 플레이해 보면 렌즈가 약해지는 것도 확인할 수 있어요.'}
+];
+
+/* ===== 레슨 16: 보스전 만들기 (중급) — 진짜 엔진 실습장 · 예제 「보스전: 그림자 슬라임 왕」 프로젝트를 그대로 씀 =====
+   BossAI(레슨용)는 문제마다 TODO 한 군데씩을 채워요: ① 내려찍기 판정 ② 탄막 각도 ③ 체력 바 · 2페이즈 ④ H 히트박스 ⑤ 기사단장 → 보스 씬
+   확인: EN.P의 스크립트 코드 + 엔진이 보내는 일(log:… · scene:… · say:… · hero:hurt:…) */
+/* 레슨 16 보스 AI 템플릿 (자동 생성: 빈칸 TODO ↔ 정답) */
+const L16_SRC={"tpl": "using UnityEngine;\n\n// 보스 AI (레슨용) · 그림자 슬라임 왕\n// 「패턴 고르기 → 경고 표시 → 공격 → 쉬기」를 되풀이하는 상태 머신이에요.\n//   내려찍기: 주인공 발밑에 빨간 원이 차오르고, 다 차는 순간 원 안에 있으면 피해\n//   탄막   : 보라 구슬을 사방으로 발사\n// 주인공의 공격이 닿으면 엔진이 OnHit()을 불러요.\npublic class BossAI : MonoBehaviour\n{\n    [Header(\"연습\")]\n    [Tooltip(\"이 패턴만 써요: 0 = 내려찍기, 1 = 탄막, -1 = 무작위\")]\n    public int onlyPattern = @ONLY@;\n\n    [Header(\"체력\")]\n    public int maxHp = @HP@;\n\n    [Header(\"내려찍기\")]\n    public float slamRadius = 1.5f;\n    public float slamWarn = 1.2f;\n    public int slamDamage = 20;\n\n    [Header(\"탄막\")]\n    public int orbCount = 8;\n    public float orbSpeed = 4f;\n    public float orbLife = 2.6f;\n    public int orbDamage = 12;\n\n    [Header(\"쉬기\")]\n    public float restTime = 1.4f;\n\n    private int hp;\n    private int phase = 1;\n    private int state = 0;      // 0 등장 · 1 쉬기 · 2 내려찍기 · 5 탄막 · 6 쓰러짐\n    private float timer = 2f;\n    private int lastPattern = -1;\n    private Vector2 target;\n    private Vector2 orbStart;\n    private float orbAge = 0f;\n    private bool showHitbox = false;\n\n    private Hero hero;\n    private GameObject warnRing;\n    private GameObject warnFill;\n    private GameObject flash;\n    private GameObject bodyBox;\n    private GameObject heroBox;\n    private Volume rageVolume;\n\n    void Start()\n    {\n        hero = Hero.main;\n        warnRing = GameObject.Find(\"경고 원\");\n        warnFill = GameObject.Find(\"경고 채움\");\n        flash = GameObject.Find(\"보스 번쩍\");\n        bodyBox = GameObject.Find(\"보스 히트박스\");\n        heroBox = GameObject.Find(\"주인공 히트박스\");\n        rageVolume = GameObject.Find(\"분노 볼륨\").GetComponent<Volume>();\n        rageVolume.weight = 0f;\n        hp = maxHp;\n        HideWarnings();\n        HideOrbs();\n        UpdateBar();\n    }\n\n    void Update()\n    {\n        HitboxKey();\n        if (state == 6 || hero.isDead)\n        {\n            return;\n        }\n@PHASE@\n        if (phase == 2)\n        {\n            rageVolume.weight = Mathf.MoveTowards(rageVolume.weight, 1f, Time.deltaTime);\n        }\n\n        timer -= Time.deltaTime;\n        if (state == 0 || state == 1)\n        {\n            if (timer <= 0f)\n            {\n                NextPattern();\n            }\n        }\n        else if (state == 2)\n        {\n            SlamUpdate();\n        }\n        else if (state == 5)\n        {\n            OrbUpdate();\n        }\n    }\n\n    void NextPattern()\n    {\n        int pick = Random.Range(0, 2);\n        if (pick == lastPattern)\n        {\n            pick = 1 - pick;\n        }\n        if (onlyPattern >= 0)\n        {\n            pick = onlyPattern;\n        }\n        lastPattern = pick;\n        if (pick == 0)\n        {\n            StartSlam();\n        }\n        else\n        {\n            StartOrbs();\n        }\n    }\n\n    void Rest()\n    {\n        HideWarnings();\n        state = 1;\n        timer = restTime;\n        if (phase == 2)\n        {\n            timer = restTime * 0.6f;    // 2페이즈는 쉬는 시간이 짧아요\n        }\n    }\n\n    // ---------- 패턴 1 · 내려찍기 ----------\n    void StartSlam()\n    {\n        state = 2;\n        target = hero.position;         // 시작할 때 주인공이 있던 곳\n        timer = slamWarn;\n        Debug.Log(\"내려찍기 경고\");\n    }\n\n    void SlamUpdate()\n    {\n        float t = 1f - timer / slamWarn;    // 0 → 1 로 차오름\n        ShowCircle(target, slamRadius, t);\n        if (timer > 0f)\n        {\n            return;\n        }\n        // 원이 다 찼어요 → 판정\n@SLAM@\n        Rest();\n    }\n\n    // 원 모양 경고 (테두리 + 차오르는 안쪽). 스프라이트는 아래쪽 가운데를 기준으로 커지므로 y를 맞춰 줘요\n    void ShowCircle(Vector2 pos, float radius, float t)\n    {\n        float full = radius * 2f;\n        float fill = full * Mathf.Clamp(t, 0.1f, 1f);\n        warnRing.SetActive(true);\n        warnFill.SetActive(true);\n        warnRing.transform.localScale = new Vector3(full, full, 1);\n        warnRing.transform.position = new Vector2(pos.x, pos.y - 0.5f + full / 2f);\n        warnFill.transform.localScale = new Vector3(fill, fill, 1);\n        warnFill.transform.position = new Vector2(pos.x, pos.y - 0.5f + fill / 2f);\n    }\n\n    // ---------- 패턴 2 · 탄막 ----------\n    void StartOrbs()\n    {\n        state = 5;\n        orbAge = 0f;\n        orbStart = transform.position;\n        for (int i = 1; i <= orbCount; i++)\n        {\n            GameObject.Find(\"구슬 \" + i).SetActive(true);\n        }\n        Debug.Log(\"탄막 발사\");\n    }\n\n    void OrbUpdate()\n    {\n        orbAge += Time.deltaTime;\n        float dist = orbAge * orbSpeed;     // 지금까지 날아간 거리 (칸)\n        for (int i = 0; i < orbCount; i++)\n        {\n            GameObject orb = GameObject.Find(\"구슬 \" + (i + 1));\n            if (!orb.activeSelf)\n            {\n                continue;\n            }\n@ORB@\n            orb.transform.position = p;\n            if (Vector2.Distance(p, hero.position) < 0.5f)\n            {\n                hero.TakeDamage(orbDamage);\n                orb.SetActive(false);\n            }\n        }\n        if (orbAge > orbLife)\n        {\n            HideOrbs();\n            Rest();\n        }\n    }\n\n    // ---------- 맞았을 때 · 체력 바 · 2페이즈 · 쓰러짐 ----------\n    void OnHit()\n    {\n        if (state == 0 || state == 6)\n        {\n            return;\n        }\n        hp -= 1;\n        UpdateBar();\n        if (hp <= 0)\n        {\n            state = 6;\n            HideWarnings();\n            HideOrbs();\n            gameObject.SetActive(false);\n            UIScreen.Hide(\"보스 UI\");\n            UIScreen.Show(\"승리\");\n            Debug.Log(\"보스 토벌!\");\n        }\n    }\n\n    void UpdateBar()\n    {\n@BAR@\n        UIScreen.SetText(\"보스 UI\", \"체력 숫자\", hp + \" / \" + maxHp);\n    }\n\n    void EnterPhase2()\n    {\n        phase = 2;\n        UIScreen.SetText(\"보스 UI\", \"페이즈\", \"2 페이즈 · 분노\");\n        Message.Show(\"그림자 슬라임 왕이 분노했다!\", 1.8f);\n        Debug.Log(\"2페이즈 시작\");\n    }\n\n    // ---------- H 키: 히트박스 보기 ----------\n    void HitboxKey()\n    {\n@HITBOX@\n    }\n\n    void HideWarnings()\n    {\n        warnRing.SetActive(false);\n        warnFill.SetActive(false);\n        GameObject.Find(\"돌진 경고\").SetActive(false);\n    }\n\n    void HideOrbs()\n    {\n        for (int i = 1; i <= 16; i++)\n        {\n            GameObject.Find(\"구슬 \" + i).SetActive(false);\n        }\n    }\n}\n", "blocks": {"SLAM": ["        // TODO ① 주인공이 원 안에 있으면 (target과의 거리 < slamRadius)\n        //        hero.TakeDamage(slamDamage); 로 피해를 주고\n        //        Debug.Log(\"내려찍기 명중!\"); 을 출력하세요\n", "        if (Vector2.Distance(hero.position, target) < slamRadius)\n        {\n            hero.TakeDamage(slamDamage);\n            Debug.Log(\"내려찍기 명중!\");\n        }\n"], "ORB": ["            // TODO ② i번째 구슬의 각도 = i × (한 바퀴 2π ÷ orbCount)\n            //        위치 p = orbStart + (cos 각도, sin 각도) × dist\n            Vector2 p = orbStart;\n", "            float angle = i * Mathf.PI * 2f / orbCount;\n            Vector2 p = orbStart + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * dist;\n"], "BAR": ["        // TODO ③ 체력 바 채우기: UIScreen.SetValue(\"보스 UI\", \"체력 바\", 0 ~ 1 사이 값);\n", "        UIScreen.SetValue(\"보스 UI\", \"체력 바\", hp * 1f / maxHp);\n"], "PHASE": ["        // TODO ③ 체력이 절반 이하가 되면 (phase가 아직 1일 때 한 번만) EnterPhase2();\n", "        if (phase == 1 && hp <= maxHp / 2)\n        {\n            EnterPhase2();\n        }\n"], "HITBOX": ["        // TODO ④ H 키를 누르면(Input.GetKeyDown) showHitbox를 뒤집고(!),\n        //        bodyBox · heroBox 를 SetActive(showHitbox) 로 켜고 끄세요\n        //        Debug.Log(\"히트박스 보기: \" + (showHitbox ? \"켬\" : \"끔\"));\n", "        if (Input.GetKeyDown(KeyCode.H))\n        {\n            showHitbox = !showHitbox;\n            bodyBox.SetActive(showHitbox);\n            heroBox.SetActive(showHitbox);\n            Debug.Log(\"히트박스 보기: \" + (showHitbox ? \"켬\" : \"끔\"));\n        }\n"]}, "ktpl": "using UnityEngine;\n\n// 기사단장: 말을 걸면 NPC 컴포넌트의 대사를 들려주고,\n// 대화창이 닫히면 보스 씬으로 보내요.\npublic class KnightCaptain : MonoBehaviour\n{\n    [Tooltip(\"대화가 끝나면 넘어갈 씬 이름\")]\n    public string bossScene = \"어둠의 제단\";\n\n    private Npc npc;\n    private bool talked = false;\n    private float wait = 0f;\n\n    void Start()\n    {\n        npc = GetComponent<Npc>();\n    }\n\n    // 주인공이 가까이에서 Space를 누르면 HeroCombat의 hero.Interact()가 불러요\n    void OnInteract()\n    {\n        if (talked)\n        {\n            return;\n        }\n        npc.Talk();\n        talked = true;\n    }\n\n    void Update()\n    {\n        if (!talked || Dialog.isOpen)\n        {\n            return;\n        }\n@GATE@    }\n}\n", "kans": "        // 대화창이 닫힌 뒤 잠깐 쉬었다가 씬 전환\n        wait += Time.deltaTime;\n        if (wait > 0.4f)\n        {\n            SceneManager.LoadScene(bossScene);\n        }\n", "ktodo": "        // TODO ⑤ 대화창이 닫혔어요 → 0.4초쯤 기다렸다가 SceneManager.LoadScene(bossScene); 으로 보스 씬으로\n"};
+/* n번 문제를 시작할 때의 BossAI 코드 (앞 문제까지는 정답이 들어 있음) */
+function l16Boss(n){
+  const B=L16_SRC.blocks,pick=(k,solved)=>solved?B[k][1]:B[k][0];
+  return L16_SRC.tpl.replace('@ONLY@',String(n===1?0:n===2?1:-1)).replace('@HP@',String(n>=3?12:30))
+    .replace('@SLAM@\n',pick('SLAM',n>1)).replace('@ORB@\n',pick('ORB',n>2)).replace('@BAR@\n',pick('BAR',n>3)).replace('@PHASE@\n',pick('PHASE',n>3)).replace('@HITBOX@\n',pick('HITBOX',n>4));
+}
+function l16Knight(solved){return L16_SRC.ktpl.replace('@GATE@',solved?L16_SRC.kans:L16_SRC.ktodo)}
+/* 실습 프로젝트 = 예제 데이터(내보내기 형식)를 실습장 형식으로: 타일 번호 → 「에셋id:칸」 글자 · 그림은 data URL 그대로 */
+function labBoss(n){
+  const ex=(window.THANIYA_EXAMPLES||[]).find(e=>e&&e.id==='boss');if(!ex)return null;
+  const p=JSON.parse(JSON.stringify(ex.data)),A=p.assets||[],byN=new Map(A.map(a=>[+a.n,a.id]));
+  p.maps.forEach(m=>m.l.forEach(L=>{for(let i=0;i<L.length;i++){const v=L[i];if(typeof v==='number'&&v>0){const id=byN.get(Math.floor((v-1)/4096));L[i]=id?id+':'+((v-1)%4096):0}}}));
+  p.assets=A.filter(a=>a.image);
+  ['format','version','tileSize','tilesPerSheetMax','audio','fonts'].forEach(k=>delete p[k]);
+  const sc=nm=>p.scripts.find(s=>s.name===nm);
+  sc('BossAI').code=l16Boss(n);sc('KnightCaptain').code=l16Knight(n>5);
+  p.name='보스전 실습';p.start=n>=5?'camp':'arena';
+  return p;
+}
+const enCode=nm=>{const s=EN.P&&(EN.P.scripts||[]).find(x=>x.name===nm);return s?String(s.code||'').replace(/\/\*[\s\S]*?\*\//g,'').replace(/\/\/[^\n]*/g,''):''};
+const enBossHas=re=>re.test(enCode('BossAI'));
+const L16={no:16,title:'보스전 만들기: 패턴 · 경고 · 페이즈',clear:'통과했어요. 레슨 16 완료! 경고가 차오른 뒤 판정하는 내려찍기, 원을 그리며 퍼지는 탄막, 체력 바와 2페이즈 볼륨, H로 켜는 히트박스, 그리고 NPC에게 말을 걸면 보스 씬으로 넘어가는 흐름까지 직접 짰어요. 예제 「보스전: 그림자 슬라임 왕」에는 돌진 패턴 · 피격 볼륨 · 화면 흔들기까지 들어 있으니 열어서 비교해 보세요.',
+ lead:'보스전은 「패턴을 고르고 → 경고를 보여 주고 → 공격하고 → 잠깐 쉬는」 상태 머신이에요. 진짜 엔진에서 그림자 슬라임 왕의 BossAI 스크립트 빈칸을 하나씩 채우며 경고 표시(텔레그래프), 탄막, 체력 바, 2페이즈 볼륨, 히트박스 보기를 만들어요.'};
+const L16_HOW='<br><br><b>스크립트 여는 법</b>: 계층 구조에서 <b>그림자 슬라임 왕</b>을 고르고 인스펙터의 BossAI 칸에서 <b>스크립트 편집</b>(또는 프로젝트 창의 BossAI 더블클릭). <b>TODO</b> 주석 자리를 채우고 Ctrl+S로 저장해요.';
+const L16P=[
+{id:'b-slam',task:true,en:{proj:()=>labBoss(1),sel:'boss'},title:'경고가 다 차면 내려찍기 판정',
+ desc:'보스 공격이 억울하지 않으려면 <b>먼저 경고를 보여 주고</b>, 경고가 끝나는 순간에 판정해야 해요. 이렇게 공격 범위를 미리 보여 주는 표시를 <b>텔레그래프</b>라고 불러요.<br><br>BossAI의 내려찍기는 시작할 때 주인공 위치를 <code>target</code>에 기억하고, <code>slamWarn</code>초 동안 빨간 원을 채워요(<code>ShowCircle</code>). 원이 다 찼을 때 주인공과 <code>target</code> 사이 거리가 <code>slamRadius</code>보다 작으면 맞은 거예요. 지금은 연습을 위해 <code>onlyPattern = 0</code>이라 내려찍기만 해요.'+L16_HOW,
+ goal:'SlamUpdate()의 TODO ①을 채워, 원 안에 있으면 <code>hero.TakeDamage(slamDamage)</code>와 「내려찍기 명중!」 로그가 나오게 하세요.',
+ checks:[
+  {t:'BossAI의 TODO ① 자리에 <code>Vector2.Distance(hero.position, target) &lt; slamRadius</code> 조건 쓰기',ok:()=>enBossHas(/Vector2\s*\.\s*Distance\s*\(\s*(hero\s*\.\s*position\s*,\s*target|target\s*,\s*hero\s*\.\s*position)\s*\)\s*<\s*slamRadius/)},
+  {t:'조건 안에서 <code>hero.TakeDamage(slamDamage);</code> 와 <code>Debug.Log("내려찍기 명중!");</code>',ok:()=>enBossHas(/TakeDamage\s*\(\s*slamDamage\s*\)/)&&enBossHas(/Debug\s*\.\s*Log\s*\(\s*"내려찍기 명중!"\s*\)/)},
+  {t:'<b>▶ 플레이</b> → 빨간 원 안에 가만히 서 있다가 맞아 보기 (콘솔에 「내려찍기 명중!」)',ok:()=>enEv('log:info:내려찍기 명중!')},
+  {t:'원이 두 번 이상 나올 때까지 플레이하며 방향키로 <b>원 밖으로 피해</b> 보기 — 피하면 맞지 않아요',ok:()=>enEv('log:info:내려찍기 명중!')&&enEvP(/^en:log:info:내려찍기 경고$/)&&EN.seq.filter(k=>k==='log:info:내려찍기 경고').length>=2}],
+ hint:'void SlamUpdate() 안, 「// 원이 다 찼어요 → 판정」 아래:\n\nif (Vector2.Distance(hero.position, target) < slamRadius)\n{\n    hero.TakeDamage(slamDamage);\n    Debug.Log("내려찍기 명중!");\n}\n\n원은 slamWarn(1.2초) 동안 차올라요. 경고 시간을 늘리면 피하기 쉬워지고, 줄이면 어려워져요(인스펙터에서 바꿔 봐요).'},
+{id:'b-orbs',task:true,en:{proj:()=>labBoss(2),sel:'boss'},title:'구슬을 원 모양으로 퍼뜨리는 탄막',
+ desc:'탄막은 구슬 여러 개를 <b>같은 간격의 각도</b>로 쏘면 돼요. 한 바퀴는 2π(라디안)이니까 구슬 8개면 2π ÷ 8씩 각도를 늘려요. 각도가 정해지면 방향은 <code>(cos 각도, sin 각도)</code>이고, 지금까지 날아간 거리 <code>dist</code>를 곱해 시작 위치에 더하면 구슬의 위치예요.<br><br>씬에는 미리 「구슬 1」~「구슬 16」이 꺼진 채로 있어요. 스크립트가 켜고(SetActive) 위치만 옮겨요. 이번 문제는 <code>onlyPattern = 1</code>(탄막만)이에요.'+L16_HOW,
+ goal:'OrbUpdate()의 TODO ②를 채워 구슬 8개가 보스에서 사방으로 고르게 퍼지게 하세요.',
+ checks:[
+  {t:'각도 계산: <code>float angle = i * Mathf.PI * 2f / orbCount;</code>',ok:()=>enBossHas(/Mathf\s*\.\s*PI\s*\*\s*2f?|2f?\s*\*\s*Mathf\s*\.\s*PI/)&&enBossHas(/\/\s*orbCount/)},
+  {t:'위치: <code>orbStart + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * dist</code>',ok:()=>enBossHas(/Mathf\s*\.\s*Cos\s*\(/)&&enBossHas(/Mathf\s*\.\s*Sin\s*\(/)&&enBossHas(/\*\s*dist/)},
+  {t:'<b>▶ 플레이</b> → 「탄막 발사」 뒤 구슬이 원 모양으로 퍼지는 것 보기',ok:()=>enEv('log:info:탄막 발사')&&enBossHas(/Mathf\s*\.\s*Cos/)},
+  {t:'구슬에 한 번 맞아 보기 (체력이 줄어요)',ok:()=>enEvP(/^en:hero:hurt:/)&&enEv('log:info:탄막 발사')}],
+ hint:'for 문 안의 TODO ② 자리:\n\nfloat angle = i * Mathf.PI * 2f / orbCount;\nVector2 p = orbStart + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * dist;\n\n각도에 Mathf.PI / orbCount를 더하면 반 칸씩 엇갈린 탄막이 돼요(예제의 2페이즈).\n좌표는 아래쪽이 +y라서 각도 90°(π/2)는 아래쪽이에요.'},
+{id:'b-phase',task:true,en:{proj:()=>labBoss(3),sel:'boss'},title:'체력 바와 2페이즈 (볼륨)',
+ desc:'보스 체력은 화면 위 <b>보스 UI</b> 그룹의 「체력 바」(게이지 바)로 보여 줘요. 게이지는 0 ~ 1 사이 값이라 <code>hp * 1f / maxHp</code>를 넣어요(<code>1f</code>를 곱해야 정수 나눗셈이 아니라 소수로 계산돼요).<br><br>체력이 절반 아래로 떨어지면 <b>2페이즈</b>: 쉬는 시간이 짧아지고, 꺼져 있던 <b>분노 볼륨</b>의 무게(weight)가 서서히 1로 올라가 화면이 붉게 변해요(볼륨 레슨에서 배운 그 무게예요). 이번 실습의 보스는 체력 12라 금방 2페이즈가 와요.'+L16_HOW,
+ goal:'UpdateBar()와 Update()의 TODO ③을 채워 체력 바가 줄고, 절반 이하에서 2페이즈가 한 번 시작되게 하세요.',
+ checks:[
+  {t:'UpdateBar(): <code>UIScreen.SetValue("보스 UI", "체력 바", hp * 1f / maxHp);</code>',ok:()=>enBossHas(/UIScreen\s*\.\s*SetValue\s*\(\s*"보스 UI"\s*,\s*"체력 바"\s*,/)},
+  {t:'Update(): <code>phase == 1 &amp;&amp; hp &lt;= maxHp / 2</code> 이면 <code>EnterPhase2();</code>',ok:()=>enBossHas(/phase\s*==\s*1\s*&&\s*hp\s*<=?\s*maxHp\s*\/\s*2|hp\s*<=?\s*maxHp\s*\/\s*2\s*&&\s*phase\s*==\s*1/)&&enBossHas(/if\s*\([^)]*\)\s*\{?\s*EnterPhase2\s*\(\s*\)/)},
+  {t:'<b>▶ 플레이</b> → 보스 가까이에서 Space로 때려 체력 바가 주는 것 보기',ok:()=>enEv('play')&&enBossHas(/UIScreen\s*\.\s*SetValue/)},
+  {t:'체력을 절반 아래로 깎아 「2페이즈 시작」과 붉어지는 화면(분노 볼륨) 보기',ok:()=>enEv('log:info:2페이즈 시작')}],
+ hint:'void UpdateBar() 첫 줄:\nUIScreen.SetValue("보스 UI", "체력 바", hp * 1f / maxHp);\n\nvoid Update()의 TODO ③ 자리:\nif (phase == 1 && hp <= maxHp / 2)\n{\n    EnterPhase2();\n}\n\nphase == 1 조건이 없으면 매 프레임 EnterPhase2()가 불려 메시지가 계속 떠요.\n공격은 보스 발밑(아래쪽 가운데)을 노려요. 보스 바로 아래에 서서 위를 보고 Space.'},
+{id:'b-hitbox',task:true,en:{proj:()=>labBoss(4),sel:'boss'},title:'H 키로 히트박스 보기',
+ desc:'「왜 맞았지?」를 알려면 판정 범위가 보여야 해요. 씬에는 꺼진 채로 <b>보스 히트박스</b>(파란 점선 원 · 보스의 자식)와 <b>주인공 히트박스</b>(초록 점선 원 · 주인공의 자식)가 있어요. 자식이라 부모를 따라 움직이니, 켜고 끄기만 하면 돼요.<br><br><code>!showHitbox</code>는 참 ↔ 거짓을 뒤집어요. 삼항 연산자 <code>조건 ? A : B</code>로 로그 글자도 골라요.'+L16_HOW,
+ goal:'HitboxKey()의 TODO ④를 채워 H를 누를 때마다 두 히트박스가 켜졌다 꺼지게 하세요.',
+ checks:[
+  {t:'<code>Input.GetKeyDown(KeyCode.H)</code> 일 때 <code>showHitbox = !showHitbox;</code>',ok:()=>enBossHas(/GetKeyDown\s*\(\s*KeyCode\s*\.\s*H\s*\)/)&&enBossHas(/showHitbox\s*=\s*!\s*showHitbox/)},
+  {t:'<code>bodyBox.SetActive(showHitbox);</code> · <code>heroBox.SetActive(showHitbox);</code>',ok:()=>enBossHas(/bodyBox\s*\.\s*SetActive\s*\(\s*showHitbox\s*\)/)&&enBossHas(/heroBox\s*\.\s*SetActive\s*\(\s*showHitbox\s*\)/)},
+  {t:'<b>▶ 플레이</b> → 게임 화면을 누르고 <b>H</b>로 켜기 (콘솔 「히트박스 보기: 켬」)',ok:()=>enEv('log:info:히트박스 보기: 켬')},
+  {t:'한 번 더 <b>H</b>로 끄기 (「히트박스 보기: 끔」)',ok:()=>enEv('log:info:히트박스 보기: 끔')}],
+ hint:'void HitboxKey() 안:\n\nif (Input.GetKeyDown(KeyCode.H))\n{\n    showHitbox = !showHitbox;\n    bodyBox.SetActive(showHitbox);\n    heroBox.SetActive(showHitbox);\n    Debug.Log("히트박스 보기: " + (showHitbox ? "켬" : "끔"));\n}\n\n히트박스 원은 스프라이트라서, 크기(변환의 크기)를 바꾸면 그림만 커져요. 실제 판정 거리는 스크립트의 숫자(slamRadius 등)예요. 둘을 맞춰 두는 게 중요해요.'},
+{id:'b-gate',task:true,en:{proj:()=>labBoss(5),sel:'knight'},title:'기사단장에게 말을 걸면 보스 씬으로',
+ desc:'이번에는 <b>기사단 야영지</b>에서 시작해요. 기사단장(NPC)의 <b>KnightCaptain</b> 스크립트는 말을 걸면 <code>npc.Talk()</code>로 대사를 보여 주고 <code>talked = true</code>로 표시해요. 대화창이 닫힌 뒤(<code>!Dialog.isOpen</code>) <code>SceneManager.LoadScene(bossScene)</code>으로 「어둠의 제단」 씬으로 넘기면 돼요. 바로 넘기면 어색하니 0.4초쯤 기다려요.<br><br>마지막으로 보스를 쓰러뜨려 승리 화면까지 보세요. 어려우면 그림자 슬라임 왕의 BossAI에서 <code>maxHp</code>를 줄여도 돼요.',
+ goal:'KnightCaptain의 TODO ⑤를 채워 대화가 끝나면 보스 씬으로 넘어가게 하고, 보스를 쓰러뜨리세요.',
+ checks:[
+  {t:'계층 구조에서 <b>기사단장</b>을 고르고 KnightCaptain 스크립트 열기 · TODO ⑤에 <code>SceneManager.LoadScene(bossScene);</code>',ok:()=>/SceneManager\s*\.\s*LoadScene\s*\(\s*bossScene\s*\)/.test(enCode('KnightCaptain'))},
+  {t:'0.4초 기다리기: <code>wait += Time.deltaTime;</code> 뒤 <code>if (wait &gt; 0.4f)</code>',ok:()=>/wait\s*\+=\s*Time\s*\.\s*deltaTime/.test(enCode('KnightCaptain'))&&/wait\s*>=?\s*0?\.\d+f?/.test(enCode('KnightCaptain'))},
+  {t:'<b>▶ 플레이</b> → 기사단장 옆에서 Space로 말 걸기 → 대사를 다 넘기면 「어둠의 제단」으로 이동',ok:()=>TASK.ev.has('en:boss-gate')},
+  {t:'그림자 슬라임 왕을 쓰러뜨려 「토벌 성공!」 화면 보기',ok:()=>enEv('log:info:보스 토벌!')&&TASK.ev.has('en:boss-gate')}],
+ hint:'void Update() 안, return 아래 TODO ⑤ 자리:\n\nwait += Time.deltaTime;\nif (wait > 0.4f)\n{\n    SceneManager.LoadScene(bossScene);\n}\n\nbossScene은 인스펙터에서 바꿀 수 있는 public 필드예요(기본값 "어둠의 제단").\n씬 이름은 계층 구조의 씬 이름과 글자 하나까지 같아야 해요.'}
+];
+
 const LESSONS=[
   {...L2,problems:L2P,hash:'lesson-1',cats:['feature'],lv:1,kw:['타일맵', '콜라이더', 'UI 텍스트'],preview:'타일맵 1  → 바닥 · 벽 · 물 칠하기\n콜라이더 → 막을 칸 칠하기\n+ 바위   → BoxCollider2D\n+ UI 텍스트 → "HP {hp}"'},
   {...L1,problems:L1P,hash:'lesson-2',cats:['cs'],lv:1,kw:['Debug.Log', '콘솔', 'Start()'],preview:'void Start()\n{\n    Debug.Log("Hello, Thaniya!");\n}'},
@@ -3515,7 +3696,9 @@ const LESSONS=[
   {...L12,problems:L12P,hash:'lesson-12',cats:['vs'],lv:2,kw:['오브젝트 상호작용','커스텀 이벤트','UI 버튼'],preview:'상자: 말을 걸면 ─▶ 소지품 + 열쇠\n문: 열쇠 > 0 ? ─▶ 「문 열림」 보내기\n매니저: 「문 열림」 받기 ─▶ HUD 글자'},
   {...L10,problems:L10P,hash:'lesson-10',cats:['cs'],lv:3,kw:['UIScreen','UIGroup','OnInteract'],preview:'dialogUI = UIGroup.Find("대화창");\n\nvoid OnInteract()\n{\n    UIScreen.SetText(dialogUI.name, "대사", npc.text);\n    UIScreen.Show(dialogUI.name);\n}'},
   {...L13,problems:L13P,hash:'lesson-13',cats:['feature'],lv:2,kw:['프리팹','인스턴스','오버라이드'],preview:'계층 구조 슬라임 ─▶ 프로젝트 창 = 프리팹\n프리팹 ─▶ 씬 뷰에 끌어다 놓기 × 4\n인스펙터 체력 5 ─▶ 모두 적용\n대장 슬라임 = 오버라이드 (크기 2 · 체력 12)'},
-  {...L14,problems:L14P,hash:'lesson-14',cats:['feature','cs'],lv:3,kw:['타임라인','플레이어블 디렉터','컷씬'],preview:'컷씬 + 플레이어블 디렉터 → 「촌장의 선물」\n애니메이션 트랙 ● 녹화  주인공 →→→→\n활성화 · 오디오 · 시그널(Greet)\nOnTriggerEnter2D → director.Play();'}
+  {...L14,problems:L14P,hash:'lesson-14',cats:['feature','cs'],lv:3,kw:['타임라인','플레이어블 디렉터','컷씬'],preview:'컷씬 + 플레이어블 디렉터 → 「촌장의 선물」\n애니메이션 트랙 ● 녹화  주인공 →→→→\n활성화 · 오디오 · 시그널(Greet)\nOnTriggerEnter2D → director.Play();'},
+  {...L15,problems:L15P,hash:'lesson-15',cats:['feature'],lv:1,kw:['볼륨','후처리','지역 볼륨'],preview:'게임 오브젝트 → 전역 볼륨 · 지역 볼륨\n효과 추가 → 색 보정 · 비네트 · 렌즈 왜곡\n프리셋   → 오래된 필름 · 아날로그 호러\n무게 0.5 · 섞는 거리 2칸 · 우선순위 1'},
+  {...L16,problems:L16P,hash:'lesson-16',cats:['feature','cs'],lv:3,kw:['보스전','텔레그래프','상태 머신'],preview:'패턴 고르기 → 경고 표시 → 공격 → 쉬기\nif (Vector2.Distance(hero.position, target) < slamRadius)\n    hero.TakeDamage(slamDamage);\n2페이즈 → rageVolume.weight → 1'}
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
 const LVN=['','입문','초급','중급','중상급','상급'];
@@ -3527,6 +3710,13 @@ if(window.TI18N)TI18N.add({"난이도":["Difficulty","難易度","难度"],"입�
  "값 바꾸기":["Change values","値を変える","修改数值"],"변수":["Variables","変数","变量"],"public 필드":["public fields","publicフィールド","public 字段"],"UI 연결":["UI binding","UI連携","UI 联动"],
  "키 입력":["Key input","キー入力","按键输入"],"애니메이터":["Animator","アニメーター","动画控制器"],"애니메이션 클립":["Animation clips","アニメーションクリップ","动画片段"],
  "룰 타일":["Rule Tile","ルールタイル","规则图块"],"애니메이션 타일":["Animated Tile","アニメーションタイル","动画图块"],"타일 팔레트":["Tile Palette","タイルパレット","图块调色板"]});
+if(window.TI18N)TI18N.add({"볼륨":["Volume","ボリューム","体积"],"후처리":["Post-processing","ポストエフェクト","后期处理"],"지역 볼륨":["Local Volume","ローカルボリューム","局部体积"],
+ "볼륨으로 화면 분위기 바꾸기":["Change the mood with Volumes","ボリュームで画面の雰囲気を変える","用体积改变画面氛围"],
+ "영화나 게임에서 장면마다 색감과 분위기가 달라지는 건 대부분 「후처리」 덕분이에요. 볼륨(Volume)은 카메라 화면에 색 보정 · 비네트 · 노이즈 · 렌즈 왜곡 같은 효과를 입히는 컴포넌트예요. 이 레슨은 진짜 엔진 화면에서 마을 전체와 폐가 마당의 분위기를 바꿔 봐요.":["In films and games, each scene’s color and mood usually comes from post-processing. A Volume is a component that adds effects like color adjustments, vignette, noise and lens distortion to the camera image. In this lesson you change the mood of a whole village and a haunted yard in the real engine.","映画やゲームで場面ごとに色味や雰囲気が変わるのは、たいてい「ポストエフェクト」のおかげです。ボリューム（Volume）はカメラ画面に色補正・ビネット・ノイズ・レンズ歪みなどの効果をかけるコンポーネントです。このレッスンでは本物のエンジン画面で村全体と廃屋の庭の雰囲気を変えてみます。","电影和游戏中每个场景色调与氛围的变化，大多来自“后期处理”。体积（Volume）是为相机画面添加颜色调整、暗角、噪点、镜头畸变等效果的组件。本课将在真实引擎中改变整个村庄和废屋庭院的氛围。"],
+ "전역 볼륨으로 마을을 따뜻하게":["Warm up the village with a Global Volume","グローバルボリュームで村を暖かく","用全局体积让村庄变温暖"],"프리셋과 무게로 효과 섞기":["Mix effects with presets and weight","プリセットとウェイトで効果を混ぜる","用预设和权重混合效果"],
+ "지역 볼륨으로 폐가 마당만 으스스하게":["Make only the haunted yard eerie with a Local Volume","ローカルボリュームで廃屋の庭だけ不気味に","用局部体积只让废屋庭院变阴森"],"우물 앞 볼록 렌즈 (우선순위)":["A convex lens at the well (priority)","井戸の前の凸レンズ（優先度）","井边的凸透镜（优先级）"]});
+if(window.TI18N)TI18N.add({"보스전":["Boss fight","ボス戦","Boss 战"],"텔레그래프":["Telegraph","予兆表示","攻击预警"],"상태 머신":["State machine","ステートマシン","状态机"],
+ "보스전 만들기: 패턴 · 경고 · 페이즈":["Boss fight: patterns · telegraphs · phases","ボス戦を作る：パターン・予兆・フェーズ","制作 Boss 战：招式 · 预警 · 阶段"]});
 const lvName=L=>_t(LVN[L.lv]||'입문');
 const LV_DOTS='<i></i><i></i><i></i><i></i><i></i>';
 const lvChip=L=>`<span class="chip lv lv${L.lv}"><span class="dots" aria-hidden="true">${LV_DOTS}</span><span>${esc(_t('난이도'))} ${esc(lvName(L))}</span></span>`;
@@ -4858,7 +5048,8 @@ function enTrigScript(){const o=enO('광장 입구');if(!o||!o.scripts||!EN.P)re
   for(const i of o.scripts){const s=(EN.P.scripts||[]).find(x=>x.id===i.sid);if(!s)continue;const c=String(s.code||'');if(/OnTriggerEnter2D/.test(c)&&/\.\s*Play\s*\(/.test(c))return{i,s}}return null}
 function enTrigLinked(){const r=enTrigScript(),cut=enO('컷씬');if(!r||!cut)return false;if(/Find\s*\(\s*"컷씬"\s*\)/.test(r.s.code))return true;return Object.values(r.i.vals||{}).some(v=>v===cut.id)}
 /* 마지막 ▶ 플레이 뒤에 일어난 순서: 광장 입구 트리거 → 컷씬 재생 이면 한 번 기록 */
-function enSeqCheck(){const s=EN.seq,i=s.indexOf('trig:광장 입구'),j=s.indexOf('tl:play:컷씬');if(i>=0&&j>i)TASK.ev.add('en:cut-by-trig')}
+function enSeqCheck(){const s=EN.seq,i=s.indexOf('trig:광장 입구'),j=s.indexOf('tl:play:컷씬');if(i>=0&&j>i)TASK.ev.add('en:cut-by-trig');
+  const a=s.findIndex(k=>k.startsWith('say:기사단장:')),b=s.lastIndexOf('scene:어둠의 제단');if(a>=0&&b>a)TASK.ev.add('en:boss-gate')}
 const enSeqAfterPlay=()=>TASK.ev.has('en:cut-by-trig');
 let enPingT=0;const enPing=()=>{clearTimeout(enPingT);enPingT=setTimeout(()=>{try{tkPing()}catch(e){}},60)};
 function enSend(d){const f=enFr();if(!f||!f.contentWindow)return;d.thaniyaLab=1;try{f.contentWindow.postMessage(d,'*')}catch(e){}}
@@ -5740,7 +5931,7 @@ document.addEventListener('click',e=>{
 /* ===================== 추천 학습 로드맵 (왼쪽 → 오른쪽 트리 · 분류와 상관없이 쉽고 중요한 것부터) ===================== */
 const RM_TIERS=['첫걸음','기본 다지기','값과 상호작용','움직임과 구조','연출과 대화','예제로 응용'];
 /* 예제 카드(참고용): 학습 기록 · 완료 · 추천에는 들어가지 않음. after = 이 레슨 다음 열에 붙음 */
-const RM_EX=[{id:'coins',after:'lesson-4'},{id:'subway',after:'lesson-5'},{id:'escape',after:'lesson-10'},{id:'tycoon',after:'lesson-10'}];
+const RM_EX=[{id:'coins',after:'lesson-4'},{id:'subway',after:'lesson-5'},{id:'escape',after:'lesson-10'},{id:'tycoon',after:'lesson-10'},{id:'boss',after:'lesson-16'}];
 /* h 레슨 · t 단계(열) · req 먼저 하면 좋은 레슨(첫째 = 트리에서 이어지는 줄기, 나머지는 마우스를 올렸을 때만 점선) · why 이 단계에 두는 까닭 */
 const RM=[
  {h:'lesson-2',t:0,req:[],why:'모든 C# 스크립트의 출발점이에요. 값이 어떻게 바뀌는지 콘솔로 확인하는 법을 먼저 익혀 두면 이후 모든 레슨이 쉬워져요.'},
@@ -5756,7 +5947,9 @@ const RM=[
  {h:'lesson-5',t:3,req:['lesson-4'],why:'Update · 키 입력 · Vector2로 주인공 이동 스크립트를 처음부터 끝까지 만들어요. 게임다운 조작의 핵심이에요.'},
  {h:'lesson-8',t:3,req:['lesson-4'],why:'게임을 여러 씬으로 나누고 씬이 바뀌어도 살아 있는 매니저를 만들어요. 게임 전체 구조를 잡는 단계예요.'},
  {h:'lesson-10',t:4,req:['lesson-5','lesson-9'],why:'NPC가 대화창 UI를 열고 대사를 넘기게 만들어요. 스크립트와 UI 그룹을 함께 다루는 종합 레슨이에요.'},
- {h:'lesson-14',t:4,req:['lesson-5','lesson-6'],why:'타임라인으로 주인공이 걸어 들어오고 촌장이 선물을 주는 컷씬을 연출해요. 애니메이션과 스크립트를 모두 써요.'}
+ {h:'lesson-14',t:4,req:['lesson-5','lesson-6'],why:'타임라인으로 주인공이 걸어 들어오고 촌장이 선물을 주는 컷씬을 연출해요. 애니메이션과 스크립트를 모두 써요.'},
+ {h:'lesson-15',t:1,req:['lesson-1'],why:'볼륨으로 화면에 색 보정 · 비네트 · 노이즈 · 렌즈 왜곡 같은 후처리 효과를 입혀요. 코드 없이 게임의 분위기를 단숨에 바꿀 수 있어요.'},
+ {h:'lesson-16',t:3,req:['lesson-13','lesson-15','lesson-5'],why:'경고 표시(텔레그래프) · 탄막 · 체력 바 · 2페이즈 볼륨 · 히트박스로 보스전을 만들어요. 볼륨 · 프리팹 · 주인공 스크립트에서 익힌 것을 한데 모아요.'},
 ].filter(r=>LESSONS.some(L=>L.hash===r.h));
 if(window.TI18N)TI18N.add({"추천 학습 로드맵":["Recommended learning roadmap","おすすめ学習ロードマップ","推荐学习路线图"],
  "분류와 상관없이 쉽고 중요한 것부터 차례로 이어져요. 카드를 누르면 소개가 보여요.":["Easy and important lessons first, regardless of category. Click a card for an overview.","分類に関係なく、やさしく大切なものから順につながります。カードを押すと紹介が表示されます。","不分类别，从简单重要的开始依次衔接。点击卡片查看简介。"],
@@ -6400,8 +6593,32 @@ function route(){
   if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
   else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);if(VSON)vsSetup(null);if(EN.on)enSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':X?'Thaniya Engine Edu · '+_t('예제'):LS?'Thaniya Engine Edu · '+_t('레슨'):'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else if(X)exRender();else renderHome()}
   window.scrollTo(0,0);
+  try{lnavSync()}catch(_){}
 }
 let tkPass=false;
+/* ===== 학습 메뉴: 모든 화면 머리줄의 로고 옆에 「학습 홈 · 레슨 · 코드 검색 · 예제」 (지금 화면은 강조) ===== */
+const LNAV=[['','학습 홈','<path d="M3 11.2 12 4l9 7.2"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/>'],['lessons','레슨','<path d="M4 5.5c2.7-.8 5.4-.5 8 1.2v12.8c-2.6-1.7-5.3-2-8-1.2z"/><path d="M20 5.5c-2.7-.8-5.4-.5-8 1.2v12.8c2.6-1.7 5.3-2 8-1.2z"/>'],
+  ['search','코드 검색','<circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/>'],['examples','예제','<rect x="3.5" y="4.5" width="17" height="13" rx="2"/><path d="m9.5 9 5 2.5-5 2.5z"/><path d="M8 20.5h8"/>']];
+function lnavInit(){
+  document.querySelectorAll('header.top').forEach(h=>{if(h.querySelector('.lnav'))return;const br=h.querySelector('.brand');if(!br)return;
+    const n=document.createElement('nav');n.className='lnav';n.setAttribute('aria-label',_t('학습 메뉴'));
+    n.innerHTML=LNAV.map(([k,l,ic])=>`<button type="button" data-lnav="${k}"${k?'':' class="lhome"'} title="${esc(_t(l))}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg><span>${esc(_t(l))}</span></button>`).join('');
+    br.after(n)});
+}
+function lnavSync(){
+  lnavInit();const h=location.hash.slice(1),L=LESSONS.some(x=>x.hash===h||'about-'+x.hash===h);
+  const cur=h===''?'':h==='search'?'search':h==='examples'?'examples':(h==='lessons'||L)?'lessons':'';
+  document.querySelectorAll('.lnav button').forEach(b=>{const on=b.dataset.lnav===cur;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.lnav button');if(!b)return;const to=b.dataset.lnav;if(location.hash.slice(1)===to){window.scrollTo({top:0,behavior:'smooth'});return}location.hash=to});
+/* 레슨 화면 전체 화면 (브라우저 전체 화면 · 엔진 실습장 안의 전체 화면 단추는 엔진이 숨김) */
+function lfsSync(){const b=$('#lFull');if(!b)return;const on=!!(document.fullscreenElement||document.webkitFullscreenElement);b.classList.toggle('on',on);
+  b.querySelector('span').textContent=_t(on?'전체 화면 끝내기':'전체 화면');b.title=_t(on?'전체 화면 끝내기 (Esc)':'전체 화면 (F11)')}
+$('#lFull').onclick=()=>{const d=document,on=d.fullscreenElement||d.webkitFullscreenElement;
+  try{if(on)(d.exitFullscreen||d.webkitExitFullscreen).call(d);else{const r=d.documentElement;(r.requestFullscreen||r.webkitRequestFullscreen).call(r)}}catch(e){}};
+document.addEventListener('fullscreenchange',lfsSync);document.addEventListener('webkitfullscreenchange',lfsSync);
+if(window.TI18N)TI18N.add({"학습 홈":["Learn home","学習ホーム","学习首页"],"학습 메뉴":["Learning menu","学習メニュー","学习菜单"],"전체 화면":["Full screen","全画面","全屏"],"전체 화면 끝내기":["Exit full screen","全画面を終了","退出全屏"],"전체 화면 끝내기 (Esc)":["Exit full screen (Esc)","全画面を終了 (Esc)","退出全屏 (Esc)"],"전체 화면 (F11)":["Full screen (F11)","全画面 (F11)","全屏 (F11)"]});
+
 addEventListener('hashchange',async e=>{
   if(!tkPass&&tkLeaveDirty()){
     const to=location.hash;try{history.replaceState(history.state,'',e.oldURL)}catch(_){ }

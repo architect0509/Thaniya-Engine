@@ -29,7 +29,7 @@ function acKoName(it,owner,dot,attr){
 }
 const CS_RE=(()=>{
   const kw='public|private|protected|internal|static|void|class|using|new|return|if|else|for|foreach|while|switch|case|break|continue|true|false|null|this|readonly|const|override|virtual|namespace|in|out|ref|var|struct|enum|interface|abstract|sealed|get|set'.split('|').concat(Object.keys(KO_KW));
-  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Rigidbody2D|Rigidbody|Transform|GameObject|MonoBehaviour|Collider2D|Debug|Time|Input|Mathf|Quaternion|SpriteRenderer|Animator|PlayableDirector|Camera|AudioSource|KeyCode|Header|SerializeField|Range|Tooltip|Space|RectTransform|Button|Text|Image|Slider|CanvasGroup|SceneManager|Application|UIGroup|Hero|Random|Light|Light2D|Monster|Npc|Item|Portal|EventTrigger|Dialog|Message|Inventory|Scene|List|Dictionary'.split('|').concat(Object.keys(KO_TY),Object.keys(KO_SELF));
+  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Rigidbody2D|Rigidbody|Transform|GameObject|MonoBehaviour|Collider2D|Debug|Time|Input|Mathf|Quaternion|SpriteRenderer|Animator|PlayableDirector|Camera|AudioSource|Volume|KeyCode|Header|SerializeField|Range|Tooltip|Space|RectTransform|Button|Text|Image|Slider|CanvasGroup|SceneManager|Application|UIGroup|Hero|Random|Light|Light2D|Monster|Npc|Item|Portal|EventTrigger|Dialog|Message|Inventory|Scene|List|Dictionary'.split('|').concat(Object.keys(KO_TY),Object.keys(KO_SELF));
   const alt=a=>[...new Set(a)].sort((x,y)=>y.length-x.length).join('|'),B0='(?<![\\p{L}\\p{N}_])',B1='(?![\\p{L}\\p{N}_])';
   return new RegExp('(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)|("(?:[^"\\\\\\n]|\\\\.)*")|'+B0+'('+alt(kw)+')'+B1+'|'+B0+'('+alt(ty)+')'+B1+'|'+B0+'(\\d+\\.?\\d*[fFdD]?)'+B1+'|'+B0+'([\\p{L}_][\\p{L}\\p{N}_]*)(?=\\s*\\()','gu');
 })();
@@ -93,6 +93,7 @@ const CS_API={
   'Collider2D':[_P('isTrigger','bool'),_F('CompareTag','bool','string tag'),..._base],
   'Collision2D':[_P('gameObject','GameObject'),_P('collider','Collider2D'),_P('transform','Transform')],
   'Camera':[_P('orthographicSize','float'),_P('backgroundColor','Color'),..._base],
+  'Volume':[_P('weight','float'),_P('priority','float'),_P('isGlobal','bool'),_P('blendDistance','float'),..._base],
   'Camera:static':[_P('main','Camera')],
   'string':[_P('Length','int'),_F('ToUpper','string'),_F('ToLower','string'),_F('Trim','string'),_F('Contains','bool','string value'),_F('StartsWith','bool','string value'),_F('EndsWith','bool','string value'),_F('IndexOf','int','string value'),_F('Substring','string','int start, int length'),_F('Replace','string','string a, string b'),_F('Split','string[]','char separator')],
   'Array':[_P('Length','int')],
@@ -107,8 +108,8 @@ CS_API['UIScreen:static']=[_F('Show','void','string screen'),_F('Hide','void','s
 CS_API['VisualScript:static']=[_F('Trigger','void','string eventName, object arg'),_F('TriggerAll','void','string eventName, object arg'),_F('TriggerOn','void','string objectName, string eventName, object arg'),_F('GetVariable','object','string name'),_F('SetVariable','void','string name, object value'),_F('SetState','void','string stateName'),_P('CurrentState','string')];
 CS_API['Random:static']=[_F('Range','float','float min, float max'),_P('value','float')];
 CS_API.Camera.unshift(_P('smoothFollow','bool'),_P('smoothTime','float'));
-const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','PlayableDirector','AudioSource','Camera','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen','VisualScript'];
-const AC_COMPS=['Hero','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','SpriteRenderer','Rigidbody2D','Collider2D','Animator','PlayableDirector','AudioSource','Camera','Transform'];
+const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','PlayableDirector','AudioSource','Camera','Volume','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen','VisualScript'];
+const AC_COMPS=['Hero','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','SpriteRenderer','Rigidbody2D','Collider2D','Animator','PlayableDirector','AudioSource','Camera','Volume','Transform'];
 const AC_EV=[['Awake','void Awake()\n{\n    |\n}'],['Start','void Start()\n{\n    |\n}'],['Update','void Update()\n{\n    |\n}'],['FixedUpdate','void FixedUpdate()\n{\n    |\n}'],['LateUpdate','void LateUpdate()\n{\n    |\n}'],['OnEnable','void OnEnable()\n{\n    |\n}'],['OnDisable','void OnDisable()\n{\n    |\n}'],['OnDestroy','void OnDestroy()\n{\n    |\n}'],['OnTriggerEnter2D','void OnTriggerEnter2D(Collider2D other)\n{\n    |\n}'],['OnTriggerExit2D','void OnTriggerExit2D(Collider2D other)\n{\n    |\n}'],['OnCollisionEnter2D','void OnCollisionEnter2D(Collision2D collision)\n{\n    |\n}'],['OnHeroEnter','void OnHeroEnter()\n{\n    |\n}'],['OnHeroExit','void OnHeroExit()\n{\n    |\n}'],['OnInteract','void OnInteract()\n{\n    |\n}'],['OnHit','void OnHit()\n{\n    |\n}'],['OnHeroDeath','void OnHeroDeath()\n{\n    |\n}']];
 const AC_SN=[['if','if (|)\n{\n}'],['else','else\n{\n    |\n}'],['for','for (int i = 0; i < |; i++)\n{\n}'],['foreach','foreach (var item in |)\n{\n}'],['while','while (|)\n{\n}'],['switch','switch (|)\n{\n    case 0:\n        break;\n}']];
 const AC_ATTR=[['Header','Header("|")'],['SerializeField','SerializeField'],['Range','Range(0, |1)'],['Tooltip','Tooltip("|")'],['Space','Space'],['HideInInspector','HideInInspector']];
@@ -481,6 +482,11 @@ const AC_DOC={
 'SetInteger':['Animator의 int 파라미터를 설정합니다.','anim.SetInteger("state", 2);'],
 'Animator.Play':['지정한 애니메이션 상태를 재생합니다.','anim.Play("Walk");'],
 'Animator.speed':['애니메이션 재생 속도입니다.','anim.speed = 2f;'],
+'Volume':['볼륨 컴포넌트입니다. 카메라 화면에 후처리 효과(색 보정 · 비네트 · VHS …)를 입힙니다. weight로 효과의 세기를 0~1 사이로 바꿀 수 있어요.','Volume volume = GetComponent<Volume>();\nvolume.weight = 0.5f;'],
+'Volume.weight':['볼륨 효과를 얼마나 섞을지입니다 (0 = 없음, 1 = 전부). 매 프레임 조금씩 바꾸면 화면이 서서히 변해요.','volume.weight = Mathf.MoveTowards(volume.weight, 1f, Time.deltaTime);'],
+'Volume.priority':['볼륨이 겹칠 때의 순서입니다. 큰 볼륨이 나중에 섞여 더 강하게 적용됩니다.','volume.priority = 10;'],
+'Volume.isGlobal':['true면 전역(화면 전체), false면 지역(박스 콜라이더 2D 상자 안) 볼륨입니다.','volume.isGlobal = true;'],
+'Volume.blendDistance':['지역 볼륨 상자 밖에서 효과가 서서히 사라지는 거리(칸)입니다.','volume.blendDistance = 3f;'],
 'AudioSource':['오디오 소스 컴포넌트입니다. 인스펙터에서 고른 오디오 클립(음악·효과음)을 재생합니다.','AudioSource audioSource = GetComponent<AudioSource>();\naudioSource.Play();'],
 'VisualScript':['이 오브젝트에 붙은 비주얼 스크립트(스크립트 머신 · 상태 머신)와 이벤트 · 변수 · 상태를 주고받는 정적 클래스입니다.','VisualScript.Trigger("문 열기");\nVisualScript.SetVariable("점수", score);'],
 'VisualScript.Trigger':['내 오브젝트의 비주얼 스크립트에 커스텀 이벤트를 보냅니다 (「커스텀 이벤트 받기」 노드 · 상태 전환 「이벤트를 받으면」이 받음).','VisualScript.Trigger("말걸기");'],
@@ -1342,6 +1348,7 @@ const EH_ITEMS=[
  ['연출','카메라 확대 · 축소','시작 카메라의 orthographicSize를 바꿉니다. 작을수록 크게 보여요.','camera 카메라 줌 zoom 확대 축소 orthographicsize','m','Camera cam = Camera.main;\nif (Input.GetKeyDown(KeyCode.Q))\n    cam.orthographicSize = 3f;\nif (Input.GetKeyDown(KeyCode.E))\n    cam.orthographicSize = 6f;'],
  ['연출','애니메이션 바꾸기','Animator의 파라미터를 바꿔 애니메이터 창의 전환을 일으킵니다.','animator 애니메이션 setbool settrigger play 전환','m','Animator animator = GetComponent<Animator>();\nanimator.SetBool("isWalking", true);\nanimator.SetTrigger("Attack");\n// 바로 재생: animator.Play("Idle");'],
  ['연출','소리 재생하기','AudioSource 컴포넌트에서 고른 소리를 재생합니다.','audiosource 소리 효과음 음악 재생 play sound','m','AudioSource audioSource = GetComponent<AudioSource>();\nif (!audioSource.isPlaying)\n    audioSource.Play();'],
+ ['연출','화면 효과 서서히 켜기 (볼륨)','Volume의 weight를 0에서 1로 천천히 올려 후처리 효과(공포 · 회상 …)를 부드럽게 켭니다.','volume 볼륨 후처리 화면 효과 weight 페이드 공포 필터 post processing','c','public float fadeTime = 2f;\nVolume volume;\n\nvoid Start()\n{\n    volume = GetComponent<Volume>();\n    volume.weight = 0f;\n}\n\nvoid Update()\n{\n    volume.weight = Mathf.MoveTowards(volume.weight, 1f, Time.deltaTime / fadeTime);\n}'],
  ['연출','빛 밝기 바꾸기','Light 컴포넌트의 밝기 · 색을 바꿉니다.','light 빛 조명 밝기 intensity','m','Light light = GetComponent<Light>();\nlight.intensity = 1.5f;\nlight.color = Color.yellow;'],
  ['시간','타이머 (몇 초마다)','시간을 더해 가다가 정해 둔 초가 지나면 할 일을 하고 0으로 되돌립니다.','타이머 timer 초마다 반복 시간 deltatime interval','c','public float interval = 2f;\nfloat timer = 0f;\n\nvoid Update()\n{\n    timer += Time.deltaTime;\n    if (timer >= interval)\n    {\n        timer = 0f;\n        Debug.Log(interval + "초가 지났어요");\n    }\n}'],
  ['시간','몇 초 뒤에 한 번','남은 시간을 줄여 가다가 0이 되면 한 번만 실행합니다.','지연 delay 몇초뒤 나중에 한번 invoke','c','public float delay = 3f;\nbool done = false;\n\nvoid Update()\n{\n    if (done) return;\n    delay -= Time.deltaTime;\n    if (delay <= 0f)\n    {\n        done = true;\n        Message.Show("3초가 지났어요!", 2f);\n    }\n}'],
@@ -1623,6 +1630,7 @@ if(window.TI18N)TI18N.add({
  '크기 바꾸기':['Change the size','大きさを変える','改变大小'],'localScale로 크기를 바꿉니다. 1이 원래 크기예요.':['Change size with localScale. 1 is the original size.','localScale で大きさを変えます。1 が元の大きさです。','用 localScale 改变大小，1 为原始大小。'],
  '애니메이션 바꾸기':['Change animation','アニメーションを変える','切换动画'],'Animator의 파라미터를 바꿔 애니메이터 창의 전환을 일으킵니다.':['Change Animator parameters to trigger transitions from the Animator window.','Animator のパラメーターを変えてアニメーター画面の遷移を起こします。','修改 Animator 参数以触发动画器窗口中的过渡。'],
  '소리 재생하기':['Play a sound','音を再生','播放声音'],'AudioSource 컴포넌트에서 고른 소리를 재생합니다.':['Plays the sound chosen in the AudioSource component.','AudioSource コンポーネントで選んだ音を再生します。','播放 AudioSource 组件中选择的声音。'],
+ '화면 효과 서서히 켜기 (볼륨)':['Fade in screen effects (Volume)','画面効果をゆっくりオン（ボリューム）','逐渐开启画面效果（体积）'],'Volume의 weight를 0에서 1로 천천히 올려 후처리 효과(공포 · 회상 …)를 부드럽게 켭니다.':['Raises the Volume’s weight from 0 to 1 slowly to fade in post-processing (horror, flashback…).','Volume の weight を 0 から 1 へゆっくり上げて、ポストエフェクト（ホラー・回想…）をなめらかにオンにします。','将 Volume 的 weight 从 0 慢慢升到 1，平滑开启后期效果（恐怖、回忆…）。'],
  '빛 밝기 바꾸기':['Change light brightness','光の明るさを変える','改变灯光亮度'],'Light 컴포넌트의 밝기 · 색을 바꿉니다.':['Changes the Light component’s brightness · color.','Light コンポーネントの明るさ・色を変えます。','改变 Light 组件的亮度 · 颜色。'],
  '타이머 (몇 초마다)':['Timer (every N seconds)','タイマー（N 秒ごと）','计时器（每隔 N 秒）'],'시간을 더해 가다가 정해 둔 초가 지나면 할 일을 하고 0으로 되돌립니다.':['Adds up time and, once the set seconds pass, does the job and resets to 0.','時間を足していき、決めた秒数が過ぎたら処理して 0 に戻します。','累加时间，达到设定秒数后执行并归零。'],
  '몇 초 뒤에 한 번':['Once after N seconds','N 秒後に一度','N 秒后执行一次'],'남은 시간을 줄여 가다가 0이 되면 한 번만 실행합니다.':['Counts down and runs once when it reaches 0.','残り時間を減らしていき、0 になったら一度だけ実行します。','倒计时到 0 时只执行一次。'],

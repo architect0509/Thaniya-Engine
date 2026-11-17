@@ -101,8 +101,100 @@ html[data-theme="light"] #bTheme .th-moon{display:block}
 #prjLoad .pl-name{font-size:18px;font-weight:700;max-width:80vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #prjLoad .pl-sub{font-size:12.5px;font-weight:500;opacity:.6}
 @keyframes plspin{to{transform:rotate(360deg)}}</style>
+<style id="edLoadCss">
+/* 에디터 로딩 화면 (#edLoad) — 엔진 모듈 · 프로젝트 · 에셋을 불러오는 동안. 움직임은 transform/opacity만 써서 무거운 스크립트를 읽는 중에도 끊기지 않음 */
+#edLoad{position:fixed;inset:0;z-index:2147482000;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0b0c10;color:#eceef3;font:500 13px -apple-system,BlinkMacSystemFont,"IBM Plex Sans KR","Noto Sans KR",sans-serif;transition:opacity .45s ease,visibility .45s}
+#edLoad.out{opacity:0;visibility:hidden;pointer-events:none}
+#edLoad .el-bg{position:absolute;inset:-64px;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:32px 32px;animation:elDrift 9s linear infinite;-webkit-mask:radial-gradient(ellipse at center,#000 10%,transparent 70%);mask:radial-gradient(ellipse at center,#000 10%,transparent 70%)}
+#edLoad .el-glow{position:absolute;width:640px;height:640px;left:50%;top:50%;margin:-320px 0 0 -320px;border-radius:50%;background:radial-gradient(circle,rgba(233,189,12,.16),rgba(233,189,12,0) 62%);animation:elBreath 3.6s ease-in-out infinite}
+#edLoad .el-card{position:relative;display:flex;flex-direction:column;align-items:center;width:min(360px,86vw);transition:transform .45s ease}
+#edLoad.out .el-card{transform:translateY(-8px) scale(.98)}
+#edLoad .el-map{display:grid;grid-template-columns:repeat(5,15px);gap:3px;padding:12px;border-radius:14px;background:rgba(255,255,255,.035);box-shadow:0 0 0 1px rgba(255,255,255,.07),0 18px 50px rgba(0,0,0,.45);margin-bottom:22px}
+#edLoad .el-map i{width:15px;height:15px;border-radius:3px;background:var(--c);transform:scale(0);opacity:0;animation:elTile 3.2s cubic-bezier(.3,1.5,.5,1) infinite;animation-delay:var(--d);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.18)}
+#edLoad .el-map i.h{border-radius:50%;box-shadow:0 0 0 2px #e9bd0c,0 0 14px rgba(233,189,12,.7)}
+#edLoad .el-brand{font:700 10.5px/1 "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.32em;color:#e9bd0c;margin-bottom:9px;padding-left:.32em}
+#edLoad .el-name{font-size:20px;font-weight:700;letter-spacing:-.01em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:10px}
+#edLoad .el-meta{display:flex;gap:6px;min-height:22px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
+#edLoad .el-meta span{font-size:11.5px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.06);color:rgba(236,238,243,.72);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);animation:elIn .35s ease both}
+#edLoad .el-meta b{color:#eceef3;font-weight:700;margin-left:4px;font-variant-numeric:tabular-nums}
+#edLoad .el-bar{position:relative;width:100%;height:4px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+#edLoad .el-bar>i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(.02);background:linear-gradient(90deg,#c99a06,#e9bd0c 60%,#ffe27a);border-radius:4px;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+#edLoad .el-bar>s{position:absolute;top:0;bottom:0;width:30%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:elShine 1.4s ease-in-out infinite}
+#edLoad .el-stat{display:flex;justify-content:space-between;width:100%;margin-top:10px;font-size:12px;color:rgba(236,238,243,.6)}
+#edLoad .el-stat span:last-child{font:600 11.5px "IBM Plex Mono",ui-monospace,monospace;color:rgba(236,238,243,.85);font-variant-numeric:tabular-nums}
+#edLoad .el-tip{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);display:flex;align-items:center;gap:9px;width:max-content;max-width:min(560px,88vw);padding:8px 14px;border-radius:10px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);font-size:12.5px;color:rgba(236,238,243,.75)}
+#edLoad .el-tip b{flex:none;font:700 10px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.12em;color:#16161a;background:#e9bd0c;border-radius:4px;padding:3px 6px}
+#edLoad .el-tip span{transition:opacity .3s}
+#edLoad .el-tip span.fade{opacity:0}
+html[data-theme="light"] #edLoad{background:#f4f5f8;color:#16171c}
+html[data-theme="light"] #edLoad .el-bg{background-image:linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px)}
+html[data-theme="light"] #edLoad .el-map{background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.07),0 18px 40px rgba(20,22,40,.12)}
+html[data-theme="light"] #edLoad .el-brand{color:#a37c00}
+html[data-theme="light"] #edLoad .el-meta span{background:rgba(0,0,0,.05);color:rgba(22,23,28,.65);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+html[data-theme="light"] #edLoad .el-meta b{color:#16171c}
+html[data-theme="light"] #edLoad .el-bar{background:rgba(0,0,0,.08)}
+html[data-theme="light"] #edLoad .el-stat{color:rgba(22,23,28,.55)}
+html[data-theme="light"] #edLoad .el-stat span:last-child{color:rgba(22,23,28,.8)}
+html[data-theme="light"] #edLoad .el-tip{background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06),0 6px 20px rgba(20,22,40,.06);color:rgba(22,23,28,.72)}
+@keyframes elTile{0%{transform:scale(0);opacity:0}12%{transform:scale(1);opacity:1}72%{transform:scale(1);opacity:1}86%,100%{transform:scale(0);opacity:0}}
+@keyframes elDrift{to{transform:translate(32px,32px)}}
+@keyframes elBreath{0%,100%{transform:scale(.9);opacity:.75}50%{transform:scale(1.06);opacity:1}}
+@keyframes elShine{0%{transform:translateX(-120%)}100%{transform:translateX(420%)}}
+@keyframes elIn{from{opacity:0;transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){#edLoad .el-bg,#edLoad .el-glow,#edLoad .el-bar>s{animation:none}#edLoad .el-map i{animation:none;transform:none;opacity:1}}
+</style>
 <script>try{if(/[?&]play=1(&|$)/.test(location.search)){document.documentElement.classList.add('prjload');setTimeout(()=>document.documentElement.classList.remove('prjload'),12000)}}catch(e){}</script>
-</head><body><div id="prjLoad" role="status" aria-live="polite"><div class="pl-spin"></div><div class="pl-name" id="prjLoadName">게임 불러오는 중…</div><div class="pl-sub">Thaniya Engine</div></div>
+</head><body><div id="prjLoad" role="status" aria-live="polite"><div class="pl-spin"></div><div class="pl-name" id="prjLoadName">게임 불러오는 중…</div><div class="pl-sub">Thaniya Engine</div></div><div id="edLoad" role="status" aria-live="polite" aria-label="Thaniya Engine 불러오는 중"><div class="el-bg"></div><div class="el-glow"></div>
+<div class="el-card"><div class="el-map" aria-hidden="true"></div><div class="el-brand">THANIYA ENGINE</div><div class="el-name" id="elName">프로젝트 여는 중</div><div class="el-meta" id="elMeta"></div>
+<div class="el-bar"><i id="elFill"></i><s></s></div><div class="el-stat"><span id="elStep">엔진 준비 중</span><span id="elPct">0%</span></div></div>
+<div class="el-tip"><b>TIP</b><span id="elTip"></span></div></div>
+<script>
+/* 에디터 로딩 화면: window.EDLOAD.set(0~1, 단계, 개수) · name(이름) · meta(프로젝트) · assets(n) · done()
+   학습 실습장(learn=1 · 학습 화면이 자기 로딩을 띄움)과 「실행」(play=1 · #prjLoad)에서는 쓰지 않음 */
+(function(){
+  var el=document.getElementById('edLoad'),noop=function(){};
+  var skip=/[?&](learn|play)=1(&|$)/.test(location.search);
+  if(skip||!el){if(el)el.remove();window.EDLOAD={set:noop,name:noop,meta:noop,assets:noop,done:noop};return}
+  var T=function(s,v){return window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,function(x,k){return v&&k in v?v[k]:x})};
+  if(window.TI18N)TI18N.add({'프로젝트 여는 중':['Opening project','プロジェクトを開いています','正在打开项目'],'엔진 준비 중':['Preparing engine','エンジンを準備中','正在准备引擎'],
+    '엔진 모듈 불러오는 중':['Loading engine modules','エンジンモジュールを読み込み中','正在加载引擎模块'],'편집기 준비 중':['Preparing editor','エディターを準備中','正在准备编辑器'],
+    '에셋 불러오는 중':['Loading assets','アセットを読み込み中','正在加载资源'],'기본 에셋 확인 중':['Checking default assets','基本アセットを確認中','正在检查默认资源'],'씬 그리는 중':['Drawing the scene','シーンを描画中','正在绘制场景'],'완료':['Done','完了','完成'],
+    '씬':['Scenes','シーン','场景'],'오브젝트':['Objects','オブジェクト','对象'],'에셋':['Assets','アセット','资源'],'Thaniya Engine 불러오는 중':['Loading Thaniya Engine','Thaniya Engine を読み込み中','正在加载 Thaniya Engine'],
+    '계층 구조의 오브젝트를 프로젝트 창으로 끌어다 놓으면 프리팹이 돼요.':['Drag an object from the Hierarchy into the Project window to make a prefab.','階層のオブジェクトをプロジェクトウィンドウへドラッグするとプレハブになります。','把层级中的对象拖到项目窗口即可生成预制体。'],
+    '볼륨 컴포넌트로 화면에 색 보정 · 노이즈 · VHS 같은 후처리 효과를 입힐 수 있어요.':['Use a Volume component to add post-processing like color grading, noise or VHS.','ボリュームコンポーネントで色補正・ノイズ・VHSなどのポストエフェクトをかけられます。','用体积组件可为画面添加颜色调整、噪点、VHS 等后期效果。'],
+    '「나란히」 보기로 씬 뷰와 게임 화면을 함께 볼 수 있어요.':['“Split” view shows the Scene and Game views side by side.','「並べて表示」でシーンビューとゲーム画面を一緒に見られます。','“并排”视图可同时查看场景视图和游戏画面。'],
+    'Ctrl+S로 저장하고, 위쪽 ▶ 플레이로 바로 시험해 봐요.':['Save with Ctrl+S and test right away with ▶ Play at the top.','Ctrl+Sで保存して、上の ▶ プレイですぐ試してみましょう。','用 Ctrl+S 保存，再点上方 ▶ 运行立即测试。'],
+    '빛 컴포넌트는 씬의 「어둠」을 켜야 보여요.':['Lights only show when the scene’s “Darkness” is on.','光コンポーネントはシーンの「暗さ」をオンにすると見えます。','开启场景的“黑暗”后才能看到灯光组件的效果。'],
+    '타일 팔레트에서 여러 칸을 끌어 고르면 한 번에 칠할 수 있어요.':['Drag across several cells in the Tile Palette to paint them all at once.','タイルパレットで複数マスをドラッグして選ぶと、まとめて塗れます。','在图块调色板中拖选多个格子即可一次绘制。'],
+    '타임라인으로 컷씬을, 애니메이터로 캐릭터의 움직임을 만들 수 있어요.':['Make cutscenes with the Timeline and character motion with the Animator.','タイムラインでカットシーンを、アニメーターでキャラクターの動きを作れます。','用时间轴制作过场动画，用动画器制作角色动作。'],
+    '헤더의 「학습」을 누르면 엔진 안에서 바로 레슨을 따라 할 수 있어요.':['Click “Learn” in the header to follow lessons right inside the engine.','ヘッダーの「学習」を押すと、エンジンの中ですぐレッスンを進められます。','点击顶部的“学习”即可在引擎内直接跟着课程练习。']});
+  /* 타일맵이 칠해지듯 하나씩 나타나는 5×4 미니 맵 (풀 · 흙길 · 물 · 돌 · 주인공) */
+  var G='#5fae78',G2='#4f9d69',D='#a8784a',W='#4f8fd6',S='#8a8f9e',H='#e9bd0c';
+  var M=[G,G2,G,W,W, D,D,D,G,W, G2,H,D,D,G, S,S,G,G2,G];
+  el.querySelector('.el-map').innerHTML=M.map(function(c,i){var x=i%5,y=(i/5)|0;return'<i'+(c===H?' class="h"':'')+' style="--c:'+c+';--d:'+((x+y)*.11).toFixed(2)+'s"></i>'}).join('');
+  var TIPS=['계층 구조의 오브젝트를 프로젝트 창으로 끌어다 놓으면 프리팹이 돼요.','볼륨 컴포넌트로 화면에 색 보정 · 노이즈 · VHS 같은 후처리 효과를 입힐 수 있어요.','「나란히」 보기로 씬 뷰와 게임 화면을 함께 볼 수 있어요.','Ctrl+S로 저장하고, 위쪽 ▶ 플레이로 바로 시험해 봐요.','빛 컴포넌트는 씬의 「어둠」을 켜야 보여요.','타일 팔레트에서 여러 칸을 끌어 고르면 한 번에 칠할 수 있어요.','타임라인으로 컷씬을, 애니메이터로 캐릭터의 움직임을 만들 수 있어요.','헤더의 「학습」을 누르면 엔진 안에서 바로 레슨을 따라 할 수 있어요.'];
+  var $=function(id){return document.getElementById(id)},tipI=(Math.random()*TIPS.length)|0,tipEl=$('elTip');
+  tipEl.textContent=T(TIPS[tipI]);
+  var tipT=setInterval(function(){tipEl.classList.add('fade');setTimeout(function(){tipI=(tipI+1)%TIPS.length;tipEl.textContent=T(TIPS[tipI]);tipEl.classList.remove('fade')},300)},3400);
+  /* 진행률: 목표값을 따라 부드럽게 · 오래 멈춰 있으면 다음 단계 쪽으로 아주 조금씩 기어감 (멈춘 것처럼 보이지 않게) */
+  var target=.04,shown=0,cap=.12,t0=performance.now(),fin=false,meta={};
+  function paint(){$('elFill').style.transform='scaleX('+Math.max(.02,shown).toFixed(4)+')';$('elPct').textContent=Math.round(shown*100)+'%'}
+  var tick=setInterval(function(){if(target<cap)target+=(cap-target)*.02;shown+=(target-shown)*.35;if(Math.abs(target-shown)<.002)shown=target;paint()},90);
+  function chips(){var h='';[['씬','scenes'],['오브젝트','objs'],['에셋','assets']].forEach(function(k){if(meta[k[1]]!=null)h+='<span>'+T(k[0])+'<b>'+meta[k[1]]+'</b></span>'});$('elMeta').innerHTML=h}
+  window.EDLOAD={
+    set:function(p,step,cnt){if(fin)return;target=Math.max(target,p);cap=Math.min(.98,p+.12);if(step)$('elStep').textContent=T(step)+(cnt?' · '+cnt:'')},
+    name:function(n){if(n)$('elName').textContent=String(n).slice(0,60)},
+    meta:function(P){try{meta.scenes=P.maps.length;meta.objs=P.maps.reduce(function(s,m){return s+((m.objs||[]).length)+((m.ui||[]).length)},0);chips()}catch(e){}},
+    assets:function(n){meta.assets=n;chips()},
+    done:function(){if(fin)return;fin=true;target=1;$('elStep').textContent=T('완료');
+      var wait=Math.max(0,650-(performance.now()-t0));
+      setTimeout(function(){shown=1;paint();setTimeout(function(){el.classList.add('out');setTimeout(function(){clearInterval(tick);clearInterval(tipT);el.remove()},500)},220)},wait)}
+  };
+  setTimeout(function(){window.EDLOAD.done()},25000); /* 혹시 멈춰도 25초 뒤에는 닫음 */
+  window.addEventListener('error',function(e){if(!fin&&e&&e.message)setTimeout(function(){window.EDLOAD.done()},1500)}); /* 스크립트 오류로 시작이 멈추면 편집기를 가리지 않게 */
+})();
+</script>
+
 <title>Thaniya Engine</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1523,6 +1615,7 @@ body.colresize,body.colresize *{cursor:col-resize!important;user-select:none!imp
 .phide{background:none;border:1px solid var(--line2);color:var(--mute);height:20px;padding:0 8px;border-radius:999px;flex:none;align-self:center;font-size:11px;line-height:1;margin-right:2px}
 .phide:hover{background:var(--hover);color:var(--fg)}
 #bFull.on{color:var(--accent)}
+html.learn-embed #bFull,html.learn-embed #gvFull{display:none!important}
 /* 콘솔 오류 더블클릭 → 해당 줄이 빨갛게 반짝 */
 .edwrap{position:relative}
 .edline{position:absolute;left:0;right:0;pointer-events:none;z-index:2;background:rgba(255,60,80,.45);box-shadow:inset 4px 0 0 #ff4058,0 0 0 1px rgba(255,90,110,.7),0 0 26px 4px rgba(255,60,80,.55);animation:edLine 2.6s ease-out forwards}
@@ -1884,7 +1977,7 @@ body.popbody .pcol{display:none}
           <span class="zoomc"><button id="zOut" aria-label="축소">−</button><span id="zVal">100%</span><button id="zIn" aria-label="확대">＋</button><button id="zFit" title="씬 전체 보기 (F)">맞춤</button></span>
           </span>
           <span class="vbar" id="gameBar" hidden>
-          <span class="gvplay" id="gvPlayBar" hidden><span class="gvhelp" title="플레이 조작">방향키/WASD 이동 · Space/Z 대화·공격 · Esc 종료</span><button class="gvsm gvfull" id="gvFull" title="전체 화면 켜기/끄기">⛶ 전체 화면</button></span>
+          <span class="gvplay" id="gvPlayBar" hidden><button class="gvsm gvfull" id="gvFull" title="전체 화면 켜기/끄기">⛶ 전체 화면</button></span>
           <span class="spacer"></span>
           <span class="gvpick" title="화면 크기 (기기)"><span id="gvPickIc"></span><select id="gvSel" aria-label="화면 크기"></select></span>
           <span class="gvcust" id="gvCust" hidden><input type="number" id="gvW" min="64" max="8192" aria-label="가로"><i>×</i><input type="number" id="gvH" min="64" max="8192" aria-label="세로"><button class="gvsm" id="gvSave" title="이 크기를 내 해상도 목록에 저장">저장</button></span>
@@ -2064,14 +2157,17 @@ body.popbody .pcol{display:none}
   <button id="padA">행동</button>
 </div>
 
-<script src="script-engine.js?v=20261110a"></script>
-<script src="script-editor.js?v=20261116a"></script>
+<script>try{EDLOAD.set(.1,'엔진 모듈 불러오는 중')}catch(e){}</script>
+<script src="volume-fx.js?v=20261118a"></script>
+<script src="script-engine.js?v=20261118a"></script>
+<script src="script-editor.js?v=20261118a"></script>
 <script src="anim-editor.js?v=20261107h"></script>
 <script src="timeline.js?v=20261110a"></script>
 <script src="ui-builder.js?v=20261107a"></script>
 <script src="visual-script.js?v=20261108d"></script>
-<script src="examples/examples.js?v=20261111a"></script>
-<script src="tour.js?v=20261109c"></script>
+<script src="examples/examples.js?v=20261118b"></script>
+<script src="tour.js?v=20261118a"></script>
+<script>try{EDLOAD.set(.2,'편집기 준비 중')}catch(e){}</script>
 <script>
 (()=>{
 'use strict';
@@ -2239,6 +2335,7 @@ const ICON=(()=>{
     flag:s('<path d="M3.5 14V2.5M3.5 3h8l-2 3 2 3h-8"/>'),
     user:s('<circle cx="8" cy="5" r="2.6"/><path d="M3 13.5c.4-2.8 2.4-4.4 5-4.4s4.6 1.6 5 4.4z"/>'),
     cam:s('<rect x="1.8" y="4.4" width="8.6" height="7.4" rx="1.4"/><path d="M10.4 7.2l3.8-2v5.6l-3.8-2"/>'),
+    volume:s('<circle cx="6.2" cy="8" r="4.2"/><circle cx="9.8" cy="8" r="4.2"/><path d="M8 4.6v6.8"/>'),
     sun:s('<circle cx="8" cy="8" r="2.6"/><path d="M8 1.6v1.8M8 12.6v1.8M1.6 8h1.8M12.6 8h1.8M3.5 3.5l1.3 1.3M11.2 11.2l1.3 1.3M12.5 3.5l-1.3 1.3M4.8 11.2l-1.3 1.3"/>'),
     cube:s('<path d="M8 1.8l5.5 2.9v6.6L8 14.2l-5.5-2.9V4.7zM2.5 4.7L8 7.6l5.5-2.9M8 7.6v6.6"/>'),
     proj:s('<path d="M2.5 3h11v10h-11zM2.5 6.5h11M6 6.5V13"/>'),
@@ -2453,7 +2550,10 @@ async function scopedRecs(){
 async function loadSavedAssets(){
   try{
     const list=await scopedRecs();
+    /* 로딩 화면: 에셋 하나씩 */
+    const LN=list.length;let li=0;try{EDLOAD.assets(LN);EDLOAD.set(.32,'에셋 불러오는 중','0 / '+LN)}catch(e){}
     for(const r of list){
+      li++;try{EDLOAD.set(.32+.5*li/Math.max(1,LN),'에셋 불러오는 중',li+' / '+LN)}catch(e){}
       if(r&&r.kind==='audio'){if(!audios.some(x=>x.id===r.id))audios.push(r);continue}
       if(r&&r.kind==='font'){if(!fonts.some(x=>x.id===r.id)){fonts.push(r);fntLoad(r)}continue}
       if(byId.has(r.id))continue;
@@ -3232,6 +3332,7 @@ function normObjTree(m){
   m.objs.forEach(o=>{
     if(typeof o.parent!=='string'||o.parent===o.id||!ids.has(o.parent))o.parent=null;
     if(o.props&&typeof o.props==='object'&&o.props.camera!==undefined)o.props.camera=normCam(o.props.camera);
+    if(o.props&&typeof o.props==='object'&&o.props.volume!==undefined&&window.VOLFX)o.props.volume=VOLFX.norm(o.props.volume);
   });
   m.objs.forEach(o=>{let c=o,n=0;const seen=new Set();while(c&&c.parent){if(seen.has(c.id)||++n>200){o.parent=null;break}seen.add(c.id);c=m.objs.find(q=>q.id===c.parent)}});
   fixCamStart(m);
@@ -3813,6 +3914,7 @@ function render(){
     g.save();g.setLineDash([6/cam.z,4/cam.z]);g.lineWidth=(on?1.6:1)/cam.z;g.strokeStyle=on?css('--accent'):'rgba(200,205,225,.45)';g.strokeRect(w.x-vw/2,w.y-vh/2,vw,vh);
     if(on){g.setLineDash([]);g.font='600 '+(11/cam.z)+'px "IBM Plex Sans KR",sans-serif';g.fillStyle=css('--accent');g.textBaseline='bottom';g.textAlign='left';g.fillText(_t('카메라 화면 · 크기 {n}',{n:+c.size||5})+' · '+Math.round(vr.w)+'×'+Math.round(vr.h),w.x-vw/2,w.y-vh/2-3/cam.z)}
     g.restore()})}
+  volGizmo(g,m,PL);
   {const so=getSel();if(so&&so.props&&so.props.shadow2d&&objOn(m,so)&&(PL||layerSel==='obj')){const sh=scShape(so),X=scXf(m,so,PL);g.save();g.strokeStyle='rgba(190,140,255,.95)';g.lineWidth=1.4/cam.z;g.setLineDash([3/cam.z,2/cam.z]);g.beginPath();sh.segs.forEach(s=>{const a=X.f(s[0],s[1]),b=X.f(s[2],s[3]);g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1])});g.stroke();g.restore()}}
   if(!PL){const go=gzObj();if(go)drawGizmo(g,m,go)}
   if(!$('#optUiHide').checked)drawUiEditor(g,m);
@@ -4392,6 +4494,8 @@ const MK_GO_BASE=()=>[
   {id:'t:empty',label:TYPES.empty.label,short:'빈 오브젝트',ic:'cube',col:TYPES.empty.color,fn:()=>createObjectAtView('empty')},
   {id:'light',label:'빛 오브젝트',short:'빛',ic:'sun',col:'#e6a52e',title:'빛 컴포넌트가 붙은 빈 게임 오브젝트',fn:createLightObject},
   {id:'cam',label:'카메라 오브젝트',short:'카메라',ic:'cam',col:'#5b8fd9',title:'카메라 컴포넌트가 붙은 빈 게임 오브젝트',fn:createCameraObject},
+  {id:'gvol',label:'전역 볼륨',short:'전역 볼륨',ic:'volume',col:'#b06bd6',title:'볼륨 컴포넌트(전역)가 붙은 빈 게임 오브젝트 · 화면 전체에 후처리 효과',fn:()=>createVolumeObject('global')},
+  {id:'lvol',label:'지역 볼륨',short:'지역 볼륨',ic:'volume',col:'#8a5cc7',title:'볼륨 컴포넌트(지역) + 박스 콜라이더 2D가 붙은 빈 게임 오브젝트 · 상자 안에서만 후처리 효과',fn:()=>createVolumeObject('local')},
   {id:'group',label:'새 그룹',ic:'folder',col:'#7d8296',fn:newGroup}];
 const MK_GO_ROLE=()=>['spawn','npc','monster','item','event','portal'].filter(k=>TYPES[k]).map(k=>({id:'t:'+k,label:TYPES[k].label,short:{event:'이벤트',item:'아이템'}[k],ic:GO_ICON[k],col:TYPES[k].color,fn:()=>createObjectAtView(k)}));
 const MK_UI_EL=()=>Object.keys(UI_NAMES).map(k=>({id:'u:'+k,label:UI_NAMES[k],ic:UI_ICON[k],col:UI_COLOR[k],fn:()=>createUiAtCenter(k)}));
@@ -5629,7 +5733,7 @@ function objRow(m,o,d,flat,n){
   visRows.push({rk:o.id,s:m.id});n=n||0;
   const kids=flat?[]:m.objs.filter(k=>k.parent===o.id&&k!==o),key='o:'+o.id,open=isOpen(key,true);
   const pfl=isPfLinked(o);
-  let h=tr({d,key:kids.length?key:undefined,foldable:kids.length>0,open,icon:ico(o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':'cube')),color:pfl?PF_COL:TYPES[o.type].color,label:pfHierLabel(m,o,enm(o.name))+(o.type==='spawn'&&m.objs.filter(q=>q.type==='spawn').length>1&&startSpawn(m)===o?' <span class="wbadge">시작</span>':'')+(o.props&&o.props.camera&&o.props.camera.start?' <span class="wbadge">시작 카메라</span>':''),on:m.id===curId&&hsel.has(o.id),off:!objOn(m,o),data:`data-t="obj" data-s="${m.id}" data-rk="${o.id}"`,drag:true,
+  let h=tr({d,key:kids.length?key:undefined,foldable:kids.length>0,open,icon:ico(o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':o.props&&o.props.volume?'volume':'cube')),color:pfl?PF_COL:TYPES[o.type].color,label:pfHierLabel(m,o,enm(o.name))+(o.type==='spawn'&&m.objs.filter(q=>q.type==='spawn').length>1&&startSpawn(m)===o?' <span class="wbadge">시작</span>':'')+(o.props&&o.props.camera&&o.props.camera.start?' <span class="wbadge">시작 카메라</span>':''),on:m.id===curId&&hsel.has(o.id),off:!objOn(m,o),data:`data-t="obj" data-s="${m.id}" data-rk="${o.id}"`,drag:true,
     acts:`<button class="ib" data-act="odel" title="삭제" aria-label="삭제">${ico('x')}</button>`});
   if(kids.length&&open&&n<30)kids.forEach(k=>{h+=objRow(m,k,d+1,flat,n+1)});
   return h;
@@ -6075,6 +6179,12 @@ function createLightObject(){
   const o=getSel();if(!o||m.objs.length===n0)return;
   o.name=_t('빛')+' '+(m.objs.filter(q=>q.props&&q.props.light).length+1);addComponent('light');
 }
+function createVolumeObject(mode){
+  const m=cur(),n0=m.objs.length;createObjectAtView('empty');
+  const o=getSel();if(!o||m.objs.length===n0)return;
+  o.name=_t(mode==='local'?'지역 볼륨':'전역 볼륨')+' '+(m.objs.filter(q=>q.props&&q.props.volume&&(q.props.volume.mode==='local')===(mode==='local')).length+1);
+  addComponent('volume',mode);
+}
 function createCameraObject(){
   const m=cur(),n0=m.objs.length;createObjectAtView('empty');
   const o=getSel();if(!o||m.objs.length===n0)return;
@@ -6117,7 +6227,7 @@ function spawnWarn(ex){
 const inspObj=()=>hierPick==='mgr'?mgrSel():getSel();
 /* 매니저에 붙일 수 있는 컴포넌트 (씬에 보이지 않는 것만) */
 const MGR_COMPS=['audio','memo'];
-function addComponent(k){
+function addComponent(k,arg){
   const m=cur(),o=inspObj();if(!o)return;
   if(o.mgr&&!MGR_COMPS.includes(k)){toast('매니저에는 오디오 소스 · 메모 컴포넌트와 스크립트만 붙일 수 있습니다');return}
   if(k==='memo'){if(o.props.memo!=null){toast('이미 메모 컴포넌트가 있습니다');return}o.props.memo=''}
@@ -6127,10 +6237,11 @@ function addComponent(k){
   else if(k==='director'){if(o.props.director){toast('이미 플레이어블 디렉터 컴포넌트가 있습니다');return}if(TLH){TLH.tlCreateFor(o);return}}
   else if(k==='animator'){if(o.props.animator){toast('이미 애니메이터 컴포넌트가 있습니다');return}o.props.animator={ctrl:o.type==='spawn'?anHeroCtrl(P).id:'',speed:1};anDirty()}
   else if(k==='shadow2d'){if(o.props.shadow2d){toast('이미 그림자 캐스터 2D 컴포넌트가 있습니다');return}o.props.shadow2d=SC_DEF();if(!m.dark||!m.dark.on)toast('그림자는 씬의 「어둠」을 켜고 빛이 있을 때 보입니다')}
+  else if(k==='volume'){if(o.props.volume){toast('이미 볼륨 컴포넌트가 있습니다');return}o.props.volume=VOLFX.newVolume(arg==='local'?'local':'global');if(arg==='local'&&!o.props.box)o.props.box=VOL_BOX_DEF();if(arg==='local')toast('지역 볼륨: 박스 콜라이더 2D(트리거) 상자 안에서만 효과가 보입니다');insFold.delete('cv')}
   else if(k==='camera'){if(o.props.camera){toast('이미 카메라 컴포넌트가 있습니다');return}o.props.camera=Object.assign(CAM_DEF(),{start:!m.objs.some(q=>q!==o&&q.props&&q.props.camera&&q.props.camera.start)})}
   else{
     if(o.type===k){toast(TYPES[k].label+' 컴포넌트가 이미 있습니다');return}
-    const keep={};['sprite','sx','sy','rot','memo','light','camera','box','shadow2d','animator','director','audio'].forEach(x=>{if(o.props[x]!==undefined)keep[x]=o.props[x]});
+    const keep={};['sprite','sx','sy','rot','memo','light','camera','box','shadow2d','animator','director','audio','volume'].forEach(x=>{if(o.props[x]!==undefined)keep[x]=o.props[x]});
     const was=o.type;o.type=k;o.props=Object.assign(TYPES[k].def(),keep);if(was==='spawn')dropHeroScript(o);dropRoleScripts(o,was);if(k==='spawn'){fixStart(m);giveHeroCamera(m,o);giveHeroScript(o);if(!P.playerSprite&&!o.props.sprite){giveHeroAnimator(o);anDirty()}}giveRoleScripts(o);renderScripts();
     if(was!=='empty')toast(TYPES[was].label+' 컴포넌트를 '+TYPES[k].label+'(으)로 교체했습니다');
   }
@@ -6143,12 +6254,13 @@ function removeComponent(k){
   if(k==='memo')delete o.props.memo;
   else if(k==='light')delete o.props.light;
   else if(k==='camera')delete o.props.camera;
+  else if(k==='volume')delete o.props.volume;
   else if(k==='box')delete o.props.box;
   else if(k==='shadow2d')delete o.props.shadow2d;
   else if(k==='animator')delete o.props.animator;
   else if(k==='director'){delete o.props.director;try{TLH.render()}catch(e){}}
   else if(k==='audio')delete o.props.audio;
-  else{const keep={};['sprite','sx','sy','rot','memo','light','camera','box','shadow2d','animator','director','audio'].forEach(x=>{if(o.props[x]!==undefined)keep[x]=o.props[x]});if(o.type==='spawn')dropHeroScript(o);dropRoleScripts(o,o.type);o.type='empty';o.props=keep;fixStart(cur());renderScripts()}
+  else{const keep={};['sprite','sx','sy','rot','memo','light','camera','box','shadow2d','animator','director','audio','volume'].forEach(x=>{if(o.props[x]!==undefined)keep[x]=o.props[x]});if(o.type==='spawn')dropHeroScript(o);dropRoleScripts(o,o.type);o.type='empty';o.props=keep;fixStart(cur());renderScripts()}
   commit();renderInsp();renderHier();need();
 }
 /* ===================== 인스펙터 ===================== */
@@ -6156,8 +6268,8 @@ const insFold=new Set();
 const sprites=()=>assets.filter(a=>a.kind==='sprite');
 const num=(axis,attr,val,min,max)=>`<span class="num"><i>${axis}</i><input type="number" step="any" ${attr} min="${min}" max="${max}" value="${val}"></span>`;
 const compEn=n=>` <small style="color:var(--mute);font-weight:400">(${n})</small>`;
-const COMP_KIND={c:'role',cm:'gen',cl:'gen',cc:'gen',cb:'gen',cs:'gen',ca:'gen',cd:'gen',cau:'gen',ur:'role'};
-function comp(key,icon,title,body,tip){const ck=COMP_KIND[key],uk=key==='ur',uu=uk?getUi():null,so=ck==='role'&&!uk?getSel():null,rc=uu?UI_COLOR[uu.type]:so&&TYPES[so.type]?TYPES[so.type].color:'',rt=ck?`<i class="rtag ${ck}"${rc?` style="--bc:${rc}"`:''} title="${ck==='role'?(uk?'역할 컴포넌트 · UI 요소당 하나만 가질 수 있습니다 (컴포넌트 추가에서 다른 역할로 바꿀 수 있어요)':'역할 컴포넌트 · 오브젝트당 하나만 가질 수 있습니다'):'일반 컴포넌트 · 여러 개를 함께 가질 수 있습니다'}">${ck==='role'?'역할':'일반'}</i>`:'';const rm=key==='c'?'type':key==='cm'?'memo':key==='cl'?'light':key==='cc'?'camera':key==='cb'?'box':key==='cs'?'shadow2d':key==='ca'?'animator':key==='cd'?'director':key==='cau'?'audio':'';return`<div class="comp${insFold.has(key)?' closed':''}" data-comp="${key}"><button class="chead">${ico(icon)}<span>${title}</span>${rt}</button>${qb(tip,'cq')}${rm?`<button class="crm" data-rm="${rm}" title="컴포넌트 제거" aria-label="컴포넌트 제거">✕</button>`:''}<div class="cbody">${body}</div></div>`}
+const COMP_KIND={c:'role',cm:'gen',cl:'gen',cc:'gen',cv:'gen',cb:'gen',cs:'gen',ca:'gen',cd:'gen',cau:'gen',ur:'role'};
+function comp(key,icon,title,body,tip){const ck=COMP_KIND[key],uk=key==='ur',uu=uk?getUi():null,so=ck==='role'&&!uk?getSel():null,rc=uu?UI_COLOR[uu.type]:so&&TYPES[so.type]?TYPES[so.type].color:'',rt=ck?`<i class="rtag ${ck}"${rc?` style="--bc:${rc}"`:''} title="${ck==='role'?(uk?'역할 컴포넌트 · UI 요소당 하나만 가질 수 있습니다 (컴포넌트 추가에서 다른 역할로 바꿀 수 있어요)':'역할 컴포넌트 · 오브젝트당 하나만 가질 수 있습니다'):'일반 컴포넌트 · 여러 개를 함께 가질 수 있습니다'}">${ck==='role'?'역할':'일반'}</i>`:'';const rm=key==='c'?'type':key==='cm'?'memo':key==='cl'?'light':key==='cc'?'camera':key==='cv'?'volume':key==='cb'?'box':key==='cs'?'shadow2d':key==='ca'?'animator':key==='cd'?'director':key==='cau'?'audio':'';return`<div class="comp${insFold.has(key)?' closed':''}" data-comp="${key}"><button class="chead">${ico(icon)}<span>${title}</span>${rt}</button>${qb(tip,'cq')}${rm?`<button class="crm" data-rm="${rm}" title="컴포넌트 제거" aria-label="컴포넌트 제거">✕</button>`:''}<div class="cbody">${body}</div></div>`}
 const darkComp=m=>comp('dark','sun','어둠 (조명)'+compEn('Darkness'),
       fr('어둠 사용',`<input type="checkbox" data-s="dark"${m.dark.on?' checked':''}>`,false,'enabled','켜면 화면이 어두워지고, 빛(Light) 컴포넌트를 가진 게임 오브젝트 주변만 밝아집니다.')+
       fr('색',`<input type="color" data-s="darkColor" value="${esc(m.dark.color)}" style="width:44px;height:22px;padding:0;border:1px solid var(--line2);background:none">`,false,'color','어둠의 색입니다.')+
@@ -6274,6 +6386,7 @@ function renderInsp0(){
     fr('부드럽게 따라가기',`<input type="checkbox" data-cam="smooth"${p.camera.smooth?' checked':''}>`,false,'smoothFollow','켜면 카메라가 따라가는 대상(주인공 등)을 곧바로 붙지 않고 살짝 늦게, 부드럽게 따라갑니다. 플레이 중에 효과가 보입니다.')+
     (p.camera.smooth?fr('부드러움(초)',num('T','data-cam="smoothTime" data-step="0.05"',+p.camera.smoothTime||.3,.02,3),false,'smoothTime','대상에 거의 따라붙는 데 걸리는 시간(초)입니다. 작을수록 빠르게 붙고, 클수록 더 느긋하게 따라옵니다. 0.1~0.5가 무난합니다.'):''),
     '화면이 비추는 위치를 정하는 컴포넌트입니다. 주인공의 자식으로 두면 주인공을 따라다니고, 시작 카메라가 없으면 주인공을 따라갑니다.');}
+  if(p.volume)h+=volumeComp(o);
   if(p.box){const b=p.box;h+=comp('cb','rect','박스 콜라이더 2D'+compEn('BoxCollider2D'),
     fr('트리거',`<input type="checkbox" data-bx="trigger"${b.trigger?' checked':''}>`,false,'isTrigger','켜면 막지 않고 통과시키면서, 닿은 순간 이 오브젝트와 주인공의 스크립트에 OnTriggerEnter2D, 나갈 때 OnTriggerExit2D를 보냅니다. 출구·함정·아이템 영역에 씁니다.')+
     fr('크기(칸)',num('W','data-bx="w" data-step="0.05"',b.w,.1,20)+num('H','data-bx="h" data-step="0.05"',b.h,.1,20),false,'size','콜라이더 상자의 너비와 높이(칸)입니다. 씬 뷰에 초록 테두리로 보이고, 트리거는 점선으로 보입니다.')+
@@ -6315,6 +6428,175 @@ if(window.TI18N)TI18N.add({
 '주인공이 말을 걸면 위에서부터 차례로 표시되는 대사 목록입니다. 대화창에서 화면을 클릭(또는 Space)하면 다음 대사로 넘어가고, 마지막 대사 뒤에는 닫힙니다.':['Lines shown in order from the top when the hero talks. Click the screen (or press Space) to go to the next line; the dialog closes after the last one.','主人公が話しかけると上から順に表示されるセリフのリストです。画面をクリック（またはSpace）で次のセリフへ進み、最後のセリフの後に閉じます。','主角搭话时从上到下依次显示的台词列表。点击画面（或按 Space）进入下一句，最后一句之后关闭。'],
 'NPC 이름표를 그림의 어느 쪽에 붙일지 정합니다. 크기를 키우면 그림 가장자리를 따라 함께 움직입니다.':['Which side of the sprite the NPC name label sits on. It follows the sprite edge when you scale the NPC.','NPCの名前ラベルを絵のどちら側に付けるかを決めます。サイズを大きくすると絵の端に合わせて一緒に動きます。','设置 NPC 名称标签贴在图像的哪一侧。放大 NPC 时会随图像边缘一起移动。'],
 '대사 목록을 담는 NPC 컴포넌트입니다. 주인공이 말을 걸면(HeroCombat의 hero.Interact) 붙어 있는 NpcTalk 스크립트가 대화창을 열고, 대화하는 동안 주인공은 움직이지 않습니다. NPC는 주인공의 이동을 막습니다.':['The NPC component that holds a list of lines. When the hero talks (hero.Interact in HeroCombat), the attached NpcTalk script opens the dialog, and the hero cannot move while talking. NPCs block the hero\'s movement.','セリフのリストを持つNPCコンポーネントです。主人公が話しかけると（HeroCombatのhero.Interact）付いているNpcTalkスクリプトが会話ウィンドウを開き、会話中は主人公が動けません。NPCは主人公の移動を妨げます。','保存台词列表的 NPC 组件。主角搭话时（HeroCombat 的 hero.Interact），附加的 NpcTalk 脚本会打开对话框，对话期间主角无法移动。NPC 会阻挡主角移动。']
+});
+/* ===================== 볼륨 (Volume) · 후처리 효과 =====================
+   효과 정의 · 섞기 · 셰이더는 volume-fx.js (VOLFX). 여기서는 엔진 연결:
+   카메라 위치에서 볼륨별 무게 구하기 → 섞기 → drawPlay에서 화면에 적용 · 인스펙터 · 씬 뷰 표시 · 스크립트(GetComponent<Volume>()) */
+const VOL_BOX_DEF=()=>({trigger:true,w:6,h:4,ox:0,oy:0});
+let volLast={drawn:false,anim:false},volAnimT=0;
+/* 지역 볼륨의 상자(박스 콜라이더 2D) — 월드 px */
+function volBox(m,o,p){const b=o.props.box;if(!b)return null;const w=objWorld(m,o,p),cx=w.x+(+b.ox||0)*TS,cy=w.y+(+b.oy||0)*TS;return{cx,cy,hw:(+b.w||1)*TS/2,hh:(+b.h||1)*TS/2}}
+/* 기준 위치(x, y)에서 이 볼륨이 얼마나 들어가는지 (0~1): 전역 = 1 · 지역 = 상자 안 1, 밖은 섞는 거리만큼 서서히 0 */
+function volFactor(m,o,x,y,p){
+  const v=o.props.volume;if(v.mode!=='local')return 1;
+  const q=volBox(m,o,p);if(!q)return 0;
+  const dx=Math.max(q.cx-q.hw-x,0,x-q.cx-q.hw),dy=Math.max(q.cy-q.hh-y,0,y-q.cy-q.hh),dist=Math.hypot(dx,dy)/TS;
+  if(dist<=0)return 1;const bl=+v.blend||0;return bl>0?Math.max(0,1-dist/bl):0;
+}
+function volApply(p,g,m,ct,W,H,d){
+  if(!window.VOLFX)return{drawn:false,anim:false};
+  const live=!!play&&play===p,L=[];
+  /* 지역 볼륨을 재는 위치 (유니티 카메라의 Volume Trigger): 주인공 · 없으면 카메라 가운데 — 카메라는 씬 가장자리에서 멈추므로 주인공 기준이 더 자연스러움 */
+  const hs=startSpawn(m),tp=hs&&objOn(m,hs)&&p.px!=null?{x:p.px,y:p.py}:ct;
+  for(const o of m.objs){
+    const v=o.props&&o.props.volume;if(!v||!objOn(m,o))continue;
+    const f=v.on===false?0:volFactor(m,o,tp.x,tp.y,p);
+    /* 학습 실습장: 주인공이 지역 볼륨 상자 안에 들어감 */
+    if(live&&v.mode==='local'){p.volIn=p.volIn||new Set();const inn=f>=1;if(inn&&!p.volIn.has(o.id)){p.volIn.add(o.id);learnEmit('vol:enter:'+o.name)}else if(!inn)p.volIn.delete(o.id)}
+    const w=clamp(+v.weight||0,0,1)*f;if(w>0&&v.fx.length)L.push({v,w});
+  }
+  if(!L.length)return{drawn:false,anim:false};
+  return VOLFX.render(g,VOLFX.blend(L),W,H,d);
+}
+/* 씬 뷰: 고른 볼륨의 범위 (지역 = 보라 상자 + 점선 섞는 거리) */
+function volGizmo(g,m,PL){
+  m.objs.forEach(o=>{const v=o.props&&o.props.volume;if(!v||!objOn(m,o)||!(o.id===sel||hsel.has(o.id)))return;
+    const z=cam.z;g.save();g.font='600 '+(11/z)+'px "IBM Plex Sans KR",sans-serif';g.fillStyle='#c48be8';g.textBaseline='bottom';g.textAlign='left';
+    if(v.mode!=='local'){const w=objWorld(m,o,PL);g.textBaseline='top';g.fillText(_t('전역 볼륨 · 화면 전체 · 효과 {n}개',{n:v.fx.length}),w.x-TS/2,w.y+TS/2+3/z);g.restore();return}
+    const q=volBox(m,o,PL);if(!q){g.restore();return}
+    const bl=(+v.blend||0)*TS;
+    g.fillStyle='rgba(176,107,214,.12)';g.fillRect(q.cx-q.hw,q.cy-q.hh,q.hw*2,q.hh*2);
+    g.strokeStyle='rgba(196,139,232,.95)';g.lineWidth=1.6/z;g.strokeRect(q.cx-q.hw,q.cy-q.hh,q.hw*2,q.hh*2);
+    if(bl>0){g.setLineDash([6/z,4/z]);g.lineWidth=1.2/z;rr(g,q.cx-q.hw-bl,q.cy-q.hh-bl,q.hw*2+bl*2,q.hh*2+bl*2,bl);g.stroke();g.setLineDash([])}
+    g.fillStyle='#c48be8';g.fillText(_t('지역 볼륨 · 섞는 거리 {n}칸',{n:+v.blend||0})+' · '+_t('효과 {n}개',{n:v.fx.length}),q.cx-q.hw-bl,q.cy-q.hh-bl-3/z);
+    g.restore()});
+}
+/* ---- 인스펙터 ---- */
+const volNum=(attr,val,min,max,step)=>`<span class="num"><input type="number" step="${step}" min="${min}" max="${max}" value="${val}" ${attr}></span>`;
+const volRange=(attr,val,min,max,step)=>`<div class="vfrow"><input type="range" min="${min}" max="${max}" step="${step}" value="${val}" ${attr}>${volNum(attr,val,min,max,step)}</div>`;
+const volRound=(v,st)=>{const n=String(st).includes('.')?String(st).split('.')[1].length:0;return +(+v).toFixed(Math.min(4,n+1))};
+const volIsDef=(q,v)=>(q.t||'num')==='num'?Math.abs(+v-q.def)<1e-6:v===q.def;
+const volRsBtn=(i,q,val)=>`<button type="button" class="vfrp" data-vfrp="${i}" data-k="${q.k}" title="${esc(_t('기본값으로 ({v})',{v:String(q.def)}))}" aria-label="${esc(_t('기본값으로'))}"${volIsDef(q,val)?' hidden':''}>↺</button>`;
+function volParamHtml(i,q,val){
+  const a=`data-vfx="${i}" data-vp="${q.k}"`,t=q.t||'num';let h;
+  if(t==='color')h=`<input type="color" ${a} value="${esc(val)}" style="width:44px;height:22px;padding:0;border:1px solid var(--line2);background:none">`;
+  else if(t==='bool')h=`<input type="checkbox" ${a}${val?' checked':''}>`;
+  else if(t==='enum')h=`<select ${a}>${q.opts.map(o=>`<option value="${o[0]}"${o[0]===val?' selected':''}>${esc(_t(o[1]))}</option>`).join('')}</select>`;
+  else if(t==='text')h=`<input type="text" ${a} maxlength="40" value="${esc(val)}" data-i18n-skip style="flex:1;min-width:0">`;
+  else h=volRange(a,volRound(val,q.step),q.min,q.max,q.step);
+  if(t!=='num')h=`<div class="vfrow">${h}</div>`;
+  return fr(q.n,h.replace(/<\/div>$/,volRsBtn(i,q,val)+'</div>'),false,q.en,q.tip);
+}
+function volFxHtml(f,i,n){
+  const E=VOLFX.EBY[f.k];if(!E)return'';
+  return`<div class="vfx${f.on?'':' off'}${f.fold?' vfz':''}" data-vfi="${i}"><div class="vfh" data-vffold="${i}" title="${esc(_t('눌러서 접기 / 펼치기'))}"><span class="vfar">${f.fold?'▸':'▾'}</span><input type="checkbox" data-vfon="${i}"${f.on?' checked':''} title="${esc(_t('이 효과 켜기 / 끄기'))}" aria-label="${esc(_t('이 효과 켜기 / 끄기'))}"><span class="vfi">${E.ic}</span><b>${esc(_t(E.n))}<small>${E.en}</small></b>`+
+    `<button type="button" data-vfreset="${i}" title="${esc(_t('이 효과의 값을 모두 기본값으로'))}" aria-label="${esc(_t('이 효과의 값을 모두 기본값으로'))}">↺</button><button type="button" data-vfmv="-1" data-i="${i}" title="${esc(_t('위로'))}"${i?'':' disabled'}>↑</button><button type="button" data-vfmv="1" data-i="${i}" title="${esc(_t('아래로'))}"${i<n-1?'':' disabled'}>↓</button><button type="button" data-vfrm="${i}" title="${esc(_t('효과 빼기'))}" aria-label="${esc(_t('효과 빼기'))}">✕</button></div>`+
+    `<div class="vfb"><p class="vfd">${esc(_t(E.d))}</p>${E.p.map(q=>volParamHtml(i,q,f.p[q.k])).join('')}</div></div>`;
+}
+function volumeComp(o){
+  const v=o.props.volume,loc=v.mode==='local',box=!!o.props.box;
+  const seg=`<div class="vfseg" role="radiogroup">${[['global','전역 (Global)'],['local','지역 (Local)']].map(([k,l])=>`<button type="button" role="radio" aria-checked="${v.mode===k}" class="${v.mode===k?'on':''}" data-vfmode="${k}">${esc(_t(l))}</button>`).join('')}</div>`;
+  let b=fr('사용',`<input type="checkbox" data-vol="on"${v.on!==false?' checked':''}>`,false,'enabled','끄면 이 볼륨의 효과가 모두 꺼집니다. 스크립트에서는 volume.enabled 입니다.')+
+    fr('모드',seg,false,'mode','전역: 어디서나 화면 전체에 효과를 줍니다. 지역: 주인공(주인공이 없으면 카메라)이 박스 콜라이더 2D 상자 안에 있을 때만 효과를 주고, 상자 밖에서는 「섞는 거리」만큼 서서히 사라집니다.');
+  if(loc){
+    if(!box)b+=`<div class="vfwarn"><span>${esc(_t('지역 볼륨은 박스 콜라이더 2D 상자로 범위를 정합니다. 상자가 없어서 지금은 효과가 보이지 않아요.'))}</span><button type="button" class="btn sm pri" data-vfbox="1">${esc(_t('상자 붙이기'))}</button></div>`;
+    b+=fr('섞는 거리(칸)',volNum('data-vol="blend"',+v.blend||0,0,50,.5),false,'blendDistance','주인공이 상자 밖으로 이만큼(칸) 떨어질 때까지 효과가 서서히 약해집니다. 0이면 상자 경계에서 딱 바뀝니다. 씬 뷰에 보라 점선으로 보여요.');
+  }
+  b+=fr('무게',volRange('data-vol="weight"',+v.weight,0,1,.01),false,'weight','이 볼륨의 효과를 얼마나 섞을지입니다. 0이면 효과 없음, 1이면 전부. 스크립트에서 서서히 바꾸면 화면이 부드럽게 변해요.')+
+    fr('우선순위',volNum('data-vol="priority"',+v.priority||0,-999,999,1),false,'priority','여러 볼륨이 겹칠 때 숫자가 큰 볼륨이 나중에 섞여 더 강하게 적용됩니다. 보통 전역 0, 지역 1 이상으로 둡니다.')+
+    fr('프리셋',`<select data-vfpre><option value="">${esc(_t('프리셋 불러오기…'))}</option>${VOLFX.PRESETS.map(q=>`<option value="${q.k}">${esc(_t(q.n))}</option>`).join('')}</select>`,false,'profile','미리 만들어 둔 효과 묶음을 불러옵니다. 지금 효과 목록은 프리셋으로 바뀌고, 그다음 값을 마음대로 고칠 수 있어요. (Ctrl+Z로 되돌리기)');
+  if(!VOLFX.hasGL())b+=`<div class="vfwarn"><span>${esc(_t('이 브라우저에서는 WebGL을 쓸 수 없어 후처리 효과가 화면에 보이지 않습니다.'))}</span></div>`;
+  b+=v.fx.length?v.fx.map((f,i)=>volFxHtml(f,i,v.fx.length)).join(''):`<p class="vfhint">${esc(_t('아직 효과가 없습니다. 아래 「효과 추가」나 프리셋으로 넣어 보세요. 게임 뷰(또는 ▶ 플레이)에서 결과가 보여요.'))}</p>`;
+  b+=`<div class="vfadd"><button type="button" class="btn pri" id="vfAdd">＋ ${esc(_t('효과 추가'))}</button><button type="button" class="btn" id="vfResetAll" title="${esc(_t('무게 1 · 우선순위 0 · 섞는 거리 1, 모든 효과 값을 기본값으로 (효과 목록은 그대로)'))}"${v.fx.length||+v.weight!==1||+v.priority||+v.blend!==1?'':' disabled'}>↺ ${esc(_t('모두 기본값'))}</button></div>`;
+  return comp('cv','volume','볼륨'+compEn('Volume'),b,'카메라 화면에 후처리 효과(색 보정 · 블룸 · 비네트 · 노이즈 · 렌즈 왜곡 · VHS …)를 입히는 컴포넌트입니다. 전역 볼륨은 어디서나, 지역 볼륨은 박스 콜라이더 2D 상자 안에서만 효과를 줍니다. 결과는 게임 뷰와 플레이 화면에 보이고, UI는 효과를 받지 않습니다.');
+}
+const volOf=()=>{const o=inspObj();return o&&!o.mgr&&o.props&&o.props.volume?o:null};
+/* 숫자 칸 ↔ 슬라이더 짝 맞추기 (다시 그리지 않고) */
+function volRsSync(t,q,v){const r=t.closest('.fv');const b=r&&r.querySelector('.vfrp');if(b)b.hidden=volIsDef(q,v)}
+function volSyncPair(t){const r=t.closest('.vfrow');if(!r)return;r.querySelectorAll('input').forEach(x=>{if(x!==t)x.value=t.value})}
+$('#insp').addEventListener('input',e=>{
+  const t=e.target;if(!t.dataset)return;
+  if(t.dataset.vol&&t.dataset.vol!=='on'){const o=volOf();if(!o)return;const v=o.props.volume,k=t.dataset.vol,x=parseFloat(t.value);if(isNaN(x))return;
+    if(k==='weight')v.weight=clamp(x,0,1);else if(k==='priority')v.priority=clamp(Math.round(x),-999,999);else if(k==='blend')v.blend=clamp(x,0,50);
+    volSyncPair(t);need();return}
+  if(t.dataset.vp!=null&&t.dataset.vfx!=null){const o=volOf();if(!o)return;const f=o.props.volume.fx[+t.dataset.vfx];const E=f&&VOLFX.EBY[f.k];const q=E&&E.p.find(z=>z.k===t.dataset.vp);if(!q)return;
+    const ty=q.t||'num';if(ty==='bool'||ty==='enum')return;
+    if(ty==='num'){const x=parseFloat(t.value);if(isNaN(x))return;f.p[q.k]=VOLFX.normParam(q,x);volSyncPair(t)}else f.p[q.k]=VOLFX.normParam(q,t.value);
+    volRsSync(t,q,f.p[q.k]);need();return}
+});
+$('#insp').addEventListener('change',e=>{
+  const t=e.target;if(!t.dataset)return;
+  /* 볼륨 칸: 값을 정한 뒤 포커스를 풀어 Ctrl+Z가 엔진의 실행 취소로 가게 (글자 칸은 그대로) */
+  if(t.closest&&t.closest('.comp[data-comp="cv"]')&&t.type!=='text'&&t.type!=='color')setTimeout(()=>{if(document.activeElement===t)t.blur()},0);
+  if(t.dataset.vol==='on'){const o=volOf();if(!o)return;if(t.checked)delete o.props.volume.on;else o.props.volume.on=false;need();return}
+  if(t.dataset.vfon!=null){const o=volOf();if(!o)return;const f=o.props.volume.fx[+t.dataset.vfon];if(!f)return;f.on=t.checked;const c=t.closest('.vfx');if(c)c.classList.toggle('off',!f.on);need();return}
+  if(t.dataset.vp!=null&&t.dataset.vfx!=null){const o=volOf();if(!o)return;const f=o.props.volume.fx[+t.dataset.vfx];const E=f&&VOLFX.EBY[f.k];const q=E&&E.p.find(z=>z.k===t.dataset.vp);if(!q)return;
+    if(q.t==='bool')f.p[q.k]=t.checked;else if(q.t==='enum')f.p[q.k]=VOLFX.normParam(q,t.value);volRsSync(t,q,f.p[q.k]);need();return}
+  if(t.hasAttribute&&t.hasAttribute('data-vfpre')){const o=volOf(),k=t.value;if(!o||!k)return;const P0=VOLFX.PRESETS.find(q=>q.k===k);VOLFX.applyPreset(o.props.volume,k);
+    commit();renderInsp();need();learnEmit('vol:preset:'+k);toast(_t('프리셋 「{n}」을(를) 불러왔습니다',{n:_t(P0?P0.n:k)}));return}
+});
+$('#insp').addEventListener('click',e=>{
+  const t=e.target;if(!t.closest)return;
+  if(t.closest('#vfAdd')){const o=volOf();if(!o)return;const v=o.props.volume;
+    showMenu(t.closest('#vfAdd'),[{head:'효과 추가 (Add Override)',sub:'볼륨 하나에 같은 효과는 하나씩',kind:'gen'},...VOLFX.EFFECTS.map(E=>({label:_t(E.n)+' ('+E.en+')',ic:'volume',kind:'gen',checked:v.fx.some(f=>f.k===E.k),fn:()=>{
+      if(v.fx.some(f=>f.k===E.k)){toast(_t('이미 「{n}」 효과가 있습니다',{n:_t(E.n)}));return}
+      v.fx.push(VOLFX.newFx(E.k));commit();renderInsp();need();learnEmit('vol:add:'+E.k)}}))],false,{search:'효과 검색'});return}
+  const md=t.closest('[data-vfmode]');if(md){const o=volOf();if(!o)return;const v=o.props.volume,k=md.dataset.vfmode;if(v.mode===k)return;v.mode=k;
+    if(k==='local'&&!o.props.box){o.props.box=VOL_BOX_DEF();toast(_t('박스 콜라이더 2D(트리거)를 함께 붙였습니다 · 이 상자 안이 볼륨 범위예요'))}
+    commit();renderInsp();need();return}
+  if(t.closest('[data-vfbox]')){const o=volOf();if(!o)return;if(!o.props.box)o.props.box=VOL_BOX_DEF();commit();renderInsp();need();return}
+  const rp1=t.closest('[data-vfrp]');if(rp1){const o=volOf();if(!o)return;const f=o.props.volume.fx[+rp1.dataset.vfrp],E=f&&VOLFX.EBY[f.k],q=E&&E.p.find(z=>z.k===rp1.dataset.k);if(!q)return;
+    f.p[q.k]=q.def;commit();renderInsp();need();return}
+  const rs=t.closest('[data-vfreset]');if(rs){const o=volOf();if(!o)return;const f=o.props.volume.fx[+rs.dataset.vfreset],E=f&&VOLFX.EBY[f.k];if(!E)return;
+    E.p.forEach(q=>{f.p[q.k]=q.def});commit();renderInsp();need();toast(_t('「{n}」 값을 기본값으로 되돌렸습니다 · Ctrl+Z로 취소',{n:_t(E.n)}));return}
+  if(t.closest('#vfResetAll')){const o=volOf();if(!o)return;const v=o.props.volume;v.weight=1;v.priority=0;v.blend=1;
+    v.fx.forEach(f=>{const E=VOLFX.EBY[f.k];if(E)E.p.forEach(q=>{f.p[q.k]=q.def})});commit();renderInsp();need();toast(_t('볼륨을 기본값으로 되돌렸습니다 · Ctrl+Z로 취소'));return}
+  const rmb=t.closest('[data-vfrm]');if(rmb){const o=volOf();if(!o)return;o.props.volume.fx.splice(+rmb.dataset.vfrm,1);commit();renderInsp();need();return}
+  const mv=t.closest('[data-vfmv]');if(mv){const o=volOf();if(!o)return;const L=o.props.volume.fx,i=+mv.dataset.i,j=i+(+mv.dataset.vfmv);if(j<0||j>=L.length)return;[L[i],L[j]]=[L[j],L[i]];commit();renderInsp();need();return}
+  const fd=t.closest('[data-vffold]');if(fd&&!t.closest('input,button')){const o=volOf();if(!o)return;const f=o.props.volume.fx[+fd.dataset.vffold];if(!f)return;if(f.fold)delete f.fold;else f.fold=true;
+    const c=fd.closest('.vfx');if(c){c.classList.toggle('vfz',!!f.fold);const a=c.querySelector('.vfar');if(a)a.textContent=f.fold?'▸':'▾'}return}
+});
+/* 스크립트: Volume volume = GetComponent<Volume>(); volume.weight = 0.5f; */
+function volProxy(m,o){
+  const V=()=>{const v=o.props.volume;if(!v)throw new Error('MissingComponentException: 이 오브젝트의 볼륨(Volume) 컴포넌트가 제거되었습니다');return v};
+  return{__h:'Volume',__o:o,name:o.name,
+    get(n){if(n==='gameObject')return goProxy(m,o);if(n==='transform')return trProxy(m,o);const v=V();
+      if(n==='weight')return +v.weight;if(n==='priority')return +v.priority||0;if(n==='isGlobal')return v.mode!=='local';if(n==='blendDistance')return +v.blend||0;if(n==='enabled')return v.on!==false;
+      throw csUnsup('Volume.'+n)},
+    set(n,x){const v=V();
+      if(n==='weight'){v.weight=clamp(csN(x),0,1);return}if(n==='priority'){v.priority=clamp(Math.round(csN(x)),-999,999);return}
+      if(n==='isGlobal'){v.mode=x?'global':'local';return}if(n==='blendDistance'){v.blend=clamp(csN(x),0,50);return}
+      if(n==='enabled'){if(x)delete v.on;else v.on=false;return}
+      throw csUnsup('Volume.'+n+' 대입')},
+    call(n){throw csUnsup('Volume.'+n+'()')}};
+}
+if(window.TI18N)TI18N.add({
+'전역 볼륨':['Global Volume','グローバルボリューム','全局体积'],'지역 볼륨':['Local Volume','ローカルボリューム','局部体积'],
+'볼륨 컴포넌트(전역)가 붙은 빈 게임 오브젝트 · 화면 전체에 후처리 효과':['Empty GameObject with a Volume (Global) · post-processing on the whole screen','ボリューム（グローバル）付きの空のゲームオブジェクト · 画面全体にポストエフェクト','带体积组件（全局）的空游戏对象 · 对整个画面应用后期效果'],
+'볼륨 컴포넌트(지역) + 박스 콜라이더 2D가 붙은 빈 게임 오브젝트 · 상자 안에서만 후처리 효과':['Empty GameObject with a Volume (Local) + BoxCollider2D · post-processing only inside the box','ボリューム（ローカル）＋ボックスコライダー2D付きの空のゲームオブジェクト · 箱の中だけポストエフェクト','带体积组件（局部）和 2D 盒碰撞体的空游戏对象 · 仅在盒内应用后期效果'],
+'이미 볼륨 컴포넌트가 있습니다':['A Volume component is already attached','すでにボリュームコンポーネントがあります','已有体积组件'],
+'볼륨 (Volume) · 후처리':['Volume · Post-processing','ボリューム (Volume) · ポストエフェクト','体积 (Volume) · 后期处理'],'볼륨':['Volume','ボリューム','体积'],
+'지역 볼륨: 박스 콜라이더 2D(트리거) 상자 안에서만 효과가 보입니다':['Local volume: effects show only inside the BoxCollider2D (trigger) box','ローカルボリューム：ボックスコライダー2D（トリガー）の箱の中だけ効果が見えます','局部体积：仅在 2D 盒碰撞体（触发器）内显示效果'],
+'전역 볼륨 · 화면 전체 · 효과 {n}개':['Global volume · whole screen · {n} effects','グローバルボリューム · 画面全体 · 効果 {n} 個','全局体积 · 整个画面 · {n} 个效果'],
+'지역 볼륨 · 섞는 거리 {n}칸':['Local volume · blend {n} cells','ローカルボリューム · ブレンド距離 {n} マス','局部体积 · 混合距离 {n} 格'],'효과 {n}개':['{n} effects','効果 {n} 個','{n} 个效果'],
+'눌러서 접기 / 펼치기':['Click to fold / unfold','押して折りたたむ / 展開','点击折叠 / 展开'],'이 효과 켜기 / 끄기':['Turn this effect on / off','この効果のオン / オフ','开启 / 关闭此效果'],'효과 빼기':['Remove effect','効果を外す','移除效果'],
+'전역 (Global)':['Global','グローバル','全局'],'지역 (Local)':['Local','ローカル','局部'],'사용':['Enabled','有効','启用'],'모드':['Mode','モード','模式'],
+'끄면 이 볼륨의 효과가 모두 꺼집니다. 스크립트에서는 volume.enabled 입니다.':['When off, all of this volume’s effects are disabled. In scripts: volume.enabled.','オフにするとこのボリュームの効果がすべて消えます。スクリプトでは volume.enabled です。','关闭后此体积的所有效果都会停用。脚本中为 volume.enabled。'],
+'전역: 어디서나 화면 전체에 효과를 줍니다. 지역: 주인공(주인공이 없으면 카메라)이 박스 콜라이더 2D 상자 안에 있을 때만 효과를 주고, 상자 밖에서는 「섞는 거리」만큼 서서히 사라집니다.':['Global: affects the whole screen everywhere. Local: affects it only while the hero (or the camera if there is no hero) is inside the BoxCollider2D box, fading out over the “Blend Distance” outside it.','グローバル：どこでも画面全体に効果をかけます。ローカル：主人公（いなければカメラ）がボックスコライダー2Dの箱の中にいるときだけ効果をかけ、箱の外では「ブレンド距離」の分だけ徐々に消えます。','全局：在任何位置都作用于整个画面。局部：仅当主角（没有主角时为相机）位于 2D 盒碰撞体内时生效，在盒外按“混合距离”逐渐消失。'],
+'지역 볼륨은 박스 콜라이더 2D 상자로 범위를 정합니다. 상자가 없어서 지금은 효과가 보이지 않아요.':['A local volume uses its BoxCollider2D box as its area. There is no box, so no effect is shown now.','ローカルボリュームはボックスコライダー2Dの箱で範囲を決めます。箱がないので今は効果が見えません。','局部体积用 2D 盒碰撞体确定范围。目前没有盒子，因此看不到效果。'],
+'상자 붙이기':['Add box','箱を付ける','添加盒子'],'섞는 거리(칸)':['Blend Distance (cells)','ブレンド距離(マス)','混合距离(格)'],
+'주인공이 상자 밖으로 이만큼(칸) 떨어질 때까지 효과가 서서히 약해집니다. 0이면 상자 경계에서 딱 바뀝니다. 씬 뷰에 보라 점선으로 보여요.':['Effects fade out until the hero is this many cells outside the box. 0 switches sharply at the edge. Shown as a purple dashed line in the Scene view.','主人公が箱の外へこの距離（マス）離れるまで効果が徐々に弱まります。0なら箱の境界でぱっと切り替わります。シーンビューに紫の点線で表示されます。','主角离开盒子这么多格之前效果会逐渐减弱。0 表示在边界处立即切换。场景视图中以紫色虚线显示。'],
+'무게':['Weight','ウェイト','权重'],'이 볼륨의 효과를 얼마나 섞을지입니다. 0이면 효과 없음, 1이면 전부. 스크립트에서 서서히 바꾸면 화면이 부드럽게 변해요.':['How much of this volume’s effects to mix in. 0 is none, 1 is full. Change it gradually from a script for smooth transitions.','このボリュームの効果をどれだけ混ぜるかです。0で効果なし、1で全部。スクリプトで徐々に変えると画面がなめらかに変わります。','此体积效果的混合程度。0 为无效果，1 为全部。在脚本中逐渐改变可让画面平滑过渡。'],
+'우선순위':['Priority','優先度','优先级'],'여러 볼륨이 겹칠 때 숫자가 큰 볼륨이 나중에 섞여 더 강하게 적용됩니다. 보통 전역 0, 지역 1 이상으로 둡니다.':['When volumes overlap, higher numbers are blended last and win. Usually global 0, local 1 or more.','複数のボリュームが重なるとき、数字が大きいボリュームが後から混ざり強く適用されます。ふつうグローバル0、ローカル1以上にします。','多个体积重叠时，数值大的体积最后混合、效果更强。通常全局为 0，局部为 1 以上。'],
+'프리셋':['Preset','プリセット','预设'],'프리셋 불러오기…':['Load preset…','プリセットを読み込む…','载入预设…'],
+'미리 만들어 둔 효과 묶음을 불러옵니다. 지금 효과 목록은 프리셋으로 바뀌고, 그다음 값을 마음대로 고칠 수 있어요. (Ctrl+Z로 되돌리기)':['Loads a ready-made set of effects. The current list is replaced by the preset; then tweak values freely. (Ctrl+Z to undo)','あらかじめ作った効果のセットを読み込みます。今の効果リストはプリセットに置き換わり、そのあと値を自由に変えられます。（Ctrl+Zで元に戻す）','载入预先制作的效果组合。当前效果列表会被预设替换，之后可随意调整数值。（Ctrl+Z 撤销）'],
+'이 브라우저에서는 WebGL을 쓸 수 없어 후처리 효과가 화면에 보이지 않습니다.':['WebGL is not available in this browser, so post-processing effects are not shown.','このブラウザではWebGLが使えないため、ポストエフェクトは表示されません。','此浏览器无法使用 WebGL，因此不会显示后期效果。'],
+'아직 효과가 없습니다. 아래 「효과 추가」나 프리셋으로 넣어 보세요. 게임 뷰(또는 ▶ 플레이)에서 결과가 보여요.':['No effects yet. Add one with “Add effect” below or a preset. Results show in the Game view (or ▶ Play).','まだ効果がありません。下の「効果を追加」かプリセットで入れてみましょう。結果はゲームビュー（または ▶ プレイ）で見えます。','还没有效果。用下方“添加效果”或预设添加。结果会显示在游戏视图（或 ▶ 运行）中。'],
+'효과 추가':['Add effect','効果を追加','添加效果'],'기본값으로 ({v})':['Reset to default ({v})','デフォルトに戻す（{v}）','恢复默认（{v}）'],'기본값으로':['Reset to default','デフォルトに戻す','恢复默认'],'이 효과의 값을 모두 기본값으로':['Reset all of this effect’s values','この効果の値をすべてデフォルトに','将此效果的所有值恢复默认'],'모두 기본값':['Reset all','すべてデフォルト','全部恢复默认'],'무게 1 · 우선순위 0 · 섞는 거리 1, 모든 효과 값을 기본값으로 (효과 목록은 그대로)':['Weight 1 · priority 0 · blend 1 and every effect value back to default (the effect list stays)','ウェイト1 · 優先度0 · ブレンド距離1、すべての効果の値をデフォルトに（効果リストはそのまま）','权重 1 · 优先级 0 · 混合距离 1，所有效果值恢复默认（效果列表保留）'],'「{n}」 값을 기본값으로 되돌렸습니다 · Ctrl+Z로 취소':['Reset “{n}” to defaults · Ctrl+Z to undo','「{n}」の値をデフォルトに戻しました · Ctrl+Zで取り消し','已将“{n}”恢复默认 · Ctrl+Z 撤销'],'볼륨을 기본값으로 되돌렸습니다 · Ctrl+Z로 취소':['Volume reset to defaults · Ctrl+Z to undo','ボリュームをデフォルトに戻しました · Ctrl+Zで取り消し','体积已恢复默认 · Ctrl+Z 撤销'],'효과 추가 (Add Override)':['Add Override','効果を追加 (Add Override)','添加效果 (Add Override)'],'볼륨 하나에 같은 효과는 하나씩':['One of each effect per volume','1つのボリュームに同じ効果は1つずつ','每个体积中同一效果只能有一个'],'효과 검색':['Search effects','効果を検索','搜索效果'],
+'카메라 화면에 후처리 효과(색 보정 · 블룸 · 비네트 · 노이즈 · 렌즈 왜곡 · VHS …)를 입히는 컴포넌트입니다. 전역 볼륨은 어디서나, 지역 볼륨은 박스 콜라이더 2D 상자 안에서만 효과를 줍니다. 결과는 게임 뷰와 플레이 화면에 보이고, UI는 효과를 받지 않습니다.':['Applies post-processing (color adjustments, bloom, vignette, noise, lens distortion, VHS…) to the camera image. A global volume works everywhere; a local one only inside its BoxCollider2D box. Results show in the Game view and Play; UI is not affected.','カメラ画面にポストエフェクト（色補正・ブルーム・ビネット・ノイズ・レンズ歪み・VHS…）をかけるコンポーネントです。グローバルはどこでも、ローカルはボックスコライダー2Dの箱の中だけ効果をかけます。結果はゲームビューとプレイ画面に表示され、UIには効果がかかりません。','为相机画面添加后期效果（颜色调整、泛光、暗角、噪点、镜头畸变、VHS…）的组件。全局体积处处生效，局部体积仅在 2D 盒碰撞体内生效。结果显示在游戏视图和运行画面中，UI 不受影响。'],
+'프리셋 「{n}」을(를) 불러왔습니다':['Loaded preset “{n}”','プリセット「{n}」を読み込みました','已载入预设“{n}”'],'이미 「{n}」 효과가 있습니다':['“{n}” is already added','すでに「{n}」効果があります','已有“{n}”效果'],
+'박스 콜라이더 2D(트리거)를 함께 붙였습니다 · 이 상자 안이 볼륨 범위예요':['Added a BoxCollider2D (trigger) too · the box is the volume’s area','ボックスコライダー2D（トリガー）も付けました · この箱の中がボリュームの範囲です','已同时添加 2D 盒碰撞体（触发器）· 盒内即体积范围'],
+'MissingComponentException: 이 오브젝트의 볼륨(Volume) 컴포넌트가 제거되었습니다':['MissingComponentException: this object’s Volume component was removed','MissingComponentException: このオブジェクトのボリューム（Volume）コンポーネントは削除されました','MissingComponentException：此对象的体积（Volume）组件已被移除']
 });
 /* ===== NPC 컴포넌트: 대사 목록 · 이름표 위치 ===== */
 const NPC_LBL=[['top','위'],['left','왼쪽'],['right','오른쪽'],['bottom','아래'],['center','가운데']];
@@ -6419,7 +6701,7 @@ $('#insp').addEventListener('click',e=>{
   if(id==='iDup'){duplicateSel();return}
   if(id==='iAddComp'){const o=inspObj();if(!o)return;
     if(o.mgr){showMenu(e.target,[{head:'매니저 컴포넌트',sub:'씬에 보이지 않는 컴포넌트만 붙일 수 있어요',kind:'gen'},{label:'오디오 소스 (AudioSource)',ic:'sound',kind:'gen',checked:!!o.props.audio,fn:()=>addComponent('audio')},{label:'메모',ic:'gear',kind:'gen',checked:o.props.memo!=null,fn:()=>addComponent('memo')}],false);return}
-    const G=[['box','박스 콜라이더 2D (BoxCollider2D)','rect',!!o.props.box],['shadow2d','그림자 캐스터 2D (ShadowCaster2D)','shadow',!!o.props.shadow2d],['animator','애니메이터 (Animator)','animator',!!o.props.animator],['director','플레이어블 디렉터 (PlayableDirector)','timeline',!!o.props.director],['audio','오디오 소스 (AudioSource)','sound',!!o.props.audio],['light','빛 (Light)','sun',!!o.props.light],['camera','카메라 (Camera)','cam',!!o.props.camera],['memo','메모','gear',o.props.memo!=null]],
+    const G=[['box','박스 콜라이더 2D (BoxCollider2D)','rect',!!o.props.box],['shadow2d','그림자 캐스터 2D (ShadowCaster2D)','shadow',!!o.props.shadow2d],['animator','애니메이터 (Animator)','animator',!!o.props.animator],['director','플레이어블 디렉터 (PlayableDirector)','timeline',!!o.props.director],['audio','오디오 소스 (AudioSource)','sound',!!o.props.audio],['light','빛 (Light)','sun',!!o.props.light],['camera','카메라 (Camera)','cam',!!o.props.camera],['volume','볼륨 (Volume) · 후처리','volume',!!o.props.volume],['memo','메모','gear',o.props.memo!=null]],
       R=[['npc','대화 (Npc)','info'],['event','이벤트 트리거 (EventTrigger)','flag'],['item','아이템 픽업 (Item)','cube'],['portal','씬 전환 포탈 (Portal)','split'],['spawn','주인공','user'],['monster','몬스터 (Monster)','game']];
     const items=[{head:'일반 컴포넌트',sub:'여러 개를 함께 붙일 수 있어요',kind:'gen'},
       ...G.map(c=>({label:c[1],ic:c[2],kind:'gen',checked:c[3],fn:()=>addComponent(c[0])})),
@@ -6896,7 +7178,7 @@ const spkScene=()=>P&&P.maps.find(m=>m.id===curId);
 function spkTree(){
   const m=spkScene();if(!m)return[];
   const own=(kind,o,extra)=>Object.assign({kind,o,id:o.id,insts:(o.scripts||[]),kids:[]},extra);
-  const objNode=(o,n)=>{const nd=own('obj',o,{icon:o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':'cube'),color:(TYPES[o.type]||{}).color,label:o.name,sub:(TYPES[o.type]||{}).label||'',off:!objOn(m,o)});
+  const objNode=(o,n)=>{const nd=own('obj',o,{icon:o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':o.props&&o.props.volume?'volume':'cube'),color:(TYPES[o.type]||{}).color,label:o.name,sub:(TYPES[o.type]||{}).label||'',off:!objOn(m,o)});
     if(n<30)nd.kids=m.objs.filter(k=>k.parent===o.id&&k!==o).map(k=>objNode(k,n+1));return nd};
   const hasPar=o=>o.parent&&m.objs.some(z=>z.id===o.parent);
   const groups=m.groups||[],gNodes=groups.map(g=>({kind:'folder',user:1,key:'g:'+g.id,icon:'folder',color:'var(--warn)',label:g.name,kids:m.objs.filter(o=>o.group===g.id&&!hasPar(o)).map(o=>objNode(o,0))}));
@@ -7349,6 +7631,7 @@ function csGetComp(m,o,T){
     case'Transform':return isUiEl(o)?(()=>{throw csUnsup('UI Transform')})():trProxy(m,o);
     case'GameObject':return goProxy(m,o);
     case'Camera':return o.props&&o.props.camera?camProxy(m,o):null;
+    case'Volume':return!isUiEl(o)&&o.props&&o.props.volume?volProxy(m,o):null;
     case'Light':case'Light2D':return o.props&&o.props.light?lightProxy(m,o):null;
     case'Animator':return!isUiEl(o)&&o.props&&o.props.animator?animProxy(m,o):null;
     case'AudioSource':return!isUiEl(o)&&o.props&&o.props.audio?audioProxy(m,o):null;
@@ -7589,7 +7872,7 @@ function action(){
   if(play.dialog){play.dialog=null;return}
   const m=play.m;if(heroInteract(m,1.4))return;heroSwing(m,1,.7);
 }
-function heroTakeDamage(n){const p=play;if(!p||p.dead||p.hit>0)return false;p.hp=clamp(p.hp-Math.round(n),0,100);p.hit=p.invT==null?.8:p.invT;if(p.hp<=0)heroDie();return true}
+function heroTakeDamage(n){const p=play;if(!p||p.dead||p.hit>0)return false;p.hp=clamp(p.hp-Math.round(n),0,100);p.hit=p.invT==null?.8:p.invT;learnEmit('hero:hurt:'+Math.round(n));if(p.hp<=0)heroDie();return true}
 /* ===== 엔진 기능 (정적 클래스): Hero.main · Dialog · Message · Inventory · SceneManager · UIGroup ===== */
 function uiGroupH(m,g){
   const mem=()=>(m.ui||[]).filter(u=>u.group===g.id);
@@ -9503,7 +9786,7 @@ function pfOverrides(m,R){
 }
 const PF_KEYN={name:'이름',active:'활성화',order:'배치 순서',type:'역할 컴포넌트',scripts:'스크립트',vs:'비주얼 스크립트',dx:'위치',dy:'위치',children:'자식 오브젝트',
   'props.sprite':'스프라이트','props.sx':'크기','props.sy':'크기','props.rot':'방향','props.hp':'체력','props.speed':'이동 속도','props.range':'감지 범위','props.text':'대사 · 메시지','props.lines':'대사','props.qty':'수량',
-  'props.light':'빛','props.box':'박스 콜라이더 2D','props.animator':'애니메이터','props.director':'플레이어블 디렉터','props.audio':'오디오 소스','props.camera':'카메라','props.shadow2d':'그림자 캐스터 2D','props.memo':'메모','props.map':'대상 씬','props.once':'한 번만 실행'};
+  'props.light':'빛','props.box':'박스 콜라이더 2D','props.animator':'애니메이터','props.director':'플레이어블 디렉터','props.audio':'오디오 소스','props.camera':'카메라','props.volume':'볼륨','props.shadow2d':'그림자 캐스터 2D','props.memo':'메모','props.map':'대상 씬','props.once':'한 번만 실행'};
 const pfKeyName=k=>{const ch=k.startsWith('자식:'),b=ch?k.slice(3):k;const n=PF_KEYN[b]||(b.startsWith('props.')?b.slice(6):b);return ch?_t('자식의 {n}',{n:_t(n)}):_t(n)};
 /* 템플릿 오브젝트 → 씬 오브젝트 (새 아이디) */
 function pfFromT(t,pfid,R){const o=JSON.parse(JSON.stringify(t));o.pf={id:pfid,k:t.id};o.id=uid();return o}
@@ -9640,7 +9923,7 @@ function pfBarHTML(m,o){
     `<button class="btn sm" type="button" data-pfa="revert"${n&&!play?'':' disabled'} title="${esc(_t('이 인스턴스를 프리팹 값으로 되돌립니다 (이름 · 위치는 그대로)'))}">${esc(_t('모두 되돌리기'))}</button><button class="btn sm pri" type="button" data-pfa="apply"${n&&!play?'':' disabled'} title="${esc(_t('바꾼 값을 프리팹에 저장하고, 다른 모든 인스턴스도 함께 바꿉니다'))}">${esc(_t('모두 적용'))}</button></div></div>`;
 }
 /* 인스펙터에서 오버라이드된 칸에 파란 표시 (Unity처럼 왼쪽 막대) */
-const PF_COMPK={light:'cl',camera:'cc',box:'cb',shadow2d:'cs',animator:'ca',director:'cd',audio:'cau',memo:'cm'};
+const PF_COMPK={light:'cl',camera:'cc',volume:'cv',box:'cb',shadow2d:'cs',animator:'ca',director:'cd',audio:'cau',memo:'cm'};
 function pfMarkInsp(m,o,box){
   if(!o||!isPfLinked(o))return;const R=pfRoot(m,o)||o,ov=pfOverrides(m,R).byK[o.pf.k]||[];
   ov.forEach(k=>{
@@ -10057,7 +10340,7 @@ $('#sdd').addEventListener('click',e=>showMenu(e.currentTarget,[
 /* ===================== 단축키 (키보드 위치 기준: 한글 입력 상태에서도 동작 · 설정 > 단축키에서 변경) ===================== */
 addEventListener('keydown',e=>{
   if(play){const c=kbCombo(e),m=c&&kbFind(c);if(m&&m.id==='play.start'){e.preventDefault();stopPlay()}return}
-  const t=e.target,typing=/INPUT|TEXTAREA|SELECT/.test(t.tagName)&&t.type!=='checkbox';
+  const t=e.target,typing=/INPUT|TEXTAREA|SELECT/.test(t.tagName)&&t.type!=='checkbox'&&t.type!=='range';
   const combo=kbCombo(e),cmd=combo?kbFind(combo):null;
   if(cmd&&cmd.global){e.preventDefault();cmd.run(e);return}
   if(typing)return;
@@ -10592,7 +10875,7 @@ function enter(id,tx,ty){
   m.objs.forEach(o=>{const par=o.parent&&m.objs.find(q=>q.id===o.parent);if(par){o._lx=o.x-par.x;o._ly=o.y-par.y}});
   audStopAll(true);play.audStarted=new Set();
   play.rt=new Map();play.anim=new Map();play.started=new Set();play.needStart=true;play.here=null;play.trig=null;
-  play.title=m.name;play.titleT=2.2;return true;
+  play.title=m.name;play.titleT=2.2;learnEmit('scene:'+m.name);return true;
 }
 const freshPlay=()=>({hp:100,inv:{},keys:{},fx:0,fy:1,fa:Math.PI/2,walk:0,dead:false,msg:'',msgT:0,tm:0,frame:0,kraw:new Set(),kdown:new Set(),kup:new Set()});
 /* 플레이 화면: embed(씬 뷰 안, 기본) · window(브라우저 창 가득) · full(전체 화면) */
@@ -10902,6 +11185,9 @@ function drawPlay(p,g,W,H,d){
   p.mons.forEach(q=>{if(!monDrawn.has(q))drawMon(q)});if(!heroDrawn)drawMe();
   if(darkOn)drawLighting(g,m,lightsOf(m),d*s,d*ox,d*oy);
   g.setTransform(d,0,0,d,0,0);
+  /* 볼륨 후처리: 카메라 화면(씬 · 빛)까지만 · UI와 대화창은 효과를 받지 않음 (유니티의 Screen Space - Overlay UI처럼) */
+  try{volLast=volApply(p,g,m,ct,W,H,d)}catch(e){volLast={drawn:false,anim:false};console.error(e)}
+  g.setTransform(d,0,0,d,0,0);
   const hasUi=!!(m.ui&&m.ui.length);if(hasUi)drawPlayUi(g,m,p,W,H,d);
   /* 기본 HP·소지품 표시는 없음 — 필요하면 UI 탭에서 게이지 바·텍스트({hp} {items})로 직접 만듦 */
   if(p.titleT>0){g.globalAlpha=Math.min(1,p.titleT);g.font='600 22px "IBM Plex Sans KR",sans-serif';g.textAlign='center';g.lineWidth=4;g.strokeStyle='#000';g.strokeText(p.title,W/2,64);g.fillStyle='#fff';g.fillText(p.title,W/2,64);g.globalAlpha=1}
@@ -11052,6 +11338,8 @@ function gvDraw(){
   const m=cur(),c=$('#gv');if(!m||!c.width)return;
   const r=gvRes(m),d=c.width/r.w,g=c.getContext('2d');
   try{drawPlay(gvPreview(m),g,r.w,r.h,d)}catch(e){console.error(e)}
+  /* 움직이는 후처리(노이즈 · VHS · 글리치 …)는 플레이 전 게임 뷰에서도 움직이게 */
+  if(!play&&volLast.anim&&!volAnimT)volAnimT=setTimeout(()=>{volAnimT=0;if(!play&&(GV.view==='game'||GV.split))need()},42);
   if(GV.guide){
     const C=uiScaleFor(m,r.w,r.h),z=d*C.s;
     g.save();g.setTransform(z,0,0,z,0,0);g.lineWidth=1.5/z;g.setLineDash([6/z,4/z]);g.strokeStyle='rgba(233,189,12,.9)';g.strokeRect(0,0,C.w,C.h);
@@ -12475,6 +12763,10 @@ async function learnAssetsReset(proj){
 }
 async function learnTiles(proj){
   await learnAssetsReset(proj);
+  /* 실습 프로젝트가 직접 가져온 그림 (assets[].image = data URL · 예: 보스전 레슨의 보스 · 경고 표시) */
+  const meta=Array.isArray(proj.assets)?proj.assets:[];delete proj.assets;
+  for(const r of meta){if(!r||!r.image||byId.has(r.id))continue;
+    try{await addAssetFromSrc(r.image,String(r.name||'asset').slice(0,40),{id:r.id,kind:r.kind||'sprite',tw:r.tileW||32,th:r.tileH||32,theme:r.theme||'기본',solid:[],mode:'single',slices:[]})}catch(e){}}
   (proj.maps||[]).forEach(m=>(m.l||[]).forEach(a=>{for(let i=0;i<a.length;i++){const v=a[i];if(typeof v!=='string')continue;const k=v.lastIndexOf(':'),as=byId.get(v.slice(0,k));a[i]=as?encode(as.n,+v.slice(k+1)||0):0}}));
   proj.nextN=Math.max(+proj.nextN||0,...assets.map(a=>(+a.n||0)+1));
 }
@@ -12585,6 +12877,7 @@ if(!EXAMPLE&&PRJ_Q.get('exsaved')==='1'){setTimeout(()=>toast(_t('예제를 내 
 /* ===================== 시작 ===================== */
 if(EXAMPLE){try{localStorage.removeItem(KEY)}catch(e){}}
 P=load();curId=P.maps.some(m=>m.id===P.start)?P.start:P.maps[0].id;P.start=P.maps.some(m=>m.id===P.start)?P.start:curId;
+try{EDLOAD.name(P.name);EDLOAD.meta(P);EDLOAD.set(.3,'프로젝트 여는 중')}catch(e){}
 L=loadLayout();
 /* 비주얼 스크립트 창은 에디터를 열 때 늘 닫힌 채로 (도구 막대 「비주얼 스크립트」로 다시 엶) */
 L.hidden=L.hidden||{};L.hidden.vs=true;
@@ -12596,7 +12889,8 @@ if(prjFresh&&PRJ_ID!=='default'){const nm=(PRJ_Q.get('name')||'').trim().slice(0
 const prjRun=PRJ_Q.get('play')==='1';
 if(prjRun){try{$('#prjLoadName').textContent=(P.name||'게임')+' 불러오는 중…'}catch(e){}}
 if(PRJ_Q.has('play')||PRJ_Q.has('name')){try{const u=new URL(location.href);u.searchParams.delete('play');u.searchParams.delete('name');history.replaceState(null,'',u)}catch(e){}}
-loadSavedAssets().then(()=>(LEARN_EMBED||EXAMPLE)?0:ensureBaseAssets()).then(()=>{pickActiveForMap();renderAll();need();
+loadSavedAssets().then(()=>{try{EDLOAD.set(.86,'기본 에셋 확인 중')}catch(e){}return(LEARN_EMBED||EXAMPLE)?0:ensureBaseAssets()}).then(()=>{try{EDLOAD.set(.95,'씬 그리는 중')}catch(e){}pickActiveForMap();renderAll();need();
+  try{EDLOAD.assets(assets.length+audios.length);requestAnimationFrame(()=>requestAnimationFrame(()=>EDLOAD.done()))}catch(e){}
   /* 시작할 때 저절로 정리된 것(기본 에셋 폴더 등)은 실행 취소 기록에 남기지 않음 */
   setTimeout(()=>{clearTimeout(histT2);resetHistory()},700);
   /* 새 게임: 레이아웃이 다 잡힌 뒤 주인공을 씬 뷰 가운데에 크게 */

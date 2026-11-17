@@ -81,7 +81,7 @@ const KO_KW={공개:'public',비공개:'private',보호:'protected',내부:'inte
   참:'true',거짓:'false',없음:'null',널:'null',새:'new',새로:'new',자신:'this',변수:'var'};
 const KO_TY={정수:'int',실수:'float',배실수:'double',논리:'bool',문자열:'string',벡터2:'Vector2',벡터3:'Vector3',색:'Color',쿼터니언:'Quaternion',
   게임오브젝트:'GameObject',변환:'Transform',트랜스폼:'Transform',행동스크립트:'MonoBehaviour',주인공:'Hero',애니메이터:'Animator',오디오소스:'AudioSource',사운드:'Sound',입력:'Input',시간:'Time',수학:'Mathf',
-  디버그:'Debug',무작위:'Random',랜덤:'Random',키코드:'KeyCode',카메라:'Camera',빛:'Light',몬스터:'Monster',엔피시:'Npc',아이템:'Item',포탈:'Portal',
+  디버그:'Debug',무작위:'Random',랜덤:'Random',키코드:'KeyCode',카메라:'Camera',빛:'Light',볼륨:'Volume',몬스터:'Monster',엔피시:'Npc',아이템:'Item',포탈:'Portal',
   이벤트트리거:'EventTrigger',스프라이트렌더러:'SpriteRenderer',UI그룹:'UIGroup',UI화면:'UIScreen',비주얼스크립트:'VisualScript',텍스트:'Text',버튼:'Button',이미지:'Image',
   씬관리자:'SceneManager',애플리케이션:'Application',유니티엔진:'UnityEngine'};
 const KO_SELF={내변환:'transform',내오브젝트:'gameObject',이오브젝트:'gameObject'};
@@ -186,7 +186,7 @@ function enToKo(code){
 const koTypes=s=>String(s||'').replace(/[A-Za-z_]\w*/g,w=>KO_TY_R[w]||KO_KW_R[w]||w);
 const CS_UIT=new Set(['RectTransform','Button','Text','Image','Slider','CanvasGroup','TMP_Text','TextMeshProUGUI']);
 /* 인스펙터 슬롯(오브젝트를 끌어다 놓는 칸)이 되는 필드 형식 — 컴포넌트 형식이면 그 오브젝트의 컴포넌트(예: PlayableDirector)를 씀 */
-const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','UIGroup','PlayableDirector','Animator','AudioSource',...CS_UIT]);
+const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','UIGroup','PlayableDirector','Animator','AudioSource','Volume',...CS_UIT]);
 const csKind=t=>CS_OBJT.has(t)?'obj':t in CS_NUM?'num':t==='bool'?'bool':t==='string'?'str':t==='Vector2'||t==='Vector3'?'vec':t==='Color'?'color':'ref';
 function parseCS(code){
   code=koCode(code);

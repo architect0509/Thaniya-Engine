@@ -402,8 +402,9 @@ function auto(){
   var tries=0;
   (function wait(){
     tries++;
-    var busy=$$('.modal,dialog[open]').some(vis);
-    if((busy||!vis($('#menubar')))&&tries<20){setTimeout(wait,500);return}
+    /* 에디터 로딩 화면(#edLoad)이 닫힌 뒤에 시작 */
+    var busy=$$('.modal,dialog[open]').some(vis)||!!document.getElementById('edLoad');
+    if((busy||!vis($('#menubar')))&&tries<60){setTimeout(wait,500);return}
     if(!busy)start();
   })();
 }
