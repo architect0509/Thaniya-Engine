@@ -29,7 +29,7 @@ function acKoName(it,owner,dot,attr){
 }
 const CS_RE=(()=>{
   const kw='public|private|protected|internal|static|void|class|using|new|return|if|else|for|foreach|while|switch|case|break|continue|true|false|null|this|readonly|const|override|virtual|namespace|in|out|ref|var|struct|enum|interface|abstract|sealed|get|set'.split('|').concat(Object.keys(KO_KW));
-  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Rigidbody2D|Rigidbody|Transform|GameObject|MonoBehaviour|Collider2D|Debug|Time|Input|Mathf|Quaternion|SpriteRenderer|Animator|PlayableDirector|Camera|AudioSource|Volume|KeyCode|Header|SerializeField|Range|Tooltip|Space|RectTransform|Button|Text|Image|Slider|CanvasGroup|SceneManager|Application|UIGroup|Hero|Random|Light|Light2D|Monster|Npc|Item|Portal|EventTrigger|Dialog|Message|Inventory|Scene|List|Dictionary'.split('|').concat(Object.keys(KO_TY),Object.keys(KO_SELF));
+  const ty='int|uint|float|double|bool|string|char|long|byte|short|decimal|object|Vector2|Vector3|Color|Rigidbody2D|Rigidbody|Transform|GameObject|MonoBehaviour|Collider2D|Debug|Time|Input|Mathf|Quaternion|SpriteRenderer|Animator|PlayableDirector|Camera|AudioSource|Volume|KeyCode|Header|SerializeField|Range|Tooltip|Space|RectTransform|Button|Text|Image|Slider|CanvasGroup|SceneManager|Application|UIGroup|Hero|Random|Light|Light2D|Monster|Npc|Item|Portal|EventTrigger|Dialog|Message|Inventory|Scene|List|Dictionary|Queue|Stack|HashSet|IEnumerator|Coroutine|WaitForSeconds|WaitForSecondsRealtime|WaitUntil|WaitWhile|PlayerPrefs|Physics2D|RaycastHit2D|Collision2D|ContactPoint2D|BoxCollider2D|ParticleSystem|ForceMode2D|RigidbodyType2D|LayerMask|Resources|Exception'.split('|').concat(Object.keys(KO_TY),Object.keys(KO_SELF));
   const alt=a=>[...new Set(a)].sort((x,y)=>y.length-x.length).join('|'),B0='(?<![\\p{L}\\p{N}_])',B1='(?![\\p{L}\\p{N}_])';
   return new RegExp('(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)|("(?:[^"\\\\\\n]|\\\\.)*")|'+B0+'('+alt(kw)+')'+B1+'|'+B0+'('+alt(ty)+')'+B1+'|'+B0+'(\\d+\\.?\\d*[fFdD]?)'+B1+'|'+B0+'([\\p{L}_][\\p{L}\\p{N}_]*)(?=\\s*\\()','gu');
 })();
@@ -108,8 +108,41 @@ CS_API['UIScreen:static']=[_F('Show','void','string screen'),_F('Hide','void','s
 CS_API['VisualScript:static']=[_F('Trigger','void','string eventName, object arg'),_F('TriggerAll','void','string eventName, object arg'),_F('TriggerOn','void','string objectName, string eventName, object arg'),_F('GetVariable','object','string name'),_F('SetVariable','void','string name, object value'),_F('SetState','void','string stateName'),_P('CurrentState','string')];
 CS_API['Random:static']=[_F('Range','float','float min, float max'),_P('value','float')];
 CS_API.Camera.unshift(_P('smoothFollow','bool'),_P('smoothTime','float'));
-const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','PlayableDirector','AudioSource','Camera','Volume','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen','VisualScript'];
-const AC_COMPS=['Hero','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','SpriteRenderer','Rigidbody2D','Collider2D','Animator','PlayableDirector','AudioSource','Camera','Volume','Transform'];
+/* ---- 유니티 기능 보강 (2026-11): 물리 · 파티클 · 코루틴 · 컬렉션 · 저장 ---- */
+CS_API.Rigidbody2D=[_P('velocity','Vector2'),_P('linearVelocity','Vector2'),_P('angularVelocity','float'),_P('gravityScale','float'),_P('mass','float'),_P('drag','float'),_P('linearDamping','float'),_P('angularDrag','float'),_P('isKinematic','bool'),_P('bodyType','RigidbodyType2D'),_P('freezeRotation','bool'),_P('simulated','bool'),_P('position','Vector2'),_P('rotation','float'),_F('AddForce','void','Vector2 force, ForceMode2D mode'),_F('AddRelativeForce','void','Vector2 force, ForceMode2D mode'),_F('AddTorque','void','float torque, ForceMode2D mode'),_F('MovePosition','void','Vector2 position'),_F('MoveRotation','void','float angle'),_F('IsTouching','bool','Collider2D collider'),_F('IsTouchingLayers','bool'),..._base];
+CS_API['ForceMode2D:static']=[_P('Force','ForceMode2D'),_P('Impulse','ForceMode2D')];
+CS_API['RigidbodyType2D:static']=[_P('Dynamic','RigidbodyType2D'),_P('Kinematic','RigidbodyType2D'),_P('Static','RigidbodyType2D')];
+CS_API.Collider2D=[_P('isTrigger','bool'),_P('size','Vector2'),_P('offset','Vector2'),_P('attachedRigidbody','Rigidbody2D'),_P('bounds','Bounds'),_F('CompareTag','bool','string tag'),_F('OverlapPoint','bool','Vector2 point'),_F('IsTouching','bool','Collider2D other'),..._base];
+CS_API.BoxCollider2D=CS_API.Collider2D;
+CS_API.Collision2D=[_P('gameObject','GameObject'),_P('collider','Collider2D'),_P('transform','Transform'),_P('rigidbody','Rigidbody2D'),_P('relativeVelocity','Vector2'),_P('contacts','ContactPoint2D[]'),_P('contactCount','int'),_F('GetContact','ContactPoint2D','int index')];
+CS_API.ContactPoint2D=[_P('point','Vector2'),_P('normal','Vector2'),_P('collider','Collider2D')];
+CS_API.RaycastHit2D=[_P('collider','Collider2D'),_P('transform','Transform'),_P('rigidbody','Rigidbody2D'),_P('point','Vector2'),_P('normal','Vector2'),_P('distance','float'),_P('fraction','float')];
+CS_API['Physics2D:static']=[_F('Raycast','RaycastHit2D','Vector2 origin, Vector2 direction, float distance'),_F('RaycastAll','RaycastHit2D[]','Vector2 origin, Vector2 direction, float distance'),_F('Linecast','RaycastHit2D','Vector2 start, Vector2 end'),_F('OverlapCircle','Collider2D','Vector2 point, float radius'),_F('OverlapCircleAll','Collider2D[]','Vector2 point, float radius'),_F('OverlapBox','Collider2D','Vector2 point, Vector2 size, float angle'),_F('OverlapBoxAll','Collider2D[]','Vector2 point, Vector2 size, float angle'),_F('OverlapPoint','Collider2D','Vector2 point'),_P('gravity','Vector2')];
+CS_API['LayerMask:static']=[_F('GetMask','int','string layerName'),_F('NameToLayer','int','string layerName')];
+CS_API.ParticleSystem=[_P('isPlaying','bool'),_P('isStopped','bool'),_P('isPaused','bool'),_P('particleCount','int'),_P('time','float'),_P('main','MainModule'),_P('emission','EmissionModule'),_P('shape','ShapeModule'),_F('Play','void'),_F('Stop','void'),_F('Pause','void'),_F('Clear','void'),_F('Emit','void','int count'),..._base];
+CS_API.MainModule=[_P('startLifetime','float'),_P('startSpeed','float'),_P('startSize','float'),_P('startColor','Color'),_P('gravityModifier','float'),_P('loop','bool'),_P('duration','float'),_P('maxParticles','int'),_P('playOnAwake','bool')];
+CS_API.EmissionModule=[_P('enabled','bool'),_P('rateOverTime','float'),_P('burstCount','int')];
+CS_API.ShapeModule=[_P('radius','float'),_P('angle','float'),_P('rotation','Vector3')];
+CS_API.SpriteRenderer=[_P('flipX','bool'),_P('flipY','bool'),_P('sortingOrder','int'),_P('sprite','string'),..._base];
+CS_API['PlayerPrefs:static']=[_F('SetInt','void','string key, int value'),_F('GetInt','int','string key, int defaultValue'),_F('SetFloat','void','string key, float value'),_F('GetFloat','float','string key, float defaultValue'),_F('SetString','void','string key, string value'),_F('GetString','string','string key, string defaultValue'),_F('HasKey','bool','string key'),_F('DeleteKey','void','string key'),_F('DeleteAll','void'),_F('Save','void')];
+CS_API['Time:static']=[_P('deltaTime','float'),_P('unscaledDeltaTime','float'),_P('fixedDeltaTime','float'),_P('time','float'),_P('unscaledTime','float'),_P('timeScale','float'),_P('frameCount','int')];
+CS_API['Quaternion:static']=[_P('identity','Quaternion'),_F('Euler','Quaternion','float x, float y, float z'),_F('AngleAxis','Quaternion','float angle, Vector3 axis'),_F('Lerp','Quaternion','Quaternion a, Quaternion b, float t'),_F('Slerp','Quaternion','Quaternion a, Quaternion b, float t'),_F('RotateTowards','Quaternion','Quaternion from, Quaternion to, float maxDegrees'),_F('LookRotation','Quaternion','Vector3 forward')];
+CS_API['Random:static']=[_F('Range','float','float min, float max'),_P('value','float'),_P('insideUnitCircle','Vector2'),_P('onUnitCircle','Vector2'),_F('ColorHSV','Color')];
+CS_API['Mathf:static'].push(_F('PerlinNoise','float','float x, float y'),_F('SmoothStep','float','float a, float b, float t'),_F('InverseLerp','float','float a, float b, float value'),_F('Repeat','float','float t, float length'),_F('PingPong','float','float t, float length'),_F('DeltaAngle','float','float current, float target'),_F('LerpAngle','float','float a, float b, float t'),_F('MoveTowardsAngle','float','float current, float target, float maxDelta'),_F('Approximately','bool','float a, float b'));
+['Vector2:static','Vector3:static'].forEach(k=>{const T=k.split(':')[0];CS_API[k].push(_F('Angle','float',T+' from, '+T+' to'),_F('SignedAngle','float',T+' from, '+T+' to'),_F('ClampMagnitude',T,T+' vector, float maxLength'),_F('Reflect',T,T+' inDirection, '+T+' normal'),_F('Perpendicular',T,T+' dir'),_F('Scale',T,T+' a, '+T+' b'))});
+CS_API['GameObject:static']=[_F('Find','GameObject','string name'),_F('FindWithTag','GameObject','string tag'),_F('FindGameObjectsWithTag','GameObject[]','string tag')];
+CS_API.GameObject.push(_F('CompareTag','bool','string tag'),_P('activeInHierarchy','bool'),_G('AddComponent'));
+CS_API.Transform.push(_P('right','Vector3'),_P('up','Vector3'),_P('root','Transform'),_F('IsChildOf','bool','Transform parent'),_F('DetachChildren','void'));
+CS_API.Camera.push(_F('ScreenToWorldPoint','Vector3','Vector3 position'),_F('WorldToScreenPoint','Vector3','Vector3 position'),_F('Shake','void','float strength, float duration'));
+CS_API['Application:static']=[_F('Quit','void'),_F('OpenURL','void','string url'),_P('isPlaying','bool')];
+CS_API['Resources:static']=[_G('Load')];
+CS_API.List=[_P('Count','int'),_F('Add','void','T item'),_F('AddRange','void','IEnumerable<T> items'),_F('Insert','void','int index, T item'),_F('Remove','bool','T item'),_F('RemoveAt','void','int index'),_F('RemoveAll','int','Predicate<T> match'),_F('Clear','void'),_F('Contains','bool','T item'),_F('IndexOf','int','T item'),_F('Find','T','Predicate<T> match'),_F('FindAll','List<T>','Predicate<T> match'),_F('Exists','bool','Predicate<T> match'),_F('ForEach','void','Action<T> action'),_F('Sort','void'),_F('Reverse','void'),_F('ToArray','T[]')];
+CS_API.Dictionary=[_P('Count','int'),_P('Keys','KeyCollection'),_P('Values','ValueCollection'),_F('Add','void','TKey key, TValue value'),_F('ContainsKey','bool','TKey key'),_F('ContainsValue','bool','TValue value'),_F('Remove','bool','TKey key'),_F('TryGetValue','bool','TKey key, out TValue value'),_F('Clear','void')];
+CS_API.Queue=[_P('Count','int'),_F('Enqueue','void','T item'),_F('Dequeue','T'),_F('Peek','T'),_F('Clear','void'),_F('Contains','bool','T item')];
+CS_API.Stack=[_P('Count','int'),_F('Push','void','T item'),_F('Pop','T'),_F('Peek','T'),_F('Clear','void'),_F('Contains','bool','T item')];
+CS_API.MonoBehaviour=[..._base,_F('Destroy','void','Object obj, float delay'),_F('Instantiate','GameObject','GameObject original, Vector3 position, Quaternion rotation'),_F('print','void','object message'),_F('Invoke','void','string method, float time'),_F('InvokeRepeating','void','string method, float time, float rate'),_F('CancelInvoke','void','string method'),_F('IsInvoking','bool','string method'),_F('StartCoroutine','Coroutine','IEnumerator routine'),_F('StopCoroutine','void','Coroutine routine'),_F('StopAllCoroutines','void'),_F('SendMessage','void','string methodName, object value'),_F('BroadcastMessage','void','string methodName, object value'),_G('GetComponentInChildren'),_G('GetComponentInParent'),_G('GetComponents'),_G('FindObjectOfType'),_G('FindObjectsOfType')];
+const AC_TYPES=[...AC_PRIM,'Hero','Random','Vector2','Vector3','Color','Quaternion','GameObject','Transform','MonoBehaviour','Rigidbody2D','Collider2D','Collision2D','SpriteRenderer','Animator','AnimatorStateInfo','PlayableDirector','AudioSource','Camera','Volume','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','Mathf','Debug','Time','Input','KeyCode','List','Dictionary','Queue','Stack','HashSet','IEnumerator','Coroutine','WaitForSeconds','WaitForSecondsRealtime','WaitUntil','WaitWhile','PlayerPrefs','Physics2D','RaycastHit2D','ContactPoint2D','BoxCollider2D','ParticleSystem','ForceMode2D','RigidbodyType2D','LayerMask','Application','Resources','Exception','Dialog','Message','Inventory','SceneManager','UIGroup','Sound','UIScreen','VisualScript'];
+const AC_COMPS=['Hero','Light','Light2D','Monster','Npc','Item','Portal','EventTrigger','SpriteRenderer','Rigidbody2D','Collider2D','BoxCollider2D','ParticleSystem','Animator','PlayableDirector','AudioSource','Camera','Volume','Transform'];
 const AC_EV=[['Awake','void Awake()\n{\n    |\n}'],['Start','void Start()\n{\n    |\n}'],['Update','void Update()\n{\n    |\n}'],['FixedUpdate','void FixedUpdate()\n{\n    |\n}'],['LateUpdate','void LateUpdate()\n{\n    |\n}'],['OnEnable','void OnEnable()\n{\n    |\n}'],['OnDisable','void OnDisable()\n{\n    |\n}'],['OnDestroy','void OnDestroy()\n{\n    |\n}'],['OnTriggerEnter2D','void OnTriggerEnter2D(Collider2D other)\n{\n    |\n}'],['OnTriggerExit2D','void OnTriggerExit2D(Collider2D other)\n{\n    |\n}'],['OnCollisionEnter2D','void OnCollisionEnter2D(Collision2D collision)\n{\n    |\n}'],['OnHeroEnter','void OnHeroEnter()\n{\n    |\n}'],['OnHeroExit','void OnHeroExit()\n{\n    |\n}'],['OnInteract','void OnInteract()\n{\n    |\n}'],['OnHit','void OnHit()\n{\n    |\n}'],['OnHeroDeath','void OnHeroDeath()\n{\n    |\n}']];
 const AC_SN=[['if','if (|)\n{\n}'],['else','else\n{\n    |\n}'],['for','for (int i = 0; i < |; i++)\n{\n}'],['foreach','foreach (var item in |)\n{\n}'],['while','while (|)\n{\n}'],['switch','switch (|)\n{\n    case 0:\n        break;\n}']];
 const AC_ATTR=[['Header','Header("|")'],['SerializeField','SerializeField'],['Range','Range(0, |1)'],['Tooltip','Tooltip("|")'],['Space','Space'],['HideInInspector','HideInInspector']];
@@ -260,11 +293,6 @@ const AC_DOC={
 'Awake':['오브젝트가 만들어질 때 가장 먼저 한 번 호출됩니다.','void Awake()\n{\n    Debug.Log("깨어남");\n}'],
 'Start':['첫 번째 Update 전에 한 번 호출됩니다. 초기 설정에 사용합니다.','void Start()\n{\n    Debug.Log("시작!");\n}'],
 'Update':['매 프레임 호출됩니다. 입력 처리와 이동에 사용합니다.','void Update()\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        Debug.Log("스페이스!");\n}'],
-'FixedUpdate':['일정한 시간 간격으로 호출됩니다. 물리 계산에 사용합니다.','void FixedUpdate()\n{\n    // 물리 처리\n}'],
-'LateUpdate':['모든 Update가 끝난 뒤 매 프레임 호출됩니다.','void LateUpdate()\n{\n    // 카메라 추적 등\n}'],
-'OnEnable':['오브젝트가 활성화될 때 호출됩니다.','void OnEnable()\n{\n    Debug.Log("활성화");\n}'],
-'OnDisable':['오브젝트가 비활성화될 때 호출됩니다.','void OnDisable()\n{\n    Debug.Log("비활성화");\n}'],
-'OnDestroy':['오브젝트가 제거될 때 호출됩니다.','void OnDestroy()\n{\n    Debug.Log("제거됨");\n}'],
 'OnTriggerEnter2D':['트리거 영역에 다른 콜라이더가 들어올 때 호출됩니다.','void OnTriggerEnter2D(Collider2D other)\n{\n    Debug.Log(other.name);\n}'],
 'OnTriggerExit2D':['트리거 영역에서 콜라이더가 나갈 때 호출됩니다.','void OnTriggerExit2D(Collider2D other)\n{\n    Debug.Log(other.name);\n}'],
 'OnCollisionEnter2D':['다른 콜라이더와 충돌했을 때 호출됩니다.','void OnCollisionEnter2D(Collision2D col)\n{\n    Debug.Log(col.gameObject.name);\n}'],
@@ -274,7 +302,6 @@ const AC_DOC={
 'for':['정해진 횟수만큼 반복합니다.','for (int i = 0; i < 3; i++)\n{\n    Debug.Log(i);\n}'],
 'foreach':['목록의 항목을 하나씩 꺼내 반복합니다.','foreach (var item in items)\n{\n    Debug.Log(item);\n}'],
 'while':['조건이 참인 동안 반복합니다.','while (count < 5)\n{\n    count++;\n}'],
-'switch':['값에 따라 여러 경우로 나눕니다.','switch (state)\n{\n    case 0:\n        break;\n}'],
 'case':['switch 문의 한 경우를 나타냅니다.','case 1:\n    Debug.Log("하나");\n    break;'],
 'break':['반복문이나 switch를 즉시 빠져나옵니다.','break;'],
 'continue':['반복문의 나머지를 건너뛰고 다음 반복으로 갑니다.','continue;'],
@@ -294,8 +321,7 @@ const AC_DOC={
 /* 타입 */
 'int':['정수 형식입니다.','int count = 3;'],'float':['소수 형식입니다. 숫자 뒤에 f를 붙입니다.','float speed = 2.5f;'],
 'bool':['참/거짓 형식입니다.','bool alive = true;'],'string':['문자열 형식입니다.','string msg = "안녕";'],
-'List':['크기가 변하는 목록입니다.','List<int> nums = new List<int>();'],
-'Dictionary':['키와 값을 짝지어 저장합니다.','Dictionary<string, int> hp = new Dictionary<string, int>();'],
+'List':['크기가 변하는 목록입니다. Add · Remove · Count · [번호] · foreach 로 씁니다. 파일 맨 위에 using System.Collections.Generic; 을 쓰세요.','List<GameObject> enemies = new List<GameObject>();\nenemies.Add(enemy);\nforeach (var e in enemies) Debug.Log(e.name);\nDebug.Log(enemies.Count);'],
 'MonoBehaviour':['게임 오브젝트에 붙는 스크립트의 기본 클래스입니다.','public class Player : MonoBehaviour\n{\n}'],
 /* 특성 */
 'Header':['인스펙터에 제목 줄을 표시합니다.','[Header("이동")]\npublic float speed = 3f;'],
@@ -315,7 +341,6 @@ const AC_DOC={
 'activeSelf':['오브젝트 자신이 켜져 있는지 나타냅니다. 부모가 꺼져 있는지는 activeInHierarchy로 확인합니다.','if (gameObject.activeSelf) Debug.Log("켜짐");'],
 'GameObject.Find':['이름으로 게임 오브젝트를 찾습니다. UI 요소·UI 그룹 이름도 찾을 수 있습니다.','GameObject npc = GameObject.Find("펌킹");'],
 'UIGroup.Find':['이름으로 UI 그룹(계층 구조의 UI 폴더)을 찾습니다. 그룹 안 요소 전체를 한 번에 옮기거나 크기를 바꿀 수 있습니다.','UIGroup.Find("메뉴").transform.position = new Vector2(0, 40);'],
-'FindWithTag':['태그로 게임 오브젝트를 찾습니다.','GameObject p = GameObject.FindWithTag("Player");'],
 /* Debug / Mathf / Time / Input */
 'Log':['콘솔 창에 메시지를 출력합니다.','Debug.Log("안녕!");'],
 'LogWarning':['콘솔 창에 경고를 출력합니다.','Debug.LogWarning("주의!");'],
@@ -351,7 +376,6 @@ const AC_DOC={
 'deltaTime':['이전 프레임 이후 지난 시간(초)입니다. 속도에 곱해 프레임과 무관하게 움직입니다.','x += speed * Time.deltaTime;'],
 'fixedDeltaTime':['물리 업데이트 간격(초)입니다.','float dt = Time.fixedDeltaTime;'],
 'time':['게임 시작 후 지난 시간(초)입니다.','float t = Time.time;'],
-'timeScale':['게임 진행 속도입니다. 0이면 멈춥니다.','Time.timeScale = 0.5f;'],
 'frameCount':['지금까지 지난 프레임 수입니다.','int f = Time.frameCount;'],
 'GetKey':['키를 누르고 있는 동안 true입니다.','if (Input.GetKey(KeyCode.W))\n    Debug.Log("전진");'],
 'GetKeyDown':['키를 누른 그 프레임에만 true입니다.','if (Input.GetKeyDown(KeyCode.Space))\n    Debug.Log("점프");'],
@@ -452,16 +476,12 @@ const AC_DOC={
 /* 컴포넌트 */
 'velocity':['이동 속도 벡터입니다.','rb.velocity = new Vector2(2, 0);'],
 'angularVelocity':['회전 속도입니다.','rb.angularVelocity = 90f;'],
-'gravityScale':['중력 배율입니다.','rb.gravityScale = 0f;'],
 'mass':['질량입니다.','rb.mass = 2f;'],
 'drag':['이동 저항(감속)입니다.','rb.drag = 1f;'],
 'isKinematic':['true이면 물리 힘의 영향을 받지 않습니다.','rb.isKinematic = true;'],
 'simulated':['물리 시뮬레이션 사용 여부입니다.','rb.simulated = false;'],
-'AddForce':['힘을 가합니다.','rb.AddForce(new Vector2(0, 5));'],
-'MovePosition':['지정한 위치로 이동시킵니다.','rb.MovePosition(new Vector2(3, 4));'],
 'sprite':['표시할 스프라이트입니다. 인스펙터의 sprite와 같습니다.','var sr = GetComponent<SpriteRenderer>();\nDebug.Log(sr.sprite);'],
 'color':['색상입니다.','GetComponent<Light>().color = Color.yellow;'],
-'flipX':['가로로 뒤집습니다.','sr.flipX = true;'],
 'flipY':['세로로 뒤집습니다.','sr.flipY = true;'],
 'sortingOrder':['그려지는 순서입니다. 값이 클수록 위에 그려집니다. 인스펙터의 sortingOrder와 같습니다.','sr.sortingOrder = 20;'],
 'intensity':['빛의 세기입니다. (0.1~1)','GetComponent<Light>().intensity = 0.6f;'],
@@ -550,7 +570,6 @@ const AC_DOC={
 'Stop':['소리를 멈춥니다.','audio.Stop();'],
 'Pause':['소리를 일시정지합니다.','audio.Pause();'],
 'isTrigger':['true이면 통과하면서 트리거 이벤트만 발생합니다.','col.isTrigger = true;'],
-'CompareTag':['태그가 같은지 검사합니다.','if (other.CompareTag("Player")) Debug.Log("주인공");'],
 'collider':['충돌한 상대의 Collider2D입니다.','Collider2D c = col.collider;'],
 'orthographicSize':['카메라가 위아래로 보여 주는 범위의 절반(칸)입니다. 작을수록 확대됩니다. 인스펙터 카메라의 “크기”와 같습니다.','Camera.main.orthographicSize = 3f;'],
 'backgroundColor':['카메라 배경색입니다.','Camera.main.backgroundColor = Color.black;'],
@@ -569,8 +588,58 @@ const AC_DOC={
 'Replace':['문자열의 일부를 다른 문자열로 바꿉니다.','string s = name.Replace("A", "B");'],
 'Split':['구분자로 문자열을 나눕니다.','string[] p = "a,b".Split(\',\');'],
 /* MonoBehaviour */
-'Destroy':['게임 오브젝트를 제거합니다.','Destroy(gameObject);'],
-'Instantiate':['게임 오브젝트를 복제해서 만듭니다.','Instantiate(prefab);'],
+'Instantiate':['프리팹이나 게임 오브젝트의 복제본을 만듭니다. public GameObject 슬롯에 프로젝트 창의 프리팹을 끌어다 넣고 쓰세요. 위치를 주지 않으면 이 스크립트가 붙은 오브젝트 자리에 생깁니다. 복제본의 Awake()는 바로, Start()는 다음 프레임에 실행됩니다.','public GameObject bulletPrefab;\n\nvoid Fire()\n{\n    GameObject b = Instantiate(bulletPrefab, transform.position, Quaternion.identity);\n    b.GetComponent<Rigidbody2D>().velocity = Vector2.right * 8;\n    Destroy(b, 3f);   // 3초 뒤에 지움\n}'],
+'Destroy':['게임 오브젝트(자식 포함)나 컴포넌트를 지웁니다. 두 번째 값으로 초를 주면 그만큼 기다렸다가 지웁니다. 지우기 직전에 그 오브젝트의 OnDestroy()가 불립니다.','Destroy(gameObject);          // 지금 지우기\nDestroy(gameObject, 2f);      // 2초 뒤에\nDestroy(GetComponent<Rigidbody2D>());  // 컴포넌트만'],
+'StopCoroutine':['실행 중인 코루틴 하나를 멈춥니다. StartCoroutine 이 돌려준 값이나 메서드 이름을 넣습니다.','Coroutine c = StartCoroutine(Blink());\nStopCoroutine(c);'],
+'StopAllCoroutines':['이 스크립트가 시작한 코루틴을 모두 멈춥니다.','StopAllCoroutines();'],
+'IsInvoking':['Invoke 로 예약한 메서드가 아직 남아 있는지 알려 줍니다.','if (!IsInvoking("Spawn")) InvokeRepeating("Spawn", 1f, 2f);'],
+'IEnumerator':['코루틴 메서드의 반환 형식입니다. 안에서 yield return 으로 기다릴 수 있고, StartCoroutine(메서드()) 으로 시작합니다. 파일 맨 위에 using System.Collections; 를 쓰세요.','IEnumerator Blink()\n{\n    for (int i = 0; i < 3; i++)\n    {\n        gameObject.SetActive(false);\n        yield return new WaitForSeconds(0.1f);\n        gameObject.SetActive(true);\n        yield return new WaitForSeconds(0.1f);\n    }\n}'],
+'WaitForSeconds':['코루틴에서 지정한 시간(초)만큼 기다립니다. Time.timeScale 의 영향을 받습니다.','yield return new WaitForSeconds(1.5f);'],
+'WaitForSecondsRealtime':['Time.timeScale 과 상관없이 실제 시간(초)만큼 기다립니다. 일시정지 화면에서 씁니다.','yield return new WaitForSecondsRealtime(1f);'],
+'WaitUntil':['조건이 참이 될 때까지 코루틴을 기다리게 합니다.','yield return new WaitUntil(() => score >= 10);'],
+'WaitWhile':['조건이 참인 동안 코루틴을 기다리게 합니다.','yield return new WaitWhile(() => Dialog.isOpen);'],
+'yield':['코루틴(IEnumerator 메서드) 안에서 잠깐 멈췄다가 다음에 이어 갑니다. yield return null = 한 프레임, yield break = 코루틴 끝내기.','yield return null;\nyield return new WaitForSeconds(1f);\nyield break;'],
+'SendMessage':['이 오브젝트에 붙은 모든 스크립트에서 그 이름의 메서드를 부릅니다.','other.gameObject.SendMessage("TakeDamage", 10);'],
+'GetComponentInChildren':['자신과 자식들에서 처음 찾은 컴포넌트를 꺼냅니다.','var ps = GetComponentInChildren<ParticleSystem>();'],
+'GetComponentInParent':['자신과 부모들에서 처음 찾은 컴포넌트를 꺼냅니다.','var rb = GetComponentInParent<Rigidbody2D>();'],
+'FindObjectOfType':['씬에서 그 컴포넌트(내 스크립트 포함)를 가진 첫 오브젝트를 찾습니다.','ScoreManager sm = FindObjectOfType<ScoreManager>();'],
+'PlayerPrefs':['게임을 꺼도 남는 저장 공간입니다 (최고 점수 · 설정 · 진행 상황). 프로젝트마다 따로 저장되고, 플레이 ▾ 메뉴의 「저장 데이터 지우기」로 지울 수 있어요.','PlayerPrefs.SetInt("최고점수", score);\nint best = PlayerPrefs.GetInt("최고점수", 0);'],
+'SetInt':['정수를 저장합니다.','PlayerPrefs.SetInt("coins", 10);'],'GetInt':['저장한 정수를 읽습니다. 없으면 두 번째 값(기본 0)을 돌려줍니다.','int c = PlayerPrefs.GetInt("coins", 0);'],
+'SetFloat':['실수를 저장합니다.','PlayerPrefs.SetFloat("volume", 0.8f);'],'GetFloat':['저장한 실수를 읽습니다.','float v = PlayerPrefs.GetFloat("volume", 1f);'],
+'SetString':['글자를 저장합니다.','PlayerPrefs.SetString("name", "냥이");'],'GetString':['저장한 글자를 읽습니다.','string n = PlayerPrefs.GetString("name", "");'],
+'HasKey':['그 이름으로 저장한 값이 있는지 알려 줍니다.','if (PlayerPrefs.HasKey("save")) Load();'],'DeleteKey':['저장한 값 하나를 지웁니다.','PlayerPrefs.DeleteKey("save");'],'DeleteAll':['이 프로젝트의 저장 값을 모두 지웁니다.','PlayerPrefs.DeleteAll();'],
+'timeScale':['시간이 흐르는 빠르기입니다. 0 = 일시정지 · 0.5 = 슬로모션 · 1 = 보통. Update 는 계속 불리지만 deltaTime · 물리 · 애니메이션 · 파티클이 멈춥니다.','Time.timeScale = 0f;   // 일시정지\nTime.timeScale = 1f;   // 다시'],
+'unscaledDeltaTime':['timeScale 과 상관없는 실제 프레임 시간입니다. 일시정지 메뉴 애니메이션에 씁니다.','t += Time.unscaledDeltaTime;'],
+'Rigidbody2D':['물리로 움직이는 몸입니다. 중력 · 힘 · 충돌을 받습니다. 아래쪽이 +y 라서 위로 점프하려면 Vector2.up(0, -1) 방향으로 힘을 주세요.','Rigidbody2D rb;\nvoid Start() { rb = GetComponent<Rigidbody2D>(); }\nvoid Update()\n{\n    float x = Input.GetAxis("Horizontal");\n    rb.velocity = new Vector2(x * 5, rb.velocity.y);\n    if (Input.GetKeyDown(KeyCode.Space))\n        rb.AddForce(Vector2.up * 7, ForceMode2D.Impulse);\n}'],
+'AddForce':['몸에 힘을 줍니다. ForceMode2D.Impulse 는 한 번에 확 밀고(점프 · 폭발), 기본(Force)은 계속 미는 힘입니다 (FixedUpdate 에서 매번).','rb.AddForce(Vector2.up * 7, ForceMode2D.Impulse);'],
+'gravityScale':['중력을 받는 정도입니다. 0이면 떠 있고 2면 두 배로 빨리 떨어집니다.','rb.gravityScale = 0;'],
+'MovePosition':['다음 물리 단계에 몸을 그 위치로 옮깁니다.','rb.MovePosition(rb.position + dir * speed * Time.fixedDeltaTime);'],
+'Physics2D':['광선 · 원 · 상자로 주변의 콜라이더를 찾습니다. 레이어가 없어서 layerMask 값은 무시하고, 부르는 오브젝트 자신(과 부모 · 자식)은 빼고 찾습니다. 타일 벽 · 땅은 이름 Tilemap · 태그 Ground 로 나옵니다.','bool grounded = Physics2D.Raycast(transform.position, Vector2.down, 0.6f);'],
+'Raycast':['한 점에서 한 방향으로 광선을 쏴서 처음 맞은 콜라이더를 알려 줍니다. 맞은 것이 없으면 if (hit) 가 거짓입니다.','RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5f);\nif (hit) Debug.Log(hit.collider.name + " " + hit.distance);'],
+'OverlapCircle':['원 안에 있는 콜라이더 하나를 찾습니다 (없으면 null). 땅 검사에 많이 씁니다.','bool onGround = Physics2D.OverlapCircle(feet.position, 0.2f) != null;'],
+'OverlapCircleAll':['원 안에 있는 콜라이더를 모두 찾습니다 (폭발 범위 등).','foreach (var c in Physics2D.OverlapCircleAll(transform.position, 2f))\n    if (c.CompareTag("Enemy")) Destroy(c.gameObject);'],
+'Collision2D':['OnCollisionEnter2D 로 받는 충돌 정보입니다. gameObject · collider · relativeVelocity · contacts[0].normal','void OnCollisionEnter2D(Collision2D col)\n{\n    if (col.gameObject.CompareTag("Ground")) grounded = true;\n}'],
+'OnCollisionExit2D':['닿아 있던 콜라이더에서 떨어질 때 호출됩니다.','void OnCollisionExit2D(Collision2D col)\n{\n    if (col.gameObject.CompareTag("Ground")) grounded = false;\n}'],
+'OnCollisionStay2D':['콜라이더와 닿아 있는 동안 매 프레임 호출됩니다.','void OnCollisionStay2D(Collision2D col) { }'],
+'OnTriggerStay2D':['트리거 안에 있는 동안 매 프레임 호출됩니다.','void OnTriggerStay2D(Collider2D other) { }'],
+'FixedUpdate':['0.02초마다 일정하게 호출됩니다. 물리(리지드바디)를 다루는 코드는 여기에 쓰세요.','void FixedUpdate()\n{\n    rb.AddForce(Vector2.right * 2);\n}'],
+'LateUpdate':['모든 Update 와 물리가 끝난 뒤 매 프레임 호출됩니다. 카메라 따라가기에 씁니다.','void LateUpdate()\n{\n    transform.position = target.position + offset;\n}'],
+'OnEnable':['오브젝트가 켜질 때(시작할 때 · SetActive(true)) 호출됩니다.','void OnEnable() { Debug.Log("켜짐"); }'],
+'OnDisable':['오브젝트가 꺼질 때(SetActive(false)) 호출됩니다.','void OnDisable() { Debug.Log("꺼짐"); }'],
+'OnDestroy':['오브젝트가 Destroy 되기 직전에 호출됩니다.','void OnDestroy() { Debug.Log("사라짐"); }'],
+'ParticleSystem':['파티클 시스템 컴포넌트입니다. 인스펙터의 프리셋(불꽃 · 연기 · 폭발 · 비 · 눈 …)을 고르고 스크립트로 재생을 조절합니다.','ParticleSystem ps = GetComponent<ParticleSystem>();\nps.Play();\nps.Emit(20);\nvar main = ps.main;\nmain.startColor = Color.cyan;'],
+'Emit':['파티클을 지금 바로 그 개수만큼 뿜습니다.','ps.Emit(30);'],
+'CompareTag':['태그가 같은지 확인합니다. 태그는 인스펙터 맨 위의 「태그」 칸에서 정합니다 (주인공은 기본 Player).','if (other.CompareTag("Player")) Debug.Log("주인공이 닿았어요");'],
+'FindWithTag':['그 태그를 가진 게임 오브젝트 하나를 찾습니다.','GameObject player = GameObject.FindWithTag("Player");'],
+'FindGameObjectsWithTag':['그 태그를 가진 게임 오브젝트를 모두 배열로 찾습니다.','GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");\nDebug.Log(enemies.Length);'],
+'ScreenToWorldPoint':['화면 좌표(마우스 위치)를 씬 좌표(칸)로 바꿉니다.','Vector3 p = Camera.main.ScreenToWorldPoint(Input.mousePosition);'],
+'Shake':['카메라를 잠깐 흔듭니다 (세기 칸 · 시간 초). Thaniya 전용 기능이에요.','Camera.main.Shake(0.3f, 0.25f);'],
+'flipX':['그림을 좌우로 뒤집습니다. 왼쪽을 볼 때 씁니다.','GetComponent<SpriteRenderer>().flipX = x < 0;'],
+'Dictionary':['키로 값을 찾는 표입니다.','Dictionary<string, int> scores = new Dictionary<string, int>();\nscores["냥이"] = 10;\nif (scores.ContainsKey("냥이")) Debug.Log(scores["냥이"]);'],
+'Queue':['먼저 넣은 것이 먼저 나오는 줄입니다.','Queue<string> q = new Queue<string>();\nq.Enqueue("a");\nstring first = q.Dequeue();'],
+'switch':['값에 따라 갈래를 나눕니다. case 마다 break 로 끝냅니다.','switch (state)\n{\n    case 0:\n        Debug.Log("대기");\n        break;\n    default:\n        Debug.Log("그 밖");\n        break;\n}'],
+'try':['오류가 날 수 있는 코드를 감쌉니다. 오류가 나면 catch 로 넘어갑니다.','try\n{\n    int n = int.Parse(text);\n}\ncatch (System.Exception e)\n{\n    Debug.Log(e.Message);\n}'],
+'nameof':['메서드 · 변수 이름을 글자로 바꿉니다. Invoke 에 쓰면 이름을 잘못 쓸 일이 없어요.','Invoke(nameof(Spawn), 2f);'],
 'Invoke':['지정한 시간(초) 뒤에 함수를 실행합니다.','Invoke("Fire", 2f);'],
 'InvokeRepeating':['지정한 시간 뒤부터 일정 간격으로 함수를 반복 실행합니다.','InvokeRepeating("Fire", 1f, 0.5f);'],
 'CancelInvoke':['예약된 Invoke를 모두 취소합니다.','CancelInvoke();'],
@@ -1371,7 +1440,27 @@ const EH_ITEMS=[
  ['문법','글자 이어 붙이기','+ 나 $"…{값}…" 으로 글자와 값을 이어 붙입니다.','string 문자열 글자 이어붙이기 보간 interpolation 텍스트','m','string monster = "슬라임";\nint hp = 30;\nDebug.Log(monster + "의 체력: " + hp);\nDebug.Log($"{monster}의 체력은 {hp}입니다");'],
  ['문법','상태 나누기 (switch)','값에 따라 여러 경우로 나눕니다.','switch case 상태 state 경우','m','int state = Random.Range(0, 3);\nswitch (state)\n{\n    case 0:\n        Debug.Log("대기");\n        break;\n    case 1:\n        Debug.Log("공격");\n        break;\n    default:\n        Debug.Log("알 수 없음");\n        break;\n}'],
  ['문법','무작위 값','Random.Range로 정해진 범위 안의 값을 뽑습니다. 정수는 끝 값이 나오지 않아요.','random range 랜덤 무작위 주사위 확률','m','int dice = Random.Range(1, 7);\nfloat x = Random.Range(-3f, 3f);\nif (Random.value < 0.3f)\n    Debug.Log("30% 확률 당첨!");'],
- ['문법','함수 만들기','같은 일을 이름 붙여 묶어 두고 여러 번 부릅니다.','함수 method 메서드 function void return','c','int Add(int a, int b)\n{\n    return a + b;\n}\n\nvoid Start()\n{\n    Debug.Log(Add(2, 3));\n}']
+ ['문법','함수 만들기','같은 일을 이름 붙여 묶어 두고 여러 번 부릅니다.','함수 method 메서드 function void return','c','int Add(int a, int b)\n{\n    return a + b;\n}\n\nvoid Start()\n{\n    Debug.Log(Add(2, 3));\n}'],
+ ['물리','플랫포머 이동 · 점프','리지드바디 2D(중력 1)로 좌우로 걷고 Space로 점프합니다. 땅에 닿아 있을 때만 점프해요.','platformer 플랫포머 점프 jump rigidbody2d 리지드바디 중력 velocity 땅','c','public float moveSpeed = 5f;\npublic float jumpPower = 8f;\nRigidbody2D rb;\nbool grounded;\n\nvoid Start()\n{\n    rb = GetComponent<Rigidbody2D>();\n}\n\nvoid Update()\n{\n    float x = Input.GetAxisRaw(\"Horizontal\");\n    rb.velocity = new Vector2(x * moveSpeed, rb.velocity.y);\n    if (x != 0) GetComponent<SpriteRenderer>().flipX = x < 0;\n\n    // 발밑 0.6칸 안에 땅이 있으면 점프할 수 있어요 (아래쪽이 +y)\n    grounded = Physics2D.Raycast(transform.position, Vector2.down, 0.6f);\n    if (grounded && Input.GetKeyDown(KeyCode.Space))\n        rb.velocity = new Vector2(rb.velocity.x, -jumpPower);\n}'],
+ ['물리','힘으로 밀기 (AddForce)','리지드바디 2D에 힘을 줍니다. Impulse는 한 번에 확 밉니다.','addforce 힘 밀기 impulse 폭발 넉백 knockback','m','Rigidbody2D rb = GetComponent<Rigidbody2D>();\nrb.AddForce(new Vector2(3, -6), ForceMode2D.Impulse);'],
+ ['물리','부딪쳤을 때 (OnCollisionEnter2D)','리지드바디 2D가 벽 · 땅 · 다른 콜라이더에 부딪치면 불립니다. 타일 벽 · 땅의 태그는 Ground예요.','oncollisionenter2d collision 충돌 부딪침 ground 땅 태그','c','void OnCollisionEnter2D(Collision2D col)\n{\n    Debug.Log(col.gameObject.name + \"에 부딪쳤어요\");\n    if (col.gameObject.CompareTag(\"Enemy\"))\n        Destroy(col.gameObject);\n}'],
+ ['물리','광선 쏘기 (Raycast)','한 방향으로 광선을 쏴서 처음 맞은 것을 알아냅니다. (시야 · 땅 검사 · 레이저)','raycast 광선 레이 시야 감지 physics2d hit','m','RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5f);\nif (hit)\n{\n    Debug.Log(hit.collider.name + \" 까지 \" + hit.distance + \"칸\");\n}'],
+ ['물리','주변 적 모두 찾기 (폭발 범위)','원 안의 콜라이더를 모두 찾아 태그가 Enemy인 것만 지웁니다.','overlapcircleall 범위 폭발 주변 찾기 enemy 태그','m','Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 2f);\nforeach (Collider2D c in hits)\n{\n    if (c.CompareTag(\"Enemy\"))\n        Destroy(c.gameObject);\n}'],
+ ['생성','총알 쏘기 (프리팹 Instantiate)','프리팹을 슬롯에 넣고 Space를 누를 때마다 복제해서 날립니다. 총알 프리팹에는 리지드바디 2D(스크립트로만)와 박스 콜라이더 2D(트리거)를 붙이세요.','instantiate 프리팹 prefab 총알 bullet 발사 생성 복제 shoot','c','public GameObject bulletPrefab;\npublic float bulletSpeed = 10f;\n\nvoid Update()\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n    {\n        GameObject b = Instantiate(bulletPrefab, transform.position, Quaternion.identity);\n        b.GetComponent<Rigidbody2D>().velocity = Vector2.right * bulletSpeed;\n        Destroy(b, 2f);\n    }\n}'],
+ ['생성','적을 일정 시간마다 만들기','InvokeRepeating으로 몇 초마다 프리팹을 무작위 위치에 만듭니다.','spawner 스포너 생성 적 enemy invokerepeating 반복 random','c','public GameObject enemyPrefab;\npublic float every = 2f;\n\nvoid Start()\n{\n    InvokeRepeating(nameof(Spawn), 1f, every);\n}\n\nvoid Spawn()\n{\n    Vector2 p = (Vector2)transform.position + Random.insideUnitCircle * 3f;\n    Instantiate(enemyPrefab, p, Quaternion.identity);\n}'],
+ ['생성','총알이 맞았을 때 (트리거)','총알(트리거)이 적에 닿으면 적에게 피해를 주고 총알은 사라집니다.','bullet 총알 맞음 ontriggerenter2d 피해 적 hit','c','public int damage = 1;\n\nvoid OnTriggerEnter2D(Collider2D other)\n{\n    if (other.CompareTag(\"Enemy\"))\n    {\n        Monster m = other.GetComponent<Monster>();\n        if (m != null) m.TakeDamage(damage);\n        Destroy(gameObject);\n    }\n}'],
+ ['시간','코루틴으로 기다렸다 하기','IEnumerator와 yield return으로 시간 순서대로 일을 합니다. (깜빡임 · 연출 · 순서대로 등장)','coroutine 코루틴 ienumerator yield waitforseconds 기다리기 startcoroutine','c','void Start()\n{\n    StartCoroutine(Countdown());\n}\n\nIEnumerator Countdown()\n{\n    for (int i = 3; i > 0; i--)\n    {\n        Message.Show(i + \"\", 0.8f);\n        yield return new WaitForSeconds(1f);\n    }\n    Message.Show(\"시작!\", 1f);\n}'],
+ ['시간','깜빡이기 (무적 시간)','코루틴으로 그림을 몇 번 껐다 켭니다.','blink 깜빡 무적 피격 spriterenderer coroutine','c','public IEnumerator Blink()\n{\n    SpriteRenderer sr = GetComponent<SpriteRenderer>();\n    for (int i = 0; i < 6; i++)\n    {\n        sr.enabled = !sr.enabled;\n        yield return new WaitForSeconds(0.1f);\n    }\n    sr.enabled = true;\n}'],
+ ['시간','몇 초 뒤에 실행 (Invoke)','Invoke로 메서드를 몇 초 뒤에 한 번 부릅니다.','invoke 지연 delay 몇초뒤 nameof','c','void Start()\n{\n    Invoke(nameof(OpenDoor), 3f);\n}\n\nvoid OpenDoor()\n{\n    Message.Show(\"문이 열렸다!\", 2f);\n}'],
+ ['시간','일시정지 (timeScale)','P를 누르면 게임 시간이 멈추고, 다시 누르면 이어집니다.','pause 일시정지 timescale 멈춤 슬로모션 slow','c','bool paused;\n\nvoid Update()\n{\n    if (Input.GetKeyDown(KeyCode.P))\n    {\n        paused = !paused;\n        Time.timeScale = paused ? 0f : 1f;\n        Message.Show(paused ? \"일시정지\" : \"계속\", 1f);\n    }\n}'],
+ ['게임','최고 점수 저장 (PlayerPrefs)','PlayerPrefs는 게임을 꺼도 남아요. 점수가 최고 기록보다 높으면 저장합니다.','playerprefs 저장 save load 불러오기 최고점수 highscore 기록','m','int best = PlayerPrefs.GetInt(\"best\", 0);\nint score = 120;\nif (score > best)\n{\n    PlayerPrefs.SetInt(\"best\", score);\n    Message.Show(\"새 기록! \" + score, 2f);\n}'],
+ ['연출','파티클 터뜨리기','파티클 시스템을 재생하거나 지금 바로 몇 개를 뿜습니다.','particle 파티클 효과 이펙트 폭발 emit play','m','ParticleSystem ps = GetComponent<ParticleSystem>();\nps.Emit(30);\n// 처음부터 다시 재생: ps.Play();'],
+ ['연출','카메라 흔들기','맞았을 때 · 폭발할 때 화면을 잠깐 흔듭니다. (세기 칸, 시간 초)','shake 흔들기 카메라 진동 타격감 camera','m','Camera.main.Shake(0.3f, 0.25f);'],
+ ['연출','마우스 쪽 바라보기','마우스 위치를 씬 좌표로 바꿔 그쪽으로 돌립니다.','mouse 마우스 조준 aim screentoworldpoint 바라보기 회전','c','void Update()\n{\n    Vector3 m = Camera.main.ScreenToWorldPoint(Input.mousePosition);\n    Vector2 d = (Vector2)m - (Vector2)transform.position;\n    float angle = Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;\n    transform.eulerAngles = new Vector3(0, 0, angle);\n}'],
+ ['문법','목록 (List) 쓰기','List에 값을 넣고 빼고 foreach로 하나씩 꺼냅니다.','list 목록 리스트 add remove count foreach 배열','m','List<string> bag = new List<string>();\nbag.Add(\"사과\");\nbag.Add(\"열쇠\");\nbag.Remove(\"사과\");\nforeach (string item in bag)\n{\n    Debug.Log(item);\n}\nDebug.Log(\"개수: \" + bag.Count);'],
+ ['문법','배열 · Dictionary','배열은 크기가 정해진 목록, Dictionary는 이름(키)으로 값을 찾는 표입니다.','array 배열 dictionary 사전 키 key 표','m','int[] scores = { 10, 20, 30 };\nDebug.Log(scores[0] + \" · 개수 \" + scores.Length);\n\nDictionary<string, int> price = new Dictionary<string, int>();\nprice[\"포션\"] = 50;\nif (price.ContainsKey(\"포션\"))\n    Debug.Log(\"포션 \" + price[\"포션\"] + \"원\");'],
+ ['컴포넌트','다른 스크립트의 값 · 함수 쓰기','GetComponent<스크립트 이름>()으로 내가 만든 스크립트를 꺼내 public 변수와 함수를 씁니다.','getcomponent 다른 스크립트 public 함수 호출 참조','m','PlayerHealth hp = GameObject.Find(\"Player\").GetComponent<PlayerHealth>();\nhp.health -= 10;\nhp.Hurt();'],
+ ['컴포넌트','태그로 찾기','태그는 인스펙터 맨 위에서 정해요. 주인공은 기본 Player입니다.','tag 태그 findwithtag comparetag player enemy','m','GameObject player = GameObject.FindWithTag(\"Player\");\nGameObject[] enemies = GameObject.FindGameObjectsWithTag(\"Enemy\");\nDebug.Log(\"적 \" + enemies.Length + \"마리\");'],
 ];
 const EH_CATS=['전체',...[...new Set(EH_ITEMS.map(x=>x[0]))]];
 const EH_KO_CHO='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
@@ -1659,4 +1748,28 @@ if(window.TI18N)TI18N.add({
  '컴포넌트 불러오기':['Get a component','コンポーネントを取得','获取组件'],'GetComponent<T>()로 이 오브젝트에 붙은 컴포넌트를 가져와 변수에 담아 둡니다.':['Use GetComponent<T>() to get a component on this object and keep it in a variable.','GetComponent<T>() でこのオブジェクトのコンポーネントを取得して変数に入れます。','用 GetComponent<T>() 获取此对象上的组件并存入变量。'],
  '영역에 들어왔을 때 (트리거)':['Entering an area (trigger)','範囲に入ったとき（トリガー）','进入区域时（触发器）'],
  'help 도움말':['help = Help','help ヘルプ','help 帮助']
+});
+/* 2026-11 추가 도움말 (물리 · 생성 · 코루틴 · 저장 · 파티클) 번역 */
+if(window.TI18N)TI18N.add({
+ '물리':['Physics','物理','物理'],'생성':['Spawning','生成','生成'],
+ '플랫포머 이동 · 점프':['Platformer move · jump','プラットフォーマー移動・ジャンプ','平台跳跃移动 · 跳跃'],'리지드바디 2D(중력 1)로 좌우로 걷고 Space로 점프합니다. 땅에 닿아 있을 때만 점프해요.':['Walk left/right with a Rigidbody 2D (gravity 1) and jump with Space — only while touching the ground.','リジッドボディ 2D（重力 1）で左右に歩き、Space でジャンプします。地面に触れているときだけジャンプします。','用刚体 2D（重力 1）左右行走，按 Space 跳跃，仅在接触地面时可跳。'],
+ '힘으로 밀기 (AddForce)':['Push with a force (AddForce)','力で押す (AddForce)','用力推动 (AddForce)'],'리지드바디 2D에 힘을 줍니다. Impulse는 한 번에 확 밉니다.':['Applies a force to a Rigidbody 2D. Impulse pushes all at once.','リジッドボディ 2D に力を加えます。Impulse は一度に強く押します。','给刚体 2D 施加力。Impulse 会一次性猛推。'],
+ '부딪쳤을 때 (OnCollisionEnter2D)':['On collision (OnCollisionEnter2D)','ぶつかったとき (OnCollisionEnter2D)','碰撞时 (OnCollisionEnter2D)'],'리지드바디 2D가 벽 · 땅 · 다른 콜라이더에 부딪치면 불립니다. 타일 벽 · 땅의 태그는 Ground예요.':['Called when a Rigidbody 2D hits a wall, the ground or another collider. Tile walls and ground have the tag Ground.','リジッドボディ 2D が壁・地面・他のコライダーにぶつかると呼ばれます。タイルの壁・地面のタグは Ground です。','刚体 2D 撞到墙、地面或其他碰撞体时调用。图块墙和地面的标签为 Ground。'],
+ '광선 쏘기 (Raycast)':['Cast a ray (Raycast)','光線を飛ばす (Raycast)','发射射线 (Raycast)'],'한 방향으로 광선을 쏴서 처음 맞은 것을 알아냅니다. (시야 · 땅 검사 · 레이저)':['Casts a ray in one direction and finds the first thing it hits (sight, ground checks, lasers).','一方向に光線を飛ばし、最初に当たったものを調べます（視界・接地判定・レーザー）。','向一个方向发射射线，找到第一个命中的物体（视野、地面检测、激光）。'],
+ '주변 적 모두 찾기 (폭발 범위)':['Find all nearby enemies (blast radius)','周りの敵をすべて探す（爆発範囲）','查找周围所有敌人（爆炸范围）'],'원 안의 콜라이더를 모두 찾아 태그가 Enemy인 것만 지웁니다.':['Finds every collider in a circle and destroys the ones tagged Enemy.','円の中のコライダーをすべて探し、タグが Enemy のものだけ消します。','查找圆内所有碰撞体，只删除标签为 Enemy 的。'],
+ '총알 쏘기 (프리팹 Instantiate)':['Shoot bullets (prefab Instantiate)','弾を撃つ（プレハブ Instantiate）','发射子弹（预制体 Instantiate）'],'프리팹을 슬롯에 넣고 Space를 누를 때마다 복제해서 날립니다. 총알 프리팹에는 리지드바디 2D(스크립트로만)와 박스 콜라이더 2D(트리거)를 붙이세요.':['Put a prefab in the slot; each Space press clones and fires it. Give the bullet prefab a Rigidbody 2D (Kinematic) and a Box Collider 2D (trigger).','プレハブをスロットに入れ、Space を押すたびに複製して飛ばします。弾のプレハブにはリジッドボディ 2D（スクリプトのみ）とボックスコライダー 2D（トリガー）を付けましょう。','把预制体放入槽位，每按一次 Space 就复制并发射。子弹预制体请添加刚体 2D（仅脚本）和盒形碰撞体 2D（触发器）。'],
+ '적을 일정 시간마다 만들기':['Spawn enemies on a timer','一定時間ごとに敵を作る','定时生成敌人'],'InvokeRepeating으로 몇 초마다 프리팹을 무작위 위치에 만듭니다.':['Uses InvokeRepeating to spawn a prefab at a random spot every few seconds.','InvokeRepeating で数秒ごとにプレハブをランダムな位置に作ります。','用 InvokeRepeating 每隔几秒在随机位置生成预制体。'],
+ '총알이 맞았을 때 (트리거)':['When a bullet hits (trigger)','弾が当たったとき（トリガー）','子弹命中时（触发器）'],'총알(트리거)이 적에 닿으면 적에게 피해를 주고 총알은 사라집니다.':['When the bullet (trigger) touches an enemy, it damages the enemy and disappears.','弾（トリガー）が敵に触れると敵にダメージを与え、弾は消えます。','子弹（触发器）碰到敌人时对其造成伤害并消失。'],
+ '코루틴으로 기다렸다 하기':['Wait, then act (coroutine)','コルーチンで待ってから実行','用协程等待后执行'],'IEnumerator와 yield return으로 시간 순서대로 일을 합니다. (깜빡임 · 연출 · 순서대로 등장)':['Does things in timed order with IEnumerator and yield return (blinking, cutscenes, staggered spawns).','IEnumerator と yield return で時間順に処理します（点滅・演出・順番に登場）。','用 IEnumerator 和 yield return 按时间顺序执行（闪烁、演出、依次登场）。'],
+ '깜빡이기 (무적 시간)':['Blink (invincibility)','点滅（無敵時間）','闪烁（无敌时间）'],'코루틴으로 그림을 몇 번 껐다 켭니다.':['Turns the sprite off and on a few times with a coroutine.','コルーチンで絵を数回消したり表示したりします。','用协程把图像关开几次。'],
+ '몇 초 뒤에 실행 (Invoke)':['Run after a delay (Invoke)','数秒後に実行 (Invoke)','几秒后执行 (Invoke)'],'Invoke로 메서드를 몇 초 뒤에 한 번 부릅니다.':['Calls a method once after a few seconds with Invoke.','Invoke でメソッドを数秒後に1回呼びます。','用 Invoke 在几秒后调用一次方法。'],
+ '일시정지 (timeScale)':['Pause (timeScale)','一時停止 (timeScale)','暂停 (timeScale)'],'P를 누르면 게임 시간이 멈추고, 다시 누르면 이어집니다.':['Press P to freeze game time; press again to resume.','P を押すとゲームの時間が止まり、もう一度押すと再開します。','按 P 暂停游戏时间，再按一次继续。'],
+ '최고 점수 저장 (PlayerPrefs)':['Save a high score (PlayerPrefs)','ハイスコアを保存 (PlayerPrefs)','保存最高分 (PlayerPrefs)'],'PlayerPrefs는 게임을 꺼도 남아요. 점수가 최고 기록보다 높으면 저장합니다.':['PlayerPrefs survives closing the game. Saves the score when it beats the best record.','PlayerPrefs はゲームを閉じても残ります。スコアが最高記録より高ければ保存します。','PlayerPrefs 关闭游戏后仍会保留。分数超过最高纪录时保存。'],
+ '파티클 터뜨리기':['Burst particles','パーティクルを出す','喷发粒子'],'파티클 시스템을 재생하거나 지금 바로 몇 개를 뿜습니다.':['Plays the particle system or emits a few particles right now.','パーティクルシステムを再生するか、今すぐいくつか出します。','播放粒子系统，或立即发射若干粒子。'],
+ '카메라 흔들기':['Camera shake','カメラを揺らす','镜头抖动'],'맞았을 때 · 폭발할 때 화면을 잠깐 흔듭니다. (세기 칸, 시간 초)':['Briefly shakes the screen on hits or explosions (strength in cells, time in seconds).','被弾・爆発のときに画面を少し揺らします（強さはマス、時間は秒）。','受击或爆炸时短暂晃动画面（强度为格，时间为秒）。'],
+ '마우스 쪽 바라보기':['Look at the mouse','マウスの方を向く','朝向鼠标'],'마우스 위치를 씬 좌표로 바꿔 그쪽으로 돌립니다.':['Converts the mouse position to scene coordinates and rotates toward it.','マウスの位置をシーン座標に変えてその方向に回します。','把鼠标位置转换为场景坐标并朝其旋转。'],
+ '목록 (List) 쓰기':['Using a List','リスト (List) を使う','使用列表 (List)'],'List에 값을 넣고 빼고 foreach로 하나씩 꺼냅니다.':['Add and remove values in a List and go through them with foreach.','List に値を入れたり出したりして、foreach で1つずつ取り出します。','向 List 添加、移除值，并用 foreach 逐个取出。'],
+ '배열 · Dictionary':['Arrays · Dictionary','配列・Dictionary','数组 · Dictionary'],'배열은 크기가 정해진 목록, Dictionary는 이름(키)으로 값을 찾는 표입니다.':['An array is a fixed-size list; a Dictionary looks values up by key.','配列はサイズが決まったリスト、Dictionary は名前（キー）で値を探す表です。','数组是固定大小的列表，Dictionary 是按键查找值的表。'],
+ '다른 스크립트의 값 · 함수 쓰기':['Use another script\'s values and functions','他のスクリプトの値・関数を使う','使用其他脚本的值和函数'],'GetComponent<스크립트 이름>()으로 내가 만든 스크립트를 꺼내 public 변수와 함수를 씁니다.':['Get your own script with GetComponent<ScriptName>() and use its public variables and functions.','GetComponent<スクリプト名>() で自分のスクリプトを取り出し、public 変数と関数を使います。','用 GetComponent<脚本名>() 获取自己的脚本并使用其 public 变量和函数。'],
+ '태그로 찾기':['Find by tag','タグで探す','按标签查找'],'태그는 인스펙터 맨 위에서 정해요. 주인공은 기본 Player입니다.':['Set tags at the top of the Inspector. The hero is Player by default.','タグはインスペクターの一番上で決めます。主人公は既定で Player です。','标签在检查器顶部设置。主角默认为 Player。']
 });

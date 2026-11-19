@@ -1746,7 +1746,7 @@ html[data-theme="light"] .lnav button.lhome{background:#e9bd0c;color:#1a1400}
 </main>
 </div>
 
-<script src="script-engine.js?v=20261118a"></script>
+<script src="script-engine.js?v=20261119a"></script>
 <script src="script-editor.js?v=20261118a"></script>
 <script src="anim-editor.js?v=20261107f"></script>
 <script src="ui-builder.js?v=20261105d"></script>
@@ -5564,6 +5564,7 @@ function plog(k,m){const l=CON.lines.slice(-200);l.push([k,m]);setConsole(l,fals
 function playStart(){
   const p=P(),hero=SN_OBJS.find(o=>o.id==='hero');if(!p||!p.play||PLAY||!hero)return;
   closePM();if(!p.task)snRestore();Object.keys(LINV).forEach(k=>delete LINV[k]);
+  try{CSCO.clear()}catch(e){}
   PLAY={snap:JSON.parse(JSON.stringify(SN_OBJS)),tm:{t:TM.t.slice(),c:TM.c.slice()},ui:JSON.parse(JSON.stringify(SN_UI)),sel:SN.sel,blocked:new Set(),bt:new Set(),inT:new Set(),msg:null,down:null};
   PLAY.keys=new Set();PLAY.walk=0;PLAY.cell=null;PLAY.last=performance.now();PLAY.raf=requestAnimationFrame(playLoop);
   const cur=$('.vtabs .vtab.on');PLAY.view=cur?cur.dataset.v:'pScene';
@@ -5590,7 +5591,7 @@ function playClick(){
 function playStop(quiet){
   if(!PLAY)return;
   cancelAnimationFrame(PLAY.raf);
-  const snap=PLAY.snap,sel=PLAY.sel,tm=PLAY.tm,ui=PLAY.ui,back=PLAY.view;PLAY=null;L6RUN=null;
+  const snap=PLAY.snap,sel=PLAY.sel,tm=PLAY.tm,ui=PLAY.ui,back=PLAY.view;PLAY=null;L6RUN=null;try{CSCO.clear()}catch(e){}
   /* 플레이 전에 보던 뷰로 돌아가기 (엔진과 같음) */
   if(back){const vb=$('.vtab[data-v="'+back+'"]');if(vb&&!vb.classList.contains('on'))vb.click()}
   SN_OBJS.length=0;snap.forEach(o=>SN_OBJS.push(o));tmLoad(tm);SN_UI.length=0;ui.forEach(u=>SN_UI.push(u));
@@ -5636,7 +5637,7 @@ function playLoop(now){
     if(PLAY.cx){
       /* 한 프레임 안에 눌렀다 뗀 키(빠른 탭)도 그 프레임에는 눌린 것으로 */
       play=frameInput([],PLAY.kin,PLAY.ptm,++PLAY.frame,[...new Set([...PLAY.keys,...(PLAY.tap||[])])]);PLAY.tap=null;PLAY.kin=play;OUT=[];csCur=PLAY.cx;PLAY.cx.dt=dt;
-      try{csCallUser(PLAY.cx,'Update',[])}catch(e){OUT.push(['error',csErrMsg(e)]);OUT.push(['warn',_t('오류가 나서 Update() 실행을 멈췄어요. 고친 뒤 다시 ▶ 플레이를 누르세요.')]);PLAY.cx=null}
+      try{csCallUser(PLAY.cx,'Update',[]);/* 코루틴 · Invoke (엔진과 같은 공용 스케줄러) */CSCO.tick(dt,dt)}catch(e){OUT.push(['error',csErrMsg(e)]);OUT.push(['warn',_t('오류가 나서 Update() 실행을 멈췄어요. 고친 뒤 다시 ▶ 플레이를 누르세요.')]);PLAY.cx=null}
       finally{csCur=null;play=null}
       PLAY.ptm+=dt;if(OUT.length)PLAY.pend.push(...OUT);OUT=[];
     }

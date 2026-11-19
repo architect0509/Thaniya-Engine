@@ -508,6 +508,8 @@ input[type=checkbox]{accent-color:var(--sel)}
 .comp.closed .cbody{display:none}
 .cbody{padding:6px 10px 8px}
 .fr{display:grid;grid-template-columns:40% 1fr;gap:8px;align-items:center;margin:4px 0;min-width:0}
+.fr.gotag{margin:-2px 12px 8px 20px}.fr.gotag input{width:100%;min-width:0}
+label.cbx{display:inline-flex;align-items:center;gap:4px;margin-right:10px;font-size:12px}
 .fr.top{align-items:start}
 .fr>label{color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fv{min-width:0;display:flex;gap:4px;align-items:center}
@@ -2159,8 +2161,9 @@ body.popbody .pcol{display:none}
 
 <script>try{EDLOAD.set(.1,'엔진 모듈 불러오는 중')}catch(e){}</script>
 <script src="volume-fx.js?v=20261118a"></script>
-<script src="script-engine.js?v=20261118a"></script>
-<script src="script-editor.js?v=20261118a"></script>
+<script src="particles.js?v=20261119a"></script>
+<script src="script-engine.js?v=20261119a"></script>
+<script src="script-editor.js?v=20261119a"></script>
 <script src="anim-editor.js?v=20261107h"></script>
 <script src="timeline.js?v=20261110a"></script>
 <script src="ui-builder.js?v=20261107a"></script>
@@ -2391,6 +2394,10 @@ const ICON=(()=>{
     dice:s('<rect x="2.5" y="2.5" width="11" height="11" rx="2.4"/><circle cx="5.6" cy="5.6" r="1" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/><circle cx="10.4" cy="10.4" r="1" fill="currentColor" stroke="none"/>')
   };
 })();
+/* 리지드바디 2D · 파티클 아이콘 */
+ICON.rb='<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="6" r="3.6"/><path d="M8 11.2v3M5.6 12.6L8 15l2.4-2.4"/></svg>';
+ICON.spark='<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8l1.3 3.6 3.6 1.3-3.6 1.3L8 11.6 6.7 8 3.1 6.7l3.6-1.3z"/><path d="M12.6 10.6l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5zM3.4 11.2l.4 1 1 .4-1 .4-.4 1-.4-1-1-.4 1-.4z"/></svg>';
+ICON.tag='<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2.5h5.6l6.4 6.4-5.1 5.1L2.5 7.6z"/><circle cx="5.3" cy="5.6" r="1.1"/></svg>';
 function ico(n){return ICON[n]||''}
 
 /* ===================== 유틸 ===================== */
@@ -2659,7 +2666,8 @@ function spriteOptions(selRef){
 
 /* ===================== 오브젝트 그림 ===================== */
 function objArt(g,type,x,y,t,props){
-  const sx=props&&props.sx||1,sy=props&&props.sy||1,rot=props&&+props.rot||0;
+  if(props&&props.srOff&&props.sprite)return;
+  const sx=(props&&props.sx||1)*(props&&props.flipX?-1:1),sy=(props&&props.sy||1)*(props&&props.flipY?-1:1),rot=props&&+props.rot||0;
   if(sx===1&&sy===1&&!rot){objArt0(g,type,x,y,t,props);return}
   g.save();
   if(rot){const cx=x+TS/2,cy=y+TS/2;g.translate(cx,cy);g.rotate(rot*Math.PI/180);g.translate(-cx,-cy)}
@@ -2686,7 +2694,7 @@ function objArt0(g,type,x,y,t,props){
     case'item':g.fillStyle='#2ab3c6';g.beginPath();g.moveTo(cx,cy-9);g.lineTo(cx+8,cy);g.lineTo(cx,cy+9);g.lineTo(cx-8,cy);g.closePath();g.fill();g.fillStyle='#bff3fa';g.beginPath();g.moveTo(cx,cy-9);g.lineTo(cx+3,cy-2);g.lineTo(cx,cy+1);g.lineTo(cx-4,cy-3);g.closePath();g.fill();break;
     case'monster':{const b=Math.sin(t*3)*2;g.fillStyle='rgba(34,169,156,.92)';g.beginPath();g.arc(cx,cy-3+b,10,Math.PI,0);g.lineTo(cx+10,cy+11+b);for(let k=0;k<4;k++)g.lineTo(cx+10-(k+.5)*5,cy+(k%2?11:7)+b);g.lineTo(cx-10,cy+11+b);g.closePath();g.fill();g.fillStyle='#052a2a';g.fillRect(cx-6,cy-6+b,3,4);g.fillRect(cx+3,cy-6+b,3,4);g.fillRect(cx-5,cy+2+b,10,3);break}
     case'spawn':g.fillStyle='#d7d9e8';g.fillRect(x+10,y+4,2,24);g.fillStyle='#3fae7d';g.beginPath();g.moveTo(x+12,y+5);g.lineTo(x+26,y+11);g.lineTo(x+12,y+17);g.closePath();g.fill();break;
-    case'empty':if(props&&props.camera){const cc=props.camera.start?'#ffd45e':'rgba(200,205,225,.92)';g.strokeStyle=cc;g.fillStyle=cc;g.lineWidth=1.6;g.setLineDash([]);g.strokeRect(x+15,y+3,10,8);g.beginPath();g.moveTo(x+25,y+7);g.lineTo(x+30,y+4.5);g.lineTo(x+30,y+9.5);g.closePath();g.fill();if(!props.light)break}if(props&&props.light){g.fillStyle=props.light.color||'#ffd88a';g.beginPath();g.arc(cx,cy,5,0,7);g.fill();g.strokeStyle=g.fillStyle;g.lineWidth=1.5;g.beginPath();for(let k=0;k<8;k++){const a=k*Math.PI/4;g.moveTo(cx+Math.cos(a)*8,cy+Math.sin(a)*8);g.lineTo(cx+Math.cos(a)*11,cy+Math.sin(a)*11)}g.stroke();break}if(props&&props.audio){g.fillStyle='rgba(200,205,225,.92)';g.strokeStyle=g.fillStyle;g.lineWidth=1.6;g.beginPath();g.moveTo(cx-8,cy-3);g.lineTo(cx-4,cy-3);g.lineTo(cx+1,cy-8);g.lineTo(cx+1,cy+8);g.lineTo(cx-4,cy+3);g.lineTo(cx-8,cy+3);g.closePath();g.fill();g.beginPath();g.arc(cx+2,cy,5,-.9,.9);g.stroke();g.beginPath();g.arc(cx+2,cy,9,-.9,.9);g.stroke();break}g.strokeStyle='rgba(200,205,225,.85)';g.lineWidth=1.5;g.setLineDash([3,3]);g.strokeRect(x+5,y+5,TS-10,TS-10);break;
+    case'empty':if(props&&props.camera){const cc=props.camera.start?'#ffd45e':'rgba(200,205,225,.92)';g.strokeStyle=cc;g.fillStyle=cc;g.lineWidth=1.6;g.setLineDash([]);g.strokeRect(x+15,y+3,10,8);g.beginPath();g.moveTo(x+25,y+7);g.lineTo(x+30,y+4.5);g.lineTo(x+30,y+9.5);g.closePath();g.fill();if(!props.light)break}if(props&&props.light){g.fillStyle=props.light.color||'#ffd88a';g.beginPath();g.arc(cx,cy,5,0,7);g.fill();g.strokeStyle=g.fillStyle;g.lineWidth=1.5;g.beginPath();for(let k=0;k<8;k++){const a=k*Math.PI/4;g.moveTo(cx+Math.cos(a)*8,cy+Math.sin(a)*8);g.lineTo(cx+Math.cos(a)*11,cy+Math.sin(a)*11)}g.stroke();break}if(props&&props.ps){g.fillStyle=props.ps.col0||'#ffd25e';for(let k=0;k<5;k++){const a=k*1.2566+.3,rr=k%2?7:10;g.globalAlpha=.9-k*.12;g.beginPath();g.arc(cx+Math.cos(a)*rr*.6,cy+Math.sin(a)*rr*.6,k?2.2:3.4,0,7);g.fill()}g.globalAlpha=1;g.strokeStyle='rgba(200,205,225,.85)';g.lineWidth=1.2;g.setLineDash([2,2]);g.beginPath();g.arc(cx,cy,11,0,7);g.stroke();g.setLineDash([]);break}if(props&&props.audio){g.fillStyle='rgba(200,205,225,.92)';g.strokeStyle=g.fillStyle;g.lineWidth=1.6;g.beginPath();g.moveTo(cx-8,cy-3);g.lineTo(cx-4,cy-3);g.lineTo(cx+1,cy-8);g.lineTo(cx+1,cy+8);g.lineTo(cx-4,cy+3);g.lineTo(cx-8,cy+3);g.closePath();g.fill();g.beginPath();g.arc(cx+2,cy,5,-.9,.9);g.stroke();g.beginPath();g.arc(cx+2,cy,9,-.9,.9);g.stroke();break}g.strokeStyle='rgba(200,205,225,.85)';g.lineWidth=1.5;g.setLineDash([3,3]);g.strokeRect(x+5,y+5,TS-10,TS-10);break;
   }
   g.restore();
 }
@@ -3890,7 +3898,11 @@ function render(){
   m.objs.forEach(o=>{const b=o.props&&o.props.box;if(!b||!shown(o))return;const q=pos(o),cx=(q.x+.5+(+b.ox||0))*TS,cy=(q.y+.5+(+b.oy||0))*TS,bw=(+b.w||1)*TS,bh=(+b.h||1)*TS;
     g.save();g.strokeStyle=objOn(m,o)?'#7ee787':'rgba(126,231,135,.35)';g.lineWidth=1.5/cam.z;if(b.trigger)g.setLineDash([4/cam.z,3/cam.z]);g.strokeRect(cx-bw/2,cy-bh/2,bw,bh);g.restore()});
   sortedObjs(m).filter(o=>ordOf(m,o)>m.l.length*10).forEach(drawObj);g.globalAlpha=1;
+  /* 파티클: 플레이 중이면 실제 파티클 · 아니면 고른 파티클 시스템만 미리 보기 */
+  try{if(PL)m.objs.forEach(o=>{if(o.props&&o.props.ps&&objOn(m,o))psDraw(g,m,o,PL,true)});else psPreview(g,m)}catch(e){console.error(e)}
   if(m.dark&&m.dark.on&&$('#optLight').checked)drawLighting(g,m,lightsOf(m),dpr*cam.z,dpr*cam.x,dpr*cam.y);
+  /* 리지드바디 2D: 플레이 중 고른 몸의 속도 화살표 */
+  if(PL&&PL.rbs){const so=getSel(),st=so&&PL.rbs.get(so.id);if(st&&(st.vx||st.vy)){const c=bodyCenter(m,so),L=Math.min(4,Math.hypot(st.vx,st.vy)*.25)*TS,an=Math.atan2(st.vy,st.vx);g.save();g.strokeStyle='#ffb347';g.fillStyle='#ffb347';g.lineWidth=2/cam.z;g.beginPath();g.moveTo(c.x,c.y);g.lineTo(c.x+Math.cos(an)*L,c.y+Math.sin(an)*L);g.stroke();g.beginPath();g.arc(c.x+Math.cos(an)*L,c.y+Math.sin(an)*L,3/cam.z,0,7);g.fill();g.restore()}}
   /* 겹친 칸: 이름표는 맨 위 오브젝트만 (“외 N”), 오른쪽 위에 겹친 개수 배지 */
   const stkC=new Map();
   if(!PL)sortedObjs(m).forEach(o=>{if(!shown(o))return;const k=Math.round(o.x)+','+Math.round(o.y);let a=stkC.get(k);if(!a)stkC.set(k,a=[]);a.push(o)});
@@ -4496,6 +4508,8 @@ const MK_GO_BASE=()=>[
   {id:'cam',label:'카메라 오브젝트',short:'카메라',ic:'cam',col:'#5b8fd9',title:'카메라 컴포넌트가 붙은 빈 게임 오브젝트',fn:createCameraObject},
   {id:'gvol',label:'전역 볼륨',short:'전역 볼륨',ic:'volume',col:'#b06bd6',title:'볼륨 컴포넌트(전역)가 붙은 빈 게임 오브젝트 · 화면 전체에 후처리 효과',fn:()=>createVolumeObject('global')},
   {id:'lvol',label:'지역 볼륨',short:'지역 볼륨',ic:'volume',col:'#8a5cc7',title:'볼륨 컴포넌트(지역) + 박스 콜라이더 2D가 붙은 빈 게임 오브젝트 · 상자 안에서만 후처리 효과',fn:()=>createVolumeObject('local')},
+  {id:'ps',label:'파티클 효과',short:'파티클',ic:'spark',col:'#f08a3c',title:'파티클 시스템(불꽃)이 붙은 빈 게임 오브젝트 · 인스펙터에서 연기 · 폭발 · 비 · 눈 등으로 바꿀 수 있어요',fn:()=>createPsObject('fire')},
+  {id:'rbbox',label:'물리 상자',short:'물리 상자',ic:'rb',col:'#d0884a',title:'리지드바디 2D + 박스 콜라이더 2D가 붙은 상자 · 플레이하면 중력으로 떨어지고 벽 · 땅에 부딪쳐요',fn:createPhysicsBox},
   {id:'group',label:'새 그룹',ic:'folder',col:'#7d8296',fn:newGroup}];
 const MK_GO_ROLE=()=>['spawn','npc','monster','item','event','portal'].filter(k=>TYPES[k]).map(k=>({id:'t:'+k,label:TYPES[k].label,short:{event:'이벤트',item:'아이템'}[k],ic:GO_ICON[k],col:TYPES[k].color,fn:()=>createObjectAtView(k)}));
 const MK_UI_EL=()=>Object.keys(UI_NAMES).map(k=>({id:'u:'+k,label:UI_NAMES[k],ic:UI_ICON[k],col:UI_COLOR[k],fn:()=>createUiAtCenter(k)}));
@@ -6185,6 +6199,18 @@ function createVolumeObject(mode){
   o.name=_t(mode==='local'?'지역 볼륨':'전역 볼륨')+' '+(m.objs.filter(q=>q.props&&q.props.volume&&(q.props.volume.mode==='local')===(mode==='local')).length+1);
   addComponent('volume',mode);
 }
+function createPsObject(preset){
+  const m=cur(),n0=m.objs.length;createObjectAtView('empty');
+  const o=getSel();if(!o||m.objs.length===n0)return;
+  o.name=_t('파티클')+' '+(m.objs.filter(q=>q.props&&q.props.ps).length+1);addComponent('ps',preset);
+}
+function createPhysicsBox(){
+  const m=cur(),n0=m.objs.length;createObjectAtView('empty');
+  const o=getSel();if(!o||m.objs.length===n0)return;
+  o.name=_t('물리 상자')+' '+(m.objs.filter(q=>q.props&&q.props.rb).length+1);
+  const cr=assets.find(a=>a.kind==='sprite'&&a.id==='base_crate')||assets.find(a=>a.kind==='sprite'&&/crate|나무 상자/i.test(a.name||''));if(cr)o.props.sprite=cr.id;
+  o.props.box={trigger:false,w:.9,h:.9,ox:0,oy:0};addComponent('rb');
+}
 function createCameraObject(){
   const m=cur(),n0=m.objs.length;createObjectAtView('empty');
   const o=getSel();if(!o||m.objs.length===n0)return;
@@ -6239,9 +6265,13 @@ function addComponent(k,arg){
   else if(k==='shadow2d'){if(o.props.shadow2d){toast('이미 그림자 캐스터 2D 컴포넌트가 있습니다');return}o.props.shadow2d=SC_DEF();if(!m.dark||!m.dark.on)toast('그림자는 씬의 「어둠」을 켜고 빛이 있을 때 보입니다')}
   else if(k==='volume'){if(o.props.volume){toast('이미 볼륨 컴포넌트가 있습니다');return}o.props.volume=VOLFX.newVolume(arg==='local'?'local':'global');if(arg==='local'&&!o.props.box)o.props.box=VOL_BOX_DEF();if(arg==='local')toast('지역 볼륨: 박스 콜라이더 2D(트리거) 상자 안에서만 효과가 보입니다');insFold.delete('cv')}
   else if(k==='camera'){if(o.props.camera){toast('이미 카메라 컴포넌트가 있습니다');return}o.props.camera=Object.assign(CAM_DEF(),{start:!m.objs.some(q=>q!==o&&q.props&&q.props.camera&&q.props.camera.start)})}
+  else if(k==='rb'){if(o.props.rb){toast('이미 리지드바디 2D 컴포넌트가 있습니다');return}if(o.type==='monster'){toast('몬스터는 MonsterAI 스크립트가 움직여서 리지드바디 2D를 붙일 수 없습니다');return}
+    o.props.rb=RB_DEF();if(o.type==='spawn'){o.props.rb.grav=0;toast('주인공: 중력 0으로 붙였습니다 · 플랫포머로 만들려면 중력을 1로 올리고 이동 스크립트에서 rb.velocity 를 쓰세요')}
+    else if(!o.props.box){o.props.box={trigger:false,w:.9,h:.9,ox:0,oy:0};toast('박스 콜라이더 2D도 함께 붙였습니다 · 콜라이더가 있어야 벽과 부딪쳐요')}insFold.delete('cr')}
+  else if(k==='ps'){if(o.props.ps){toast('이미 파티클 시스템 컴포넌트가 있습니다');return}o.props.ps=PSYS.applyPreset(PSYS.DEF(),arg&&PSYS.PRESETS[arg]?arg:'fire');insFold.delete('cp')}
   else{
     if(o.type===k){toast(TYPES[k].label+' 컴포넌트가 이미 있습니다');return}
-    const keep={};['sprite','sx','sy','rot','memo','light','camera','box','shadow2d','animator','director','audio','volume'].forEach(x=>{if(o.props[x]!==undefined)keep[x]=o.props[x]});
+    const keep={};['sprite','sx','sy','rot','memo','light','camera','box','shadow2d','animator','director','audio','volume','rb','ps','flipX','flipY'].forEach(x=>{if(o.props[x]!==undefined)keep[x]=o.props[x]});
     const was=o.type;o.type=k;o.props=Object.assign(TYPES[k].def(),keep);if(was==='spawn')dropHeroScript(o);dropRoleScripts(o,was);if(k==='spawn'){fixStart(m);giveHeroCamera(m,o);giveHeroScript(o);if(!P.playerSprite&&!o.props.sprite){giveHeroAnimator(o);anDirty()}}giveRoleScripts(o);renderScripts();
     if(was!=='empty')toast(TYPES[was].label+' 컴포넌트를 '+TYPES[k].label+'(으)로 교체했습니다');
   }
@@ -6260,7 +6290,9 @@ function removeComponent(k){
   else if(k==='animator')delete o.props.animator;
   else if(k==='director'){delete o.props.director;try{TLH.render()}catch(e){}}
   else if(k==='audio')delete o.props.audio;
-  else{const keep={};['sprite','sx','sy','rot','memo','light','camera','box','shadow2d','animator','director','audio','volume'].forEach(x=>{if(o.props[x]!==undefined)keep[x]=o.props[x]});if(o.type==='spawn')dropHeroScript(o);dropRoleScripts(o,o.type);o.type='empty';o.props=keep;fixStart(cur());renderScripts()}
+  else if(k==='rb')delete o.props.rb;
+  else if(k==='ps'){delete o.props.ps;edPs.delete(o.id)}
+  else{const keep={};['sprite','sx','sy','rot','memo','light','camera','box','shadow2d','animator','director','audio','volume','rb','ps','flipX','flipY'].forEach(x=>{if(o.props[x]!==undefined)keep[x]=o.props[x]});if(o.type==='spawn')dropHeroScript(o);dropRoleScripts(o,o.type);o.type='empty';o.props=keep;fixStart(cur());renderScripts()}
   commit();renderInsp();renderHier();need();
 }
 /* ===================== 인스펙터 ===================== */
@@ -6268,8 +6300,8 @@ const insFold=new Set();
 const sprites=()=>assets.filter(a=>a.kind==='sprite');
 const num=(axis,attr,val,min,max)=>`<span class="num"><i>${axis}</i><input type="number" step="any" ${attr} min="${min}" max="${max}" value="${val}"></span>`;
 const compEn=n=>` <small style="color:var(--mute);font-weight:400">(${n})</small>`;
-const COMP_KIND={c:'role',cm:'gen',cl:'gen',cc:'gen',cv:'gen',cb:'gen',cs:'gen',ca:'gen',cd:'gen',cau:'gen',ur:'role'};
-function comp(key,icon,title,body,tip){const ck=COMP_KIND[key],uk=key==='ur',uu=uk?getUi():null,so=ck==='role'&&!uk?getSel():null,rc=uu?UI_COLOR[uu.type]:so&&TYPES[so.type]?TYPES[so.type].color:'',rt=ck?`<i class="rtag ${ck}"${rc?` style="--bc:${rc}"`:''} title="${ck==='role'?(uk?'역할 컴포넌트 · UI 요소당 하나만 가질 수 있습니다 (컴포넌트 추가에서 다른 역할로 바꿀 수 있어요)':'역할 컴포넌트 · 오브젝트당 하나만 가질 수 있습니다'):'일반 컴포넌트 · 여러 개를 함께 가질 수 있습니다'}">${ck==='role'?'역할':'일반'}</i>`:'';const rm=key==='c'?'type':key==='cm'?'memo':key==='cl'?'light':key==='cc'?'camera':key==='cv'?'volume':key==='cb'?'box':key==='cs'?'shadow2d':key==='ca'?'animator':key==='cd'?'director':key==='cau'?'audio':'';return`<div class="comp${insFold.has(key)?' closed':''}" data-comp="${key}"><button class="chead">${ico(icon)}<span>${title}</span>${rt}</button>${qb(tip,'cq')}${rm?`<button class="crm" data-rm="${rm}" title="컴포넌트 제거" aria-label="컴포넌트 제거">✕</button>`:''}<div class="cbody">${body}</div></div>`}
+const COMP_KIND={c:'role',cm:'gen',cl:'gen',cc:'gen',cv:'gen',cb:'gen',cs:'gen',ca:'gen',cd:'gen',cau:'gen',cr:'gen',cp:'gen',ur:'role'};
+function comp(key,icon,title,body,tip){const ck=COMP_KIND[key],uk=key==='ur',uu=uk?getUi():null,so=ck==='role'&&!uk?getSel():null,rc=uu?UI_COLOR[uu.type]:so&&TYPES[so.type]?TYPES[so.type].color:'',rt=ck?`<i class="rtag ${ck}"${rc?` style="--bc:${rc}"`:''} title="${ck==='role'?(uk?'역할 컴포넌트 · UI 요소당 하나만 가질 수 있습니다 (컴포넌트 추가에서 다른 역할로 바꿀 수 있어요)':'역할 컴포넌트 · 오브젝트당 하나만 가질 수 있습니다'):'일반 컴포넌트 · 여러 개를 함께 가질 수 있습니다'}">${ck==='role'?'역할':'일반'}</i>`:'';const rm=key==='c'?'type':key==='cm'?'memo':key==='cl'?'light':key==='cc'?'camera':key==='cv'?'volume':key==='cb'?'box':key==='cs'?'shadow2d':key==='ca'?'animator':key==='cd'?'director':key==='cau'?'audio':key==='cr'?'rb':key==='cp'?'ps':'';return`<div class="comp${insFold.has(key)?' closed':''}" data-comp="${key}"><button class="chead">${ico(icon)}<span>${title}</span>${rt}</button>${qb(tip,'cq')}${rm?`<button class="crm" data-rm="${rm}" title="컴포넌트 제거" aria-label="컴포넌트 제거">✕</button>`:''}<div class="cbody">${body}</div></div>`}
 const darkComp=m=>comp('dark','sun','어둠 (조명)'+compEn('Darkness'),
       fr('어둠 사용',`<input type="checkbox" data-s="dark"${m.dark.on?' checked':''}>`,false,'enabled','켜면 화면이 어두워지고, 빛(Light) 컴포넌트를 가진 게임 오브젝트 주변만 밝아집니다.')+
       fr('색',`<input type="color" data-s="darkColor" value="${esc(m.dark.color)}" style="width:44px;height:22px;padding:0;border:1px solid var(--line2);background:none">`,false,'color','어둠의 색입니다.')+
@@ -6346,7 +6378,7 @@ function renderInsp0(){
     return;
   }
   const T=TYPES[o.type],p=o.props;
-  let h=`<div class="ihead"><span class="ibadge" style="background:${T.color}">${ico('cube')}</span><input type="checkbox" class="iact" data-p="active"${o.active!==false?' checked':''} title="활성화 (SetActive) · 끄면 씬과 플레이에서 숨겨지고 스크립트도 멈춥니다" aria-label="활성화"><input type="text" class="iname" data-p="name" maxlength="24" value="${esc(o.name)}" aria-label="이름"><span class="tag">${T.label}</span><button class="ib del" type="button" id="delObj" title="게임 오브젝트 삭제 (Delete)" aria-label="게임 오브젝트 삭제">${ico('trash')}</button></div>`+pfBarHTML(m,o);
+  let h=`<div class="ihead"><span class="ibadge" style="background:${T.color}">${ico('cube')}</span><input type="checkbox" class="iact" data-p="active"${o.active!==false?' checked':''} title="활성화 (SetActive) · 끄면 씬과 플레이에서 숨겨지고 스크립트도 멈춥니다" aria-label="활성화"><input type="text" class="iname" data-p="name" maxlength="24" value="${esc(o.name)}" aria-label="이름"><span class="tag">${T.label}</span><button class="ib del" type="button" id="delObj" title="게임 오브젝트 삭제 (Delete)" aria-label="게임 오브젝트 삭제">${ico('trash')}</button></div>`+pfBarHTML(m,o)+tagRowHtml(m,o);
   h+=comp('transform','select','변환'+compEn('Transform'),
     `<div class="fr"><label class="scl" data-scrub="pos">${lb('위치','position','씬 안에서의 칸 좌표입니다. 왼쪽 위가 (0, 0)입니다. 「위치」 글자를 잡고 마우스를 좌우로 움직이면 X, 위아래로 움직이면 Y가 0.01칸 단위로 바뀝니다 (Shift: 0.1칸 · Alt: 0.001칸). X·Y 글자를 끌어도 됩니다.')}</label><div class="fv">${num('X','data-p="x" data-step="0.01"',insPos(m,o).x,-99999,99999)+num('Y','data-p="y" data-step="0.01"',insPos(m,o).y,-99999,99999)}</div></div>`+
     fr('배치 순서',num('#','data-p="order"',o.order==null?ordOf(m,o):o.order,-999,999)+smBtn('obj','끌어서 배치 순서를 바꾸는 창을 엽니다 (위쪽일수록 앞에 그려집니다)'),false,'sortingOrder','값이 클수록 위에 그려집니다. 타일맵은 10, 20, 30… 순서이므로, 값이 작으면 해당 타일맵 뒤에 그려집니다.')+
@@ -6392,6 +6424,8 @@ function renderInsp0(){
     fr('크기(칸)',num('W','data-bx="w" data-step="0.05"',b.w,.1,20)+num('H','data-bx="h" data-step="0.05"',b.h,.1,20),false,'size','콜라이더 상자의 너비와 높이(칸)입니다. 씬 뷰에 초록 테두리로 보이고, 트리거는 점선으로 보입니다.')+
     fr('오프셋(칸)',num('X','data-bx="ox" data-step="0.05"',b.ox,-10,10)+num('Y','data-bx="oy" data-step="0.05"',b.oy,-10,10),false,'offset','오브젝트 중심에서 콜라이더 상자를 옮기는 거리(칸)입니다.'),
     '오브젝트 둘레에 보이지 않는 상자를 만들어, 플레이 중 주인공과 몬스터가 지나가지 못하게 막습니다. 트리거로 바꾸면 막지 않고 닿았는지만 알려 줍니다. 타일 칸을 막을 때는 콜라이더 레이어를 쓰세요.');}
+  if(p.rb)h+=rbComp(m,o);
+  if(p.ps)h+=psComp(o);
   if(p.shadow2d){const sc=p.shadow2d;h+=comp('cs','shadow','그림자 캐스터 2D'+compEn('ShadowCaster2D'),
     fr('모양',`<select data-sc="shape"><option value="sprite"${sc.shape!=='box'?' selected':''}>스프라이트 모양</option><option value="box"${sc.shape==='box'?' selected':''}>사각형</option></select>`,false,'shape','스프라이트 모양: 그림의 불투명한 부분을 따라 외곽선을 만들어 그 모양대로 빛을 막습니다. 사각형: 그림을 감싸는 사각형으로 막습니다. 스프라이트가 없는 빈 게임 오브젝트는 항상 사각형입니다.')+
     fr('자기 그림자',`<input type="checkbox" data-sc="self"${sc.self?' checked':''}>`,false,'selfShadows','끄면(기본) 이 오브젝트 자신은 빛을 받아 밝게 보이고 뒤쪽에만 그림자가 생깁니다. 켜면 빛 반대편처럼 자기 몸도 어둡게 가려집니다.'),
@@ -6428,6 +6462,69 @@ if(window.TI18N)TI18N.add({
 '주인공이 말을 걸면 위에서부터 차례로 표시되는 대사 목록입니다. 대화창에서 화면을 클릭(또는 Space)하면 다음 대사로 넘어가고, 마지막 대사 뒤에는 닫힙니다.':['Lines shown in order from the top when the hero talks. Click the screen (or press Space) to go to the next line; the dialog closes after the last one.','主人公が話しかけると上から順に表示されるセリフのリストです。画面をクリック（またはSpace）で次のセリフへ進み、最後のセリフの後に閉じます。','主角搭话时从上到下依次显示的台词列表。点击画面（或按 Space）进入下一句，最后一句之后关闭。'],
 'NPC 이름표를 그림의 어느 쪽에 붙일지 정합니다. 크기를 키우면 그림 가장자리를 따라 함께 움직입니다.':['Which side of the sprite the NPC name label sits on. It follows the sprite edge when you scale the NPC.','NPCの名前ラベルを絵のどちら側に付けるかを決めます。サイズを大きくすると絵の端に合わせて一緒に動きます。','设置 NPC 名称标签贴在图像的哪一侧。放大 NPC 时会随图像边缘一起移动。'],
 '대사 목록을 담는 NPC 컴포넌트입니다. 주인공이 말을 걸면(HeroCombat의 hero.Interact) 붙어 있는 NpcTalk 스크립트가 대화창을 열고, 대화하는 동안 주인공은 움직이지 않습니다. NPC는 주인공의 이동을 막습니다.':['The NPC component that holds a list of lines. When the hero talks (hero.Interact in HeroCombat), the attached NpcTalk script opens the dialog, and the hero cannot move while talking. NPCs block the hero\'s movement.','セリフのリストを持つNPCコンポーネントです。主人公が話しかけると（HeroCombatのhero.Interact）付いているNpcTalkスクリプトが会話ウィンドウを開き、会話中は主人公が動けません。NPCは主人公の移動を妨げます。','保存台词列表的 NPC 组件。主角搭话时（HeroCombat 的 hero.Interact），附加的 NpcTalk 脚本会打开对话框，对话期间主角无法移动。NPC 会阻挡主角移动。']
+});
+/* ===================== 태그 · 리지드바디 2D · 파티클 시스템 (인스펙터) ===================== */
+function tagRowHtml(m,o){
+  const t=objTag(m,o),opts=[...new Set(DEF_TAGS.concat(P.maps.flatMap(q=>q.objs.map(x=>x.tag).filter(Boolean))))];
+  return`<div class="fr gotag"><label>${lb('태그','tag','게임 오브젝트를 무리로 나누는 이름표입니다. 스크립트에서 CompareTag("Enemy") · GameObject.FindWithTag("Player") · 충돌한 상대가 무엇인지 확인할 때 씁니다. 목록에 없는 이름도 직접 쓸 수 있어요. 주인공은 따로 정하지 않으면 Player, 몬스터는 Enemy 입니다.')}</label><div class="fv"><input type="text" data-tagin="1" list="tagList" value="${esc(t)}" maxlength="30" spellcheck="false" data-i18n-skip><datalist id="tagList">${opts.map(x=>`<option value="${esc(x)}">`).join('')}</datalist></div></div>`;
+}
+function rbComp(m,o){
+  const r=rbNorm(o.props.rb);o.props.rb=r;const live=play&&play.m===m&&play.rbs&&play.rbs.get(o.id);
+  const sel0=(k,opts)=>`<select data-rb="${k}">${opts.map(([v,l])=>`<option value="${v}"${r[k]===v?' selected':''}>${esc(_t(l))}</option>`).join('')}</select>`;
+  let h=fr('몸 종류',sel0('type',[['dynamic','움직임 (Dynamic)'],['kinematic','스크립트로만 (Kinematic)'],['static','고정 (Static)']]),false,'bodyType','움직임: 중력과 힘을 받고 벽에 부딪칩니다 (상자 · 공 · 플랫포머 주인공). 스크립트로만: 중력을 받지 않고 velocity 로만 움직이며 벽을 뚫습니다 (움직이는 발판 · 총알). 고정: 움직이지 않습니다.');
+  if(r.type==='dynamic'){
+    h+=fr('중력 배율',num('G','data-rb="grav" data-step="0.1"',r.grav,-20,20),false,'gravityScale','1이면 보통 중력(아래로 1초에 9.81칸/초씩 빨라짐), 0이면 둥둥 떠 있습니다 (위에서 보는 게임 · 우주). 음수면 위로 떨어집니다.')+
+      fr('질량',num('M','data-rb="mass" data-step="0.1"',r.mass,.0001,10000),false,'mass','무거울수록 같은 힘(AddForce)을 줘도 덜 움직입니다.')+
+      fr('공기 저항',num('D','data-rb="drag" data-step="0.1"',r.drag,0,100),false,'linearDamping','클수록 움직임이 빨리 멈춥니다. 위에서 보는 게임에서 미끄러지지 않게 하려면 5~10을 쓰세요.')+
+      fr('튕김',num('B','data-rb="bounce" data-step="0.05"',r.bounce,0,1),false,'bounciness','부딪쳤을 때 얼마나 튕겨 나올지 (0 = 멈춤, 1 = 같은 빠르기로 튕김). 유니티의 물리 재질 Bounciness 와 같습니다.')+
+      fr('회전 고정',`<input type="checkbox" data-rb="frot"${r.frot!==false?' checked':''}>`,false,'freezeRotation','켜면(기본) 힘을 받아도 빙글빙글 돌지 않습니다. 끄면 AddTorque · angularVelocity 로 회전합니다.');
+  }
+  h+=fr('위치 고정',`<label class="cbx"><input type="checkbox" data-rb="fzx"${r.fzx?' checked':''}> X</label><label class="cbx"><input type="checkbox" data-rb="fzy"${r.fzy?' checked':''}> Y</label>`,false,'constraints','켠 방향으로는 움직이지 않습니다 (예: Y를 켜면 좌우로만 움직이는 발판).');
+  if(live)h+=fr('속도 (실시간)',`<span style="font-family:var(--f-mono)">(${live.vx.toFixed(2)}, ${live.vy.toFixed(2)})</span>`,false,'velocity','플레이 중 지금 속도(칸/초)입니다. 아래쪽이 +y 입니다.')+fr('닿아 있는 것',`<span style="font-family:var(--f-mono)">${live.cont.size?[...live.cont.values()].map(c=>c.b.k==='tile'?'Tilemap':esc(c.b.o.name)).join(', '):'-'}</span>`,false,'contacts','지금 부딪쳐 있는 콜라이더입니다.');
+  if(!o.props.box&&o.type!=='spawn')h+=`<p class="hint" style="color:var(--warn)">${esc(_t('콜라이더가 없어서 벽을 그냥 통과합니다.'))} <button class="btn sm" type="button" data-rbbox="1">${esc(_t('박스 콜라이더 2D 붙이기'))}</button></p>`;
+  return comp('cr','rb','리지드바디 2D'+compEn('Rigidbody2D'),h,'게임 오브젝트가 물리에 따라 움직이게 합니다: 중력으로 떨어지고, 힘을 받아 밀리고, 벽 · 박스 콜라이더에 부딪쳐 멈춥니다. 스크립트에서 GetComponent<Rigidbody2D>()로 꺼내 velocity · AddForce 를 쓰고, 부딪치면 OnCollisionEnter2D(Collision2D) 를 받습니다. 좌표는 아래쪽이 +y 라서 점프는 Vector2.up(0, -1) 방향입니다.');
+}
+function psComp(o){
+  const ps=PSYS.normalize(o.props.ps);o.props.ps=ps;const st=play&&play.ps&&play.ps.get(o.id);
+  return comp('cp','spark','파티클 시스템'+compEn('ParticleSystem'),PSYS.inspHtml(ps,{fr,num,esc,_t},st?st.parts.length:0),'작은 점(파티클)을 잔뜩 뿜어 불꽃 · 연기 · 폭발 · 비 · 눈 같은 효과를 만듭니다. 프리셋을 고른 뒤 값을 바꿔 보세요. 스크립트: GetComponent<ParticleSystem>().Play() · Stop() · Emit(10) · main.startColor. 폭발 프리팹을 Instantiate 하고 「끝나면 오브젝트 삭제」를 켜면 저절로 사라집니다.');
+}
+$('#insp').addEventListener('click',e=>{
+  const pb=e.target.closest&&e.target.closest('[data-pspre],[data-psact],[data-rbbox]');if(!pb)return;
+  const o=getSel();if(!o)return;
+  if(pb.dataset.rbbox){if(!o.props.box)o.props.box={trigger:false,w:.9,h:.9,ox:0,oy:0};commit();renderInsp();need();return}
+  if(!o.props.ps)return;
+  if(pb.dataset.pspre){PSYS.applyPreset(o.props.ps,pb.dataset.pspre);edPs.delete(o.id);if(play&&play.ps)play.ps.delete(o.id);commit();renderInsp();need();try{learnEmit('ps:preset:'+pb.dataset.pspre)}catch(_){}return}
+  if(pb.dataset.psact==='replay'){edPs.delete(o.id);if(play&&play.ps){const st=psSt(o,true);st.parts=[];st.t=0;st.bursted=false;st.playing=true;st.ended=false;st.paused=false}need()}
+});
+$('#insp').addEventListener('change',e=>{if(e.target.dataset&&(e.target.dataset.rb||e.target.dataset.ps||e.target.dataset.tagin))commit()});
+if(window.TI18N)TI18N.add({
+'태그':['Tag','タグ','标签'],'리지드바디 2D':['Rigidbody 2D','リジッドボディ 2D','刚体 2D'],'파티클 효과':['Particle effect','パーティクル効果','粒子效果'],'파티클':['Particles','パーティクル','粒子'],'물리 상자':['Physics box','物理ボックス','物理箱子'],
+'리지드바디 2D (Rigidbody2D) · 물리':['Rigidbody 2D · physics','リジッドボディ 2D (Rigidbody2D) · 物理','刚体 2D (Rigidbody2D) · 物理'],'파티클 시스템 (ParticleSystem)':['Particle System','パーティクルシステム (ParticleSystem)','粒子系统 (ParticleSystem)'],
+'저장 데이터 지우기 (PlayerPrefs)':['Clear saved data (PlayerPrefs)','セーブデータを消去 (PlayerPrefs)','清除存档数据 (PlayerPrefs)'],'이 프로젝트의 PlayerPrefs 저장 데이터를 지웠습니다':['Cleared this project\'s PlayerPrefs data','このプロジェクトの PlayerPrefs データを消去しました','已清除此项目的 PlayerPrefs 数据'],
+'이미 리지드바디 2D 컴포넌트가 있습니다':['This object already has a Rigidbody 2D','すでにリジッドボディ 2D コンポーネントがあります','已经有刚体 2D 组件'],'이미 파티클 시스템 컴포넌트가 있습니다':['This object already has a Particle System','すでにパーティクルシステムコンポーネントがあります','已经有粒子系统组件'],
+'몬스터는 MonsterAI 스크립트가 움직여서 리지드바디 2D를 붙일 수 없습니다':['Monsters are moved by the MonsterAI script, so they can\'t take a Rigidbody 2D','モンスターは MonsterAI スクリプトで動くため、リジッドボディ 2D は付けられません','怪物由 MonsterAI 脚本移动，无法添加刚体 2D'],
+'주인공: 중력 0으로 붙였습니다 · 플랫포머로 만들려면 중력을 1로 올리고 이동 스크립트에서 rb.velocity 를 쓰세요':['Hero: added with gravity 0 · for a platformer, set gravity to 1 and use rb.velocity in the movement script','主人公：重力 0 で付けました · プラットフォーマーにするには重力を 1 にして移動スクリプトで rb.velocity を使いましょう','主角：以重力 0 添加 · 要做平台游戏，请把重力调为 1 并在移动脚本中使用 rb.velocity'],
+'박스 콜라이더 2D도 함께 붙였습니다 · 콜라이더가 있어야 벽과 부딪쳐요':['Also added a Box Collider 2D · it needs a collider to hit walls','ボックスコライダー 2D も一緒に付けました · コライダーがないと壁にぶつかりません','同时添加了盒形碰撞体 2D · 有碰撞体才会撞到墙'],
+'몸 종류':['Body type','ボディの種類','刚体类型'],'움직임 (Dynamic)':['Dynamic','動く (Dynamic)','动态 (Dynamic)'],'스크립트로만 (Kinematic)':['Kinematic (script only)','スクリプトのみ (Kinematic)','仅脚本 (Kinematic)'],'고정 (Static)':['Static','固定 (Static)','静态 (Static)'],
+'중력 배율':['Gravity scale','重力スケール','重力倍率'],'질량':['Mass','質量','质量'],'튕김':['Bounciness','跳ね返り','弹性'],'회전 고정':['Freeze rotation','回転を固定','冻结旋转'],'위치 고정':['Freeze position','位置を固定','冻结位置'],
+'속도 (실시간)':['Velocity (live)','速度 (リアルタイム)','速度 (实时)'],'닿아 있는 것':['Contacts','接触しているもの','接触对象'],
+'콜라이더가 없어서 벽을 그냥 통과합니다.':['No collider, so it passes through walls.','コライダーがないので壁をすり抜けます。','没有碰撞体，会直接穿过墙壁。'],'박스 콜라이더 2D 붙이기':['Add Box Collider 2D','ボックスコライダー 2D を付ける','添加盒形碰撞体 2D'],
+'프리팹 (Instantiate 용)':['Prefabs (for Instantiate)','プレハブ (Instantiate 用)','预制体 (用于 Instantiate)'],
+'계층 구조의 오브젝트나 프로젝트 창의 프리팹을 드래그해 넣을 수 있습니다':['Drag in an object from the Hierarchy or a prefab from the Project window','ヒエラルキーのオブジェクトやプロジェクトウィンドウのプレハブをドラッグして入れられます','可从层级视图拖入对象，或从项目窗口拖入预制体'],
+'파티클 시스템(불꽃)이 붙은 빈 게임 오브젝트 · 인스펙터에서 연기 · 폭발 · 비 · 눈 등으로 바꿀 수 있어요':['Empty game object with a Particle System (fire) · switch it to smoke, explosion, rain, snow and more in the Inspector','パーティクルシステム（炎）付きの空のゲームオブジェクト · インスペクターで煙・爆発・雨・雪などに変えられます','带粒子系统（火焰）的空游戏对象 · 可在检查器中改为烟雾、爆炸、雨、雪等'],
+'리지드바디 2D + 박스 콜라이더 2D가 붙은 상자 · 플레이하면 중력으로 떨어지고 벽 · 땅에 부딪쳐요':['A box with Rigidbody 2D + Box Collider 2D · in Play it falls with gravity and hits walls and ground','リジッドボディ 2D + ボックスコライダー 2D 付きの箱 · プレイすると重力で落ちて壁や地面にぶつかります','带刚体 2D + 盒形碰撞体 2D 的箱子 · 运行时会因重力下落并撞到墙壁和地面'],
+'게임 오브젝트를 무리로 나누는 이름표입니다. 스크립트에서 CompareTag("Enemy") · GameObject.FindWithTag("Player") · 충돌한 상대가 무엇인지 확인할 때 씁니다. 목록에 없는 이름도 직접 쓸 수 있어요. 주인공은 따로 정하지 않으면 Player, 몬스터는 Enemy 입니다.':['A label for grouping game objects. Scripts use it with CompareTag("Enemy"), GameObject.FindWithTag("Player"), or to check what they collided with. You can type a name that isn\'t in the list. Unless you set one, the hero is Player and monsters are Enemy.','ゲームオブジェクトをグループ分けする名札です。スクリプトで CompareTag("Enemy") · GameObject.FindWithTag("Player") · ぶつかった相手の確認に使います。リストにない名前も入力できます。指定しなければ主人公は Player、モンスターは Enemy です。','用于给游戏对象分组的标签。脚本中可用 CompareTag("Enemy")、GameObject.FindWithTag("Player") 或判断碰撞对象。也可以输入列表中没有的名称。未设置时主角为 Player，怪物为 Enemy。'],
+'움직임: 중력과 힘을 받고 벽에 부딪칩니다 (상자 · 공 · 플랫포머 주인공). 스크립트로만: 중력을 받지 않고 velocity 로만 움직이며 벽을 뚫습니다 (움직이는 발판 · 총알). 고정: 움직이지 않습니다.':['Dynamic: affected by gravity and forces, hits walls (crates, balls, platformer hero). Kinematic: no gravity, moves only by velocity and passes through walls (moving platforms, bullets). Static: doesn\'t move.','動く：重力と力を受け、壁にぶつかります（箱・ボール・プラットフォーマーの主人公）。スクリプトのみ：重力を受けず velocity だけで動き、壁を通り抜けます（動く足場・弾）。固定：動きません。','动态：受重力和力影响，会撞墙（箱子、球、平台游戏主角）。仅脚本：不受重力，只按 velocity 移动并穿墙（移动平台、子弹）。静态：不会移动。'],
+'1이면 보통 중력(아래로 1초에 9.81칸/초씩 빨라짐), 0이면 둥둥 떠 있습니다 (위에서 보는 게임 · 우주). 음수면 위로 떨어집니다.':['1 = normal gravity (speeds up by 9.81 cells/s each second, downward); 0 = floats (top-down games, space). Negative falls upward.','1 なら通常の重力（下へ毎秒 9.81 マス/秒ずつ加速）、0 なら浮いたまま（見下ろし型・宇宙）。負の値なら上に落ちます。','1 为正常重力（向下每秒加速 9.81 格/秒），0 为漂浮（俯视角游戏、太空）。负值会向上掉落。'],
+'무거울수록 같은 힘(AddForce)을 줘도 덜 움직입니다.':['Heavier bodies move less for the same force (AddForce).','重いほど同じ力 (AddForce) でも動きにくくなります。','越重，同样的力 (AddForce) 下移动越少。'],
+'클수록 움직임이 빨리 멈춥니다. 위에서 보는 게임에서 미끄러지지 않게 하려면 5~10을 쓰세요.':['Higher stops movement sooner. Use 5–10 in top-down games to avoid sliding.','大きいほど早く止まります。見下ろし型で滑らないようにするには 5〜10 を使いましょう。','越大停得越快。俯视角游戏中为避免打滑可设为 5~10。'],
+'부딪쳤을 때 얼마나 튕겨 나올지 (0 = 멈춤, 1 = 같은 빠르기로 튕김). 유니티의 물리 재질 Bounciness 와 같습니다.':['How much it bounces on impact (0 = stops, 1 = bounces back at the same speed). Same as Unity\'s physics material Bounciness.','ぶつかったときの跳ね返り（0 = 止まる、1 = 同じ速さで跳ね返る）。Unity の物理マテリアルの Bounciness と同じです。','碰撞时的反弹程度（0 = 停止，1 = 以相同速度弹回）。与 Unity 物理材质的 Bounciness 相同。'],
+'켜면(기본) 힘을 받아도 빙글빙글 돌지 않습니다. 끄면 AddTorque · angularVelocity 로 회전합니다.':['On (default): doesn\'t spin from forces. Off: rotates with AddTorque and angularVelocity.','オン（既定）なら力を受けても回転しません。オフにすると AddTorque · angularVelocity で回転します。','开启（默认）时受力也不会旋转。关闭后可通过 AddTorque、angularVelocity 旋转。'],
+'켠 방향으로는 움직이지 않습니다 (예: Y를 켜면 좌우로만 움직이는 발판).':['Won\'t move along checked axes (e.g. check Y for a platform that only moves sideways).','オンにした方向には動きません（例：Y をオンにすると左右にだけ動く足場）。','勾选的方向不会移动（例如勾选 Y 即为只左右移动的平台）。'],
+'플레이 중 지금 속도(칸/초)입니다. 아래쪽이 +y 입니다.':['Current velocity during Play (cells/s). Down is +y.','プレイ中の現在の速度（マス/秒）です。下が +y です。','运行中的当前速度（格/秒）。向下为 +y。'],
+'지금 부딪쳐 있는 콜라이더입니다.':['Colliders it is touching right now.','いま接触しているコライダーです。','当前正在接触的碰撞体。'],
+'게임 오브젝트가 물리에 따라 움직이게 합니다: 중력으로 떨어지고, 힘을 받아 밀리고, 벽 · 박스 콜라이더에 부딪쳐 멈춥니다. 스크립트에서 GetComponent<Rigidbody2D>()로 꺼내 velocity · AddForce 를 쓰고, 부딪치면 OnCollisionEnter2D(Collision2D) 를 받습니다. 좌표는 아래쪽이 +y 라서 점프는 Vector2.up(0, -1) 방향입니다.':['Makes the game object move with physics: it falls with gravity, gets pushed by forces, and stops against walls and box colliders. In scripts, get it with GetComponent<Rigidbody2D>() and use velocity / AddForce; collisions call OnCollisionEnter2D(Collision2D). Down is +y, so a jump goes along Vector2.up (0, -1).','ゲームオブジェクトを物理で動かします：重力で落ち、力で押され、壁やボックスコライダーにぶつかって止まります。スクリプトでは GetComponent<Rigidbody2D>() で取り出して velocity · AddForce を使い、ぶつかると OnCollisionEnter2D(Collision2D) を受け取ります。下が +y なのでジャンプは Vector2.up (0, -1) 方向です。','让游戏对象按物理运动：受重力下落、被力推动、撞到墙壁和盒形碰撞体时停下。脚本中用 GetComponent<Rigidbody2D>() 获取并使用 velocity、AddForce，碰撞时收到 OnCollisionEnter2D(Collision2D)。向下为 +y，所以跳跃方向是 Vector2.up (0, -1)。'],
+'작은 점(파티클)을 잔뜩 뿜어 불꽃 · 연기 · 폭발 · 비 · 눈 같은 효과를 만듭니다. 프리셋을 고른 뒤 값을 바꿔 보세요. 스크립트: GetComponent<ParticleSystem>().Play() · Stop() · Emit(10) · main.startColor. 폭발 프리팹을 Instantiate 하고 「끝나면 오브젝트 삭제」를 켜면 저절로 사라집니다.':['Emits lots of small particles for effects like fire, smoke, explosions, rain and snow. Pick a preset, then tweak the values. Scripts: GetComponent<ParticleSystem>().Play() · Stop() · Emit(10) · main.startColor. Instantiate an explosion prefab with “Destroy when done” on and it removes itself.','小さな点（パーティクル）をたくさん出して、炎・煙・爆発・雨・雪などの効果を作ります。プリセットを選んでから値を変えてみましょう。スクリプト：GetComponent<ParticleSystem>().Play() · Stop() · Emit(10) · main.startColor。爆発プレハブを Instantiate して「終わったらオブジェクトを削除」をオンにすると自動で消えます。','发射大量小粒子，制作火焰、烟雾、爆炸、雨、雪等效果。先选预设再调整数值。脚本：GetComponent<ParticleSystem>().Play() · Stop() · Emit(10) · main.startColor。Instantiate 爆炸预制体并开启“结束后删除对象”即可自动消失。']
 });
 /* ===================== 볼륨 (Volume) · 후처리 효과 =====================
    효과 정의 · 섞기 · 셰이더는 volume-fx.js (VOLFX). 여기서는 엔진 연결:
@@ -6654,6 +6751,9 @@ $('#insp').addEventListener('input',e=>{
     const s0=play&&play.aud&&play.aud.get(o0.id);if(s0)audApply(cur(),o0,s0);if(o0.mgr&&!play)markDirty();need()}return}
   if(t.dataset.an==='speed'){const o0=getSel();if(o0&&o0.props.animator){const v=parseFloat(t.value);if(!isNaN(v))o0.props.animator.speed=clamp(v,0,10)}return}
   if(t.dataset.sc){const o0=getSel();if(o0&&o0.props.shadow2d){const k0=t.dataset.sc;if(k0==='self')o0.props.shadow2d.self=t.checked;else if(k0==='shape')o0.props.shadow2d.shape=t.value==='box'?'box':'sprite';need()}return}
+  if(t.dataset.rb){const o0=getSel();if(o0&&o0.props.rb){const r=o0.props.rb,k0=t.dataset.rb;if(t.type==='checkbox')r[k0]=t.checked;else if(t.tagName==='SELECT'){r[k0]=t.value;setTimeout(()=>{commit();renderInsp()},0)}else{const v=parseFloat(t.value);if(isNaN(v))return;const lim={grav:[-20,20],mass:[.0001,10000],drag:[0,100],adrag:[0,100],bounce:[0,1]}[k0];if(!lim)return;r[k0]=clamp(v,lim[0],lim[1])}need()}return}
+  if(t.dataset.ps){const o0=getSel();if(o0&&o0.props.ps){if(PSYS.setField(o0.props.ps,t.dataset.ps,t)){edPs.delete(o0.id);if(play&&play.ps)play.ps.delete(o0.id);$$('#insp .pspr.on').forEach(b=>b.classList.remove('on'));need()}}return}
+  if(t.dataset.tagin!=null){const o0=getSel();if(o0){const v=t.value.trim().slice(0,30);if(!v||v==='Untagged'&&o0.type!=='spawn')delete o0.tag;else o0.tag=v;markDirty()}return}
   if(t.dataset.bx){const o0=getSel();if(o0&&o0.props.box){const k0=t.dataset.bx;if(t.type==='checkbox')o0.props.box[k0]=t.checked;else{const v=parseFloat(t.value);if(isNaN(v))return;const lim={w:[.1,20],h:[.1,20],ox:[-10,10],oy:[-10,10]}[k0];if(!lim)return;o0.props.box[k0]=clamp(v,lim[0],lim[1])}need()}return}
   if(t.dataset.l){const o0=getSel();if(o0&&o0.props.light){const k0=t.dataset.l;if(t.type==='checkbox')o0.props.light[k0]=t.checked;else if(k0==='color')o0.props.light.color=t.value;else{const v=parseFloat(t.value);if(isNaN(v))return;const lim={intensity:[.1,1],radius:[.5,30],angle:[5,360],dir:[-360,360]}[k0];o0.props.light[k0]=clamp(v,lim[0],lim[1])}need()}return}
   if(t.dataset.g==='name'){const g=(m.groups||[]).find(g=>hsel.has(g.id));if(g){g.name=t.value;renderHier()}return}
@@ -6701,7 +6801,7 @@ $('#insp').addEventListener('click',e=>{
   if(id==='iDup'){duplicateSel();return}
   if(id==='iAddComp'){const o=inspObj();if(!o)return;
     if(o.mgr){showMenu(e.target,[{head:'매니저 컴포넌트',sub:'씬에 보이지 않는 컴포넌트만 붙일 수 있어요',kind:'gen'},{label:'오디오 소스 (AudioSource)',ic:'sound',kind:'gen',checked:!!o.props.audio,fn:()=>addComponent('audio')},{label:'메모',ic:'gear',kind:'gen',checked:o.props.memo!=null,fn:()=>addComponent('memo')}],false);return}
-    const G=[['box','박스 콜라이더 2D (BoxCollider2D)','rect',!!o.props.box],['shadow2d','그림자 캐스터 2D (ShadowCaster2D)','shadow',!!o.props.shadow2d],['animator','애니메이터 (Animator)','animator',!!o.props.animator],['director','플레이어블 디렉터 (PlayableDirector)','timeline',!!o.props.director],['audio','오디오 소스 (AudioSource)','sound',!!o.props.audio],['light','빛 (Light)','sun',!!o.props.light],['camera','카메라 (Camera)','cam',!!o.props.camera],['volume','볼륨 (Volume) · 후처리','volume',!!o.props.volume],['memo','메모','gear',o.props.memo!=null]],
+    const G=[['box','박스 콜라이더 2D (BoxCollider2D)','rect',!!o.props.box],['shadow2d','그림자 캐스터 2D (ShadowCaster2D)','shadow',!!o.props.shadow2d],['animator','애니메이터 (Animator)','animator',!!o.props.animator],['director','플레이어블 디렉터 (PlayableDirector)','timeline',!!o.props.director],['audio','오디오 소스 (AudioSource)','sound',!!o.props.audio],['light','빛 (Light)','sun',!!o.props.light],['camera','카메라 (Camera)','cam',!!o.props.camera],['volume','볼륨 (Volume) · 후처리','volume',!!o.props.volume],['rb','리지드바디 2D (Rigidbody2D) · 물리','rb',!!o.props.rb],['ps','파티클 시스템 (ParticleSystem)','spark',!!o.props.ps],['memo','메모','gear',o.props.memo!=null]],
       R=[['npc','대화 (Npc)','info'],['event','이벤트 트리거 (EventTrigger)','flag'],['item','아이템 픽업 (Item)','cube'],['portal','씬 전환 포탈 (Portal)','split'],['spawn','주인공','user'],['monster','몬스터 (Monster)','game']];
     const items=[{head:'일반 컴포넌트',sub:'여러 개를 함께 붙일 수 있어요',kind:'gen'},
       ...G.map(c=>({label:c[1],ic:c[2],kind:'gen',checked:c[3],fn:()=>addComponent(c[0])})),
@@ -7332,7 +7432,9 @@ function scriptComps(o){
       else if(m.fk==='obj'){const mm=cur(),opt=q=>`<option value="${q.id}"${q.id===v?' selected':''} data-i18n-skip>${esc(q.name)}${q.id===o.id?esc(_t(' (자신)')):''}</option>`;
         const gUi=(mm.ui||[]).length?`<optgroup label="UI 요소">${mm.ui.map(opt).join('')}</optgroup>`:'',gGo=mm.objs.length?`<optgroup label="게임 오브젝트">${mm.objs.map(opt).join('')}</optgroup>`:'';
         const gUg=(mm.uiGroups||[]).length?`<optgroup label="UI 그룹 (폴더)">${mm.uiGroups.map(g=>`<option value="uig:${g.id}"${'uig:'+g.id===v?' selected':''}>📁 ${esc(g.name)}</option>`).join('')}</optgroup>`:'';
-        c=`<select ${at} data-objslot="1" title="계층 구조에서 오브젝트를 드래그해 넣을 수 있습니다"><option value="">None (${esc(m.type)})</option>${m.type==='UIGroup'?gUg:(isUiEl(o)||CS_UIT.has(m.type)?gUi+gUg+gGo:gGo+gUi+gUg)}</select>`}
+        /* GameObject · Transform 슬롯에는 프로젝트 창의 프리팹도 넣을 수 있음 (Instantiate 용) */
+        const pfOk=(m.type==='GameObject'||m.type==='Transform')&&PFS().length,gPf=pfOk?`<optgroup label="${esc(_t('프리팹 (Instantiate 용)'))}">${PFS().map(pf=>`<option value="pf:${pf.id}"${'pf:'+pf.id===v?' selected':''} data-i18n-skip>▣ ${esc(pf.name)}</option>`).join('')}</optgroup>`:'';
+        c=`<select ${at} data-objslot="1"${pfOk?' data-pfslot="1"':''} title="${pfOk?'계층 구조의 오브젝트나 프로젝트 창의 프리팹을 드래그해 넣을 수 있습니다':'계층 구조에서 오브젝트를 드래그해 넣을 수 있습니다'}"><option value="">None (${esc(m.type)})</option>${m.type==='UIGroup'?gUg:(isUiEl(o)||CS_UIT.has(m.type)?gUi+gUg+gGo:gPf+gGo+gUi+gUg)}</select>`}
       else c=`<span class="hint">None (${esc(m.type)})</span>`;
       b+=fr(esc(prettyName(m.name)),c,false,'',m.tip||'');
     });
@@ -7373,6 +7475,15 @@ $('#insp').addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.s
     toast(prettyName(s.dataset.sn)+' ← '+m.objs.find(q=>q.id===id).name);
   });
   $('#hier').addEventListener('dragstart',()=>{if(dnd&&dnd.kind==='obj')insp.classList.add('slot-armed')});
+  /* 프로젝트 창의 프리팹 → 프리팹 슬롯 (GameObject · Transform 형식) */
+  const pfDrag=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes(PF_MIME);
+  const pfSlotOf=e=>{if(!e.target.closest)return null;const fr=e.target.closest('.fr'),own=fr&&fr.querySelector('select[data-pfslot]');if(own)return own;const cp=e.target.closest('.comp[data-comp^="sc:"]'),all=cp?cp.querySelectorAll('select[data-pfslot]'):[];return all.length===1?all[0]:null};
+  insp.addEventListener('dragover',e=>{if(!pfDrag(e))return;const sl=pfSlotOf(e);clr();if(!sl)return;e.preventDefault();e.dataTransfer.dropEffect='copy';sl.classList.add('slot-over')});
+  insp.addEventListener('drop',e=>{
+    if(!pfDrag(e))return;const sl=pfSlotOf(e);clr();if(!sl)return;e.preventDefault();e.stopPropagation();
+    const id=e.dataTransfer.getData(PF_MIME),pf=pfOf(id),o=scOwner(),inst=o&&(o.scripts||[]).find(x=>x.id===sl.dataset.sf);if(!pf||!inst)return;
+    inst.vals=inst.vals||{};inst.vals[sl.dataset.sn]='pf:'+id;markDirty();commit();renderInsp();toast(prettyName(sl.dataset.sn)+' ← '+pf.name+' ('+_t('프리팹')+')');
+  });
   const disarm=()=>{insp.classList.remove('slot-armed');clr()};
   document.addEventListener('dragend',disarm);document.addEventListener('drop',disarm,true);
 })();
@@ -7625,7 +7736,7 @@ function withComp(r){
   else if(rest[0]==='light'||rest[0]==='Light'){r.comp='light';r.rest=rest.slice(1)}
   return r;
 }
-function csGetComp(m,o,T){
+function csGetComp0(m,o,T){
   switch(T){
     case'Hero':return o.type==='spawn'&&play&&play.m===m&&startSpawn(m)===o?heroProxy(m,o):null;
     case'Transform':return isUiEl(o)?(()=>{throw csUnsup('UI Transform')})():trProxy(m,o);
@@ -7640,7 +7751,7 @@ function csGetComp(m,o,T){
   if(ROLE_T[T])return!isUiEl(o)&&o.type===ROLE_T[T]?roleProxy(m,o,T):null;
   throw csUnsup('GetComponent<'+T+'>()');
 }
-function csDestroy(cx,x){
+function csDestroy0(cx,x){
   if(!x||!x.__o)throw csUnsup('Destroy');const o=x.__o,m=cx.m;
   if(isUiEl(o))throw csUnsup('Destroy(UI)');
   if(o.type==='spawn'&&startSpawn(m)===o){clog('warn',`[${cx.s.name}] 주인공은 Destroy 할 수 없습니다`,cx.s.id);return}
@@ -7670,30 +7781,36 @@ function trProxy(m,o){
       if(n==='name')return o.name;
       if(n==='childCount')return m.objs.filter(q=>q.parent===o.id).length;
       if(n==='parent'){const par=o.parent&&m.objs.find(q=>q.id===o.parent);return par?trProxy(m,par):null}
-      throw csUnsup('transform.'+n);
+      return trExtGet(m,o,n);
     },
+    iter(){return trIter(m,o)},
     set(n,v){
       if(n==='position'||n==='localPosition'){const q=csVArg([v]);setObjTile(m,o,q.x,q.y);return}
-      if(n==='localScale'){const q=csVArg([v]);o.props.sx=clamp(q.x,.1,10);o.props.sy=clamp(q.y,.1,10);return}
+      if(n==='localScale'){const q=csVArg([v]),sc=x=>(x<0?-1:1)*clamp(Math.abs(x),.1,10);o.props.sx=sc(q.x);o.props.sy=sc(q.y);return}
       if(n==='eulerAngles'||n==='localEulerAngles'){const q=csVArg([v]);o.props.rot=+(q.z%360).toFixed(3);return}
       if(n==='rotation'||n==='localRotation'){if(!isCsQ(v))throw new Error("error CS0029: rotation에는 Quaternion이 필요합니다 (각도는 eulerAngles 로 넣으세요)");o.props.rot=+(v.deg%360).toFixed(3);return}
-      throw csUnsup('transform.'+n+' 대입');
+      trExtSet(m,o,n,v);
     },
     call(n,a){
       if(n==='Translate'){const d=csVArg(a),t=objTileF(m,o);setObjTile(m,o,t.x+d.x,t.y+d.y);return null}
       if(n==='Rotate'){const z=a.length>=3?csN(a[2]):isCsV(a[0])?a[0].z:csN(a[0]);o.props.rot=+(((+o.props.rot||0)+z)%360).toFixed(3);return null}
       if(n==='GetChild'){const k=m.objs.filter(q=>q.parent===o.id)[csN(a[0])];return k?trProxy(m,k):null}
       if(n==='Find'){const k=m.objs.find(q=>q.parent===o.id&&q.name===csFmt(a[0]));return k?trProxy(m,k):null}
-      throw csUnsup('transform.'+n+'()');
+      return trExtCall(m,o,n,a);
     }};
 }
 function goProxy(m,o){
   return{__h:'GameObject',__o:o,name:o.name,
-    get(n){if(n==='name')return o.name;if(n==='transform')return isUiEl(o)?(()=>{throw csUnsup('UI transform')})():trProxy(m,o);if(n==='activeSelf')return isUiEl(o)?o.visible!==false:o.active!==false&&m.objs.includes(o);if(n==='activeInHierarchy')return isUiEl(o)?o.visible!==false:objOn(m,o)&&m.objs.includes(o);if(n==='tag')return o.tag||'';if(n==='enabled')throw new Error('GameObject에는 enabled가 없습니다. 컴포넌트를 켜고 끄려면 GetComponent<Light>() 등으로 꺼낸 뒤 .enabled를, 오브젝트 전체를 켜고 끄려면 SetActive(true / false)를 쓰세요.');throw csUnsup('gameObject.'+n)},
-    set(n,v){if(n==='name'){o.name=csFmt(v);return}if(n==='enabled')throw new Error('GameObject에는 enabled가 없습니다. 컴포넌트를 켜고 끄려면 GetComponent<Light>() 등으로 꺼낸 뒤 .enabled를, 오브젝트 전체를 켜고 끄려면 SetActive(true / false)를 쓰세요.');throw csUnsup('gameObject.'+n+' 대입')},
+    callG(n,T,a){if(n==='AddComponent'){if(isUiEl(o))throw csUnsup('UI AddComponent');const K={Rigidbody2D:'rb',BoxCollider2D:'box',ParticleSystem:'ps'}[T];if(!K)throw csUnsup('AddComponent<'+T+'>()');
+      if(!o.props[K]){if(K==='rb')o.props.rb=RB_DEF();else if(K==='box')o.props.box={trigger:false,w:1,h:1,ox:0,oy:0};else o.props.ps=Object.assign(PSYS.applyPreset(PSYS.DEF(),'sparkle'),{play:false})}return csGetComp(m,o,T)}
+      throw csUnsup(n+'<'+T+'>()')},
+    get(n){if(n==='name')return o.name;if(n==='transform')return isUiEl(o)?(()=>{throw csUnsup('UI transform')})():trProxy(m,o);if(n==='activeSelf')return isUiEl(o)?o.visible!==false:o.active!==false&&m.objs.includes(o);if(n==='activeInHierarchy')return isUiEl(o)?o.visible!==false:objOn(m,o)&&m.objs.includes(o);if(n==='tag')return isUiEl(o)?o.tag||'':objTag(m,o);if(n==='layer')return 0;if(n==='scene')return csH('Scene',q=>{if(q==='name')return m.name;throw csUnsup('Scene.'+q)});if(n==='enabled')throw new Error('GameObject에는 enabled가 없습니다. 컴포넌트를 켜고 끄려면 GetComponent<Light>() 등으로 꺼낸 뒤 .enabled를, 오브젝트 전체를 켜고 끄려면 SetActive(true / false)를 쓰세요.');throw csUnsup('gameObject.'+n)},
+    set(n,v){if(n==='name'){o.name=csFmt(v);return}if(n==='tag'){o.tag=csFmt(v).slice(0,30);return}if(n==='layer')return;if(n==='enabled')throw new Error('GameObject에는 enabled가 없습니다. 컴포넌트를 켜고 끄려면 GetComponent<Light>() 등으로 꺼낸 뒤 .enabled를, 오브젝트 전체를 켜고 끄려면 SetActive(true / false)를 쓰세요.');throw csUnsup('gameObject.'+n+' 대입')},
     call(n,a){
-      if(n==='SetActive'){if(isUiEl(o)){o.visible=!!a[0];return null}if(a[0])delete o.active;else o.active=false;return null}
-      if(n==='CompareTag')return(o.tag||'')===csFmt(a[0]);
+      if(n==='SetActive'){if(isUiEl(o)){o.visible=!!a[0];return null}const was=new Map([o,...descOf(m,o)].map(q=>[q.id,objOn(m,q)]));if(a[0])delete o.active;else o.active=false;activeChanged(m,o,was);return null}
+      if(n==='CompareTag')return isUiEl(o)?(o.tag||'')===csFmt(a[0]):objTag(m,o)===csFmt(a[0]);
+      if(n==='AddComponent')throw new Error('AddComponent 는 AddComponent<Rigidbody2D>() 처럼 형식을 함께 쓰세요');
+      if(n==='SendMessage'||n==='BroadcastMessage'){if(isUiEl(o))throw csUnsup('UI '+n);csSendMessage(m,o,csFmt(a[0]),a.slice(1),n==='BroadcastMessage');return null}
       throw csUnsup('gameObject.'+n+'()');
     }};
 }
@@ -7702,7 +7819,7 @@ function camProxy(m,o){
   return{__h:'Camera',__o:o,name:o.name,
     get(n){if(n==='orthographicSize'||n==='size')return +c.size||5;if(n==='gameObject')return goProxy(m,o);if(n==='transform')return trProxy(m,o);if(n==='clampToMap')return c.clamp!==false;if(n==='smoothFollow')return!!c.smooth;if(n==='smoothTime')return +c.smoothTime||.3;throw csUnsup('Camera.'+n)},
     set(n,v){if(n==='orthographicSize'||n==='size'){c.size=clamp(csN(v),.5,100);return}if(n==='clampToMap'){c.clamp=!!v;return}if(n==='smoothFollow'){c.smooth=!!v;return}if(n==='smoothTime'){c.smoothTime=clamp(csN(v),.02,3);return}throw csUnsup('Camera.'+n+' 대입')},
-    call(n){throw csUnsup('Camera.'+n+'()')}};
+    call(n,a){return camExt(m,o,n,a)}};
 }
 /* 빛 (Light) 컴포넌트: GetComponent<Light>() */
 function lightProxy(m,o){
@@ -7904,6 +8021,577 @@ CSED.use({scripts:()=>SC(),settings:()=>setv});
 CSHOST.use(CS_WORLD);
 CSHOST.use({vscript:(k,n,a,cx)=>{const r=vsCall('csHook',k,n,a,cx);return r===undefined?null:r}});
 CSHOST.use({clog:(t,m,s,d)=>{clog(t,m,s,d);if(t==='info'&&s){try{learnNudge('console')}catch(_){}}},get play(){return play},objOn,isUiEl,startCamera,goProxy,trProxy,camProxy,csGetComp,csDestroy,uiGo:true,uiGroupH:(m,id)=>{const g=(m.uiGroups||[]).find(x=>x.id===id);return g?uiGroupH(m,g):null}});
+/* ===================== 스크립트 확장 (유니티 기능 보강) =====================
+   태그 · 내 스크립트 GetComponent · Instantiate · Destroy(지연 · 컴포넌트) · SendMessage · 코루틴 생존 확인
+   리지드바디 2D · 콜라이더 · Physics2D 질의 · 파티클 시스템 · 스프라이트 렌더러 · 카메라 흔들기
+   (언어 기능 — List · foreach · switch · 코루틴 · Invoke · PlayerPrefs — 은 공용 script-engine.js) */
+const DEF_TAGS=['Untagged','Player','Enemy','Ground','Respawn','Finish','Bullet','Item','MainCamera','GameController','EditorOnly'];
+/* 태그: 직접 정하지 않으면 주인공 = Player · 시작 카메라 = MainCamera · 그 밖 = Untagged (유니티 기본) */
+const objTag=(m,o)=>o.tag||(o.type==='spawn'?'Player':o.type==='monster'?'Enemy':o.props&&o.props.camera&&o.props.camera.start?'MainCamera':'Untagged');
+const scriptTypeNames=()=>{const s=new Set();SC().forEach(x=>{s.add(x.name);try{const c=parseCSc(x.code).cls;if(c)s.add(c)}catch(e){}});return s};
+let stnCache={t:0,s:null};
+function isScriptType(T){const now=performance.now();if(!stnCache.s||now-stnCache.t>1500)stnCache={t:now,s:scriptTypeNames()};return stnCache.s.has(T)}
+/* ---- 내가 만든 스크립트를 GetComponent<PlayerHealth>() 로 꺼내기: public 변수 읽기·쓰기, 메서드 부르기 ---- */
+function scriptInstOf(o,T){return(o.scripts||[]).find(i=>{const s=scriptOf(i.sid);if(!s)return false;if(s.name===T)return true;try{return parseCSc(s.code).cls===T}catch(e){return false}})||null}
+function scriptCompProxy(m,o,inst){
+  const s=scriptOf(inst.sid);if(!s)return null;const pr=csProg(s.code),cls=pr.r.cls||s.name;
+  const rt=()=>{if(!play)throw new Error(cls+'의 값은 플레이 중에만 읽을 수 있습니다');return csRtOf(inst,pr)};
+  const mkcx=()=>({m:play&&play.m||m,o,inst,rt:rt(),pr,dt:csCur?csCur.dt:0,scopes:[new Map()],me:null,depth:0,loops:0,s});
+  const noMem=n=>new Error(`'${cls}'에 '${n}'이(가) 없습니다 — 다른 스크립트에서 쓰려면 public 으로 선언하세요`);
+  return{__h:cls,__o:o,__inst:inst,name:o.name,
+    get(n){
+      if(n==='gameObject')return goProxy(m,o);if(n==='transform')return trProxy(m,o);if(n==='name')return o.name;if(n==='tag')return objTag(m,o);
+      if(n==='enabled')return!rt().dis;
+      const r=rt();if(Object.prototype.hasOwnProperty.call(r.f,n)){const v=r.f[n];return v&&v.__ref?csRefVal(v,r.ty[n],mkcx()):v}
+      throw noMem(n)},
+    set(n,v){if(n==='enabled'){rt().dis=!v;return}const r=rt();if(Object.prototype.hasOwnProperty.call(r.f,n)){r.f[n]=v;return}throw noMem(n)},
+    call(n,a){
+      if(pr.r.methods[n]){const cx=mkcx(),prev=csCur;csCur=cx;try{return csCallUser(cx,n,a)}finally{csCur=prev}}
+      if(n==='CompareTag')return objTag(m,o)===csFmt(a[0]);
+      if(CS_MBN.has(n)){const cx=mkcx(),prev=csCur;csCur=cx;try{const r=csMB(n,a,cx,null);if(r!==undefined)return r}finally{csCur=prev}}
+      throw noMem(n+'()')}};
+}
+/* ---- GetComponent: 새 컴포넌트(리지드바디 · 콜라이더 · 파티클 · 스프라이트 렌더러) + 내 스크립트 → 나머지는 원래 함수 ---- */
+function csGetComp(m,o,T){
+  if(!o)return null;
+  if(!isUiEl(o)){
+    switch(T){
+      case'Rigidbody2D':return o.props&&o.props.rb?rbProxy(m,o):null;
+      case'BoxCollider2D':return o.props&&o.props.box?colProxy(m,o):null;
+      case'Collider2D':{if(o.props&&o.props.box)return colProxy(m,o);const k=implicitKind(m,o);return k?colProxy(m,o,k):null}
+      case'ParticleSystem':return o.props&&o.props.ps?psProxy(m,o):null;
+      case'SpriteRenderer':return srProxy(m,o);
+      case'MonoBehaviour':{const i=(o.scripts||[])[0];return i?scriptCompProxy(m,o,i):null}
+    }
+  }
+  if(isScriptType(T)&&!ROLE_T[T]){const i=scriptInstOf(o,T);return i?scriptCompProxy(m,o,i):null}
+  return csGetComp0(m,o,T);
+}
+/* ---- Destroy: 오브젝트(자식 포함) · 컴포넌트 · 내 스크립트 · OnDestroy() 를 먼저 부름 ---- */
+function csDestroy(cx,x){
+  if(!x)throw new Error('Destroy: 지울 대상이 null 입니다');
+  const m=play&&play.m;if(!m)return;
+  if(x.__inst&&x.__o){const o=x.__o;csRunOne(m,o,x.__inst,'OnDestroy');o.scripts=(o.scripts||[]).filter(i=>i!==x.__inst);CSCO.stop(x.__inst);return}
+  const CK={Rigidbody2D:'rb',BoxCollider2D:'box',Collider2D:'box',ParticleSystem:'ps',Light:'light',Light2D:'light',AudioSource:'audio',Animator:'animator',Volume:'volume'};
+  if(x.__o&&x.__h&&CK[x.__h]&&x.__h!=='GameObject'&&x.__h!=='Transform'){delete x.__o.props[CK[x.__h]];if(CK[x.__h]==='ps'&&play.ps)play.ps.delete(x.__o.id);return}
+  if(!x.__o)throw csUnsup('Destroy');
+  const o=x.__o;
+  if(!isUiEl(o)&&o.type==='spawn'&&startSpawn(m)===o){clog('warn',`[${cx&&cx.s?cx.s.name:'Destroy'}] 주인공은 Destroy 할 수 없습니다 — 숨기려면 SetActive(false)`,cx&&cx.s&&cx.s.id);return}
+  if(isUiEl(o))throw csUnsup('Destroy(UI)');
+  if(!m.objs.includes(o))return;
+  const all=[o,...descOf(m,o)];
+  for(const q of all){if(scriptHas(q,'OnDestroy')){csRunMethods(m,q,['OnDestroy']);if(!play||play.m!==m)return}}
+  all.forEach(q=>{CSCO.stopObj(q);if(play.rbs)play.rbs.delete(q.id);if(play.ps)play.ps.delete(q.id)});
+  csDestroy0(cx&&cx.m?cx:{m,s:{name:'',id:''}},{__o:o});
+}
+/* 스크립트 인스턴스 하나의 메서드만 실행 */
+function csRunOne(m,o,inst,fn,args){if(play&&play.m===m)csRun(m,o,inst,fn,0,false,args)}
+/* ---- Instantiate(원본, 위치, 회전) · Instantiate(원본, 부모) — 원본: 프리팹 슬롯 · 씬의 게임 오브젝트 ---- */
+let instWarned=false;
+function csInstantiate(cx,a){
+  const m=play&&play.m;if(!m)throw new Error('Instantiate 는 플레이 중에만 쓸 수 있습니다');
+  const orig=a[0];if(!orig)throw new Error('Instantiate: 복제할 원본이 null 입니다 — 인스펙터 슬롯에 프리팹이나 게임 오브젝트를 넣었는지 확인하세요');
+  let pos=null,rot=null,par=null;
+  if(a.length>=2){if(isCsV(a[1])){pos=a[1];if(isCsQ(a[2]))rot=a[2].deg;if(a[3]&&a[3].__o)par=a[3].__o}else if(a[1]&&a[1].__o)par=a[1].__o}
+  let tpl,baseName,rootPos;
+  if(orig.__pf){
+    const pf=pfOf(orig.__pf);if(!pf)throw new Error('Instantiate: 프리팹을 찾을 수 없습니다');
+    tpl=pf.objs.map(t=>({t,rx:+t.x||0,ry:+t.y||0}));baseName=pf.name;
+    /* 위치를 주지 않으면: 부모가 있으면 부모 자리, 없으면 이 스크립트가 붙은 오브젝트 자리 */
+    rootPos=pos?{x:pos.x,y:pos.y}:par?objTileF(m,par):cx&&cx.o&&!isUiEl(cx.o)&&m.objs.includes(cx.o)?objTileF(m,cx.o):{x:0,y:0};
+  }else if(orig.__o&&!isUiEl(orig.__o)&&m.objs.includes(orig.__o)){
+    const o=orig.__o,w0=objTileF(m,o);
+    tpl=[o,...descOf(m,o)].map(q=>{const w=objTileF(m,q);return{t:q,rx:w.x-w0.x,ry:w.y-w0.y}});baseName=o.name.replace(/\(Clone\)$/,'');
+    rootPos=pos?{x:pos.x,y:pos.y}:par?objTileF(m,par):w0;
+  }else throw new Error('Instantiate: 프리팹이나 씬의 게임 오브젝트만 복제할 수 있습니다');
+  if(m.objs.length+tpl.length>MAXOBJ){clog('warn',`Instantiate: 게임 오브젝트는 씬당 ${MAXOBJ}개까지예요 — 다 쓴 오브젝트는 Destroy 하세요`,cx&&cx.s&&cx.s.id);return null}
+  const idm={};tpl.forEach(q=>idm[q.t.id]=uid());
+  const made=tpl.map((q,k)=>{
+    const n=JSON.parse(JSON.stringify(q.t));n.id=idm[q.t.id];delete n._lx;delete n._ly;delete n._tlRec;
+    n.x=+(rootPos.x+q.rx).toFixed(4);n.y=+(rootPos.y+q.ry).toFixed(4);
+    n.parent=k===0?(par?par.id:null):(idm[q.t.parent]||idm[tpl[0].t.id]);
+    if(k===0){n.name=baseName+'(Clone)';if(rot!=null)n.props.rot=+(rot%360).toFixed(3);if(orig.__pf)n.group=null}
+    if(n.type==='spawn'){n.type='empty';if(!instWarned){instWarned=true;clog('warn','Instantiate: 주인공은 하나만 둘 수 있어서, 복제본은 빈 게임 오브젝트로 만들었습니다')}}
+    if(n.props&&n.props.camera)n.props.camera.start=false;
+    /* 스크립트: 새 인스턴스(값은 새로) · 원본 안의 오브젝트를 가리키던 슬롯은 복제본 안의 같은 오브젝트로 */
+    (n.scripts||[]).forEach(s=>{s.id=uid();if(s.vals)Object.keys(s.vals).forEach(k2=>{const v=s.vals[k2];if(typeof v==='string'&&idm[v])s.vals[k2]=idm[v]})});
+    delete n.active;if(q.t.active===false&&k>0)n.active=false;
+    return n;
+  });
+  made.forEach(n=>m.objs.push(n));
+  made.forEach(n=>{const pr=n.parent&&m.objs.find(q=>q.id===n.parent);if(pr){const pw=objTileF(m,pr);n._lx=n.x-pw.x;n._ly=n.y-pw.y}});
+  made.forEach(n=>{if(n.type==='monster'&&play.mons)play.mons.push({o:n,x:(n.x+.5)*TS,y:(n.y+.5)*TS,hp:n.props.hp||3,dx:0,dy:0,t:0,flash:0,dead:false})});
+  /* Awake 는 바로 (유니티와 같음) · Start 는 다음 Update 직전 */
+  if(!play.awoken)play.awoken=new Set();
+  for(const n of made){if(!objOn(m,n))continue;play.awoken.add(n.id);if(n.scripts&&n.scripts.length){csRunMethods(m,n,['Awake','OnEnable']);if(!play||play.m!==m)return null}}
+  try{learnEmit('inst:'+baseName)}catch(e){}
+  return goProxy(m,made[0]);
+}
+function prefabRef(id){const pf=pfOf(id);if(!pf)return null;return{__h:'GameObject',__pf:id,name:pf.name,get(n){if(n==='name')return pf.name;throw new Error(`프리팹(${pf.name})은 씬에 없는 원본이라 '${n}'을(를) 읽을 수 없습니다 — Instantiate 로 만든 복제본에서 쓰세요`)},set(n){throw new Error('프리팹 원본은 바꿀 수 없습니다 (Instantiate 로 만든 복제본을 바꾸세요)')},call(n){if(n==='CompareTag')return false;throw new Error(`프리팹 원본에는 ${n}()을(를) 쓸 수 없습니다 — Instantiate 로 만든 복제본에서 쓰세요`)}}}
+function prefabByName(nm){const pf=PFS().find(p=>p.name===nm);if(!pf){clog('warn',`프리팹 '${nm}'을(를) 찾을 수 없습니다 (프로젝트 창의 프리팹 이름을 확인하세요)`);return null}return prefabRef(pf.id)}
+/* new GameObject("이름"): 빈 게임 오브젝트 (이 스크립트가 붙은 오브젝트 자리) */
+function csNewObject(nm){
+  const m=play&&play.m;if(!m)throw new Error('new GameObject() 는 플레이 중에만 쓸 수 있습니다');
+  const w=csCur&&csCur.o&&m.objs.includes(csCur.o)?objTileF(m,csCur.o):{x:0,y:0};
+  const n={id:uid(),type:'empty',name:String(nm).slice(0,40),x:w.x,y:w.y,props:{},group:null,parent:null};m.objs.push(n);
+  if(!play.awoken)play.awoken=new Set();play.awoken.add(n.id);return goProxy(m,n);
+}
+/* SendMessage("이름", 값) · BroadcastMessage(자식까지) */
+function csSendMessage(m,o,name,args,broad){const L=broad?[o,...descOf(m,o)]:[o];for(const q of L){if(scriptHas(q,name)){csRunMethods(m,q,[name],args);if(!play||play.m!==m)return}}}
+/* 코루틴 · Invoke 가 계속 돌아도 되는지: 주인 오브젝트가 씬에 있고(코루틴은 켜져 있어야) 같은 씬일 때 */
+function coAlive(cx,kind){
+  if(!play)return false;const o=cx.o;if(!o)return true;
+  if(play.mgrs&&play.mgrs.includes(o))return true;
+  const m=play.m;if(cx.m!==m)return false;
+  if(isUiEl(o))return(m.ui||[]).includes(o);
+  if(!m.objs.includes(o))return false;
+  return kind==='timer'?true:objOn(m,o);
+}
+function csRelatives(m,o,dir){
+  if(dir==='self')return[o];
+  if(dir==='down')return[o,...descOf(m,o)];
+  const out=[o];let c=o,n=0;while(c&&c.parent&&n++<50){c=m.objs.find(q=>q.id===c.parent);if(c)out.push(c)}return out;
+}
+function findOfType(m,T){const out=[];for(const o of m.objs){if(!objOn(m,o))continue;try{const c=csGetComp(m,o,T);if(c)out.push(c)}catch(e){if(e instanceof CsUnsup)throw e}}return out}
+function findTag(m,tg){return m.objs.filter(o=>objOn(m,o)&&objTag(m,o)===tg).map(o=>goProxy(m,o))}
+/* SetActive 로 켜고 끌 때 OnEnable · OnDisable */
+function activeChanged(m,o,was){
+  if(!play||play.m!==m)return;const all=[o,...descOf(m,o)];
+  for(const q of all){const now=objOn(m,q);const before=was.get(q.id);if(now===before)continue;
+    if(now&&play.started&&!play.started.has(q.id))continue;
+    if(scriptHas(q,now?'OnEnable':'OnDisable')){csRunMethods(m,q,[now?'OnEnable':'OnDisable']);if(!play||play.m!==m)return}}
+}
+/* ---- 트랜스폼 추가 기능: foreach (Transform child in transform) · SetParent · right/up · root ---- */
+function trExtGet(m,o,n){
+  const r=(+o.props.rot||0)*Math.PI/180;
+  if(n==='right')return CsV(Math.cos(r),Math.sin(r),0,true);
+  if(n==='up')return CsV(Math.sin(r),-Math.cos(r),0,true);
+  if(n==='lossyScale')return CsV(o.props.sx||1,o.props.sy||1,1,true);
+  if(n==='root'){let c=o,k=0;while(c.parent&&k++<50){const p=m.objs.find(q=>q.id===c.parent);if(!p)break;c=p}return trProxy(m,c)}
+  if(n==='tag')return objTag(m,o);
+  if(n==='hasChanged')return true;
+  throw csUnsup('transform.'+n);
+}
+function trExtSet(m,o,n,v){
+  if(n==='parent'){trSetParent(m,o,v&&v.__o?v.__o:null);return}
+  if(n==='right'||n==='up'){const q=csVArg([v]);let a=Math.atan2(q.y,q.x)*180/Math.PI;if(n==='up')a+=90;o.props.rot=+(((a%360)+360)%360).toFixed(3);return}
+  throw csUnsup('transform.'+n+' 대입');
+}
+function trSetParent(m,o,p){
+  if(p===o)return;let c=p,k=0;while(c&&k++<60){if(c===o)throw new Error('SetParent: 자기 자손을 부모로 둘 수 없습니다');c=c.parent?m.objs.find(q=>q.id===c.parent):null}
+  const w=objTileF(m,o);o.parent=p?p.id:null;
+  if(p){const pw=objTileF(m,p);o._lx=w.x-pw.x;o._ly=w.y-pw.y}else{delete o._lx;delete o._ly}
+  o.x=w.x;o.y=w.y;
+}
+function trExtCall(m,o,n,a){
+  if(n==='SetParent'){trSetParent(m,o,a[0]&&a[0].__o?a[0].__o:null);return null}
+  if(n==='IsChildOf'){const p=a[0]&&a[0].__o;let c=o,k=0;while(c&&k++<60){if(c===p)return true;c=c.parent?m.objs.find(q=>q.id===c.parent):null}return false}
+  if(n==='DetachChildren'){m.objs.filter(q=>q.parent===o.id).forEach(q=>trSetParent(m,q,null));return null}
+  if(n==='LookAt'){const t=a[0]&&a[0].__o?objTileF(m,a[0].__o):csVArg(a),w=objTileF(m,o);o.props.rot=+((Math.atan2(t.y-w.y,t.x-w.x)*180/Math.PI+360)%360).toFixed(3);return null}
+  if(n==='CompareTag')return objTag(m,o)===csFmt(a[0]);
+  throw csUnsup('transform.'+n+'()');
+}
+const trIter=(m,o)=>m.objs.filter(q=>q.parent===o.id).map(q=>trProxy(m,q));
+/* ---- 스프라이트 렌더러: flipX · flipY · enabled · sortingOrder ---- */
+function srProxy(m,o){
+  return{__h:'SpriteRenderer',__o:o,name:o.name,
+    get(n){switch(n){case'flipX':return!!o.props.flipX;case'flipY':return!!o.props.flipY;case'enabled':return!o.props.srOff;case'sortingOrder':return o.order==null?ordOf(m,o):o.order;
+      case'gameObject':return goProxy(m,o);case'transform':return trProxy(m,o);case'name':return o.name;case'sprite':return o.props.sprite?String(o.props.sprite):null}throw csUnsup('SpriteRenderer.'+n)},
+    set(n,v){switch(n){case'flipX':if(v)o.props.flipX=true;else delete o.props.flipX;if(o.type==='spawn'&&play)play.flipX=!!v;return;case'flipY':if(v)o.props.flipY=true;else delete o.props.flipY;return;
+      case'enabled':if(v)delete o.props.srOff;else o.props.srOff=true;return;case'sortingOrder':o.order=clamp(Math.round(csN(v)),-999,999);return;
+      case'sprite':{if(v==null){delete o.props.sprite;return}const nm=csFmt(v),a=assets.find(q=>q.kind==='sprite'&&(q.name===nm||q.id===nm));if(a){o.props.sprite=a.id;return}if(spriteRef(nm)){o.props.sprite=nm;return}throw new Error(`스프라이트 '${nm}'을(를) 찾을 수 없습니다`)}}
+      throw csUnsup('SpriteRenderer.'+n+' 대입')},
+    call(n){throw csUnsup('SpriteRenderer.'+n+'()')}};
+}
+/* ===================== 리지드바디 2D (Rigidbody2D) =====================
+   단위: 칸 · 아래쪽이 +y (Vector2.down = (0, 1)) · 중력 기본 9.81칸/초² 아래로
+   충돌: 타일 콜라이더 · 박스 콜라이더 2D(트리거 아님) · NPC · (다른 오브젝트의 리지드바디에게는) 주인공 */
+const RB_DEF=()=>({type:'dynamic',grav:1,mass:1,drag:0,adrag:.05,frot:true,fzx:false,fzy:false,bounce:0,sim:true,inter:false});
+const RB_FIX=.02;
+function rbNorm(r){const d=RB_DEF();const o=Object.assign(d,r||{});if(!['dynamic','kinematic','static'].includes(o.type))o.type='dynamic';o.grav=clamp(+o.grav||0,-20,20);o.mass=clamp(+o.mass||1,.0001,10000);o.drag=clamp(+o.drag||0,0,100);o.adrag=clamp(+o.adrag||0,0,100);o.bounce=clamp(+o.bounce||0,0,1);return o}
+function rbState(o){
+  if(!play.rbs)play.rbs=new Map();let s=play.rbs.get(o.id);
+  if(!s){s={vx:0,vy:0,av:0,fx:0,fy:0,tq:0,cont:new Map(),mv:null};play.rbs.set(o.id,s)}
+  return s;
+}
+const isHeroO=(m,o)=>o.type==='spawn'&&startSpawn(m)===o;
+/* 몸(콜라이더) 크기: 박스 콜라이더 2D 의 크기 · 오프셋 (px) — 주인공은 주인공 반지름 */
+function bodyExt(m,o){
+  if(isHeroO(m,o)&&play){const r=play.hr==null?9:play.hr;const b=o.props.box;if(b)return{hw:(+b.w||1)*TS/2,hh:(+b.h||1)*TS/2,ox:(+b.ox||0)*TS,oy:(+b.oy||0)*TS};return{hw:r,hh:r,ox:0,oy:0}}
+  const b=o.props.box;if(!b)return null;
+  return{hw:(+b.w||1)*TS/2*Math.abs(o.props.sx||1),hh:(+b.h||1)*TS/2*Math.abs(o.props.sy||1),ox:(+b.ox||0)*TS,oy:(+b.oy||0)*TS};
+}
+function bodyCenter(m,o){if(isHeroO(m,o)&&play)return{x:play.px,y:play.py};return objWorld(m,o,play)}
+const relOf=(m,a,b)=>{let c=b,k=0;while(c&&c.parent&&k++<50){if(c.parent===a.id)return true;c=m.objs.find(q=>q.id===c.parent)}c=a;k=0;while(c&&c.parent&&k++<50){if(c.parent===b.id)return true;c=m.objs.find(q=>q.id===c.parent)}return false};
+/* 이번 물리 단계의 막는 것들 (사각형, px) */
+function solidList(m){
+  const L=[],hero=startSpawn(m);
+  for(const o of m.objs){
+    if(!objOn(m,o)||o.type==='monster')continue;
+    if(o===hero)continue;
+    const b=o.props&&o.props.box;
+    if(b&&!b.trigger){const e=bodyExt(m,o),w=objWorld(m,o,play),cx=w.x+e.ox,cy=w.y+e.oy;L.push({k:'obj',o,l:cx-e.hw,t:cy-e.hh,r:cx+e.hw,b:cy+e.hh});continue}
+    if(o.type==='npc'&&!b){const t=objTile(m,o,play);L.push({k:'obj',o,l:t.x*TS,t:t.y*TS,r:(t.x+1)*TS,b:(t.y+1)*TS})}
+  }
+  if(hero&&objOn(m,hero)&&play.px!=null){const e=bodyExt(m,hero),cx=play.px+e.ox,cy=play.py+e.oy;L.push({k:'hero',o:hero,l:cx-e.hw,t:cy-e.hh,r:cx+e.hw,b:cy+e.hh})}
+  return L;
+}
+/* (cx, cy, hw, hh) 상자와 겹치는 막는 것 — 타일은 칸마다 하나로 */
+function blockersAt(m,self,cx,cy,hw,hh,S,all){
+  const out=[];const e=.01;
+  const x0=Math.floor((cx-hw+e)/TS),x1=Math.floor((cx+hw-e)/TS),y0=Math.floor((cy-hh+e)/TS),y1=Math.floor((cy+hh-e)/TS);
+  for(let ty=y0;ty<=y1;ty++)for(let tx=x0;tx<=x1;tx++)if(isSolid(m,tx,ty)){out.push({k:'tile',tx,ty,l:tx*TS,t:ty*TS,r:(tx+1)*TS,b:(ty+1)*TS});if(!all)return out}
+  for(const q of S){if(q.o===self||relOf(m,self,q.o))continue;if(cx+hw>q.l+e&&cx-hw<q.r-e&&cy+hh>q.t+e&&cy-hh<q.b-e){out.push(q);if(!all)return out}}
+  return out;
+}
+const bKey=b=>b.k==='tile'?'tile':b.o.id;
+/* 한 축으로 움직이기 (막히면 닿는 데까지) → 막은 것 */
+function rbSweep(m,o,c,e,d,axis,S,ign){
+  if(!d)return null;
+  const step=Math.max(1,Math.min(e.hw,e.hh,TS*.45)),n=Math.ceil(Math.abs(d)/step),sd=d/n;
+  const test=(x,y)=>blockersAt(m,o,x,y,e.hw,e.hh,S,true).find(b=>!ign.has(bKey(b))&&!(b.k==='tile'&&ign.has('t:'+b.tx+','+b.ty)));
+  for(let i=0;i<n;i++){
+    const nx=axis==='x'?c.x+sd:c.x,ny=axis==='y'?c.y+sd:c.y;
+    const b=test(nx,ny);
+    if(!b){c.x=nx;c.y=ny;continue}
+    let lo=0,hi=1;for(let k=0;k<7;k++){const mid=(lo+hi)/2,tx=axis==='x'?c.x+sd*mid:c.x,ty=axis==='y'?c.y+sd*mid:c.y;if(test(tx,ty))hi=mid;else lo=mid}
+    if(axis==='x')c.x+=sd*lo;else c.y+=sd*lo;
+    return b;
+  }
+  return null;
+}
+function rbBodies(m){const out=[];for(const o of m.objs){const r=o.props&&o.props.rb;if(!r||o.type==='monster'||!objOn(m,o))continue;out.push(o)}return out}
+/* 한 번의 고정 단계 (0.02초) */
+function rbStep(m,dt){
+  const p=play,G=p.grav||{x:0,y:9.81},bodies=rbBodies(m);if(!bodies.length)return;
+  const S=solidList(m);
+  for(const o of bodies){
+    const r=rbNorm(o.props.rb),st=rbState(o),hero=isHeroO(m,o);
+    if(r.type==='static'||r.sim===false){st.vx=st.vy=st.av=0;continue}
+    if(st.mv){const q=st.mv;st.mv=null;if(hero){p.px=(q.x+.5)*TS;p.py=(q.y+.5)*TS}else setObjTile(m,o,q.x,q.y)}
+    if(r.type==='dynamic'){
+      st.vx+=(G.x*r.grav+st.fx/r.mass)*dt;st.vy+=(G.y*r.grav+st.fy/r.mass)*dt;st.fx=st.fy=0;
+      if(r.drag){const k=1/(1+r.drag*dt);st.vx*=k;st.vy*=k}
+      if(!r.frot){st.av+=st.tq/r.mass*dt*57.3;const ka=1/(1+r.adrag*dt);st.av*=ka}
+      st.tq=0;
+    }
+    if(r.fzx)st.vx=0;if(r.fzy)st.vy=0;
+    if(!r.frot&&st.av){o.props.rot=+((((+o.props.rot||0)+st.av*dt)%360+360)%360).toFixed(3)}
+    if(!st.vx&&!st.vy)continue;
+    const e=bodyExt(m,o),c0=bodyCenter(m,o),c={x:c0.x+(e?e.ox:0),y:c0.y+(e?e.oy:0)};
+    const free=r.type==='kinematic'||!e||(o.props.box&&o.props.box.trigger&&!hero);
+    if(free){c.x+=st.vx*TS*dt;c.y+=st.vy*TS*dt}
+    else{
+      /* 이미 겹쳐 있던 것은 이번 단계에서 무시 (안에 갇히지 않게) */
+      const ign=new Set();blockersAt(m,o,c.x,c.y,e.hw,e.hh,S,true).forEach(b=>{if(b.k==='tile')ign.add('t:'+b.tx+','+b.ty);else ign.add(bKey(b))});
+      st.hit=st.hit||[];
+      const bx=rbSweep(m,o,c,e,st.vx*TS*dt,'x',S,ign);
+      if(bx){st.hit.push({b:bx,nx:st.vx>0?-1:1,ny:0,rv:st.vx});st.vx=Math.abs(st.vx*r.bounce)>.3?-st.vx*r.bounce:0}
+      const by=rbSweep(m,o,c,e,st.vy*TS*dt,'y',S,ign);
+      if(by){st.hit.push({b:by,nx:0,ny:st.vy>0?-1:1,rv:st.vy});st.vy=Math.abs(st.vy*r.bounce)>.3?-st.vy*r.bounce:0}
+    }
+    const nx=c.x-(e?e.ox:0),ny=c.y-(e?e.oy:0);
+    if(hero){p.px=nx;p.py=ny;if(Math.abs(st.vx)>.05)p.moved=true}
+    else setObjTile(m,o,nx/TS-.5,ny/TS-.5);
+    /* 이 몸이 다른 리지드바디를 막을 수 있으면 막는 목록의 자리도 고침 */
+    const me=S.find(q=>q.o===o);if(me&&e){const cx=nx+e.ox,cy=ny+e.oy;me.l=cx-e.hw;me.t=cy-e.hh;me.r=cx+e.hw;me.b=cy+e.hh}
+  }
+}
+/* ---- 충돌 · 트리거 이벤트 (프레임마다 한 번) ---- */
+function colProxyOf(m,b){if(b.k==='tile')return tileColProxy(m);if(b.k==='hero'||b.k==='obj'||b.k==='mon')return colProxy(m,b.o,b.k==='mon'?'mon':b.k==='hero'?'hero':null);return null}
+function collision2D(m,self,other,info){
+  const col=colProxyOf(m,other),s=self&&play.rbs&&play.rbs.get(self.id),so=other.o&&play.rbs&&play.rbs.get(other.o.id);
+  const rv=CsV((so?so.vx:0)-(s?s.vx:0),(so?so.vy:0)-(s?s.vy:0));
+  const nrm=CsV(info.nx||0,info.ny||0),c=bodyCenter(m,self),pt=CsV(c.x/TS-.5-(info.nx||0)*.5,c.y/TS-.5-(info.ny||0)*.5);
+  const contact=csH('ContactPoint2D',n=>{if(n==='normal')return nrm;if(n==='point')return pt;if(n==='collider')return col;if(n==='separation')return 0;throw csUnsup('ContactPoint2D.'+n)});
+  return csH('Collision2D',n=>{
+    switch(n){case'gameObject':return col.get('gameObject');case'collider':case'otherCollider':return col;case'transform':return col.get('transform');
+      case'rigidbody':return other.o&&other.o.props&&other.o.props.rb?rbProxy(m,other.o):null;case'relativeVelocity':return rv;
+      case'contacts':return CsL([contact],'ContactPoint2D',true);case'contactCount':return 1;case'enabled':return true}
+    throw csUnsup('Collision2D.'+n)},(n,a)=>{if(n==='GetContact')return contact;throw csUnsup('Collision2D.'+n+'()')});
+}
+function fire(m,o,fn,args){if(!o||!play||play.m!==m)return;if(isUiEl(o))return;if(scriptHas(o,fn))csRunMethods(m,o,[fn],args)}
+/* 닿아 있는 것 찾기: 몸 상자를 1px 넓혀서 겹치는 막는 것 */
+function rbContacts(m){
+  const hero=startSpawn(m),list=rbBodies(m).filter(o=>!(o.props.box&&o.props.box.trigger&&!isHeroO(m,o)));
+  /* 리지드바디 없는 주인공도 박스 콜라이더와 닿으면 알림 (타일은 빼고) */
+  if(hero&&objOn(m,hero)&&!hero.props.rb&&(scriptHas(hero,'OnCollisionEnter2D')||scriptHas(hero,'OnCollisionStay2D')||scriptHas(hero,'OnCollisionExit2D')))list.push(hero);
+  if(!list.length)return;
+  const S=solidList(m);
+  for(const o of list){
+    if(!play||play.m!==m)return;
+    const st=rbState(o),e=bodyExt(m,o);if(!e)continue;
+    const c=bodyCenter(m,o),cx=c.x+e.ox,cy=c.y+e.oy,now=new Map();
+    (st.hit||[]).forEach(h=>now.set(bKey(h.b),h));st.hit=[];
+    blockersAt(m,o,cx,cy,e.hw+1,e.hh+1,S,true).forEach(b=>{
+      if(b.k==='tile'&&!o.props.rb)return;
+      const k=bKey(b);if(now.has(k))return;
+      const ox=Math.min(cx+e.hw,b.r)-Math.max(cx-e.hw,b.l),oy=Math.min(cy+e.hh,b.b)-Math.max(cy-e.hh,b.t);
+      const bc={x:(b.l+b.r)/2,y:(b.t+b.b)/2};
+      now.set(k,ox<oy?{b,nx:cx<bc.x?-1:1,ny:0}:{b,nx:0,ny:cy<bc.y?-1:1});
+    });
+    const was=st.cont;st.cont=now;
+    for(const[k,h]of now){
+      const other=h.b.o,fresh=!was.has(k);
+      if(fresh){fire(m,o,'OnCollisionEnter2D',[collision2D(m,o,h.b,h)]);if(other&&!other.props.rb)fire(m,other,'OnCollisionEnter2D',[collision2D(m,other,{k:o===hero?'hero':'obj',o},{nx:-h.nx,ny:-h.ny})])}
+      else{if(scriptHas(o,'OnCollisionStay2D'))fire(m,o,'OnCollisionStay2D',[collision2D(m,o,h.b,h)])}
+      if(!play||play.m!==m)return;
+    }
+    for(const[k,h]of was)if(!now.has(k)){
+      fire(m,o,'OnCollisionExit2D',[collision2D(m,o,h.b,h)]);const other=h.b.o;
+      if(other&&m.objs.includes(other)&&!other.props.rb)fire(m,other,'OnCollisionExit2D',[collision2D(m,other,{k:'obj',o},{nx:-h.nx,ny:-h.ny})]);
+      if(!play||play.m!==m)return;
+    }
+  }
+}
+/* 트리거: 리지드바디가 붙은 오브젝트 ↔ 다른 콜라이더(박스 · 몬스터) — 둘 중 하나가 트리거면 OnTriggerEnter2D(상대 콜라이더) */
+function colRect(m,o,kind){
+  if(kind==='mon'){const z=monOf(m,o);if(!z||z.dead)return null;const b=o.props.box;if(b){const e=bodyExt(m,o);return{l:z.x+e.ox-e.hw,t:z.y+e.oy-e.hh,r:z.x+e.ox+e.hw,b:z.y+e.oy+e.hh,trig:!!b.trigger}}const h=TS*.4;return{l:z.x-h,t:z.y-h,r:z.x+h,b:z.y+h,trig:false}}
+  const e=bodyExt(m,o);if(!e)return null;const c=bodyCenter(m,o),cx=c.x+e.ox,cy=c.y+e.oy;return{l:cx-e.hw,t:cy-e.hh,r:cx+e.hw,b:cy+e.hh,trig:!!(o.props.box&&o.props.box.trigger)};
+}
+function rbTriggers(m){
+  const p=play,bodies=rbBodies(m).filter(o=>!isHeroO(m,o)&&o.props.box);
+  if(!bodies.length&&!(p.rbTrig&&p.rbTrig.size))return;
+  const others=[];
+  for(const o of m.objs){if(!objOn(m,o)||isHeroO(m,o))continue;if(o.type==='monster'){others.push({o,k:'mon'});continue}if(o.props&&o.props.box)others.push({o,k:'obj'})}
+  const now=new Map();
+  for(const a of bodies){
+    const ra=colRect(m,a,'obj');if(!ra)continue;
+    for(const q of others){
+      if(q.o===a||relOf(m,a,q.o))continue;
+      const rb=colRect(m,q.o,q.k);if(!rb)continue;
+      if(!(ra.trig||rb.trig))continue;
+      if(ra.l<rb.r&&ra.r>rb.l&&ra.t<rb.b&&ra.b>rb.t){const k=[a.id,q.o.id].sort().join('|');if(!now.has(k))now.set(k,{a,b:q.o,kb:q.k})}
+    }
+  }
+  const was=p.rbTrig||new Map();p.rbTrig=now;
+  const send=(x,fn)=>{fire(m,x.a,fn,[colProxy(m,x.b,x.kb==='mon'?'mon':null)]);if(!play||play.m!==m)return false;fire(m,x.b,fn,[colProxy(m,x.a)]);return!!play&&play.m===m};
+  for(const[k,x]of now){if(!was.has(k)){try{learnEmit('trig:'+x.a.name+':'+x.b.name)}catch(e){}if(!send(x,'OnTriggerEnter2D'))return}else if(scriptHas(x.a,'OnTriggerStay2D')||scriptHas(x.b,'OnTriggerStay2D')){if(!send(x,'OnTriggerStay2D'))return}}
+  for(const[k,x]of was)if(!now.has(k)&&m.objs.includes(x.a)&&m.objs.includes(x.b)){if(!send(x,'OnTriggerExit2D'))return}
+}
+/* ---- 콜라이더 프록시 (Collider2D · BoxCollider2D) — kind: null(박스) · 'hero' · 'mon' ---- */
+const implicitKind=(m,o)=>isHeroO(m,o)?'hero':o.type==='monster'?'mon':null;
+function colProxy(m,o,kind){
+  kind=kind||(o.props&&o.props.box?null:implicitKind(m,o));
+  const B=()=>{const b=o.props.box;if(!b&&!kind)throw new Error('MissingComponentException: 박스 콜라이더 2D가 제거되었습니다');return b};
+  return{__h:kind?'Collider2D':'BoxCollider2D',__o:o,name:o.name,
+    get(n){switch(n){
+      case'gameObject':return goProxy(m,o);case'transform':return trProxy(m,o);case'name':return o.name;case'tag':return objTag(m,o);
+      case'isTrigger':{const b=B();return!!(b&&b.trigger)}case'enabled':return kind?true:!!o.props.box;
+      case'size':{const b=B();return b?CsV(+b.w||1,+b.h||1):CsV(.8,.8)}case'offset':{const b=B();return b?CsV(+b.ox||0,+b.oy||0):CsV(0,0)}
+      case'attachedRigidbody':return o.props.rb?rbProxy(m,o):null;
+      case'bounds':{const r=colRect(m,o,kind==='mon'?'mon':'obj');if(!r)return null;const c=CsV((r.l+r.r)/2/TS-.5,(r.t+r.b)/2/TS-.5,0,true),sz=CsV((r.r-r.l)/TS,(r.b-r.t)/TS,0,true);
+        return csH('Bounds',q=>{if(q==='center')return c;if(q==='size')return sz;if(q==='extents')return CsV(sz.x/2,sz.y/2,0,true);if(q==='min')return CsV(c.x-sz.x/2,c.y-sz.y/2,0,true);if(q==='max')return CsV(c.x+sz.x/2,c.y+sz.y/2,0,true);throw csUnsup('Bounds.'+q)})}
+    }throw csUnsup('Collider2D.'+n)},
+    set(n,v){const b=B();if(!b)throw new Error(n+': 이 콜라이더는 바꿀 수 없습니다 (박스 콜라이더 2D를 붙이세요)');
+      if(n==='isTrigger'){b.trigger=!!v;return}if(n==='enabled'){if(!v){o._boxOff=b;delete o.props.box}return}
+      if(n==='size'){const q=csVArg([v]);b.w=clamp(q.x,.05,50);b.h=clamp(q.y,.05,50);return}if(n==='offset'){const q=csVArg([v]);b.ox=clamp(q.x,-50,50);b.oy=clamp(q.y,-50,50);return}
+      throw csUnsup('Collider2D.'+n+' 대입')},
+    call(n,a){if(n==='CompareTag')return objTag(m,o)===csFmt(a[0]);if(n==='OverlapPoint'){const r=colRect(m,o,kind==='mon'?'mon':'obj'),q=csVArg(a);if(!r)return false;const x=(q.x+.5)*TS,y=(q.y+.5)*TS;return x>=r.l&&x<=r.r&&y>=r.t&&y<=r.b}
+      if(n==='IsTouching'){const st=play&&play.rbs&&play.rbs.get(o.id);const t=a[0]&&a[0].__o;return!!(st&&t&&st.cont.has(t.id))}
+      throw csUnsup('Collider2D.'+n+'()')}};
+}
+/* 타일 콜라이더 (벽 · 땅): gameObject 이름 Tilemap · 태그 Ground */
+function tileGo(){return csH('GameObject',n=>{if(n==='name')return'Tilemap';if(n==='tag')return'Ground';if(n==='activeSelf'||n==='activeInHierarchy')return true;if(n==='transform')return null;throw csUnsup('Tilemap.'+n)},(n,a)=>{if(n==='CompareTag')return csFmt(a[0])==='Ground';throw csUnsup('Tilemap.'+n+'()')})}
+function tileColProxy(){const go=tileGo();return csH('TilemapCollider2D',n=>{if(n==='gameObject')return go;if(n==='name')return'Tilemap';if(n==='tag')return'Ground';if(n==='isTrigger')return false;if(n==='attachedRigidbody')return null;if(n==='transform')return null;throw csUnsup('TilemapCollider2D.'+n)},(n,a)=>{if(n==='CompareTag')return csFmt(a[0])==='Ground';throw csUnsup('TilemapCollider2D.'+n+'()')})}
+/* ---- 리지드바디 프록시 ---- */
+function rbProxy(m,o){
+  const R=()=>{const r=o.props.rb;if(!r)throw new Error('MissingComponentException: 리지드바디 2D가 제거되었습니다');return r};
+  const S=()=>{if(!play)throw new Error('리지드바디의 움직임은 플레이 중에만 쓸 수 있습니다');return rbState(o)};
+  const TY={dynamic:'Dynamic',kinematic:'Kinematic',static:'Static'};
+  return{__h:'Rigidbody2D',__o:o,name:o.name,
+    get(n){const r=R();switch(n){
+      case'velocity':case'linearVelocity':{const s=S();return CsV(s.vx,s.vy)}case'angularVelocity':return S().av;
+      case'gravityScale':return r.grav;case'mass':return r.mass;case'drag':case'linearDamping':return r.drag;case'angularDrag':case'angularDamping':return r.adrag;
+      case'isKinematic':return r.type==='kinematic';case'bodyType':return TY[r.type]||'Dynamic';case'freezeRotation':return r.frot!==false;case'simulated':return r.sim!==false;
+      case'position':{const c=bodyCenter(m,o);return CsV(c.x/TS-.5,c.y/TS-.5)}case'rotation':return +o.props.rot||0;
+      case'gameObject':return goProxy(m,o);case'transform':return trProxy(m,o);case'name':return o.name;
+      case'isAwake':return true;case'IsSleeping':return false;
+    }throw csUnsup('Rigidbody2D.'+n)},
+    set(n,v){const r=R();switch(n){
+      case'velocity':case'linearVelocity':{const s=S(),q=csVArg([v]);s.vx=q.x;s.vy=q.y;return}case'angularVelocity':S().av=csN(v);return;
+      case'gravityScale':r.grav=clamp(csN(v),-20,20);return;case'mass':r.mass=clamp(csN(v),.0001,10000);return;
+      case'drag':case'linearDamping':r.drag=clamp(csN(v),0,100);return;case'angularDrag':case'angularDamping':r.adrag=clamp(csN(v),0,100);return;
+      case'isKinematic':r.type=v?'kinematic':'dynamic';return;case'bodyType':{const t=String(v).toLowerCase();if(TY[t])r.type=t;return}
+      case'freezeRotation':r.frot=!!v;return;case'simulated':r.sim=!!v;return;
+      case'position':{const q=csVArg([v]);if(isHeroO(m,o)&&play){play.px=(q.x+.5)*TS;play.py=(q.y+.5)*TS}else setObjTile(m,o,q.x,q.y);return}
+      case'rotation':o.props.rot=+(csN(v)%360).toFixed(3);return;
+    }throw csUnsup('Rigidbody2D.'+n+' 대입')},
+    call(n,a){const r=R();switch(n){
+      case'AddForce':{const s=S(),q=csVArg([a[0]]);if(String(a[1])==='Impulse'){s.vx+=q.x/r.mass;s.vy+=q.y/r.mass}else{s.fx+=q.x;s.fy+=q.y}return null}
+      case'AddRelativeForce':{const s=S(),q=csVArg([a[0]]),rr=(+o.props.rot||0)*Math.PI/180,x=q.x*Math.cos(rr)-q.y*Math.sin(rr),y=q.x*Math.sin(rr)+q.y*Math.cos(rr);if(String(a[1])==='Impulse'){s.vx+=x/r.mass;s.vy+=y/r.mass}else{s.fx+=x;s.fy+=y}return null}
+      case'AddTorque':{const s=S();if(String(a[1])==='Impulse')s.av+=csN(a[0])/r.mass*57.3;else s.tq+=csN(a[0]);return null}
+      case'MovePosition':{const q=csVArg([a[0]]);S().mv={x:q.x,y:q.y};return null}
+      case'MoveRotation':{o.props.rot=+((isCsQ(a[0])?a[0].deg:csN(a[0]))%360).toFixed(3);return null}
+      case'Sleep':case'WakeUp':return null;
+      case'IsTouchingLayers':{const s=S();return s.cont.size>0}
+      case'IsTouching':{const s=S(),t=a[0]&&a[0].__o;return!!(t?s.cont.has(t.id):s.cont.size)}
+      case'GetComponent':return null;
+    }throw csUnsup('Rigidbody2D.'+n+'()')}};
+}
+/* 플레이 프레임의 물리: 고정 업데이트(FixedUpdate) + 리지드바디 · 충돌 · 트리거 */
+function physFrame(m,dt){
+  const p=play;p.facc=(p.facc||0)+dt;let n=0;
+  const fixedObjs=m.objs.filter(o=>o.scripts&&o.scripts.length&&objOn(m,o)&&scriptHas(o,'FixedUpdate')&&(o.type!=='spawn'||o===startSpawn(m)));
+  const mgrs=(p.mgrs||[]).filter(o=>scriptHas(o,'FixedUpdate'));
+  while(p.facc>=RB_FIX&&n<5){
+    p.facc-=RB_FIX;n++;
+    for(const o of mgrs.concat(fixedObjs)){if(!m.objs.includes(o)&&!mgrs.includes(o))continue;for(const inst of(o.scripts||[]).slice()){csRun(m,o,inst,'FixedUpdate',RB_FIX,true);if(!play||play.m!==m)return}}
+    rbStep(m,RB_FIX);if(!play||play.m!==m)return;
+  }
+  if(n>=5)p.facc=0;
+  rbContacts(m);if(!play||play.m!==m)return;
+  rbTriggers(m);
+}
+/* ===================== Physics2D 질의 ===================== */
+/* 질의 대상: 박스 콜라이더 · 몬스터 · 주인공 (사각형 px) + 타일 */
+function qCols(m){
+  const L=[],hero=startSpawn(m);
+  for(const o of m.objs){if(!objOn(m,o))continue;
+    if(o.type==='monster'){const r=colRect(m,o,'mon');if(r)L.push(Object.assign(r,{o,k:'mon'}));continue}
+    if(o===hero){if(play.px==null)continue;const e=bodyExt(m,o),cx=play.px+e.ox,cy=play.py+e.oy;L.push({l:cx-e.hw,t:cy-e.hh,r:cx+e.hw,b:cy+e.hh,o,k:'hero',trig:false});continue}
+    if(o.props&&o.props.box){const r=colRect(m,o,'obj');if(r)L.push(Object.assign(r,{o,k:'obj'}))}}
+  return L;
+}
+/* 부르는 스크립트의 오브젝트(와 부모·자식)는 빼기 — 레이어가 없어서 「주인공 발밑 검사」가 자기 몸에 맞지 않게 */
+function qSelfSet(m){const o=csCur&&csCur.o;if(!o||isUiEl(o)||!m.objs.includes(o))return new Set();return new Set(csRelatives(m,o,'up').concat(descOf(m,o)).map(q=>q.id))}
+const inR=(r,x,y)=>x>=r.l&&x<=r.r&&y>=r.t&&y<=r.b;
+function hitProxy(m,col,px,py,nx,ny,dist,frac){
+  return csH('RaycastHit2D',n=>{switch(n){case'collider':return col;case'transform':return col?col.get('transform'):null;case'rigidbody':return col&&col.__o&&col.__o.props.rb?rbProxy(m,col.__o):null;
+    case'point':return CsV(px/TS-.5,py/TS-.5);case'normal':return CsV(nx,ny);case'distance':return dist;case'fraction':return frac;case'centroid':return CsV(px/TS-.5,py/TS-.5)}throw csUnsup('RaycastHit2D.'+n)},
+    (n)=>{throw csUnsup('RaycastHit2D.'+n+'()')});
+}
+const noHit=()=>Object.assign(csH('RaycastHit2D',n=>{if(n==='collider'||n==='transform'||n==='rigidbody')return null;if(n==='distance'||n==='fraction')return 0;if(n==='point'||n==='normal')return CsV(0,0);throw csUnsup('RaycastHit2D.'+n)}),{__falsy:true});
+function qColProxy(m,c){return c.k==='tile'?tileColProxy(m):colProxy(m,c.o,c.k==='mon'?'mon':c.k==='hero'?'hero':null)}
+/* 광선 (칸 단위): origin, dir, dist → 맞은 것들 (가까운 순) */
+function qRay(m,a,all){
+  const O=csVArg([a[0]]),D0=csVArg([a[1]]),L0=Math.hypot(D0.x,D0.y);
+  if(!L0)return all?[]:null;
+  const D={x:D0.x/L0,y:D0.y/L0},dist=Math.min(a.length>2&&a[2]!=null?csN(a[2]):100,200);
+  const ox=(O.x+.5)*TS,oy=(O.y+.5)*TS,self=qSelfSet(m),cols=qCols(m).filter(c=>!self.has(c.o.id)&&!inR(c,ox,oy));
+  const t0x=Math.floor(ox/TS),t0y=Math.floor(oy/TS),startSolid=isSolid(m,t0x,t0y);
+  const step=1.5,N=Math.ceil(dist*TS/step),out=[],seen=new Set();let px=ox,py=oy,tileHit=false;
+  for(let i=1;i<=N;i++){
+    const x=ox+D.x*Math.min(i*step,dist*TS),y=oy+D.y*Math.min(i*step,dist*TS);
+    const tx=Math.floor(x/TS),ty=Math.floor(y/TS);
+    if(!tileHit&&isSolid(m,tx,ty)&&!(startSolid&&tx===t0x&&ty===t0y)){
+      const ptx=Math.floor(px/TS),pty=Math.floor(py/TS),nx=tx!==ptx?(tx>ptx?-1:1):0,ny=ty!==pty&&!nx?(ty>pty?-1:1):0;
+      out.push({c:{k:'tile'},x,y,nx,ny:nx?0:ny||(D.y>0?-1:1),d:Math.hypot(x-ox,y-oy)/TS});tileHit=true;if(!all)break;
+    }
+    for(const c of cols){if(seen.has(c))continue;if(inR(c,x,y)){seen.add(c);const nx=px<c.l?-1:px>c.r?1:0,ny=nx?0:py<c.t?-1:1;out.push({c,x,y,nx,ny,d:Math.hypot(x-ox,y-oy)/TS});if(!all)break}}
+    if(!all&&out.length)break;
+    if(all&&tileHit)break;
+    px=x;py=y;
+  }
+  out.sort((p,q)=>p.d-q.d);
+  return out.map(h=>hitProxy(m,qColProxy(m,h.c),h.x,h.y,h.nx,h.ny,h.d,dist?h.d/dist:0));
+}
+/* 원 · 상자 · 점 겹침 (칸 단위) */
+function qOverlap(m,shape,a,all){
+  const P=csVArg([a[0]]),cx=(P.x+.5)*TS,cy=(P.y+.5)*TS;let hw,hh,rad=0;
+  if(shape==='circle'){rad=csN(a[1]==null?.5:a[1])*TS;hw=hh=rad}else if(shape==='box'){const s=csVArg([a[1]]);hw=s.x*TS/2;hh=s.y*TS/2}else{hw=hh=0}
+  const self=qSelfSet(m),out=[];
+  const hitR=r=>{if(shape==='circle'){const qx=clamp(cx,r.l,r.r),qy=clamp(cy,r.t,r.b);return Math.hypot(qx-cx,qy-cy)<=rad}return cx+hw>=r.l&&cx-hw<=r.r&&cy+hh>=r.t&&cy-hh<=r.b};
+  for(const c of qCols(m)){if(self.has(c.o.id))continue;if(hitR(c)){out.push(qColProxy(m,c));if(!all)return out}}
+  const x0=Math.floor((cx-hw)/TS),x1=Math.floor((cx+hw)/TS),y0=Math.floor((cy-hh)/TS),y1=Math.floor((cy+hh)/TS);
+  outer:for(let ty=y0;ty<=y1;ty++)for(let tx=x0;tx<=x1;tx++){if(isSolid(m,tx,ty)&&hitR({l:tx*TS,t:ty*TS,r:(tx+1)*TS,b:(ty+1)*TS})){out.push(tileColProxy(m));break outer}}
+  return out;
+}
+function physicsHook(k,n,a){
+  const m=play&&play.m;if(!m)throw new Error('Physics2D 는 플레이 중에만 쓸 수 있습니다');
+  if(k==='get'){if(n==='gravity'){const g=play.grav||{x:0,y:9.81};return CsV(g.x,g.y)}if(n==='queriesStartInColliders')return false;throw csUnsup('Physics2D.'+n)}
+  if(k==='set'){if(n==='gravity'){const q=csVArg(a);play.grav={x:q.x,y:q.y};return null}throw csUnsup('Physics2D.'+n+' 대입')}
+  switch(n){
+    case'Raycast':{const r=qRay(m,a,false);return r&&r.length?r[0]:noHit()}
+    case'RaycastAll':return CsL(qRay(m,a,true),'RaycastHit2D',true);
+    case'Linecast':{const A=csVArg([a[0]]),B=csVArg([a[1]]),d=Math.hypot(B.x-A.x,B.y-A.y);const r=qRay(m,[A,CsV(B.x-A.x,B.y-A.y),d],false);return r&&r.length?r[0]:noHit()}
+    case'OverlapCircle':{const r=qOverlap(m,'circle',a,false);return r[0]||null}
+    case'OverlapCircleAll':return CsL(qOverlap(m,'circle',a,true),'Collider2D',true);
+    case'OverlapBox':{const r=qOverlap(m,'box',a,false);return r[0]||null}
+    case'OverlapBoxAll':return CsL(qOverlap(m,'box',a,true),'Collider2D',true);
+    case'OverlapPoint':{const r=qOverlap(m,'point',a,false);return r[0]||null}
+    case'OverlapPointAll':return CsL(qOverlap(m,'point',a,true),'Collider2D',true);
+    case'IgnoreCollision':case'IgnoreLayerCollision':return null;
+  }
+  throw csUnsup('Physics2D.'+n+'()');
+}
+/* ===================== 파티클 시스템 (particles.js 의 PSYS) ===================== */
+const edPs=new Map();let edPsT=0;
+function psSt(o,live){
+  const M=live?(play.ps||(play.ps=new Map())):edPs;let s=M.get(o.id);
+  if(!s){s=PSYS.newState(o.props.ps);if(!live)s.playing=true;M.set(o.id,s)}
+  return s;
+}
+function psTick(p,dt){
+  const m=p.m;if(!window.PSYS)return;
+  for(const o of m.objs.slice()){
+    const ps=o.props&&o.props.ps;if(!ps)continue;
+    const st=psSt(o,true),on=objOn(m,o);
+    if(!on){if(st.playing&&!st.parts.length)continue}
+    const w=objWorld(m,o,p);
+    if(!on){const pl=st.playing;st.playing=false;PSYS.step(st,ps,dt,w.x,w.y,TS);st.playing=pl;continue}
+    PSYS.step(st,ps,dt,w.x,w.y,TS);
+    if(st.ended&&ps.kill&&!ps.loop&&m.objs.includes(o)){st.ended=false;csDestroy(null,{__o:o});if(!play||play.m!==m)return}
+  }
+}
+function psDraw(g,m,o,p,live){
+  const ps=o.props&&o.props.ps;if(!ps||!window.PSYS)return;
+  const M=live?p&&p.ps:edPs,st=M&&M.get(o.id);if(!st)return;
+  const w=objWorld(m,o,live?p:null);PSYS.draw(g,st,ps,w.x,w.y,TS);
+}
+/* 씬 뷰 미리 보기: 고른 파티클 오브젝트만 움직임 (유니티처럼) */
+function psPreview(g,m){
+  if(!window.PSYS)return;const now=performance.now(),dt=edPsT?Math.min(.05,(now-edPsT)/1000):0;edPsT=now;let any=false;
+  for(const o of m.objs){
+    const ps=o.props&&o.props.ps;if(!ps||!objOn(m,o))continue;
+    const selp=o.id===sel||hsel.has(o.id)||(o.parent&&(hsel.has(o.parent)));
+    if(!selp){edPs.delete(o.id);continue}
+    const st=psSt(o,false),w=objWorld(m,o,null);
+    PSYS.step(st,ps,dt,w.x,w.y,TS);
+    if(st.ended){st.ended=false;st.t=0;st.bursted=false;st.playing=true}
+    PSYS.draw(g,st,ps,w.x,w.y,TS);any=true;
+  }
+  if(any){clearTimeout(psPreview.tm);psPreview.tm=setTimeout(need,30)}else edPsT=0;
+}
+function psProxy(m,o){
+  const P0=()=>{const ps=o.props.ps;if(!ps)throw new Error('MissingComponentException: 파티클 시스템이 제거되었습니다');return ps};
+  const S=()=>{if(!play)throw new Error('파티클은 플레이 중에만 재생할 수 있습니다');return psSt(o,true)};
+  const MAIN={startLifetime:'life',startSpeed:'speed',startSize:'size0',startColor:'col0',gravityModifier:'grav',loop:'loop',duration:'dur',maxParticles:'max',playOnAwake:'play'};
+  const sub=(name,MAP,extra)=>csH(name,n=>{const ps=P0();if(extra&&extra.get){const r=extra.get(n,ps);if(r!==undefined)return r}const k=MAP[n];if(!k)throw csUnsup(name+'.'+n);return ps[k]},null,(n,v)=>{const ps=P0();if(extra&&extra.set&&extra.set(n,v,ps))return;const k=MAP[n];if(!k)throw csUnsup(name+'.'+n+' 대입');
+    const f=PSYS.FIELDS.find(q=>q.k===k);if(f.t==='bool')ps[k]=!!v;else if(f.t==='color'){if(typeof v!=='string')throw new Error('색에는 Color 값을 넣으세요 (예: Color.red)');ps[k]=v}else ps[k]=clamp(csN(v),f.min,f.max)});
+  return{__h:'ParticleSystem',__o:o,name:o.name,
+    get(n){switch(n){
+      case'isPlaying':{const s=S();return s.playing&&!s.paused}case'isStopped':{const s=S();return!s.playing&&!s.parts.length}case'isPaused':return!!S().paused;case'isEmitting':return S().playing;
+      case'particleCount':return S().parts.length;case'time':return S().t;
+      case'main':return sub('MainModule',MAIN);
+      case'emission':return sub('EmissionModule',{rateOverTime:'rate'},{get:(q,ps)=>q==='enabled'?!ps.emOff:q==='burstCount'?ps.burst:undefined,set:(q,v,ps)=>{if(q==='enabled'){if(v){if(ps.emOff){ps.rate=ps.emOff;delete ps.emOff}}else if(!ps.emOff){ps.emOff=ps.rate||1;ps.rate=0}return true}if(q==='burstCount'){ps.burst=clamp(Math.round(csN(v)),0,500);return true}return false}});
+      case'shape':return sub('ShapeModule',{radius:'radius',angle:'spread'},{get:(q,ps)=>q==='rotation'?CsV(0,0,ps.dir,true):undefined,set:(q,v,ps)=>{if(q==='rotation'){ps.dir=isCsV(v)?v.z:csN(v);return true}return false}});
+      case'gameObject':return goProxy(m,o);case'transform':return trProxy(m,o);case'name':return o.name;
+    }throw csUnsup('ParticleSystem.'+n)},
+    set(n){throw csUnsup('ParticleSystem.'+n+' 대입 — main · emission 모듈의 값을 바꾸세요 (예: ps.main.startSpeed = 3)')},
+    call(n,a){const s=S();switch(n){
+      case'Play':s.playing=true;s.paused=false;s.ended=false;if(!s.t||!P0().loop){s.t=0;s.bursted=false}return null;
+      case'Stop':s.playing=false;if(a.length&&String(a[1]||'').includes('Clear'))s.parts=[];return null;
+      case'Pause':s.paused=true;return null;
+      case'Clear':s.parts=[];return null;
+      case'Emit':{const ps=P0(),w=objWorld(m,o,play),k=clamp(Math.round(csN(a[0]==null?1:a[0])),0,500);for(let i=0;i<k;i++)PSYS.spawn(s,ps,w.x,w.y,TS);s.ended=false;return null}
+      case'Simulate':return null;
+    }throw csUnsup('ParticleSystem.'+n+'()')}};
+}
+/* ---- 카메라 흔들기 · 화면 ↔ 씬 좌표 ---- */
+function camExt(m,o,n,a){
+  if(n==='Shake'){if(!play)return null;const amp=a.length?csN(a[0]):.3,dur=a.length>1?csN(a[1]):.25;play.shake={amp:clamp(amp,0,5),t:clamp(dur,0,10),dur:clamp(dur,.01,10)};return null}
+  const v=play&&play.view;if(!v)throw new Error(n+'(): 플레이 화면이 아직 그려지지 않았습니다');
+  if(n==='ScreenToWorldPoint'){const q=csVArg(a),sx=q.x,sy=v.H-q.y;return CsV((sx-v.ox)/v.s/TS-.5,(sy-v.oy)/v.s/TS-.5,0,true)}
+  if(n==='WorldToScreenPoint'){const q=csVArg(a),sx=(q.x+.5)*TS*v.s+v.ox,sy=(q.y+.5)*TS*v.s+v.oy;return CsV(sx,v.H-sy,0,true)}
+  if(n==='ScreenToViewportPoint'){const q=csVArg(a);return CsV(q.x/v.W,q.y/v.H,0,true)}
+  throw csUnsup('Camera.'+n+'()');
+}
+function shakeOff(p){const s=p&&p.shake;if(!s||s.t<=0)return{x:0,y:0};const k=s.amp*TS*(s.t/s.dur);return{x:(Math.random()*2-1)*k,y:(Math.random()*2-1)*k}}
+CSHOST.use({coAlive,runMethod:(m,o,inst,nm)=>{if(play)csRun(play.m,o,inst,nm,0,false)},instantiate:csInstantiate,prefabRef,prefabByName,newObject:csNewObject,
+  sendMessage:csSendMessage,findOfType,findTag,relatives:csRelatives,physics:physicsHook,objTag,isScriptType,quit:()=>{clog('info','Application.Quit() — 에디터에서는 플레이를 멈춥니다');setTimeout(()=>{if(play)stopPlay()},0)},
+  prefsKey:()=>KEY});
+
 /* 스크립트 인스턴스별 실행 상태 (필드 값) — 씬에 들어갈 때마다 새로 만듭니다 */
 function csFieldInit(fd,inst){
   const kind=csKind(fd.type),has=fd.exposed&&inst.vals&&fd.name in inst.vals,v=has?inst.vals[fd.name]:csDefault(fd.type,fd.def);
@@ -7913,7 +8601,8 @@ function csFieldInit(fd,inst){
   if(kind==='bool')return!!v;
   if(kind==='str')return v==null?'':String(v);
   if(kind==='color')return v;
-  return null;
+  /* 목록 · 배열 · Dictionary 등: 초기값 식을 실행 (public 배열 · List 는 빈 목록) */
+  return csInitRef(fd);
 }
 function csRtOf(inst,pr){
   if(!play.rt)play.rt=new Map();
@@ -7922,12 +8611,12 @@ function csRtOf(inst,pr){
   return rt;
 }
 /* perFrame: Update 처럼 매 프레임 부르는 메서드 — 오류가 나면 한 번만 알리고 그 메서드를 멈춥니다 */
-function csRun(m,o,inst,fn,dt,perFrame){
+function csRun(m,o,inst,fn,dt,perFrame,args){
   if(!play)return;
   const s=scriptOf(inst.sid);if(!s)return;
   const pr=csProg(s.code);if(pr.r.errs.length)return;
   const me=pr.r.methods[fn];if(!me)return;
-  const rt=csRtOf(inst,pr);if(rt.off[fn])return;
+  const rt=csRtOf(inst,pr);if(rt.off[fn])return;if(rt.dis&&perFrame)return;
   const ast=csMethodAst(pr,fn);
   const fields=pr.r.members.filter(x=>x.kind==='field');
   const old={m,fields,inst,sname:s.name,sid:s.id,quiet:perFrame,locals:{},warn:msg=>clog('warn',`[${s.name}] ${msg}`,s.id)};
@@ -7972,8 +8661,10 @@ function csRun(m,o,inst,fn,dt,perFrame){
     }finally{csCur=prev}
     return;
   }
-  const cx={m,o,inst,rt,pr,dt,scopes:[new Map()],me,depth:0,loops:0,s};
+  const cx={m,o,inst,rt,pr,dt,scopes:[new Map((ast.params||[]).map((q,k)=>[q,args?args[k]:undefined]))],me,depth:0,loops:0,s};
   const prev=csCur;csCur=cx;
+  /* IEnumerator Start() 처럼 코루틴인 이벤트 메서드는 코루틴으로 시작 */
+  if(csIsIter(me)){try{CSCO.start(csCoMake(cx,fn,ast,args||[]),cx)}catch(e){fail(e)}finally{csCur=prev}return}
   try{
     for(const st of ast.body){
       try{csX(st,cx)}
@@ -9088,14 +9779,14 @@ function heroMoveInst(o){
   return L.find(x=>ids.includes(x.sid))||L.find(x=>{const s=scriptOf(x.sid);return s&&parseCS(s.code).methods.Update})||null;
 }
 /* 소유자(게임 오브젝트 또는 UI 요소)에 붙은 스크립트의 지정한 메서드들을 실행 */
-function csRunMethods(m,o,fns){
-  (o.scripts||[]).slice().forEach(inst=>fns.forEach(fn=>{if(play&&play.m===m)csRun(m,o,inst,fn,0,false)}));
+function csRunMethods(m,o,fns,args){
+  (o.scripts||[]).slice().forEach(inst=>fns.forEach(fn=>{if(play&&play.m===m)csRun(m,o,inst,fn,0,false,args)}));
   /* 같은 메시지를 비주얼 스크립트(스크립트 머신 · 상태 머신)에도 · Start = 머신 시작 */
   if(o.vs&&o.vs.length&&play&&play.m===m)vsCall('msg',m,o,fns);
 }
 function runScriptsStart(m){
   if(play&&!play.started)play.started=new Set();
-  m.objs.slice().concat((m.ui||[]).slice()).forEach(o=>{if(!isUiEl(o)&&!objOn(m,o))return;if(play)play.started.add(o.id);csRunMethods(m,o,['Awake','Start'])});
+  m.objs.slice().concat((m.ui||[]).slice()).forEach(o=>{if(!isUiEl(o)&&!objOn(m,o))return;if(play)play.started.add(o.id);csRunMethods(m,o,['Awake','OnEnable','Start'])});
 }
 /* UI 이벤트 메서드 */
 const UI_EVENTS=['OnClick','OnPointerEnter','OnPointerExit','OnValueChanged'];
@@ -9786,7 +10477,7 @@ function pfOverrides(m,R){
 }
 const PF_KEYN={name:'이름',active:'활성화',order:'배치 순서',type:'역할 컴포넌트',scripts:'스크립트',vs:'비주얼 스크립트',dx:'위치',dy:'위치',children:'자식 오브젝트',
   'props.sprite':'스프라이트','props.sx':'크기','props.sy':'크기','props.rot':'방향','props.hp':'체력','props.speed':'이동 속도','props.range':'감지 범위','props.text':'대사 · 메시지','props.lines':'대사','props.qty':'수량',
-  'props.light':'빛','props.box':'박스 콜라이더 2D','props.animator':'애니메이터','props.director':'플레이어블 디렉터','props.audio':'오디오 소스','props.camera':'카메라','props.volume':'볼륨','props.shadow2d':'그림자 캐스터 2D','props.memo':'메모','props.map':'대상 씬','props.once':'한 번만 실행'};
+  'props.light':'빛','props.box':'박스 콜라이더 2D','props.animator':'애니메이터','props.director':'플레이어블 디렉터','props.audio':'오디오 소스','props.camera':'카메라','props.volume':'볼륨','props.shadow2d':'그림자 캐스터 2D','props.memo':'메모','props.map':'대상 씬','props.once':'한 번만 실행','props.rb':'리지드바디 2D','props.ps':'파티클 시스템','props.flipX':'좌우 뒤집기','tag':'태그'};
 const pfKeyName=k=>{const ch=k.startsWith('자식:'),b=ch?k.slice(3):k;const n=PF_KEYN[b]||(b.startsWith('props.')?b.slice(6):b);return ch?_t('자식의 {n}',{n:_t(n)}):_t(n)};
 /* 템플릿 오브젝트 → 씬 오브젝트 (새 아이디) */
 function pfFromT(t,pfid,R){const o=JSON.parse(JSON.stringify(t));o.pf={id:pfid,k:t.id};o.id=uid();return o}
@@ -9898,7 +10589,7 @@ function pfShow(id){pfSel=id;aSelId=null;sSel=null;slSel=null;auSel=null;const f
 function pfThumbHTML(pf,sz){const t=pf.objs[0],sp=t.props&&t.props.sprite,sr=sp?spriteRef(sp):null;
   return sr?`<canvas data-pfth="${pf.id}"${sz?` data-sz="${sz}"`:''}></canvas>`:`<span class="pfcube" style="--tc:${(TYPES[t.type]||TYPES.empty).color}">${ico('cube')}</span>`}
 function pfThumbs(box,gs){const dpr=window.devicePixelRatio||1;box.querySelectorAll('canvas[data-pfth]').forEach(cv=>{const pf=pfOf(cv.dataset.pfth),sr=pf&&spriteRef(pf.objs[0].props.sprite);if(!sr||!sr.a.img)return;const W=cv.closest('.gth')?Math.round(gs*dpr):Math.round((+cv.dataset.sz||26)*dpr);drawThumb(cv,sr.a.img,sr.r,W)})}
-const PF_COMPN={sprite:'스프라이트 렌더러',light:'빛',box:'박스 콜라이더 2D',animator:'애니메이터',director:'플레이어블 디렉터',audio:'오디오 소스',camera:'카메라',shadow2d:'그림자 캐스터 2D'};
+const PF_COMPN={sprite:'스프라이트 렌더러',light:'빛',box:'박스 콜라이더 2D',animator:'애니메이터',director:'플레이어블 디렉터',audio:'오디오 소스',camera:'카메라',shadow2d:'그림자 캐스터 2D',rb:'리지드바디 2D',ps:'파티클 시스템'};
 function pfCompList(t){const out=[TYPES[t.type]?_t(TYPES[t.type].label):t.type];Object.keys(PF_COMPN).forEach(k=>{if(t.props&&t.props[k])out.push(_t(PF_COMPN[k]))});(t.scripts||[]).forEach(s=>{const sc=scriptOf(s.sid);if(sc)out.push(sc.name+'.cs')});return out}
 /* 프로젝트 창: 고른 프리팹의 자세히 보기 */
 function pfDetHTML(pf){
@@ -9923,7 +10614,7 @@ function pfBarHTML(m,o){
     `<button class="btn sm" type="button" data-pfa="revert"${n&&!play?'':' disabled'} title="${esc(_t('이 인스턴스를 프리팹 값으로 되돌립니다 (이름 · 위치는 그대로)'))}">${esc(_t('모두 되돌리기'))}</button><button class="btn sm pri" type="button" data-pfa="apply"${n&&!play?'':' disabled'} title="${esc(_t('바꾼 값을 프리팹에 저장하고, 다른 모든 인스턴스도 함께 바꿉니다'))}">${esc(_t('모두 적용'))}</button></div></div>`;
 }
 /* 인스펙터에서 오버라이드된 칸에 파란 표시 (Unity처럼 왼쪽 막대) */
-const PF_COMPK={light:'cl',camera:'cc',volume:'cv',box:'cb',shadow2d:'cs',animator:'ca',director:'cd',audio:'cau',memo:'cm'};
+const PF_COMPK={light:'cl',camera:'cc',volume:'cv',box:'cb',shadow2d:'cs',animator:'ca',director:'cd',audio:'cau',memo:'cm',rb:'cr',ps:'cp'};
 function pfMarkInsp(m,o,box){
   if(!o||!isPfLinked(o))return;const R=pfRoot(m,o)||o,ov=pfOverrides(m,R).byK[o.pf.k]||[];
   ov.forEach(k=>{
@@ -10875,6 +11566,8 @@ function enter(id,tx,ty){
   m.objs.forEach(o=>{const par=o.parent&&m.objs.find(q=>q.id===o.parent);if(par){o._lx=o.x-par.x;o._ly=o.y-par.y}});
   audStopAll(true);play.audStarted=new Set();
   play.rt=new Map();play.anim=new Map();play.started=new Set();play.needStart=true;play.here=null;play.trig=null;
+  play.rbs=new Map();play.ps=new Map();play.rbTrig=null;play.facc=0;play.awoken=new Set();play.shake=null;play.flipX=!!(startSpawn(m)&&startSpawn(m).props.flipX);
+  m.objs.forEach(o=>{if(o.props&&o.props.rb)o.props.rb=rbNorm(o.props.rb);if(o.props&&o.props.ps)o.props.ps=PSYS.normalize(o.props.ps)});
   play.title=m.name;play.titleT=2.2;learnEmit('scene:'+m.name);return true;
 }
 const freshPlay=()=>({hp:100,inv:{},keys:{},fx:0,fy:1,fa:Math.PI/2,walk:0,dead:false,msg:'',msgT:0,tm:0,frame:0,kraw:new Set(),kdown:new Set(),kup:new Set()});
@@ -10915,7 +11608,8 @@ $('#bPlayOpt').addEventListener('click',e=>showMenu(e.currentTarget,[
   {label:'게임 뷰에서 실행 (기본 · 고른 기기 해상도)',checked:playMode==='embed',fn:()=>setPlayMode('embed')},
   {label:'창 가득 채우기',checked:playMode==='window',fn:()=>setPlayMode('window')},
   {label:'전체 화면',checked:playMode==='full',fn:()=>setPlayMode('full')},
-  {sep:1},{label:'플레이 중 ⛶ 버튼으로 언제든 전체 화면을 켜고 끌 수 있습니다',disabled:true}
+  {sep:1},{label:'플레이 중 ⛶ 버튼으로 언제든 전체 화면을 켜고 끌 수 있습니다',disabled:true},
+  {sep:1},{label:'저장 데이터 지우기 (PlayerPrefs)',fn:()=>{csPrefsClear();toast('이 프로젝트의 PlayerPrefs 저장 데이터를 지웠습니다');clog('info','PlayerPrefs 저장 데이터를 모두 지웠습니다 (PlayerPrefs.DeleteAll 과 같음)')}}
 ]));
 new ResizeObserver(()=>{if(play)sizePlay()}).observe($('#play'));
 /* 플레이 화면 자체가 전체 화면인지 (엔진 전체 화면은 정지해도 유지) */
@@ -10954,7 +11648,7 @@ function stopPlay(){
   T(()=>UIB.playStop());T(()=>vsCall('playStop'));
   T(()=>audStopAll());T(()=>musicStop());
   if(p){const fx=Array.isArray(p.sfx)?p.sfx:[];fx.forEach(x=>T(()=>x.pause()));p.sfx=[]}
-  play=null;cancelAnimationFrame(playRaf);playRaf=0;
+  play=null;cancelAnimationFrame(playRaf);playRaf=0;T(()=>CSCO.clear());
   T(()=>{$('#play').hidden=true;stage.classList.remove('playing');const gb=$('#gvPlayBar');if(gb)gb.hidden=true});
   T(()=>{const b=$('#bPlay');b.classList.remove('on');b.innerHTML=ico('play')+'플레이'});
   T(()=>{if(wasEmbed&&gvBack==='scene')setView('scene');else setTimeout(gvLayout,0)});
@@ -11059,6 +11753,8 @@ function uiSetHot(id){
   if(id){const o=ui.find(q=>q.id===id);if(o)uiFire(o,'OnPointerEnter')}
 }
 pv.addEventListener('pointermove',e=>{if(play)uiSetHot((uiPlayHit(e)||{}).id||null)});
+/* Input.mousePosition: 게임 화면의 논리 px (왼쪽 위 기준으로 저장 · 스크립트에는 유니티처럼 왼쪽 아래 기준으로 줌) */
+$('#play').addEventListener('pointermove',e=>{if(!play)return;const r=pv.getBoundingClientRect(),v=play.view;if(!v||!r.width)return;play.mouse={x:(e.clientX-r.left)*v.W/r.width,y:(e.clientY-r.top)*v.H/r.height}},true);
 pv.addEventListener('pointerleave',()=>{if(play){play.uiPress=null;uiSetHot(null)}});
 pv.addEventListener('pointerdown',e=>{
   if(!play||play.dialog)return;
@@ -11072,8 +11768,8 @@ pv.addEventListener('pointerup',e=>{
 });
 pv.addEventListener('pointercancel',()=>{if(play){play.uiPress=null;if(play.uiHot)uiSetHot(null)}});
 function update(dt){
-  const p=play,m=p.m;p.tm+=dt;
-  if(p.msgT>0)p.msgT-=dt;if(p.titleT>0)p.titleT-=dt;if(p.atk>0)p.atk-=dt;if(p.hit>0)p.hit-=dt;
+  const p=play,m=p.m,ud=p.udt!=null?p.udt:dt;p.tm+=dt;
+  if(p.msgT>0)p.msgT-=ud;if(p.titleT>0)p.titleT-=ud;if(p.shake&&p.shake.t>0)p.shake.t-=ud;if(p.atk>0)p.atk-=dt;if(p.hit>0)p.hit-=dt;
   if(p.dialog)return;
   /* 쓰러진 동안: 게임 오브젝트는 멈추고 UI 스크립트만 계속 실행 (쓰러짐 화면 · 다시 시작 버튼) */
   if(p.dead){
@@ -11095,12 +11791,15 @@ function update(dt){
      if(!m.objs.includes(o)&&!ui.includes(o))continue;
      if(!isUiEl(o)){
        if(!objOn(m,o))continue;
-       if(p.started&&!p.started.has(o.id)){p.started.add(o.id);csRunMethods(m,o,['Awake','Start']);if(!play||play.m!==m)return}
+       if(p.started&&!p.started.has(o.id)){p.started.add(o.id);csRunMethods(m,o,p.awoken&&p.awoken.has(o.id)?['Start']:['Awake','OnEnable','Start']);if(!play||play.m!==m)return}
      }
      for(const inst of (o.scripts||[]).slice()){csRun(m,o,inst,'Update',dt,true);if(!play||play.m!==m)return}
    }}
   /* 비주얼 스크립트 업데이트 (매니저 · 오브젝트 · UI의 스크립트 머신 / 상태 머신) */
   vsCall('tick',m,dt,false);if(!play||play.m!==m)return;
+  if(p.dead||p.dialog)return;
+  /* 고정 업데이트(FixedUpdate · 0.02초마다) · 리지드바디 2D · 충돌 · 트리거 */
+  physFrame(m,dt);if(!play||play.m!==m)return;
   if(p.dead||p.dialog)return;
   if(p.moved)p.walk+=dt;
   /* 트리거 박스 콜라이더 2D: 주인공이 들어오면 OnTriggerEnter2D, 나가면 OnTriggerExit2D */
@@ -11110,8 +11809,8 @@ function update(dt){
      if(inside===was)continue;const fn=inside?'OnTriggerEnter2D':'OnTriggerExit2D';
      if(inside)p.trig.add(o.id);else p.trig.delete(o.id);
      if(inside)learnEmit('trig:'+o.name);
-     csRunMethods(m,o,[fn]);if(!play||play.m!==m)return;
-     if(hero&&(hero.scripts&&hero.scripts.length||hero.vs&&hero.vs.length)){csRunMethods(m,hero,[fn]);if(!play||play.m!==m)return}
+     csRunMethods(m,o,[fn],[colProxy(m,hero,'hero')]);if(!play||play.m!==m)return;
+     if(hero&&(hero.scripts&&hero.scripts.length||hero.vs&&hero.vs.length)){csRunMethods(m,hero,[fn],[colProxy(m,o)]);if(!play||play.m!==m)return}
    }}
   if(p.dead){if(p.deathPend){p.deathPend=false;heroDeathSend(m)}return}
   /* 주인공이 오브젝트의 칸에 들어오면 OnHeroEnter(), 나가면 OnHeroExit() — 아이템·이벤트·포탈 스크립트가 받음
@@ -11126,7 +11825,10 @@ function update(dt){
    }}
   /* 몬스터: 맞았을 때 깜빡임만 엔진이 처리 (움직임·공격·쓰러짐은 MonsterAI 스크립트) */
   p.mons.forEach(q=>{if(q.flash>0)q.flash-=dt});
-  if(p.deathPend){p.deathPend=false;heroDeathSend(m)}
+  if(p.deathPend){p.deathPend=false;heroDeathSend(m);return}
+  /* LateUpdate: 모든 Update · 물리가 끝난 뒤 (카메라 따라가기 등) */
+  {const hero=startSpawn(m);for(const o of m.objs.slice()){if(!(o.scripts&&o.scripts.length)||!objOn(m,o)||(o.type==='spawn'&&o!==hero)||!scriptHas(o,'LateUpdate'))continue;
+    for(const inst of o.scripts.slice()){csRun(m,o,inst,'LateUpdate',dt,true);if(!play||play.m!==m)return}}}
 }
 function wrap(g,text,maxW){
   const lines=[];String(text).split('\n').forEach(par=>{let c='';for(const ch of par){if(g.measureText(c+ch).width>maxW){lines.push(c);c=ch}else c+=ch}lines.push(c)});return lines;
@@ -11137,7 +11839,7 @@ function drawPlay(p,g,W,H,d){
   const m=p.m,camO=startCamera(m),cc=camO&&camO.props.camera,s=cc?H/(2*Math.max(.5,+cc.size||5)*TS):(W<640?1.5:2);
   g.setTransform(d,0,0,d,0,0);g.fillStyle='#000';g.fillRect(0,0,W,H);
   /* 카메라는 자기 위치(부모를 따라 움직인 위치)를 화면 가운데에 둡니다 (씬에는 가장자리가 없습니다) */
-  const ct=camPos(m,p);let ox=W/2-ct.x*s,oy=H/2-ct.y*s;
+  const ct0=camPos(m,p),sh=shakeOff(p),ct={x:ct0.x+sh.x,y:ct0.y+sh.y};let ox=W/2-ct.x*s,oy=H/2-ct.y*s;
   p.view={ox,oy,s,W,H};
   g.setTransform(d*s,0,0,d*s,d*ox,d*oy);
   const x0=Math.floor(-ox/(TS*s)),y0=Math.floor(-oy/(TS*s)),x1=Math.ceil((W-ox)/(TS*s)),y1=Math.ceil((H-oy)/(TS*s));
@@ -11157,7 +11859,7 @@ function drawPlay(p,g,W,H,d){
   let ps=asr||spriteRef(p.spr)||spriteRef(P.playerSprite),cat=false;
   /* 애니메이터도 스프라이트도 없으면 기본 검은 고양이 시트에서 바라보는 방향·걸음 프레임 */
   if(!ps){const dk=p.fy<0?'u':p.fx<0?'l':p.fx>0?'r':'d',fr=p.moved?[1,2,3,0][Math.floor(p.walk*8)%4]:0;ps=spriteRef('base_hero:'+dk+fr);cat=!!ps}
-  let hsx=(hpr.sx||1)*(aq&&aq.sx!=null?aq.sx:1),hsy=(hpr.sy||1)*(aq&&aq.sy!=null?aq.sy:1);const hrot=(+hpr.rot||0)+(aq&&aq.rot||0);if(aq&&aq.flip)hsx=-hsx;
+  let hsx=(hpr.sx||1)*(aq&&aq.sx!=null?aq.sx:1)*(hpr.flipX?-1:1),hsy=(hpr.sy||1)*(aq&&aq.sy!=null?aq.sy:1)*(hpr.flipY?-1:1);const hrot=(+hpr.rot||0)+(aq&&aq.rot||0);if(aq&&aq.flip)hsx=-hsx;
   const aox=aq&&aq.x?aq.x*TS:0,aoy=aq&&aq.y?aq.y*TS:0;
   g.save();if(aox||aoy)g.translate(aox,aoy);
   if(hrot){g.translate(p.px,p.py);g.rotate(hrot*Math.PI/180);g.translate(-p.px,-p.py)}
@@ -11174,6 +11876,7 @@ function drawPlay(p,g,W,H,d){
   };
 
   const drawPO=o=>{
+    if(o.props&&o.props.ps&&!o.props.ps.front&&objOn(m,o))psDraw(g,m,o,p,p===play);
     if(o===hsP){heroDrawn=true;drawMe();return}
     const mq=monOf.get(o);if(mq){drawMon(mq);return}
     if(!objOn(m,o))return;
@@ -11183,7 +11886,11 @@ function drawPlay(p,g,W,H,d){
   const playObjs=m.objs.map((o,i)=>[o,i]).sort((a,b)=>ordOf(m,a[0])-ordOf(m,b[0])||yOfP(a[0])-yOfP(b[0])||a[1]-b[1]).map(q=>q[0]);
   drawLayers(g,m,x0,y0,x1,y1,undefined,drawPO,playObjs);playObjs.filter(o=>ordOf(m,o)>m.l.length*10).forEach(drawPO);
   p.mons.forEach(q=>{if(!monDrawn.has(q))drawMon(q)});if(!heroDrawn)drawMe();
+  /* 파티클 (오브젝트 위에 그리기): 연기처럼 보통 섞기는 어둠 아래 · 빛처럼 더하기는 어둠 위 (어두운 곳에서도 빛남) */
+  const psFront=m.objs.filter(o=>o.props&&o.props.ps&&o.props.ps.front&&objOn(m,o));
+  psFront.forEach(o=>{if(!o.props.ps.add||!darkOn)psDraw(g,m,o,p,p===play)});
   if(darkOn)drawLighting(g,m,lightsOf(m),d*s,d*ox,d*oy);
+  if(darkOn&&psFront.length){g.setTransform(d*s,0,0,d*s,d*ox,d*oy);psFront.forEach(o=>{if(o.props.ps.add)psDraw(g,m,o,p,p===play)})}
   g.setTransform(d,0,0,d,0,0);
   /* 볼륨 후처리: 카메라 화면(씬 · 빛)까지만 · UI와 대화창은 효과를 받지 않음 (유니티의 Screen Space - Overlay UI처럼) */
   try{volLast=volApply(p,g,m,ct,W,H,d)}catch(e){volLast={drawn:false,anim:false};console.error(e)}
@@ -11216,11 +11923,16 @@ function liveInsp(){
 }
 function loop(t){
   if(!play)return;
-  const dt=Math.min(.05,(t-plast)/1000);plast=t;
+  const raw=Math.min(.05,(t-plast)/1000);plast=t;
+  /* Time.timeScale: 0 = 멈춤 · 스크립트의 deltaTime · 물리 · 애니메이션 · 파티클이 모두 느려짐 (Time.unscaledDeltaTime 은 그대로) */
+  const dt=raw*(play.ts==null?1:play.ts);play.udt=raw;play.utm=(play.utm||0)+raw;
   /* 오디오: Play On Awake는 스크립트 Start보다 먼저 (유니티와 같게) · 볼륨·거리 감쇠도 매 프레임 */
   audTick(play);if(!play)return;
   if(play.needStart){play.needStart=false;runScriptsStart(play.m);if(!play)return}
   update(dt);if(!play)return;
+  /* 코루틴 · Invoke · 늦춘 Destroy (유니티처럼 Update 뒤에 이어 감) */
+  if(!play.dead&&!play.dialog){CSCO.tick(dt,raw);if(!play)return}
+  try{psTick(play,dt)}catch(e){console.error(e)}if(!play)return;
   /* 애니메이터: 스크립트 Update 뒤에 상태·전환을 계산 (대화창이 열려 있어도 그림은 움직임) */
   animTick(play,play.dead?0:dt);if(!play)return;
   /* 타임라인(플레이어블 디렉터): 애니메이터 다음 (애니메이션 트랙이 애니메이터 포즈를 덮어씀) */

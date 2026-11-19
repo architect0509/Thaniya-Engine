@@ -186,8 +186,9 @@ function enToKo(code){
 const koTypes=s=>String(s||'').replace(/[A-Za-z_]\w*/g,w=>KO_TY_R[w]||KO_KW_R[w]||w);
 const CS_UIT=new Set(['RectTransform','Button','Text','Image','Slider','CanvasGroup','TMP_Text','TextMeshProUGUI']);
 /* 인스펙터 슬롯(오브젝트를 끌어다 놓는 칸)이 되는 필드 형식 — 컴포넌트 형식이면 그 오브젝트의 컴포넌트(예: PlayableDirector)를 씀 */
-const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','UIGroup','PlayableDirector','Animator','AudioSource','Volume',...CS_UIT]);
-const csKind=t=>CS_OBJT.has(t)?'obj':t in CS_NUM?'num':t==='bool'?'bool':t==='string'?'str':t==='Vector2'||t==='Vector3'?'vec':t==='Color'?'color':'ref';
+const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','UIGroup','PlayableDirector','Animator','AudioSource','Volume','Rigidbody2D','BoxCollider2D','Collider2D','ParticleSystem',...CS_UIT]);
+/* 내가 만든 스크립트 형식(예: public PlayerHealth player;)도 오브젝트 슬롯 — 호스트가 CSHOST.isScriptType 으로 알려 줌 */
+const csKind=t=>CS_OBJT.has(t)||(typeof CSHOST.isScriptType==='function'&&/^[A-Z][\w]*$/.test(t)&&CSHOST.isScriptType(t))?'obj':t in CS_NUM?'num':t==='bool'?'bool':t==='string'?'str':t==='Vector2'||t==='Vector3'?'vec':t==='Color'?'color':'ref';
 function parseCS(code){
   code=koCode(code);
   const res={cls:null,members:[],errs:[],methods:{},fields:[]},errs=res.errs;
@@ -216,7 +217,9 @@ function parseCS(code){
       const mm=/([\p{L}_][\p{L}\p{N}_]*)\s*\(/u.exec(s);if(mm){res.methods[mm[1]]={body:nc.slice(a,b),line};if(mm[1]===res.cls)errs.push({line,msg:`error CS0542: '${mm[1]}': 멤버 이름은 바깥 클래스 이름과 같을 수 없습니다`})}return}
     const mods=[];while((m=/^(public|private|protected|internal|static|readonly|const|new|volatile)\s+/.exec(s))){mods.push(m[1]);s=s.slice(m[0].length)}
     if(!s&&attrs.length)return;
-    const fm=/^([\p{L}_][\p{L}\p{N}_.<>,\[\]?]*)\s+([\p{L}_][\p{L}\p{N}_]*)\s*(?:=\s*([\s\S]+))?$/u.exec(s.replace(/\s+/g,' '));
+    /* 제네릭 형식 안의 공백 없애기: Dictionary<string, int> → Dictionary<string,int> */
+    {let g=s.replace(/\s+/g,' '),k=0;while(/<[^<>=]*\s[^<>=]*>/.test(g)&&k++<5)g=g.replace(/<([^<>=]*)>/g,(q,b)=>'<'+b.replace(/\s+/g,'')+'>');s=g}
+    const fm=/^([\p{L}_][\p{L}\p{N}_.<>,\[\]?]*)\s+([\p{L}_][\p{L}\p{N}_]*)\s*(?:=\s*([\s\S]+))?$/u.exec(s);
     if(!fm){if(s.includes('('))return;errs.push({line,msg:'error CS1002: ; expected'});return}
     const type=fm[1].replace(/\s/g,''),name=fm[2],def=fm[3];
     if(def&&/\b(public|private|protected|internal)\s/.test(def)){errs.push({line,msg:'error CS1002: ; expected'});return}
@@ -235,7 +238,8 @@ function parseCS(code){
   };
   let blk=false;
   for(;i<n;i++){const c=clean[i];
-    if('([{'.includes(c)){if(d===0&&c==='{')blk=true;d++}
+    /* 맨 바깥의 { : 메서드 본문 · 단, 앞에 = 가 있으면 필드 초기값 (int[] a = {1, 2}; · new List<int> { 1 }) */
+    if('([{'.includes(c)){if(d===0&&c==='{')blk=!/=/.test(clean.slice(st,i).replace(/\([^()]*\)/g,'').replace(/=>/g,''));d++}
     else if(')]}'.includes(c)){if(d===0)break;d--;if(d===0&&c==='}'&&blk){stmt(st,i+1,true);st=i+1;blk=false}}
     else if(c===';'&&d===0){stmt(st,i,false);st=i+1}
   }
@@ -311,7 +315,37 @@ function csParser(toks,src){
   };
   const isDecl=()=>{const L=typeLen(0);if(!L)return false;const n=pk(L);return n.k==='id'&&!CS_KW.has(n.v)&&(is('=',L+1)||is(';',L+1)||is(',',L+1))};
   function block(){const t0=eat('{');const b=[];while(!is('}')){if(pk().k==='eof')throw err("'}'이(가) 필요합니다",t0);b.push(stmt())}i++;return{t:'block',b,p:t0.p}}
-  function stmt(){const s0=pk().p;const n=stmt0();if(n.p==null)n.p=s0;n.src=src.slice(s0,(toks[i-1]||N).e);return n}
+  function stmt(){const s0=pk().p;const n=stmt0();if(n.p==null)n.p=s0;n.src=src.slice(s0,(toks[i-1]||N).e);n.y=csHasY(n);return n}
+  /* foreach (var x in 목록) · foreach (Transform t in transform) */
+  function foreachSt(){
+    const t0=toks[i++];eat('(');let n=null;
+    while(pk().k!=='eof'&&!is('in')){if(pk().k==='id')n=pk().v;i++}
+    if(!n)throw err('foreach 변수 이름이 필요합니다',t0);eat('in');const e=expr();eat(')');
+    return{t:'foreach',n,e,body:stmt(),p:t0.p};
+  }
+  /* switch (값) { case 1: case 2: ... break; default: ... } */
+  function switchSt(){
+    const t0=toks[i++];eat('(');const e=expr();eat(')');const ob=eat('{');const secs=[];let sec=null;
+    while(!is('}')){
+      if(pk().k==='eof')throw err("'}'이(가) 필요합니다",ob);
+      if(is('case')||is('default')){
+        const isDef=is('default');i++;const lab=isDef?null:expr();eat(':');
+        if(!sec||sec.body.length){sec={labels:[],body:[]};secs.push(sec)}
+        sec.labels.push(lab);continue;
+      }
+      if(!sec)throw err("switch 안에는 'case' 또는 'default'가 먼저 와야 합니다");
+      sec.body.push(stmt());
+    }
+    i++;return{t:'switch',e,secs,p:t0.p};
+  }
+  /* try { } catch (Exception e) { } finally { } */
+  function trySt(){
+    const t0=toks[i++];const tb=block();let cn=null,cb=null,fb=null;
+    if(is('catch')){i++;if(is('(')){i++;let last=null;while(pk().k!=='eof'&&!is(')')){if(pk().k==='id')last=pk().v;i++}eat(')');cn=last&&last!=='Exception'?last:null}cb=block()}
+    if(is('finally')){i++;fb=block()}
+    if(!cb&&!fb)throw err("try 뒤에는 catch 또는 finally가 필요합니다",t0);
+    return{t:'try',tb,cn,cb,fb,p:t0.p};
+  }
   function stmt0(){
     const t=pk();
     if(is('{'))return block();
@@ -324,15 +358,22 @@ function csParser(toks,src){
       case'return':{i++;const e=is(';')?null:expr();eat(';');return{t:'ret',e}}
       case'break':i++;eat(';');return{t:'brk'};
       case'continue':i++;eat(';');return{t:'cnt'};
-      case'foreach':case'switch':case'try':case'throw':case'yield':case'goto':throw csUnsup(t.v+' 문',t.p);
+      case'foreach':return foreachSt();
+      case'switch':return switchSt();
+      case'try':return trySt();
+      case'throw':{i++;const e=is(';')?null:expr();eat(';');return{t:'throw',e}}
+      case'yield':{i++;if(is('break')){i++;eat(';');return{t:'ybrk'}}eat('return');const e=is(';')?null:expr();eat(';');return{t:'yret',e}}
+      case'goto':throw csUnsup(t.v+' 문',t.p);
     }
+    /* const float X = 1; (지역 상수) */
+    if(t.k==='id'&&t.v==='const'&&pk(1).k==='id'){i++;const d=decl();eat(';');return d}
     if(isDecl()){const d=decl();eat(';');return d}
     const e=expr();eat(';');return{t:'expr',e};
   }
   function decl(){
     const t0=pk(),L=typeLen(0),ty=toks.slice(i,i+L).map(x=>x.v).join('');i+=L;
     const vars=[];
-    do{const n=pk();if(n.k!=='id')throw err('변수 이름이 필요합니다');i++;let e=null;if(is('=')){i++;e=expr()}vars.push({n:n.v,e})}while(is(',')&&++i);
+    do{const n=pk();if(n.k!=='id')throw err('변수 이름이 필요합니다');i++;let e=null;if(is('=')){i++;e=is('{')?arrLit(ty):expr()}vars.push({n:n.v,e})}while(is(',')&&++i);
     return{t:'decl',ty,vars,p:t0.p};
   }
   function expr(){return asg()}
@@ -348,7 +389,28 @@ function csParser(toks,src){
     if(is('(')&&pk(1).k==='id'&&CASTS.includes(pk(1).v)&&is(')',2)){const ty=pk(1).v;i+=3;return{t:'cast',ty,e:unary(),p:t.p}}
     return post();
   }
-  function args(){const a=[];if(!is(')')){do{a.push(expr())}while(is(',')&&++i)}eat(')');return a}
+  /* out int v · out var v · out v · ref v (TryGetValue · int.TryParse 등) */
+  function arg1(){
+    if(is('out')||is('ref')){const t0=toks[i++];const L=typeLen(0);let decl=false;if(L&&pk(L).k==='id'){i+=L;decl=true}const n=pk();if(n.k!=='id')throw err('변수 이름이 필요합니다');i++;return{t:'out',n:n.v,decl,p:t0.p}}
+    return expr();
+  }
+  function args(){const a=[];if(!is(')')){do{a.push(arg1())}while(is(',')&&++i)}eat(')');return a}
+  /* { 1, 2, 3 } · { {"a", 1}, {"b", 2} } */
+  function arrLit(ty){const t0=eat('{');const items=[];while(!is('}')){items.push(is('{')?arrLit(''):expr());if(!is(','))break;i++}eat('}');return{t:'arr',ty:String(ty||'').replace(/\[\]$/,''),items,p:t0.p}}
+  /* 람다: () => 식 · x => 식 · (a, b) => { 문장 } */
+  function lamAt(){
+    if(pk().k==='id'&&!CS_KW.has(pk().v)&&is('=>',1))return 1;
+    if(!is('('))return 0;let j=1;
+    while(pk(j).k==='id'||is(',',j))j++;
+    return is(')',j)&&is('=>',j+1)?j+1:0;
+  }
+  function lambda(){
+    const t0=pk(),ps=[];
+    if(is('(')){i++;while(!is(')')){const a=pk();if(a.k==='id'){if(pk(1).k==='id'){i++;continue}ps.push(a.v)}i++}i++}else{ps.push(toks[i++].v)}
+    eat('=>');
+    if(is('{'))return{t:'lam',ps,body:block(),blk:true,p:t0.p};
+    return{t:'lam',ps,body:expr(),blk:false,p:t0.p};
+  }
   function post(){
     let e=prim();
     for(;;){
@@ -366,12 +428,24 @@ function csParser(toks,src){
     const t=pk();
     if(t.k==='num'||t.k==='str'){i++;return{t:'lit',v:t.v,p:t.p}}
     if(t.k==='istr'){i++;return csIstr(t)}
+    if(lamAt())return lambda();
     if(is('(')){i++;const e=expr();eat(')');return e}
     if(t.k==='id'){
       if(t.v==='true'||t.v==='false'){i++;return{t:'lit',v:t.v==='true',p:t.p}}
       if(t.v==='null'){i++;return{t:'lit',v:null,p:t.p}}
       if(t.v==='this'){i++;return{t:'this',p:t.p}}
-      if(t.v==='new'){i++;let ty='';while(pk().k==='id'||(ty&&is('.'))){ty+=toks[i++].v}if(!ty)throw err('형식 이름이 필요합니다');if(!is('('))throw csUnsup('new '+ty,t.p);i++;return{t:'new',ty,a:args(),p:t.p}}
+      if(t.v==='new'){
+        i++;let ty='';while(pk().k==='id'||(ty&&is('.'))){ty+=toks[i++].v}
+        /* new int[] { 1, 2 } · new int[5] · new { } 없이 배열 초기화 */
+        if(!ty&&is('[')&&is(']',1)&&is('{',2)){i+=2;return arrLit('')}
+        if(!ty)throw err('형식 이름이 필요합니다');
+        let ga='';
+        if(is('<')){let d=0;do{const q=toks[i++];if(q.v==='<')d++;else if(q.v==='>')d--;ga+=q.v}while(d>0&&pk().k!=='eof');ga=ga.slice(1,-1)}
+        if(is('[')){i++;if(is(']')){i++;if(!is('{'))throw err("'{'이(가) 필요합니다");return arrLit(ty)}const n=expr();eat(']');return{t:'newarr',ty,n,p:t.p}}
+        let a=[];if(is('(')){i++;a=args()}else if(!is('{'))throw csUnsup('new '+ty,t.p);
+        const init=is('{')?arrLit('').items:null;
+        return{t:'new',ty,ga,a,init,p:t.p};
+      }
       if(CS_KW.has(t.v))throw err(`'${t.v}'을(를) 여기에 쓸 수 없습니다`);
       i++;
       if(is('<')&&pk(1).k==='id'&&is('>',2)&&is('(',3)){const ga=pk(1).v;i+=3;return{t:'id',n:t.v,ga,p:t.p}}
@@ -410,9 +484,13 @@ function csFmt(v,f){
   if(isCsV(v))return'('+v.x.toFixed(2)+', '+v.y.toFixed(2)+(v.v3?', '+v.z.toFixed(2):'')+')';
   if(isCsQ(v))return'('+[v.x,v.y,v.z,v.w].map(q=>q.toFixed(5)).join(', ')+')';
   if(v.__h)return v.name||v.__h;
+  if(isCsL(v))return v.arr?`${v.ty||'object'}[${v.a.length}]`:`${v.kind||'List'}<${v.ty||'T'}> (Count = ${v.a.length})`;
+  if(isCsD(v))return`Dictionary<${v.ty||'K,V'}> (Count = ${v.m.size})`;
+  if(v.__fn)return'(람다)';if(v.__w)return'Wait';if(v.__ex)return'Exception: '+v.msg;
   return String(v);
 }
-const csTruth=v=>!!v;
+/* RaycastHit2D 처럼 「맞은 것이 없으면 거짓」인 결과는 __falsy 로 표시 (if (hit) 가 false) */
+const csTruth=v=>!!v&&!(typeof v==='object'&&v.__falsy);
 function csN(v){
   if(typeof v==='number')return v;
   if(v==null)throw new Error('null 값은 숫자로 쓸 수 없습니다');
@@ -448,6 +526,126 @@ function csZero(ty){
   if(/^(int|uint|long|ulong|short|ushort|byte|sbyte|float|double|decimal)$/.test(ty))return 0;
   if(ty==='bool')return false;
   if(ty==='Vector2'||ty==='Vector3')return CsV(0,0,0,ty==='Vector3');
+  return null;
+}
+/* ===================== 목록 (List<T> · 배열 T[] · Dictionary<K,V>) ===================== */
+const CsL=(a,ty,arr)=>({__l:1,a,ty:ty||'',arr:!!arr});
+const isCsL=v=>!!v&&v.__l===1;
+const CsD=(ty)=>({__d:1,m:new Map(),ty:ty||''});
+const isCsD=v=>!!v&&v.__d===1;
+/* Dictionary 키: 게임 오브젝트 프록시는 매번 새로 만들어지므로 실제 오브젝트로 비교 */
+const csKey=k=>k&&typeof k==='object'?(k.__o||(isCsV(k)?'v:'+k.x+','+k.y+','+k.z:k)):k;
+const csKV=(k,v)=>csH('KeyValuePair',n=>{if(n==='Key')return k;if(n==='Value')return v;throw csUnsup('KeyValuePair.'+n)});
+function csElemZero(ty){ty=String(ty||'');return csZero(ty)!=null?csZero(ty):ty==='string'?null:null}
+/* 배열 길이를 넘는 번호 */
+function csIdxOk(l,k){const n=csN(k);if(!Number.isInteger(n)||n<0||n>=l.a.length)throw new Error(l.arr?`IndexOutOfRangeException: 번호 ${n}은(는) 배열 범위(0 ~ ${l.a.length-1})를 벗어났습니다`:`ArgumentOutOfRangeException: 번호 ${n}은(는) 목록 범위(0 ~ ${l.a.length-1})를 벗어났습니다 (Count = ${l.a.length})`);return n}
+function csCmp(a,b){if(typeof a==='number'&&typeof b==='number')return a-b;const x=csFmt(a),y=csFmt(b);return x<y?-1:x>y?1:0}
+/* 반복 가능한 값 → 배열 (foreach) */
+function csIter(v){
+  if(v==null)throw new Error('NullReferenceException: foreach 할 목록이 null 입니다');
+  if(isCsL(v))return v.a.slice();
+  if(isCsD(v))return[...v.m.values()].map(([k,x])=>csKV(k,x));
+  if(typeof v==='string')return[...v];
+  if(v.__h&&typeof v.iter==='function')return v.iter();
+  throw new Error(`'${csFmt(v)}'은(는) foreach 로 하나씩 꺼낼 수 없습니다 (List · 배열 · Dictionary · transform)`);
+}
+/* 람다·대리자 호출: (x) => x > 3 */
+function csInvoke(fn,args){
+  if(!fn)throw new Error('NullReferenceException: 실행할 함수가 null 입니다');
+  if(fn.__mref){return csCallUser(fn.cx,fn.n,args||[])}
+  if(!fn.__fn)throw new Error(`'${csFmt(fn)}'은(는) 함수가 아닙니다`);
+  const cx=fn.cx,sv=cx.scopes;cx.scopes=fn.scopes.concat([new Map(fn.ps.map((p,k)=>[p,(args||[])[k]]))]);
+  try{
+    if(!fn.blk)return csE(fn.body,cx);
+    try{for(const s of fn.body.b)csX(s,cx);return undefined}catch(e){if(e&&e.__c==='ret')return e.v;throw e}
+  }finally{cx.scopes=sv}
+}
+function csListM(l,n,a,cx){
+  const A=l.a;
+  if(l.kind==='Queue'||l.kind==='Stack'){
+    const emp=()=>{if(!A.length)throw new Error(`InvalidOperationException: ${l.kind==='Queue'?'큐':'스택'}가 비어 있습니다 (Count 를 먼저 확인하세요)`)};
+    if(n==='Enqueue'||n==='Push'){A.push(a[0]);return null}
+    if(n==='Dequeue'){emp();return A.shift()}if(n==='Pop'){emp();return A.pop()}
+    if(n==='Peek'){emp();return l.kind==='Queue'?A[0]:A[A.length-1]}
+  }
+  if(l.kind==='HashSet'&&n==='Add'){if(A.some(x=>csEq(x,a[0])))return false;A.push(a[0]);return true}
+  if(l.arr&&!['Contains','IndexOf','ToList','ToArray','ToString','GetLength','Clone','CopyTo'].includes(n))throw new Error(`배열에는 ${n}()이(가) 없습니다 — 크기를 바꾸려면 List<${l.ty||'T'}>을(를) 쓰세요`);
+  switch(n){
+    case'Add':A.push(a[0]);return null;
+    case'AddRange':A.push(...csIter(a[0]));return null;
+    case'Insert':{const k=csN(a[0]);if(k<0||k>A.length)throw new Error(`ArgumentOutOfRangeException: Insert 위치 ${k}`);A.splice(k,0,a[1]);return null}
+    case'Remove':{const k=A.findIndex(x=>csEq(x,a[0]));if(k<0)return false;A.splice(k,1);return true}
+    case'RemoveAt':{const k=csIdxOk(l,a[0]);A.splice(k,1);return null}
+    case'RemoveRange':{A.splice(csN(a[0]),csN(a[1]));return null}
+    case'RemoveAll':{let c=0;for(let k=A.length-1;k>=0;k--)if(csTruth(csInvoke(a[0],[A[k]]))){A.splice(k,1);c++}return c}
+    case'Clear':A.length=0;return null;
+    case'Contains':return A.some(x=>csEq(x,a[0]));
+    case'IndexOf':return A.findIndex(x=>csEq(x,a[0]));
+    case'LastIndexOf':{for(let k=A.length-1;k>=0;k--)if(csEq(A[k],a[0]))return k;return-1}
+    case'Find':{const x=A.find(q=>csTruth(csInvoke(a[0],[q])));return x===undefined?csElemZero(l.ty):x}
+    case'FindIndex':return A.findIndex(q=>csTruth(csInvoke(a[0],[q])));
+    case'FindAll':return CsL(A.filter(q=>csTruth(csInvoke(a[0],[q]))),l.ty);
+    case'Exists':return A.some(q=>csTruth(csInvoke(a[0],[q])));
+    case'TrueForAll':return A.every(q=>csTruth(csInvoke(a[0],[q])));
+    case'ForEach':A.slice().forEach(q=>csInvoke(a[0],[q]));return null;
+    case'Sort':if(a.length)A.sort((x,y)=>csN(csInvoke(a[0],[x,y])));else A.sort(csCmp);return null;
+    case'Reverse':A.reverse();return null;
+    case'ToArray':return CsL(A.slice(),l.ty,true);
+    case'ToList':return CsL(A.slice(),l.ty);
+    case'Clone':return CsL(A.slice(),l.ty,l.arr);
+    case'GetRange':return CsL(A.slice(csN(a[0]),csN(a[0])+csN(a[1])),l.ty);
+    case'ToString':return csFmt(l);
+    case'GetLength':return A.length;
+  }
+  throw csUnsup((l.arr?'배열.':'List.')+n+'()');
+}
+function csDictM(d,n,a){
+  const M=d.m;
+  switch(n){
+    case'Add':{const k=csKey(a[0]);if(M.has(k))throw new Error(`ArgumentException: 같은 키 '${csFmt(a[0])}'이(가) 이미 있습니다 (값을 바꾸려면 dict[키] = 값)`);M.set(k,[a[0],a[1]]);return null}
+    case'ContainsKey':return M.has(csKey(a[0]));
+    case'ContainsValue':return[...M.values()].some(([,v])=>csEq(v,a[0]));
+    case'Remove':return M.delete(csKey(a[0]));
+    case'Clear':M.clear();return null;
+    case'TryGetValue':{const q=M.get(csKey(a[0]));if(a[1]&&a[1].__out)a[1].set(q?q[1]:null);return!!q}
+    case'TryAdd':{const k=csKey(a[0]);if(M.has(k))return false;M.set(k,[a[0],a[1]]);return true}
+    case'GetValueOrDefault':{const q=M.get(csKey(a[0]));return q?q[1]:(a.length>1?a[1]:null)}
+    case'ToString':return csFmt(d);
+  }
+  throw csUnsup('Dictionary.'+n+'()');
+}
+/* 구문 안에 yield 가 있는지 (코루틴은 yield 가 있는 문장만 멈출 수 있게 따로 실행) */
+function csHasY(n){
+  if(!n)return false;
+  switch(n.t){
+    case'yret':case'ybrk':return true;
+    case'block':return n.b.some(x=>x.y);
+    case'if':return!!(n.a&&n.a.y)||!!(n.b&&n.b.y);
+    case'while':case'do':case'for':case'foreach':return!!(n.body&&n.body.y);
+    case'switch':return n.secs.some(s=>s.body.some(x=>x.y));
+    case'try':return!!(n.tb.y||(n.cb&&n.cb.y)||(n.fb&&n.fb.y));
+  }
+  return false;
+}
+/* 예외 (throw new Exception("…") · try/catch) */
+class CsThrown extends Error{}
+const csExProxy=msg=>csH('Exception',n=>{if(n==='Message')return msg;throw csUnsup('Exception.'+n)},(n)=>{if(n==='ToString')return'Exception: '+msg;throw csUnsup('Exception.'+n+'()')});
+/* 필드 처음 값 (목록 · 배열 · Dictionary 같은 참조 형식): 초기값 식을 실행해서 만들고,
+   초기값이 없으면 공개(public) 배열·List 는 빈 목록 (유니티 인스펙터가 만들어 주는 것처럼) · 비공개는 null */
+function csInitRef(fd){
+  const ty=String(fd.type||'').replace(/\s/g,''),def=String(fd.def||'').trim();
+  if(def){
+    try{
+      const src=def.startsWith('{')?'new '+(ty.replace(/\[\]$/,'')||'object')+'[]'+def:def;
+      const node=csParser(csTok(src),src).exprOnly();
+      const cx={m:null,o:{name:''},inst:null,rt:{f:{},ty:{}},pr:{r:{methods:{}}},dt:0,scopes:[new Map()],me:null,depth:0,loops:0,s:{name:'',id:''}};
+      const prev=csCur;csCur=cx;try{return csE(node,cx)}finally{csCur=prev}
+    }catch(e){return null}
+  }
+  if(!fd.exposed)return null;
+  if(/\[\]$/.test(ty))return CsL([],ty.slice(0,-2),true);
+  const g=/^(List|HashSet|Queue|Stack)<(.*)>$/.exec(ty);if(g){const l=CsL([],g[2]);if(g[1]!=='List')l.kind=g[1];return l}
+  const d=/^Dictionary<(.*)>$/.exec(ty);if(d)return CsD(d[1]);
   return null;
 }
 /* 코드 해석 결과 캐시 (같은 코드는 한 번만 해석) */
@@ -495,9 +693,166 @@ function csX0(st,cx){
     case'ret':throw{__c:'ret',v:st.e?csE(st.e,cx):undefined};
     case'brk':throw{__c:'brk'};
     case'cnt':throw{__c:'cnt'};
+    case'foreach':{
+      const items=csIter(csE(st.e,cx));cx.scopes.push(new Map());
+      try{for(const it of items){csLoop(cx);cx.scopes[cx.scopes.length-1].set(st.n,it);try{csX(st.body,cx)}catch(e){if(e&&e.__c==='brk')break;if(!(e&&e.__c==='cnt'))throw e}}}
+      finally{cx.scopes.pop()}
+      return;
+    }
+    case'switch':{
+      const k=csSwitchAt(st,cx);if(k<0)return;cx.scopes.push(new Map());
+      try{for(let j=k;j<st.secs.length;j++)for(const s of st.secs[j].body)csX(s,cx)}
+      catch(e){if(e&&e.__c==='brk')return;throw e}
+      finally{cx.scopes.pop()}
+      return;
+    }
+    case'throw':{const v=st.e?csE(st.e,cx):null;const msg=v&&v.__ex?v.msg:csFmt(v);const e=new CsThrown('Exception: '+msg);e.exMsg=msg;throw e}
+    case'try':{
+      try{csX(st.tb,cx)}
+      catch(e){
+        if(!st.cb||(e&&e.__c)||e instanceof CsUnsup)throw e;
+        cx.scopes.push(new Map(st.cn?[[st.cn,csExProxy(e.exMsg!=null?e.exMsg:String(e&&e.message||e))]]:[]));
+        try{csX(st.cb,cx)}finally{cx.scopes.pop()}
+      }
+      finally{if(st.fb)csX(st.fb,cx)}
+      return;
+    }
+    case'yret':case'ybrk':throw new Error('yield 는 IEnumerator 를 돌려주는 메서드(코루틴) 안에서만 쓸 수 있습니다 — StartCoroutine(메서드이름())으로 시작하세요');
   }
   throw csUnsup(st.t);
 }
+/* switch: 맞는 case 칸 번호 (없으면 default · 그것도 없으면 -1) */
+function csSwitchAt(st,cx){
+  const v=csE(st.e,cx);let def=-1;
+  for(let j=0;j<st.secs.length;j++)for(const lab of st.secs[j].labels){if(lab===null){def=j;continue}if(csEq(v,csE(lab,cx)))return j}
+  return def;
+}
+/* ===================== 코루틴 (IEnumerator · yield return) =====================
+   yield 가 들어 있는 문장만 생성기(function*)로 실행해서 멈췄다가 다음 프레임에 이어 갑니다 */
+function* csXG(st,cx){
+  if(!st.y){csX(st,cx);return}
+  try{yield* csXG0(st,cx)}
+  catch(e){if(e&&typeof e==='object'&&!e.__c&&e.line==null&&st.p!=null)e.line=csLine(cx.me,st.p);throw e}
+}
+function* csXG0(st,cx){
+  switch(st.t){
+    case'yret':yield st.e?csE(st.e,cx):null;return;
+    case'ybrk':throw{__c:'ybrk'};
+    case'block':{cx.scopes.push(new Map());try{for(const s of st.b)yield* csXG(s,cx)}finally{cx.scopes.pop()}return}
+    case'if':if(csTruth(csE(st.c,cx)))yield* csXG(st.a,cx);else if(st.b)yield* csXG(st.b,cx);return;
+    case'while':while(csTruth(csE(st.c,cx))){csLoop(cx);try{yield* csXG(st.body,cx)}catch(e){if(e&&e.__c==='brk')break;if(e&&e.__c==='cnt')continue;throw e}}return;
+    case'do':do{csLoop(cx);try{yield* csXG(st.body,cx)}catch(e){if(e&&e.__c==='brk')break;if(!(e&&e.__c==='cnt'))throw e}}while(csTruth(csE(st.c,cx)));return;
+    case'for':{
+      cx.scopes.push(new Map());
+      try{
+        if(st.init){if(st.init.t==='decl')csX0(st.init,cx);else csE(st.init.e,cx)}
+        while(!st.c||csTruth(csE(st.c,cx))){
+          csLoop(cx);
+          try{yield* csXG(st.body,cx)}catch(e){if(e&&e.__c==='brk')break;if(!(e&&e.__c==='cnt'))throw e}
+          st.st.forEach(x=>csE(x,cx));
+        }
+      }finally{cx.scopes.pop()}
+      return;
+    }
+    case'foreach':{
+      const items=csIter(csE(st.e,cx));cx.scopes.push(new Map());
+      try{for(const it of items){csLoop(cx);cx.scopes[cx.scopes.length-1].set(st.n,it);try{yield* csXG(st.body,cx)}catch(e){if(e&&e.__c==='brk')break;if(!(e&&e.__c==='cnt'))throw e}}}
+      finally{cx.scopes.pop()}
+      return;
+    }
+    case'switch':{
+      const k=csSwitchAt(st,cx);if(k<0)return;cx.scopes.push(new Map());
+      try{for(let j=k;j<st.secs.length;j++)for(const s of st.secs[j].body)yield* csXG(s,cx)}
+      catch(e){if(e&&e.__c==='brk')return;throw e}
+      finally{cx.scopes.pop()}
+      return;
+    }
+    case'try':{
+      try{yield* csXG(st.tb,cx)}
+      catch(e){
+        if(!st.cb||(e&&e.__c)||e instanceof CsUnsup)throw e;
+        cx.scopes.push(new Map(st.cn?[[st.cn,csExProxy(e.exMsg!=null?e.exMsg:String(e&&e.message||e))]]:[]));
+        try{yield* csXG(st.cb,cx)}finally{cx.scopes.pop()}
+      }
+      finally{if(st.fb)yield* csXG(st.fb,cx)}
+      return;
+    }
+  }
+  csX0(st,cx);
+}
+/* IEnumerator 메서드인지 (메서드 이름 앞의 반환 형식) */
+function csIsIter(me){if(!me)return false;const b=me.body,k=b.indexOf('(');return/\bIEnumerator\b/.test(b.slice(0,k<0?b.length:k))}
+/* 코루틴 객체 만들기: 메서드를 부르기만 하면 아직 실행하지 않고, StartCoroutine 이 시작합니다 (유니티와 같음) */
+function csCoMake(cx,n,ast,args){
+  const cx2=Object.assign({},cx,{scopes:[new Map(ast.params.map((p,k)=>[p,args[k]]))],me:ast.me,depth:0,loops:0});
+  const gen=(function*(){
+    try{for(const s of ast.body)yield* csXG(s,cx2)}
+    catch(e){if(e&&(e.__c==='ybrk'||e.__c==='ret'))return;throw e}
+  })();
+  return{__co:1,__h:'Coroutine',name:n,gen,cx:cx2,done:false,started:false,wait:null,get(q){throw csUnsup('Coroutine.'+q)},call(q){throw csUnsup('Coroutine.'+q+'()')},set(q){throw csUnsup('Coroutine.'+q)}};
+}
+/* 기다리기 명령 (yield return 값) → 기다림 정보 */
+function csWaitOf(v,co){
+  if(v==null||v===false)return{k:'frame'};
+  if(v.__w)return Object.assign({},v);
+  if(v.__co){if(!v.started)CSCO.start(v,v.cx);return{k:'co',co:v}}
+  if(typeof v==='number')return{k:'frame'};
+  void co;return{k:'frame'};
+}
+/* 코루틴 · Invoke · 늦춘 Destroy 를 한곳에서 돌리는 스케줄러 — 호스트가 매 프레임 CSCO.tick(dt, 실제dt) 를 부름 */
+const CSCO={
+  L:[],
+  frame(){const p=csPlay();return p&&p.frame||0},
+  start(co,cx){
+    if(!co||!co.__co)throw new Error('StartCoroutine에는 IEnumerator 메서드를 불러서 넣으세요 (예: StartCoroutine(Blink()))');
+    if(co.started)return co;co.started=true;co.owner=cx||co.cx;this.L.push(co);this.step(co);return co;
+  },
+  step(co){
+    if(co.done)return;const prev=csCur;csCur=co.cx;co.cx.loops=0;co.at=this.frame();let r;
+    try{r=co.gen.next()}
+    catch(e){co.done=true;csCur=prev;this.err(co.cx,co.name+'() 코루틴',e);return}
+    csCur=prev;
+    if(r.done){co.done=true;return}
+    co.wait=csWaitOf(r.value,co);
+  },
+  err(cx,what,e){
+    if(e&&e.__c)return;
+    const msg=e instanceof CsUnsup?'이 구문은 아직 실행할 수 없습니다: '+e.message:(e&&e.message)||String(e);
+    const s=cx&&cx.s;CSHOST.clog('error',`[${s?s.name:'?'}] ${what}${e&&e.line?' '+e.line+'번째 줄':''}: ${msg}`,s&&s.id,{kind:'runtime',fn:what,line:e&&e.line||0,stmt:'',err:msg});
+  },
+  /* 시간 기다림 · Invoke 예약 */
+  timer(t,fn,rate,tag){const q={tm:1,t:Math.max(0,t),fn,rate:rate>0?Math.max(.01,rate):0,tag:tag||null,done:false};this.L.push(q);return q},
+  alive(x){if(!csPlay()&&typeof CSHOST.coAlive!=='function')return true;if(x.keep)return!!csPlay();const cx=x.cx||x.owner;return!cx||typeof CSHOST.coAlive!=='function'||CSHOST.coAlive(cx,x.tm?'timer':'co')},
+  tick(dt,udt){
+    const f=this.frame();
+    for(const q of this.L.slice()){
+      if(q.done)continue;
+      if(!this.alive(q)){q.done=true;continue}
+      if(q.tm){q.t-=q.real?udt:dt;if(q.t>0)continue;
+        try{q.fn()}catch(e){this.err(q.cx,q.what||'Invoke',e)}
+        if(q.rate&&!q.done)q.t+=q.rate;else q.done=true;continue}
+      if(q.at===f)continue;
+      const w=q.wait||{k:'frame'};let go=false;
+      try{
+        switch(w.k){
+          case'frame':go=true;break;
+          case'sec':w.t-=dt;go=w.t<=0;break;
+          case'real':w.t-=udt;go=w.t<=0;break;
+          case'until':{const prev=csCur;csCur=q.cx;try{go=csTruth(csInvoke(w.f,[]))}finally{csCur=prev}break}
+          case'while':{const prev=csCur;csCur=q.cx;try{go=!csTruth(csInvoke(w.f,[]))}finally{csCur=prev}break}
+          case'co':go=w.co.done;break;
+          default:go=true;
+        }
+      }catch(e){q.done=true;this.err(q.cx,q.name+'() 코루틴',e);continue}
+      if(go){if(q.cx)q.cx.dt=dt;this.step(q)}
+    }
+    this.L=this.L.filter(q=>!q.done);
+  },
+  /* 소유자(스크립트 인스턴스)의 코루틴·예약 멈추기 — name: 코루틴 메서드 이름 또는 Invoke 메서드 이름 */
+  stop(inst,pred){for(const q of this.L){const cx=q.cx||q.owner;if(cx&&cx.inst===inst&&(!pred||pred(q)))q.done=true}},
+  stopObj(o){for(const q of this.L){const cx=q.cx||q.owner;if(cx&&cx.o===o)q.done=true}},
+  clear(){this.L=[]}
+};
 const csNodeName=n=>n.t==='id'?n.n:n.t==='mem'?csNodeName(n.o)+'.'+n.n:n.t==='call'?csNodeName(n.f)+'()':n.t==='this'?'this':'값';
 const csNRE=n=>new Error(`NullReferenceException: ${csNodeName(n)}이(가) null 입니다`);
 function csE(e,cx){
@@ -508,7 +863,19 @@ function csE(e,cx){
     case'id':return csId(e.n,cx);
     case'mem':{const b=csE(e.o,cx);if(b==null)throw csNRE(e.o);return csGet(b,e.n)}
     case'call':return csCall(e,cx);
-    case'new':return csNew(e.ty,e.a.map(a=>csE(a,cx)));
+    case'new':{
+      const r=csNew(e.ty,e.a.map(a=>csE(a,cx)),e.ga);
+      if(e.init){
+        if(isCsL(r))e.init.forEach(q=>r.a.push(csE(q,cx)));
+        else if(isCsD(r))e.init.forEach(q=>{if(q.t!=='arr'||q.items.length<2)throw new Error('Dictionary 초기화는 { {키, 값}, ... } 모양으로 쓰세요');const k=csE(q.items[0],cx);r.m.set(csKey(k),[k,csE(q.items[1],cx)])});
+        else throw csUnsup('new '+e.ty+' { }');
+      }
+      return r;
+    }
+    case'arr':return CsL(e.items.map(q=>csE(q,cx)),e.ty,true);
+    case'newarr':{const n=csN(csE(e.n,cx));if(!Number.isInteger(n)||n<0)throw new Error(`배열 크기는 0 이상의 정수여야 합니다 (${n})`);const z=csZero(e.ty);return CsL(Array.from({length:n},()=>isCsV(z)?CsV(0,0,0,z.v3):z),e.ty,true)}
+    case'lam':return{__fn:1,ps:e.ps,body:e.body,blk:e.blk,scopes:cx.scopes.slice(),cx};
+    case'out':{const sc=cx.scopes;return{__out:1,set(v){if(e.decl){sc[sc.length-1].set(e.n,v);return}csSet({t:'id',n:e.n},v,cx)}}}
     case'un':{const v=csE(e.e,cx);if(e.op==='!')return!csTruth(v);if(isCsV(v))return e.op==='-'?CsV(-v.x,-v.y,-v.z,v.v3):v;return e.op==='-'?-csN(v):csN(v)}
     case'bin':
       if(e.op==='&&')return csTruth(csE(e.l,cx))&&csTruth(csE(e.r,cx));
@@ -516,10 +883,13 @@ function csE(e,cx){
       return csBin(e.op,csE(e.l,cx),csE(e.r,cx));
     case'tern':return csTruth(csE(e.c,cx))?csE(e.a,cx):csE(e.b,cx);
     case'coal':{const a=csE(e.a,cx);return a!=null?a:csE(e.b,cx)}
-    case'cast':{const v=csE(e.e,cx);if(e.ty==='string')return csFmt(v);if(e.ty==='bool')return!!v;const n=csN(v);return['int','long','short','byte'].includes(e.ty)?Math.trunc(n):n}
+    case'cast':{const v=csE(e.e,cx);if(e.ty==='string')return csFmt(v);if(e.ty==='bool')return csTruth(v);const n=csN(v);return['int','long','short','byte'].includes(e.ty)?Math.trunc(n):n}
     case'asg':{let v=csE(e.r,cx);if(e.op!=='=')v=csBin(e.op[0],csE(e.l,cx),v);csSet(e.l,v,cx);return v}
     case'pre':case'post':{const old=csN(csE(e.e,cx)),nv=e.op==='++'?old+1:old-1;csSet(e.e,nv,cx);return e.t==='pre'?nv:old}
-    case'idx':{const o=csE(e.o,cx),k=csE(e.i,cx);if(typeof o==='string')return o[csN(k)]||'';throw csUnsup('[ ] 인덱스')}
+    case'idx':{const o=csE(e.o,cx),k=csE(e.i,cx);if(o==null)throw csNRE(e.o);if(typeof o==='string')return o[csN(k)]||'';
+      if(isCsL(o))return o.a[csIdxOk(o,k)];
+      if(isCsD(o)){const q=o.m.get(csKey(k));if(!q)throw new Error(`KeyNotFoundException: 키 '${csFmt(k)}'이(가) Dictionary에 없습니다 (ContainsKey 로 먼저 확인하세요)`);return q[1]}
+      throw csUnsup('[ ] 인덱스')}
   }
   throw csUnsup(e.t);
 }
@@ -532,6 +902,8 @@ function csField(n,cx){
    인스펙터 슬롯에 넣은 오브젝트 → 해당 프록시, 비어 있으면 null (private Transform t; 처럼 코드에서 채우는 필드 포함) */
 function csRefVal(v,T,cx){
   const id=v.id||'';if(!id)return null;
+  /* 프로젝트 창의 프리팹을 넣은 슬롯 (Instantiate 용) */
+  if(id.startsWith('pf:'))return typeof CSHOST.prefabRef==='function'?CSHOST.prefabRef(id.slice(3)):null;
   const m=cx.m;
   if(id.startsWith('uig:')){const g=CSHOST.uiGroupH&&CSHOST.uiGroupH(m,id.slice(4));if(g)return g;throw csUnsup('UIGroup 필드')}
   const o=m.objs.find(z=>z.id===id)||(m.ui||[]).find(z=>z.id===id);if(!o)return null;
@@ -546,6 +918,8 @@ function csIdNoLocal(n,cx){
   if(n==='transform'){if(CSHOST.isUiEl(o))throw csUnsup(n);return CSHOST.trProxy(cx.m,o)}
   if(n==='gameObject'){if(CSHOST.isUiEl(o)&&!CSHOST.uiGo)throw csUnsup(n);return CSHOST.goProxy(cx.m,o)}
   if(n==='name')return o.name;
+  if(n==='enabled')return!(cx.rt&&cx.rt.dis);
+  if(n==='tag'&&typeof CSHOST.objTag==='function')return CSHOST.objTag(cx.m,o);
   throw csUnsup(n);
 }
 function csId(n,cx){
@@ -556,6 +930,9 @@ function csSetField(n,v,cx){
   const f=cx.rt.f;
   if(Object.prototype.hasOwnProperty.call(f,n)){f[n]=v;return}
   if(n==='name'){cx.o.name=csFmt(v);return}
+  /* 이 스크립트 끄기: Update · FixedUpdate · LateUpdate 를 부르지 않음 (다른 메서드는 그대로) */
+  if(n==='enabled'){if(cx.rt)cx.rt.dis=!v;return}
+  if(n==='tag'){cx.o.tag=csFmt(v);return}
   throw csUnsup(n);
 }
 function csSet(node,v,cx){
@@ -571,6 +948,13 @@ function csSet(node,v,cx){
     if(b.__h){b.set(node.n,v);return}
     throw csUnsup(node.n);
   }
+  if(node.t==='idx'){
+    const o=csE(node.o,cx),k=csE(node.i,cx);if(o==null)throw csNRE(node.o);
+    if(isCsL(o)){o.a[csIdxOk(o,k)]=v;return}
+    if(isCsD(o)){o.m.set(csKey(k),[k,v]);return}
+    if(typeof o==='string')throw new Error('error CS0200: 문자열의 글자는 바꿀 수 없습니다 (새 문자열을 만들어 대입하세요)');
+    throw csUnsup('[ ] 대입');
+  }
   throw csUnsup('대입');
 }
 function csGet(b,n){
@@ -584,6 +968,9 @@ function csGet(b,n){
   if(b==null)throw new Error(`NullReferenceException: 비어 있는(null) 값에서 '.${n}'을(를) 읽으려 했습니다 — 변수에 오브젝트가 들어 있는지(인스펙터 슬롯·GetComponent 결과) 확인하세요`);
   if(isCsQ(b)){if(n==='x'||n==='y'||n==='z'||n==='w')return b[n];if(n==='eulerAngles')return CsV(0,0,((b.deg%360)+360)%360,true);throw csUnsup('Quaternion.'+n)}
   if(typeof b==='string'){if(n==='Length')return b.length;throw csUnsup('string.'+n)}
+  if(isCsL(b)){if(n==='Count'&&!b.arr)return b.a.length;if(n==='Length'&&b.arr)return b.a.length;if(n==='Capacity')return b.a.length;
+    throw new Error(b.arr?`배열에는 '${n}'이(가) 없습니다 (길이는 .Length)`:`List에는 '${n}'이(가) 없습니다 (개수는 .Count)`)}
+  if(isCsD(b)){if(n==='Count')return b.m.size;if(n==='Keys')return CsL([...b.m.values()].map(q=>q[0]),'',false);if(n==='Values')return CsL([...b.m.values()].map(q=>q[1]),'',false);throw csUnsup('Dictionary.'+n)}
   if(b.__h)return b.get(n);
   throw csUnsup(n);
 }
@@ -593,41 +980,124 @@ function csStrM(s,n,a){
     case'Contains':return s.includes(csFmt(a[0]));case'StartsWith':return s.startsWith(csFmt(a[0]));case'EndsWith':return s.endsWith(csFmt(a[0]));
     case'IndexOf':return s.indexOf(csFmt(a[0]));case'Substring':return a.length>1?s.substr(csN(a[0]),csN(a[1])):s.slice(csN(a[0]));
     case'Replace':return s.split(csFmt(a[0])).join(csFmt(a[1]));
+    case'Split':{const seps=a.length?a.map(csFmt):[' '];let parts=[s];seps.forEach(p=>{parts=parts.flatMap(x=>x.split(p))});return CsL(parts,'string',true)}
+    case'PadLeft':return s.padStart(csN(a[0]),a.length>1?csFmt(a[1]):' ');
+    case'PadRight':return s.padEnd(csN(a[0]),a.length>1?csFmt(a[1]):' ');
+    case'TrimStart':return s.replace(/^\s+/,'');case'TrimEnd':return s.replace(/\s+$/,'');
+    case'Equals':return s===csFmt(a[0]);
+    case'LastIndexOf':return s.lastIndexOf(csFmt(a[0]));
+    case'Remove':return a.length>1?s.slice(0,csN(a[0]))+s.slice(csN(a[0])+csN(a[1])):s.slice(0,csN(a[0]));
+    case'Insert':return s.slice(0,csN(a[0]))+csFmt(a[1])+s.slice(csN(a[0]));
+    case'ToCharArray':return CsL([...s],'char',true);
   }
   throw csUnsup('string.'+n+'()');
 }
+/* MonoBehaviour 의 기능 (그냥 이름으로 부름): 코루틴 · Invoke · Instantiate · SendMessage */
+function csMB(n,a,cx,raw){
+  const nameOf=v=>typeof v==='string'?v:v&&v.__co?v.name:csFmt(v);
+  switch(n){
+    case'StartCoroutine':{
+      let co=a[0];
+      if(typeof co==='string'){if(!cx.pr.r.methods[co])throw new Error(`StartCoroutine: 메서드 '${co}'이(가) 없습니다`);co=csCallUser(cx,co,a.slice(1))}
+      return CSCO.start(co,cx);
+    }
+    case'StopCoroutine':{const v=a[0];if(v&&v.__co){v.done=true;return null}const nm=nameOf(v);CSCO.stop(cx.inst,q=>q.__co&&q.name===nm);return null}
+    case'StopAllCoroutines':CSCO.stop(cx.inst,q=>!!q.__co);return null;
+    case'Invoke':case'InvokeRepeating':{
+      const nm=nameOf(a[0]);if(!cx.pr.r.methods[nm])throw new Error(`${n}: 메서드 '${nm}'이(가) 없습니다 (이름의 철자를 확인하세요 · nameof(메서드) 를 쓰면 편해요)`);
+      const t=a.length>1?csN(a[1]):0,rate=n==='InvokeRepeating'?(a.length>2?csN(a[2]):0):0;
+      if(n==='InvokeRepeating'&&!(rate>0))throw new Error('InvokeRepeating: 반복 간격(세 번째 값)은 0보다 커야 합니다');
+      const host=cx.o,m=cx.m,inst=cx.inst;
+      const q=CSCO.timer(t,()=>{if(typeof CSHOST.runMethod==='function')CSHOST.runMethod(m,host,inst,nm);else csCallUser(cx,nm,[])},rate,nm);
+      q.cx=cx;q.what=nm+'() (Invoke)';return null;
+    }
+    case'CancelInvoke':{const nm=a.length?nameOf(a[0]):null;CSCO.stop(cx.inst,q=>q.tm&&q.tag!=null&&(!nm||q.tag===nm));return null}
+    case'IsInvoking':{const nm=a.length?nameOf(a[0]):null;return CSCO.L.some(q=>!q.done&&q.tm&&q.cx&&q.cx.inst===cx.inst&&q.tag!=null&&(!nm||q.tag===nm))}
+    case'Instantiate':{if(typeof CSHOST.instantiate!=='function')throw csUnsup('Instantiate()');return CSHOST.instantiate(cx,a)}
+    case'Destroy':case'DestroyImmediate':{
+      const t=a.length>1?csN(a[1]):0;
+      if(t>0){const x=a[0],q=CSCO.timer(t,()=>CSHOST.csDestroy(cx,x),0,null);q.cx=Object.assign({},cx,{inst:null});q.what='Destroy';q.keep=true;return null}
+      CSHOST.csDestroy(cx,a[0]);return null;
+    }
+    case'SendMessage':case'BroadcastMessage':{if(typeof CSHOST.sendMessage!=='function')throw csUnsup(n+'()');CSHOST.sendMessage(cx.m,cx.o,csFmt(a[0]),a.slice(1),n==='BroadcastMessage');return null}
+    case'FindObjectOfType':case'FindAnyObjectByType':case'FindFirstObjectByType':{if(!raw||!raw.ga||typeof CSHOST.findOfType!=='function')throw csUnsup(n+'()');const L=CSHOST.findOfType(cx.m,raw.ga);return L.length?L[0]:null}
+    case'FindObjectsOfType':case'FindObjectsByType':{if(!raw||!raw.ga||typeof CSHOST.findOfType!=='function')throw csUnsup(n+'()');return CsL(CSHOST.findOfType(cx.m,raw.ga),raw.ga,true)}
+  }
+  return undefined;
+}
+const CS_MBN=new Set(['StartCoroutine','StopCoroutine','StopAllCoroutines','Invoke','InvokeRepeating','CancelInvoke','IsInvoking','Instantiate','Destroy','DestroyImmediate','SendMessage','BroadcastMessage','FindObjectOfType','FindObjectsOfType','FindAnyObjectByType','FindFirstObjectByType','FindObjectsByType']);
 function csCall(e,cx){
   const f=e.f,ev=()=>e.a.map(x=>csE(x,cx));
   if(f.t==='id'){
-    if(f.ga){if(f.n==='GetComponent')return CSHOST.csGetComp(cx.m,cx.o,f.ga);throw csUnsup(f.n+'<'+f.ga+'>()')}
+    if(f.ga){
+      if(f.n==='GetComponent'||f.n==='GetComponentInChildren'||f.n==='GetComponentInParent'||f.n==='GetComponents'||f.n==='GetComponentsInChildren')return csGetCompX(cx.m,cx.o,f.n,f.ga);
+      if(CS_MBN.has(f.n))return csMB(f.n,ev(),cx,f);
+      throw csUnsup(f.n+'<'+f.ga+'>()')}
+    /* nameof(Fire) → "Fire" */
+    if(f.n==='nameof'){const q=e.a[0];return q?(q.t==='id'?q.n:q.t==='mem'?q.n:csNodeName(q)):''}
     if(cx.pr.r.methods[f.n])return csCallUser(cx,f.n,ev());
+    /* 지역 변수에 든 람다: var f = x => x * 2; f(3) */
+    for(let k=cx.scopes.length-1;k>=0;k--)if(cx.scopes[k].has(f.n)){const fn=cx.scopes[k].get(f.n);if(fn&&(fn.__fn||fn.__mref))return csInvoke(fn,ev());break}
     if(f.n==='print'){const a=ev();CSHOST.clog('info',csFmt(a[0]),cx.s.id);return null}
-    if(f.n==='Destroy'){const a=ev();CSHOST.csDestroy(cx,a[0]);return null}
+    if(CS_MBN.has(f.n)){const r=csMB(f.n,ev(),cx,f);if(r!==undefined)return r}
     throw csUnsup(f.n+'()');
   }
   if(f.t==='mem'){
     if(f.o.t==='this'&&cx.pr.r.methods[f.n])return csCallUser(cx,f.n,ev());
+    if(f.o.t==='this'&&CS_MBN.has(f.n)){const r=csMB(f.n,ev(),cx,f);if(r!==undefined)return r}
     const b=csE(f.o,cx);
     if(b==null)throw csNRE(f.o);
-    if(f.ga){if(f.n==='GetComponent'&&b.__o)return CSHOST.csGetComp(cx.m,b.__o,f.ga);throw csUnsup(f.n+'<'+f.ga+'>()')}
+    if(f.ga){
+      if(b.__o&&(f.n==='GetComponent'||f.n==='GetComponentInChildren'||f.n==='GetComponentInParent'||f.n==='GetComponents'||f.n==='GetComponentsInChildren'))return csGetCompX(cx.m,b.__o,f.n,f.ga);
+      if(f.n==='TryGetComponent'&&b.__o){const c=csGetCompX(cx.m,b.__o,'GetComponent',f.ga);const a=ev();if(a[0]&&a[0].__out)a[0].set(c);return c!=null}
+      if(b.__h&&typeof b.callG==='function')return b.callG(f.n,f.ga,ev());
+      throw csUnsup(f.n+'<'+f.ga+'>()')}
     const a=ev();
-    if(isCsV(b)){if(f.n==='ToString')return csFmt(b);throw csUnsup('Vector.'+f.n+'()')}
+    if(isCsV(b)){
+      if(f.n==='ToString')return csFmt(b);
+      if(f.n==='Normalize'){const L=Math.hypot(b.x,b.y,b.z);csSet(f.o,L>1e-9?CsV(b.x/L,b.y/L,b.z/L,b.v3):CsV(0,0,0,b.v3),cx);return null}
+      if(f.n==='Set'){csSet(f.o,CsV(csN(a[0]||0),csN(a[1]||0),csN(a[2]||0),b.v3),cx);return null}
+      if(f.n==='Equals')return csEq(b,a[0]);
+      throw csUnsup('Vector.'+f.n+'()')}
     if(typeof b==='string')return csStrM(b,f.n,a);
-    if(typeof b==='number'||typeof b==='boolean'){if(f.n==='ToString')return csFmt(b,a[0]);throw csUnsup(f.n+'()')}
+    if(typeof b==='number'||typeof b==='boolean'){if(f.n==='ToString')return csFmt(b,a[0]);if(f.n==='Equals')return b===a[0];if(f.n==='CompareTo')return csCmp(b,a[0]);throw csUnsup(f.n+'()')}
+    if(isCsL(b))return csListM(b,f.n,a,cx);
+    if(isCsD(b))return csDictM(b,f.n,a);
+    if(b.__fn&&f.n==='Invoke')return csInvoke(b,a);
     if(b.__h)return b.call(f.n,a);
   }
+  if(f.t==='lam'||f.t==='call'||f.t==='idx'){const fn=csE(f,cx);return csInvoke(fn,ev())}
   throw csUnsup('호출');
+}
+/* GetComponent 계열: InChildren(자신 포함 자손) · InParent(자신 포함 조상) · 복수형은 배열 */
+function csGetCompX(m,o,n,T){
+  if(n==='GetComponent')return CSHOST.csGetComp(m,o,T);
+  const many=n==='GetComponents'||n==='GetComponentsInChildren',dir=n==='GetComponentInParent'?'up':n==='GetComponents'?'self':'down';
+  const L=typeof CSHOST.relatives==='function'?CSHOST.relatives(m,o,dir):[o];
+  const out=[];for(const q of L){const c=CSHOST.csGetComp(m,q,T);if(c){if(!many)return c;out.push(c)}}
+  return many?CsL(out,T,true):null;
 }
 function csCallUser(cx,n,args){
   const ast=csMethodAst(cx.pr,n);
   if(ast.err)throw ast.err instanceof CsUnsup?ast.err:new Error(`${n}(): ${ast.err.message}`);
   if(++cx.depth>64){cx.depth--;throw new Error('함수 호출이 너무 깊습니다 (자기 자신을 계속 부르고 있는지 확인하세요)')}
+  if(csIsIter(ast.me)){cx.depth--;return csCoMake(cx,n,ast,args)}
   const sv=cx.scopes,sm=cx.me;cx.scopes=[new Map(ast.params.map((p,k)=>[p,args[k]]))];cx.me=ast.me;
   try{for(const s of ast.body)csX(s,cx);return undefined}
   catch(e){if(e&&e.__c==='ret')return e.v;throw e}
   finally{cx.scopes=sv;cx.me=sm;cx.depth--}
 }
-function csNew(ty,a){
+function csNew(ty,a,ga){
+  ty=String(ty).replace(/^System\.Collections\.Generic\./,'');
+  if(ty==='List'||ty==='HashSet'||ty==='Queue'||ty==='Stack'){const l=CsL([],ga||'');if(ty!=='List')l.kind=ty;if(a.length&&a[0]&&typeof a[0]==='object')l.a.push(...csIter(a[0]));return l}
+  if(ty==='Dictionary')return CsD(ga||'');
+  if(ty==='WaitForSeconds')return{__w:1,k:'sec',t:csN(a[0]||0)};
+  if(ty==='WaitForSecondsRealtime')return{__w:1,k:'real',t:csN(a[0]||0)};
+  if(ty==='WaitForEndOfFrame'||ty==='WaitForFixedUpdate')return{__w:1,k:'frame'};
+  if(ty==='WaitUntil'||ty==='WaitWhile'){if(!a[0]||!a[0].__fn)throw new Error(ty+'에는 람다를 넣으세요 (예: new '+ty+'(() => 점수 >= 10))');return{__w:1,k:ty==='WaitUntil'?'until':'while',f:a[0]}}
+  if(ty==='Exception'||/Exception$/.test(ty))return{__ex:1,msg:a.length?csFmt(a[0]):ty};
+  if(ty==='Quaternion')return CsQ(0);
+  if(ty==='GameObject'){if(typeof CSHOST.newObject!=='function')throw csUnsup('new GameObject()');return CSHOST.newObject(a.length?csFmt(a[0]):'New Game Object')}
   if(ty==='Vector2')return CsV(csN(a[0]||0),csN(a[1]||0),0,false);
   if(ty==='Vector3')return CsV(csN(a[0]||0),csN(a[1]||0),csN(a[2]||0),true);
   if(ty==='Color'){const h=x=>Math.round(clamp(csN(x==null?1:x),0,1)*255).toString(16).padStart(2,'0');return'#'+h(a[0])+h(a[1])+h(a[2])}
@@ -655,7 +1125,22 @@ const CS_MATH={Abs:Math.abs,Sin:Math.sin,Cos:Math.cos,Tan:Math.tan,Asin:Math.asi
   Lerp:(a,b,t)=>a+(b-a)*Math.min(Math.max(t,0),1),LerpUnclamped:(a,b,t)=>a+(b-a)*t,InverseLerp:(a,b,v)=>a===b?0:Math.min(Math.max((v-a)/(b-a),0),1),
   MoveTowards:(c,t,d)=>Math.abs(t-c)<=d?t:c+Math.sign(t-c)*d,RoundToInt:Math.round,FloorToInt:Math.floor,CeilToInt:Math.ceil,
   Repeat:(t,l)=>t-Math.floor(t/l)*l,PingPong:(t,l)=>{t=t-Math.floor(t/(l*2))*l*2;return l-Math.abs(t-l)},Approximately:(a,b)=>Math.abs(a-b)<1e-6,
-  SmoothStep:(a,b,t)=>{t=Math.min(Math.max(t,0),1);t=t*t*(3-2*t);return a+(b-a)*t}};
+  SmoothStep:(a,b,t)=>{t=Math.min(Math.max(t,0),1);t=t*t*(3-2*t);return a+(b-a)*t},
+  DeltaAngle:(a,b)=>{let d=((b-a)%360+360)%360;if(d>180)d-=360;return d},
+  LerpAngle:(a,b,t)=>{let d=((b-a)%360+360)%360;if(d>180)d-=360;return a+d*Math.min(Math.max(t,0),1)},
+  MoveTowardsAngle:(c,t,m)=>{let d=((t-c)%360+360)%360;if(d>180)d-=360;return Math.abs(d)<=m?c+d:c+Math.sign(d)*m},
+  PerlinNoise:(x,y)=>csPerlin(x,y||0),
+  ClosestPowerOfTwo:v=>Math.pow(2,Math.round(Math.log2(Math.max(1,v)))),IsPowerOfTwo:v=>v>0&&(v&(v-1))===0};
+/* Mathf.PerlinNoise: 0~1 사이의 부드러운 무늬 (지형 · 흔들림 · 구름) */
+const CS_PERM=(()=>{const p=[];for(let i=0;i<256;i++)p[i]=i;let s=1337;for(let i=255;i>0;i--){s=(s*16807)%2147483647;const j=s%(i+1);[p[i],p[j]]=[p[j],p[i]]}return p.concat(p)})();
+function csPerlin(x,y){
+  const fade=t=>t*t*t*(t*(t*6-15)+10),lerp=(a,b,t)=>a+(b-a)*t;
+  const gr=(h,x,y)=>{const g=h&7,u=g<4?x:y,v=g<4?y:x;return((g&1)?-u:u)+((g&2)?-2*v:2*v)};
+  const X=Math.floor(x)&255,Y=Math.floor(y)&255;x-=Math.floor(x);y-=Math.floor(y);const u=fade(x),v=fade(y),P=CS_PERM;
+  const a=P[X]+Y,b=P[X+1]+Y;
+  const r=lerp(lerp(gr(P[a],x,y),gr(P[b],x-1,y),u),lerp(gr(P[a+1],x,y-1),gr(P[b+1],x-1,y-1),u),v);
+  return Math.min(1,Math.max(0,(r/2.4)+.5));
+}
 const csVecStat=v3=>csH(v3?'Vector3':'Vector2',n=>{
     const V=(x,y,z)=>CsV(x,y,z,v3);
     switch(n){case'zero':return V(0,0,0);case'one':return V(1,1,v3?1:0);case'up':return V(0,-1,0);case'down':return V(0,1,0);case'left':return V(-1,0,0);case'right':return V(1,0,0)}
@@ -668,13 +1153,30 @@ const csVecStat=v3=>csH(v3?'Vector3':'Vector2',n=>{
       case'Lerp':{const t=clamp(csN(a[2]),0,1);return CsV(A.x+(B.x-A.x)*t,A.y+(B.y-A.y)*t,A.z+(B.z-A.z)*t,v3)}
       case'MoveTowards':{const d=csN(a[2]),dx=B.x-A.x,dy=B.y-A.y,dz=B.z-A.z,L=Math.hypot(dx,dy,dz);if(L<=d||L===0)return CsV(B.x,B.y,B.z,v3);return CsV(A.x+dx/L*d,A.y+dy/L*d,A.z+dz/L*d,v3)}
       case'ClampMagnitude':{const m=csN(B),L=Math.hypot(A.x,A.y,A.z);if(L<=m)return A;return CsV(A.x/L*m,A.y/L*m,A.z/L*m,v3)}
+      case'LerpUnclamped':{const t=csN(a[2]);return CsV(A.x+(B.x-A.x)*t,A.y+(B.y-A.y)*t,A.z+(B.z-A.z)*t,v3)}
+      /* 2D 엔진은 아래쪽이 +y 라서, 화면에서 보이는 각도(시계 방향 +)와 맞춥니다 */
+      case'Angle':{const la=Math.hypot(A.x,A.y,A.z),lb=Math.hypot(B.x,B.y,B.z);if(!la||!lb)return 0;return Math.acos(clamp((A.x*B.x+A.y*B.y+A.z*B.z)/(la*lb),-1,1))*180/Math.PI}
+      case'SignedAngle':{let d=(Math.atan2(B.y,B.x)-Math.atan2(A.y,A.x))*180/Math.PI;d=((d+180)%360+360)%360-180;return d}
+      case'Perpendicular':return CsV(-A.y,A.x,0,v3);
+      case'Reflect':{const d=A.x*B.x+A.y*B.y+A.z*B.z;return CsV(A.x-2*d*B.x,A.y-2*d*B.y,A.z-2*d*B.z,v3)}
+      case'Scale':return CsV(A.x*B.x,A.y*B.y,A.z*B.z,v3);
+      case'Max':return CsV(Math.max(A.x,B.x),Math.max(A.y,B.y),Math.max(A.z,B.z),v3);
+      case'Min':return CsV(Math.min(A.x,B.x),Math.min(A.y,B.y),Math.min(A.z,B.z),v3);
+      case'Cross':return CsV(A.y*B.z-A.z*B.y,A.z*B.x-A.x*B.z,A.x*B.y-A.y*B.x,true);
     }
     throw csUnsup((v3?'Vector3.':'Vector2.')+n+'()');
   });
 const CS_STAT={
   Debug:csH('Debug',null,(n,a)=>{const t={Log:'info',LogWarning:'warn',LogError:'error'}[n];if(!t)throw csUnsup('Debug.'+n+'()');CSHOST.clog(t,csFmt(a[0]),csCur&&csCur.s.id);return null}),
-  Time:csH('Time',n=>{switch(n){case'deltaTime':case'smoothDeltaTime':return csCur?csCur.dt:0;case'fixedDeltaTime':return .02;case'time':case'timeSinceLevelLoad':return(csPlay()||{tm:0}).tm;case'frameCount':return(csPlay()||{}).frame||0;case'timeScale':return 1}throw csUnsup('Time.'+n)}),
-  Input:csH('Input',n=>{const p=csPlay();if(n==='anyKey')return!!(p&&p.kraw&&p.kraw.size);if(n==='anyKeyDown')return!!(p&&p.kdown&&p.kdown.size);throw csUnsup('Input.'+n)},(n,a)=>{
+  /* timeScale: 0 = 멈춤(일시정지) · 0.5 = 느리게 · 호스트가 play.ts 를 읽어 deltaTime 에 곱함 */
+  Time:csH('Time',n=>{const p=csPlay();switch(n){case'deltaTime':case'smoothDeltaTime':return csCur?csCur.dt:0;case'fixedDeltaTime':return .02;case'time':case'timeSinceLevelLoad':return(p||{tm:0}).tm||0;
+    case'frameCount':return(p||{}).frame||0;case'timeScale':return p&&p.ts!=null?p.ts:1;case'unscaledDeltaTime':return p&&p.udt!=null?p.udt:(csCur?csCur.dt:0);case'unscaledTime':case'realtimeSinceStartup':return p&&p.utm!=null?p.utm:(p||{tm:0}).tm||0}throw csUnsup('Time.'+n)},
+    null,(n,v)=>{if(n==='timeScale'){const p=csPlay();if(p)p.ts=clamp(csN(v),0,100);return}throw csUnsup('Time.'+n+' 대입')}),
+  Input:csH('Input',n=>{const p=csPlay();if(n==='anyKey')return!!(p&&p.kraw&&p.kraw.size);if(n==='anyKeyDown')return!!(p&&p.kdown&&p.kdown.size);
+    /* 마우스 위치: 게임 화면 픽셀 · 유니티처럼 왼쪽 아래가 (0, 0) — Camera.main.ScreenToWorldPoint 로 씬 좌표(칸)로 바꿈 */
+    if(n==='mousePosition'){const q=p&&p.mouse,v=p&&p.view;return q&&v?CsV(q.x,v.H-q.y,0,true):CsV(0,0,0,true)}
+    if(n==='touchCount')return p&&p.kraw&&p.kraw.has('Mouse0')?1:0;
+    throw csUnsup('Input.'+n)},(n,a)=>{
     const p=csPlay();if(!p)return 0;const kk=p.keys||{};
     if(n==='GetAxis'||n==='GetAxisRaw'){const ax=({가로:'Horizontal',세로:'Vertical'})[String(a[0])]||String(a[0]);
       /* 한 프레임 안에 눌렀다 뗀 아주 짧은 입력도 그 프레임에는 누른 것으로 (kdown) */
@@ -691,8 +1193,16 @@ const CS_STAT={
   KeyCode:csH('KeyCode',n=>{const c=csKeyCode(n);if(!c)throw csUnsup('KeyCode.'+n);return c}),
   Mathf:csH('Mathf',n=>{switch(n){case'PI':return Math.PI;case'Infinity':return Infinity;case'NegativeInfinity':return-Infinity;case'Deg2Rad':return Math.PI/180;case'Rad2Deg':return 180/Math.PI;case'Epsilon':return 1.4e-45}throw csUnsup('Mathf.'+n)},
     (n,a)=>{const f=CS_MATH[n];if(!f)throw csUnsup('Mathf.'+n+'()');return f(...a.map(csN))}),
-  Random:csH('Random',n=>{if(n==='value')return Math.random();throw csUnsup('Random.'+n)},(n,a)=>{
+  Random:csH('Random',n=>{
+    if(n==='value')return Math.random();
+    if(n==='insideUnitCircle'){const r=Math.sqrt(Math.random()),t=Math.random()*Math.PI*2;return CsV(Math.cos(t)*r,Math.sin(t)*r)}
+    if(n==='onUnitCircle'){const t=Math.random()*Math.PI*2;return CsV(Math.cos(t),Math.sin(t))}
+    if(n==='rotation'){return CsQ(Math.random()*360)}
+    if(n==='ColorHSV'||n==='color'){const h=x=>Math.round(Math.random()*255).toString(16).padStart(2,'0');return'#'+h()+h()+h()}
+    throw csUnsup('Random.'+n)},(n,a)=>{
     if(n==='Range'){const x=csN(a[0]),y=csN(a[1]);return Number.isInteger(x)&&Number.isInteger(y)?Math.floor(x+Math.random()*(y-x)):x+Math.random()*(y-x)}
+    if(n==='ColorHSV'){const h=x=>Math.round(Math.random()*255).toString(16).padStart(2,'0');return'#'+h()+h()+h()}
+    if(n==='InitState'){return null}
     throw csUnsup('Random.'+n+'()')}),
   Vector2:csVecStat(false),Vector3:csVecStat(true),
   Color:csH('Color',n=>{if(CS_COLORS[n])return CS_COLORS[n];throw csUnsup('Color.'+n)}),
@@ -701,7 +1211,17 @@ const CS_STAT={
     if(n==='Find'){const nm=csFmt(a[0]),o=m.objs.find(q=>q.name===nm&&CSHOST.objOn(m,q))||m.objs.find(q=>q.name===nm);if(o)return CSHOST.goProxy(m,o);
       if(typeof CSHOST.uiFind==='function'){const u=CSHOST.uiFind(m,nm);if(u)return u}
       if((m.ui||[]).some(q=>q.name===nm)||(m.uiGroups||[]).some(q=>q.name===nm))throw csUnsup('GameObject.Find(UI)');return null}
+    if(n==='FindWithTag'||n==='FindGameObjectWithTag'){const L=csHook('findTag','GameObject.'+n+'()')(m,csFmt(a[0]));return L.length?L[0]:null}
+    if(n==='FindGameObjectsWithTag')return CsL(csHook('findTag','GameObject.'+n+'()')(m,csFmt(a[0])),'GameObject',true);
+    if(n==='Instantiate'&&typeof CSHOST.instantiate==='function')return CSHOST.instantiate(csCur,a);
+    if(n==='Destroy'){CSHOST.csDestroy(csCur,a[0]);return null}
     throw csUnsup('GameObject.'+n+'()')}),
+  /* Physics2D 의 layerMask 인자는 받기만 하고 쓰지 않음 (레이어가 없음) */
+  LayerMask:csH('LayerMask',null,(n,a)=>{if(n==='GetMask')return-1;if(n==='NameToLayer')return 0;if(n==='LayerToName')return'Default';throw csUnsup('LayerMask.'+n+'()')}),
+  ForceMode2D:csH('ForceMode2D',n=>{if(n==='Force'||n==='Impulse')return n;throw csUnsup('ForceMode2D.'+n)}),
+  RigidbodyType2D:csH('RigidbodyType2D',n=>{if(n==='Dynamic'||n==='Kinematic'||n==='Static')return n;throw csUnsup('RigidbodyType2D.'+n)}),
+  Resources:Object.assign(csH('Resources',null,(n,a)=>{if(n==='Load'){const r=typeof CSHOST.prefabByName==='function'?CSHOST.prefabByName(csFmt(a[0])):null;return r}throw csUnsup('Resources.'+n+'()')}),
+    {callG(n,T,a){if(n==='Load'){if(T!=='GameObject')throw csUnsup('Resources.Load<'+T+'>()');return typeof CSHOST.prefabByName==='function'?CSHOST.prefabByName(csFmt(a[0])):null}throw csUnsup('Resources.'+n+'<'+T+'>()')}}),
   Camera:csH('Camera',n=>{if(n==='main'){const m=csCur&&csCur.m,c=m&&CSHOST.startCamera(m);return c?CSHOST.camProxy(m,c):null}throw csUnsup('Camera.'+n)}),
   /* ---- 게임 세계 기능 (CSHOST 의 연결 함수로 동작) ---- */
   Hero:csH('Hero',n=>{if(n==='main'){const m=csCur&&csCur.m;return m?csHook('heroMain','Hero.main')(m):null}throw csUnsup('Hero.'+n)}),
@@ -727,8 +1247,65 @@ const CS_STAT={
   /* UI 빌더 화면: UIScreen.Show("설정 창") · SetText("HUD", "점수", "점수 10") · GetValue("설정 창", "음량") */
   UIScreen:csH('UIScreen',null,(n,a)=>csHook('uiScreen','UIScreen.'+n+'()')(n,a.map(v=>typeof v==='number'||typeof v==='boolean'?v:csFmt(v)))),
   /* 비주얼 스크립트: VisualScript.Trigger("문 열기") · SetVariable("점수", 10) · CurrentState */
-  VisualScript:csH('VisualScript',n=>csHook('vscript','VisualScript.'+n)('get',n,[],csCur),(n,a)=>csHook('vscript','VisualScript.'+n+'()')('call',n,a.map(v=>v==null||typeof v==='number'||typeof v==='boolean'?v:csFmt(v)),csCur))
+  VisualScript:csH('VisualScript',n=>csHook('vscript','VisualScript.'+n)('get',n,[],csCur),(n,a)=>csHook('vscript','VisualScript.'+n+'()')('call',n,a.map(v=>v==null||typeof v==='number'||typeof v==='boolean'?v:csFmt(v)),csCur)),
+  /* 저장 · 불러오기 (브라우저에 프로젝트별로 남음): PlayerPrefs.SetInt("최고 점수", 10) */
+  PlayerPrefs:csH('PlayerPrefs',null,(n,a)=>{
+    const D=csPrefs(),k=a.length?csFmt(a[0]):'';
+    switch(n){
+      case'SetInt':D[k]=Math.trunc(csN(a[1]));csPrefsSave();return null;
+      case'SetFloat':D[k]=csN(a[1]);csPrefsSave();return null;
+      case'SetString':D[k]=csFmt(a[1]);csPrefsSave();return null;
+      case'GetInt':{const v=D[k];return typeof v==='number'?Math.trunc(v):(a.length>1?Math.trunc(csN(a[1])):0)}
+      case'GetFloat':{const v=D[k];return typeof v==='number'?v:(a.length>1?csN(a[1]):0)}
+      case'GetString':{const v=D[k];return typeof v==='string'?v:(a.length>1?csFmt(a[1]):'')}
+      case'HasKey':return Object.prototype.hasOwnProperty.call(D,k);
+      case'DeleteKey':delete D[k];csPrefsSave();return null;
+      case'DeleteAll':Object.keys(D).forEach(x=>delete D[x]);csPrefsSave();return null;
+      case'Save':csPrefsSave();return null;
+    }
+    throw csUnsup('PlayerPrefs.'+n+'()')}),
+  Quaternion:csH('Quaternion',n=>{if(n==='identity')return CsQ(0);throw csUnsup('Quaternion.'+n)},(n,a)=>{
+    switch(n){
+      case'Euler':return CsQ(isCsV(a[0])?a[0].z:csN(a[2]==null?0:a[2]));
+      case'AngleAxis':return CsQ(csN(a[0])*(isCsV(a[1])&&a[1].z<0?-1:1));
+      case'Lerp':case'Slerp':case'LerpUnclamped':case'SlerpUnclamped':{const A=a[0].deg,B=a[1].deg;let d=((B-A)%360+360)%360;if(d>180)d-=360;const t=/Unclamped/.test(n)?csN(a[2]):clamp(csN(a[2]),0,1);return CsQ(A+d*t)}
+      case'RotateTowards':{const A=a[0].deg,B=a[1].deg,m=csN(a[2]);let d=((B-A)%360+360)%360;if(d>180)d-=360;return CsQ(Math.abs(d)<=m?A+d:A+Math.sign(d)*m)}
+      case'Angle':{let d=Math.abs(((a[1].deg-a[0].deg)%360+360)%360);return d>180?360-d:d}
+      case'Inverse':return CsQ(-a[0].deg);
+      /* 2D: 바라볼 방향 벡터 → z 회전 (오른쪽이 0°, 아래쪽이 90°) */
+      case'LookRotation':case'FromToRotation':{const v=n==='FromToRotation'?a[1]:a[0];return CsQ(Math.atan2(v.y,v.x)*180/Math.PI)}
+    }
+    throw csUnsup('Quaternion.'+n+'()')}),
+  Application:csH('Application',n=>{if(n==='isPlaying')return!!csPlay();if(n==='platform')return'WebGLPlayer';if(n==='targetFrameRate')return 60;if(n==='isMobilePlatform')return typeof navigator!=='undefined'&&/Mobi|Android/i.test(navigator.userAgent||'');throw csUnsup('Application.'+n)},
+    (n,a)=>{if(n==='Quit'){if(typeof CSHOST.quit==='function')CSHOST.quit();return null}if(n==='OpenURL'){try{window.open(csFmt(a[0]),'_blank','noopener')}catch(e){}return null}throw csUnsup('Application.'+n+'()')},
+    (n)=>{if(n==='targetFrameRate')return;throw csUnsup('Application.'+n+' 대입')}),
+  /* 물리 질의: 호스트가 CSHOST.physics 로 넘김 (Raycast · OverlapCircle …) */
+  Physics2D:csH('Physics2D',n=>csHook('physics','Physics2D.'+n)('get',n,[]),(n,a)=>csHook('physics','Physics2D.'+n+'()')('call',n,a),(n,v)=>csHook('physics','Physics2D.'+n)('set',n,[v])),
+  string:csStrStat(),String:csStrStat(),
+  int:csNumStat(true),Int32:csNumStat(true),float:csNumStat(false),Single:csNumStat(false),double:csNumStat(false)
 };
+function csStrStat(){return csH('string',n=>{if(n==='Empty')return'';throw csUnsup('string.'+n)},(n,a)=>{
+  switch(n){
+    case'IsNullOrEmpty':return a[0]==null||a[0]==='';
+    case'IsNullOrWhiteSpace':return a[0]==null||!String(a[0]).trim();
+    case'Join':{const sep=csFmt(a[0]),rest=a.slice(1);const items=rest.length===1&&rest[0]&&typeof rest[0]==='object'&&(isCsL(rest[0])||isCsD(rest[0]))?csIter(rest[0]):rest;return items.map(x=>csFmt(x)).join(sep)}
+    case'Concat':return a.map(x=>csFmt(x)).join('');
+    case'Format':{const f=csFmt(a[0]);return f.replace(/\{(\d+)(?::([^}]+))?\}/g,(q,i,fm)=>csFmt(a[+i+1],fm))}
+    case'Equals':return csFmt(a[0])===csFmt(a[1]);
+  }
+  throw csUnsup('string.'+n+'()')})}
+function csNumStat(isInt){return csH(isInt?'int':'float',n=>{if(n==='MaxValue')return isInt?2147483647:3.4028235e38;if(n==='MinValue')return isInt?-2147483648:-3.4028235e38;if(n==='Epsilon')return 1.4e-45;if(n==='PositiveInfinity')return Infinity;if(n==='NegativeInfinity')return-Infinity;if(n==='NaN')return NaN;throw csUnsup((isInt?'int.':'float.')+n)},(n,a)=>{
+  const parse=v=>{const t=csFmt(v).trim();if(!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(t)||(isInt&&!/^[+-]?\d+$/.test(t)))return null;return isInt?parseInt(t,10):parseFloat(t)};
+  if(n==='Parse'){const v=parse(a[0]);if(v==null)throw new Error(`FormatException: '${csFmt(a[0])}'은(는) ${isInt?'정수':'숫자'}로 바꿀 수 없습니다 (TryParse 를 쓰면 안전해요)`);return v}
+  if(n==='TryParse'){const v=parse(a[0]);if(a[1]&&a[1].__out)a[1].set(v==null?0:v);return v!=null}
+  if(n==='IsNaN')return Number.isNaN(csN(a[0]));
+  throw csUnsup((isInt?'int.':'float.')+n+'()')})}
+/* PlayerPrefs 저장소: 호스트가 CSHOST.prefsKey() 로 프로젝트마다 다른 이름을 줌 */
+let csPrefsD=null,csPrefsK='';
+function csPrefsKey(){try{return'thaniya.prefs.'+(typeof CSHOST.prefsKey==='function'?CSHOST.prefsKey():'default')}catch(e){return'thaniya.prefs.default'}}
+function csPrefs(){const k=csPrefsKey();if(csPrefsD&&csPrefsK===k)return csPrefsD;csPrefsK=k;try{csPrefsD=JSON.parse(localStorage.getItem(k)||'{}')||{}}catch(e){csPrefsD={}}return csPrefsD}
+function csPrefsSave(){try{localStorage.setItem(csPrefsK||csPrefsKey(),JSON.stringify(csPrefsD||{}))}catch(e){}}
+function csPrefsClear(){const k=csPrefsKey();try{localStorage.removeItem(k)}catch(e){}csPrefsD=null}
 /* 연결 함수 꺼내기: 화면이 넘기지 않았으면 「아직 실행할 수 없습니다」 */
 function csHook(k,label){const f=CSHOST[k];if(typeof f!=='function')throw csUnsup(label);return f}
 function csThis(cx){return{__h:cx.s.name,__o:cx.o,name:cx.o.name,get:n=>csIdNoLocal(n,cx),set:(n,v)=>csSetField(n,v,cx),call:(n,a)=>{if(cx.pr.r.methods[n])return csCallUser(cx,n,a);throw csUnsup(n+'()')}}}
