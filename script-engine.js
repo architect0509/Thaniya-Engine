@@ -186,7 +186,7 @@ function enToKo(code){
 const koTypes=s=>String(s||'').replace(/[A-Za-z_]\w*/g,w=>KO_TY_R[w]||KO_KW_R[w]||w);
 const CS_UIT=new Set(['RectTransform','Button','Text','Image','Slider','CanvasGroup','TMP_Text','TextMeshProUGUI']);
 /* 인스펙터 슬롯(오브젝트를 끌어다 놓는 칸)이 되는 필드 형식 — 컴포넌트 형식이면 그 오브젝트의 컴포넌트(예: PlayableDirector)를 씀 */
-const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','UIGroup','PlayableDirector','Animator','AudioSource','Volume','Rigidbody2D','BoxCollider2D','Collider2D','ParticleSystem',...CS_UIT]);
+const CS_OBJT=new Set(['GameObject','Transform','Light','Light2D','SpriteRenderer','MeshRenderer','Renderer','UIGroup','PlayableDirector','Animator','AudioSource','Volume','Rigidbody2D','BoxCollider2D','Collider2D','Rigidbody','BoxCollider','Collider','ParticleSystem',...CS_UIT]);
 /* 내가 만든 스크립트 형식(예: public PlayerHealth player;)도 오브젝트 슬롯 — 호스트가 CSHOST.isScriptType 으로 알려 줌 */
 const csKind=t=>CS_OBJT.has(t)||(typeof CSHOST.isScriptType==='function'&&/^[A-Z][\w]*$/.test(t)&&CSHOST.isScriptType(t))?'obj':t in CS_NUM?'num':t==='bool'?'bool':t==='string'?'str':t==='Vector2'||t==='Vector3'?'vec':t==='Color'?'color':'ref';
 function parseCS(code){
@@ -918,6 +918,8 @@ function csIdNoLocal(n,cx){
   if(n==='transform'){if(CSHOST.isUiEl(o))throw csUnsup(n);return CSHOST.trProxy(cx.m,o)}
   if(n==='gameObject'){if(CSHOST.isUiEl(o)&&!CSHOST.uiGo)throw csUnsup(n);return CSHOST.goProxy(cx.m,o)}
   if(n==='name')return o.name;
+  /* 이 스크립트 컴포넌트가 켜져 있는지 (인스펙터 체크박스 · 코드의 enabled = false 도 같은 값) */
+  if(n==='enabled'&&cx.inst)return cx.inst.on!==false&&!(cx.rt&&cx.rt.dis);
   if(n==='enabled')return!(cx.rt&&cx.rt.dis);
   if(n==='tag'&&typeof CSHOST.objTag==='function')return CSHOST.objTag(cx.m,o);
   throw csUnsup(n);
@@ -930,7 +932,8 @@ function csSetField(n,v,cx){
   const f=cx.rt.f;
   if(Object.prototype.hasOwnProperty.call(f,n)){f[n]=v;return}
   if(n==='name'){cx.o.name=csFmt(v);return}
-  /* 이 스크립트 끄기: Update · FixedUpdate · LateUpdate 를 부르지 않음 (다른 메서드는 그대로) */
+  /* 이 스크립트 끄기 = 인스펙터 체크박스를 끈 것과 같다: Start · Update · FixedUpdate · LateUpdate 를 부르지 않음 */
+  if(n==='enabled'&&cx.inst){if(v)delete cx.inst.on;else cx.inst.on=false;if(cx.rt)cx.rt.dis=false;return}
   if(n==='enabled'){if(cx.rt)cx.rt.dis=!v;return}
   if(n==='tag'){cx.o.tag=csFmt(v);return}
   throw csUnsup(n);
@@ -1141,15 +1144,20 @@ function csPerlin(x,y){
   const r=lerp(lerp(gr(P[a],x,y),gr(P[b],x-1,y),u),lerp(gr(P[a+1],x,y-1),gr(P[b+1],x-1,y-1),u),v);
   return Math.min(1,Math.max(0,(r/2.4)+.5));
 }
+const cs3D=()=>{const p=csPlay();return!!(p&&p.m&&p.m.dim==='3d')};
 const csVecStat=v3=>csH(v3?'Vector3':'Vector2',n=>{
     const V=(x,y,z)=>CsV(x,y,z,v3);
-    switch(n){case'zero':return V(0,0,0);case'one':return V(1,1,v3?1:0);case'up':return V(0,-1,0);case'down':return V(0,1,0);case'left':return V(-1,0,0);case'right':return V(1,0,0)}
+    /* 3D 씬에서는 유니티처럼 Y가 위 (2D 씬은 화면 아래쪽이 +Y) */
+    const d3=cs3D();
+    switch(n){case'zero':return V(0,0,0);case'one':return V(1,1,v3?1:0);case'up':return V(0,d3?1:-1,0);case'down':return V(0,d3?-1:1,0);case'left':return V(-1,0,0);case'right':return V(1,0,0);case'forward':return V(0,0,1);case'back':return V(0,0,-1)}
     throw csUnsup((v3?'Vector3.':'Vector2.')+n);
   },(n,a)=>{
     const A=a[0],B=a[1];
     switch(n){
       case'Distance':return Math.hypot(A.x-B.x,A.y-B.y,A.z-B.z);
       case'Dot':return A.x*B.x+A.y*B.y+A.z*B.z;
+      case'Cross':return CsV(A.y*B.z-A.z*B.y,A.z*B.x-A.x*B.z,A.x*B.y-A.y*B.x,v3);
+      case'Normalize':{const L=Math.hypot(A.x,A.y,A.z)||1;return CsV(A.x/L,A.y/L,A.z/L,v3)}
       case'Lerp':{const t=clamp(csN(a[2]),0,1);return CsV(A.x+(B.x-A.x)*t,A.y+(B.y-A.y)*t,A.z+(B.z-A.z)*t,v3)}
       case'MoveTowards':{const d=csN(a[2]),dx=B.x-A.x,dy=B.y-A.y,dz=B.z-A.z,L=Math.hypot(dx,dy,dz);if(L<=d||L===0)return CsV(B.x,B.y,B.z,v3);return CsV(A.x+dx/L*d,A.y+dy/L*d,A.z+dz/L*d,v3)}
       case'ClampMagnitude':{const m=csN(B),L=Math.hypot(A.x,A.y,A.z);if(L<=m)return A;return CsV(A.x/L*m,A.y/L*m,A.z/L*m,v3)}
@@ -1182,8 +1190,10 @@ const CS_STAT={
       /* 한 프레임 안에 눌렀다 뗀 아주 짧은 입력도 그 프레임에는 누른 것으로 (kdown) */
       const dn=p.kdown||new Set(),on=(k,a,b)=>!!kk[k]||dn.has(a)||dn.has(b);
       if(ax==='Horizontal')return(on('right','ArrowRight','KeyD')?1:0)-(on('left','ArrowLeft','KeyA')?1:0);
-      if(ax==='Vertical')return(on('down','ArrowDown','KeyS')?1:0)-(on('up','ArrowUp','KeyW')?1:0);
-      throw new Error(`입력 축 '${ax}'이(가) 없습니다 (Horizontal, Vertical)`)}
+      if(ax==='Vertical'){const v=(on('down','ArrowDown','KeyS')?1:0)-(on('up','ArrowUp','KeyW')?1:0);return cs3D()?-v:v}
+      /* 마우스가 이번 프레임에 움직인 양 (유니티처럼 픽셀 × 0.1 · 위쪽이 +) */
+      if(ax==='Mouse X')return(p.mdx||0)*.1;if(ax==='Mouse Y')return(p.mdy||0)*.1;
+      throw new Error(`입력 축 '${ax}'이(가) 없습니다 (Horizontal, Vertical, Mouse X, Mouse Y)`)}
     const set=suf=>suf==='Down'?p.kdown:suf==='Up'?p.kup:p.kraw;
     let m=/^GetKey(Down|Up)?$/.exec(n);if(m){const s=set(m[1]);return!!s&&s.has(csKeyArg(a[0]))}
     m=/^GetButton(Down|Up)?$/.exec(n);if(m){const c={Jump:'Space',Fire1:'Mouse0',Submit:'Enter',Cancel:'Escape',점프:'Space',발사:'Mouse0',확인:'Enter',취소:'Escape'}[a[0]];if(!c)throw new Error(`버튼 '${a[0]}'이(가) 없습니다 (Jump, Fire1, Submit)`);const s=set(m[1]);return!!s&&s.has(c)}
@@ -1205,6 +1215,7 @@ const CS_STAT={
     if(n==='InitState'){return null}
     throw csUnsup('Random.'+n+'()')}),
   Vector2:csVecStat(false),Vector3:csVecStat(true),
+  Space:csH('Space',n=>{if(n==='World'||n==='Self')return'Space.'+n;throw csUnsup('Space.'+n)}),
   Color:csH('Color',n=>{if(CS_COLORS[n])return CS_COLORS[n];throw csUnsup('Color.'+n)}),
   GameObject:csH('GameObject',null,(n,a)=>{
     const m=csCur&&csCur.m;if(!m)return null;
@@ -1219,6 +1230,7 @@ const CS_STAT={
   /* Physics2D 의 layerMask 인자는 받기만 하고 쓰지 않음 (레이어가 없음) */
   LayerMask:csH('LayerMask',null,(n,a)=>{if(n==='GetMask')return-1;if(n==='NameToLayer')return 0;if(n==='LayerToName')return'Default';throw csUnsup('LayerMask.'+n+'()')}),
   ForceMode2D:csH('ForceMode2D',n=>{if(n==='Force'||n==='Impulse')return n;throw csUnsup('ForceMode2D.'+n)}),
+  ForceMode:csH('ForceMode',n=>{if(['Force','Impulse','Acceleration','VelocityChange'].includes(n))return n;throw csUnsup('ForceMode.'+n)}),
   RigidbodyType2D:csH('RigidbodyType2D',n=>{if(n==='Dynamic'||n==='Kinematic'||n==='Static')return n;throw csUnsup('RigidbodyType2D.'+n)}),
   Resources:Object.assign(csH('Resources',null,(n,a)=>{if(n==='Load'){const r=typeof CSHOST.prefabByName==='function'?CSHOST.prefabByName(csFmt(a[0])):null;return r}throw csUnsup('Resources.'+n+'()')}),
     {callG(n,T,a){if(n==='Load'){if(T!=='GameObject')throw csUnsup('Resources.Load<'+T+'>()');return typeof CSHOST.prefabByName==='function'?CSHOST.prefabByName(csFmt(a[0])):null}throw csUnsup('Resources.'+n+'<'+T+'>()')}}),

@@ -9,32 +9,32 @@
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 /* 값 정의: k 키 · t 종류 · min/max/step · def 기본값 · g 묶음 */
 const FIELDS=[
-  {g:'main',k:'loop',t:'bool',def:true,label:'반복 (Looping)',tip:'켜면 재생 시간이 끝나도 계속 뿜어냅니다. 끄면 한 번만 뿜고 멈춥니다 (폭발 · 타격 효과).'},
-  {g:'main',k:'dur',t:'num',min:.1,max:60,step:.1,def:2,label:'재생 시간(초)',tip:'한 번 재생하는 길이(초)입니다. 반복을 끄면 이 시간 동안만 뿜어냅니다.'},
-  {g:'main',k:'play',t:'bool',def:true,label:'시작할 때 재생 (Play On Awake)',tip:'켜면 플레이를 시작하거나 오브젝트가 생길 때 바로 재생합니다. 끄면 스크립트의 Play()를 불러야 시작합니다.'},
-  {g:'main',k:'life',t:'num',min:.05,max:20,step:.05,def:1,label:'수명(초)',tip:'파티클 하나가 살아 있는 시간(초)입니다.'},
-  {g:'main',k:'speed',t:'num',min:0,max:50,step:.1,def:2,label:'속도(칸/초)',tip:'파티클이 처음 날아가는 빠르기(1초에 몇 칸)입니다.'},
+  {g:'main',k:'loop',t:'bool',def:true,label:'반복 (Looping)',tip:'켜면 재생 시간이 끝나도 계속 뿜어낸다. 끄면 한 번만 뿜고 멈춘다 (폭발 · 타격 효과).'},
+  {g:'main',k:'dur',t:'num',min:.1,max:60,step:.1,def:2,label:'재생 시간(초)',tip:'한 번 재생하는 길이(초)이다. 반복을 끄면 이 시간 동안만 뿜어낸다.'},
+  {g:'main',k:'play',t:'bool',def:true,label:'시작할 때 재생 (Play On Awake)',tip:'켜면 플레이를 시작하거나 오브젝트가 생길 때 바로 재생한다. 끄면 스크립트의 Play()를 불러야 시작한다.'},
+  {g:'main',k:'life',t:'num',min:.05,max:20,step:.05,def:1,label:'수명(초)',tip:'파티클 하나가 살아 있는 시간(초)이다.'},
+  {g:'main',k:'speed',t:'num',min:0,max:50,step:.1,def:2,label:'속도(칸/초)',tip:'파티클이 처음 날아가는 빠르기(1초에 몇 칸)이다.'},
   {g:'main',k:'rand',t:'num',min:0,max:1,step:.05,def:.3,label:'무작위 정도',tip:'수명 · 속도 · 크기를 얼마나 들쭉날쭉하게 할지 (0 = 모두 같음, 1 = 많이 다름).'},
-  {g:'main',k:'size0',t:'num',min:0,max:10,step:.05,def:.3,label:'처음 크기(칸)',tip:'태어날 때의 크기(칸)입니다.'},
-  {g:'main',k:'size1',t:'num',min:0,max:10,step:.05,def:0,label:'끝 크기(칸)',tip:'사라질 때의 크기(칸)입니다. 처음 크기에서 이 크기로 서서히 바뀝니다.'},
-  {g:'main',k:'col0',t:'color',def:'#ffd25e',label:'처음 색',tip:'태어날 때의 색입니다.'},
-  {g:'main',k:'col1',t:'color',def:'#ff5a1f',label:'끝 색',tip:'사라질 때의 색입니다.'},
+  {g:'main',k:'size0',t:'num',min:0,max:10,step:.05,def:.3,label:'처음 크기(칸)',tip:'태어날 때의 크기(칸)이다.'},
+  {g:'main',k:'size1',t:'num',min:0,max:10,step:.05,def:0,label:'끝 크기(칸)',tip:'사라질 때의 크기(칸)이다. 처음 크기에서 이 크기로 서서히 바뀐다.'},
+  {g:'main',k:'col0',t:'color',def:'#ffd25e',label:'처음 색',tip:'태어날 때의 색이다.'},
+  {g:'main',k:'col1',t:'color',def:'#ff5a1f',label:'끝 색',tip:'사라질 때의 색이다.'},
   {g:'main',k:'a0',t:'num',min:0,max:1,step:.05,def:1,label:'처음 투명도',tip:'0 = 투명, 1 = 불투명.'},
-  {g:'main',k:'a1',t:'num',min:0,max:1,step:.05,def:0,label:'끝 투명도',tip:'사라질 때의 투명도입니다. 0이면 서서히 사라집니다.'},
+  {g:'main',k:'a1',t:'num',min:0,max:1,step:.05,def:0,label:'끝 투명도',tip:'사라질 때의 투명도이다. 0이면 서서히 사라진다.'},
   {g:'main',k:'grav',t:'num',min:-20,max:20,step:.1,def:0,label:'중력',tip:'양수면 아래로 떨어지고(비 · 불똥), 음수면 위로 떠오릅니다(연기 · 불꽃).'},
-  {g:'main',k:'drag',t:'num',min:0,max:20,step:.1,def:0,label:'공기 저항',tip:'클수록 날아가다 빨리 느려집니다.'},
-  {g:'main',k:'max',t:'int',min:1,max:1000,step:1,def:200,label:'최대 개수',tip:'한 번에 화면에 있을 수 있는 파티클 수의 한도입니다.'},
-  {g:'emit',k:'rate',t:'num',min:0,max:500,step:1,def:20,label:'1초에 뿜는 수 (Rate)',tip:'1초에 몇 개를 뿜어낼지입니다.'},
-  {g:'emit',k:'burst',t:'int',min:0,max:500,step:1,def:0,label:'시작할 때 한꺼번에 (Burst)',tip:'재생을 시작하는 순간 한꺼번에 뿜는 개수입니다 (폭발 · 터지는 효과).'},
-  {g:'shape',k:'shape',t:'enum',opts:[['point','점'],['circle','원'],['box','상자'],['line','가로선']],def:'point',label:'모양',tip:'파티클이 태어나는 자리의 모양입니다. 비 · 눈은 넓은 가로선이나 상자가 어울립니다.'},
-  {g:'shape',k:'radius',t:'num',min:0,max:50,step:.05,def:.2,label:'크기(칸)',tip:'원의 반지름 · 상자와 가로선의 반 너비(칸)입니다.'},
-  {g:'shape',k:'dir',t:'num',min:-360,max:360,step:1,def:-90,label:'방향(°)',tip:'뿜는 방향입니다. 0° = 오른쪽, 90° = 아래, -90° = 위.'},
-  {g:'shape',k:'spread',t:'num',min:0,max:360,step:1,def:25,label:'퍼짐(°)',tip:'방향을 중심으로 얼마나 넓게 퍼질지(도)입니다. 360이면 사방으로 퍼집니다.'},
-  {g:'look',k:'look',t:'enum',opts:[['soft','부드러운 빛'],['circle','동그라미'],['square','네모 (픽셀)'],['spark','불똥 · 빗줄기'],['star','별']],def:'soft',label:'모양 (렌더러)',tip:'파티클 하나의 생김새입니다.'},
-  {g:'look',k:'add',t:'bool',def:true,label:'빛처럼 더하기 (Additive)',tip:'켜면 겹칠수록 밝아져서 불 · 마법 · 빛에 어울립니다. 연기 · 먼지는 끄세요. 어두운 씬에서도 빛나 보입니다.'},
-  {g:'look',k:'world',t:'bool',def:true,label:'월드에 남기기 (World Space)',tip:'켜면 오브젝트가 움직여도 이미 나온 파티클은 그 자리에 남아 꼬리가 생깁니다. 끄면 오브젝트와 함께 움직입니다.'},
-  {g:'look',k:'front',t:'bool',def:true,label:'오브젝트 위에 그리기',tip:'켜면 게임 오브젝트들 위에 그립니다. 끄면 이 오브젝트의 배치 순서대로 그립니다.'},
-  {g:'look',k:'kill',t:'bool',def:false,label:'끝나면 오브젝트 삭제 (Stop Action)',tip:'반복이 꺼져 있을 때 모든 파티클이 사라지면 이 게임 오브젝트를 지웁니다. Instantiate로 만든 폭발 효과에 쓰세요.'}
+  {g:'main',k:'drag',t:'num',min:0,max:20,step:.1,def:0,label:'공기 저항',tip:'클수록 날아가다 빨리 느려진다.'},
+  {g:'main',k:'max',t:'int',min:1,max:1000,step:1,def:200,label:'최대 개수',tip:'한 번에 화면에 있을 수 있는 파티클 수의 한도이다.'},
+  {g:'emit',k:'rate',t:'num',min:0,max:500,step:1,def:20,label:'1초에 뿜는 수 (Rate)',tip:'1초에 몇 개를 뿜어낼지이다.'},
+  {g:'emit',k:'burst',t:'int',min:0,max:500,step:1,def:0,label:'시작할 때 한꺼번에 (Burst)',tip:'재생을 시작하는 순간 한꺼번에 뿜는 개수이다 (폭발 · 터지는 효과).'},
+  {g:'shape',k:'shape',t:'enum',opts:[['point','점'],['circle','원'],['box','상자'],['line','가로선']],def:'point',label:'모양',tip:'파티클이 태어나는 자리의 모양이다. 비 · 눈은 넓은 가로선이나 상자가 어울린다.'},
+  {g:'shape',k:'radius',t:'num',min:0,max:50,step:.05,def:.2,label:'크기(칸)',tip:'원의 반지름 · 상자와 가로선의 반 너비(칸)이다.'},
+  {g:'shape',k:'dir',t:'num',min:-360,max:360,step:1,def:-90,label:'방향(°)',tip:'뿜는 방향이다. 0° = 오른쪽, 90° = 아래, -90° = 위.'},
+  {g:'shape',k:'spread',t:'num',min:0,max:360,step:1,def:25,label:'퍼짐(°)',tip:'방향을 중심으로 얼마나 넓게 퍼질지(도)이다. 360이면 사방으로 퍼진다.'},
+  {g:'look',k:'look',t:'enum',opts:[['soft','부드러운 빛'],['circle','동그라미'],['square','네모 (픽셀)'],['spark','불똥 · 빗줄기'],['star','별']],def:'soft',label:'모양 (렌더러)',tip:'파티클 하나의 생김새이다.'},
+  {g:'look',k:'add',t:'bool',def:true,label:'빛처럼 더하기 (Additive)',tip:'켜면 겹칠수록 밝아져서 불 · 마법 · 빛에 어울린다. 연기 · 먼지는 끈다. 어두운 씬에서도 빛나 보인다.'},
+  {g:'look',k:'world',t:'bool',def:true,label:'월드에 남기기 (World Space)',tip:'켜면 오브젝트가 움직여도 이미 나온 파티클은 그 자리에 남아 꼬리가 생긴다. 끄면 오브젝트와 함께 움직인다.'},
+  {g:'look',k:'front',t:'bool',def:true,label:'오브젝트 위에 그리기',tip:'켜면 게임 오브젝트들 위에 그린다. 끄면 이 오브젝트의 배치 순서대로 그린다.'},
+  {g:'look',k:'kill',t:'bool',def:false,label:'끝나면 오브젝트 삭제 (Stop Action)',tip:'반복이 꺼져 있을 때 모든 파티클이 사라지면 이 게임 오브젝트를 지운다. Instantiate로 만든 폭발 효과에 쓴다.'}
 ];
 const GROUPS=[['main','기본'],['emit','방출 (Emission)'],['shape','모양 (Shape)'],['look','보이기 (Renderer)']];
 const DEF=()=>{const o={preset:'fire'};FIELDS.forEach(f=>o[f.k]=f.def);return o};
@@ -132,8 +132,8 @@ function draw(g,st,ps,ox,oy,TS){
 function inspHtml(ps,H,live){
   const {fr,esc,_t}=H;
   const pre=`<div class="psprs">${Object.keys(PRESETS).map(k=>`<button type="button" class="pspr${ps.preset===k?' on':''}" data-pspre="${k}" title="${esc(_t(PRESETS[k].name))}"><span aria-hidden="true">${PRESETS[k].ic}</span>${esc(_t(PRESETS[k].name))}</button>`).join('')}</div>`;
-  let h=fr(_t('프리셋'),pre,1,'preset',_t('고르면 아래 값이 한꺼번에 바뀝니다. 고른 뒤 값을 조금씩 바꿔 나만의 효과를 만드세요.'));
-  h+=`<div class="psbar"><button type="button" class="btn sm" data-psact="replay">${esc(_t('다시 재생'))}</button><span class="hint">${live?esc(_t('파티클 {n}개',{n:live})):esc(_t('씬 뷰에서 고르면 미리 보기가 움직여요'))}</span></div>`;
+  let h=fr(_t('프리셋'),pre,1,'preset',_t('고르면 아래 값이 한꺼번에 바뀐다. 고른 뒤 값을 조금씩 바꿔 나만의 효과를 만든다.'));
+  h+=`<div class="psbar"><button type="button" class="btn sm" data-psact="replay">${esc(_t('다시 재생'))}</button><span class="hint">${live?esc(_t('파티클 {n}개',{n:live})):esc(_t('씬 뷰에서 고르면 미리 보기가 움직인다'))}</span></div>`;
   GROUPS.forEach(([gk,gl])=>{
     h+=`<div class="shead">${esc(_t(gl))}</div>`;
     FIELDS.filter(f=>f.g===gk).forEach(f=>{
@@ -162,8 +162,8 @@ try{const s=document.createElement('style');s.textContent=CSS;document.head.appe
 /* 번역 [영어, 일본어, 중국어] */
 if(window.TI18N)TI18N.add({
 '파티클 시스템':['Particle System','パーティクルシステム','粒子系统'],'프리셋':['Preset','プリセット','预设'],'다시 재생':['Replay','再生し直す','重新播放'],
-'파티클 {n}개':['{n} particles','パーティクル {n} 個','{n} 个粒子'],'씬 뷰에서 고르면 미리 보기가 움직여요':['Select it in the Scene view to see a live preview','シーンビューで選ぶとプレビューが動きます','在场景视图中选中即可看到实时预览'],
-'고르면 아래 값이 한꺼번에 바뀝니다. 고른 뒤 값을 조금씩 바꿔 나만의 효과를 만드세요.':['Picking one sets all the values below at once. Then tweak them to make your own effect.','選ぶと下の値がまとめて変わります。選んだあと少しずつ変えて自分だけの効果を作りましょう。','选择后下方数值会一次性改变。之后再微调，做出你自己的效果。'],
+'파티클 {n}개':['{n} particles','パーティクル {n} 個','{n} 个粒子'],'씬 뷰에서 고르면 미리 보기가 움직인다':['Select it in the Scene view to see a live preview','シーンビューで選ぶとプレビューが動きます','在场景视图中选中即可看到实时预览'],
+'고르면 아래 값이 한꺼번에 바뀐다. 고른 뒤 값을 조금씩 바꿔 나만의 효과를 만든다.':['Picking one sets all the values below at once. Then tweak them to make your own effect.','選ぶと下の値がまとめて変わります。選んだあと少しずつ変えて自分だけの効果を作りましょう。','选择后下方数值会一次性改变。之后再微调，做出你自己的效果。'],
 '기본':['Main','基本','基本'],'방출 (Emission)':['Emission','放出 (Emission)','发射 (Emission)'],'모양 (Shape)':['Shape','形状 (Shape)','形状 (Shape)'],'보이기 (Renderer)':['Renderer','表示 (Renderer)','渲染 (Renderer)'],
 '불꽃':['Fire','炎','火焰'],'연기':['Smoke','煙','烟雾'],'반짝임':['Sparkle','きらめき','闪光'],'폭발':['Explosion','爆発','爆炸'],'타격 불똥':['Hit sparks','ヒット火花','打击火花'],'비':['Rain','雨','雨'],'눈':['Snow','雪','雪'],'먼지':['Dust','ほこり','尘土'],'마법':['Magic','魔法','魔法'],'회복':['Heal','回復','治疗'],'픽셀 조각':['Pixel debris','ピクセル破片','像素碎片'],
 '반복 (Looping)':['Looping','ループ (Looping)','循环 (Looping)'],'재생 시간(초)':['Duration (s)','再生時間 (秒)','持续时间 (秒)'],'시작할 때 재생 (Play On Awake)':['Play On Awake','開始時に再生 (Play On Awake)','启动时播放 (Play On Awake)'],
@@ -173,27 +173,27 @@ if(window.TI18N)TI18N.add({
 '크기(칸)':['Size (cells)','サイズ (マス)','大小 (格)'],'방향(°)':['Direction (°)','方向 (°)','方向 (°)'],'퍼짐(°)':['Spread (°)','広がり (°)','扩散 (°)'],'모양 (렌더러)':['Look','見た目','外观'],
 '부드러운 빛':['Soft glow','柔らかい光','柔光'],'동그라미':['Circle','丸','圆点'],'네모 (픽셀)':['Square (pixel)','四角 (ピクセル)','方块 (像素)'],'불똥 · 빗줄기':['Spark · streak','火花 · 雨筋','火花 · 雨丝'],'별':['Star','星','星星'],
 '빛처럼 더하기 (Additive)':['Additive','加算 (Additive)','叠加 (Additive)'],'월드에 남기기 (World Space)':['World Space','ワールドに残す (World Space)','世界空间 (World Space)'],'오브젝트 위에 그리기':['Draw above objects','オブジェクトの上に描く','绘制在对象上方'],'끝나면 오브젝트 삭제 (Stop Action)':['Destroy when done (Stop Action)','終わったらオブジェクトを削除 (Stop Action)','结束后删除对象 (Stop Action)'],
-'켜면 재생 시간이 끝나도 계속 뿜어냅니다. 끄면 한 번만 뿜고 멈춥니다 (폭발 · 타격 효과).':['On: keeps emitting after the duration ends. Off: emits once and stops (explosions, hits).','オンにすると再生時間が終わっても出し続けます。オフにすると一度だけ出して止まります（爆発・ヒット効果）。','开启后持续时间结束仍会继续发射。关闭则只发射一次（爆炸、打击效果）。'],
-'한 번 재생하는 길이(초)입니다. 반복을 끄면 이 시간 동안만 뿜어냅니다.':['Length of one cycle (s). With looping off, it only emits during this time.','1回の再生の長さ（秒）です。ループをオフにするとこの時間だけ出します。','一次播放的时长（秒）。关闭循环时只在这段时间内发射。'],
-'켜면 플레이를 시작하거나 오브젝트가 생길 때 바로 재생합니다. 끄면 스크립트의 Play()를 불러야 시작합니다.':['On: plays as soon as play starts or the object spawns. Off: starts only when a script calls Play().','オンにするとプレイ開始時やオブジェクト生成時にすぐ再生します。オフにするとスクリプトで Play() を呼ぶまで始まりません。','开启后在开始游戏或对象生成时立即播放。关闭则需脚本调用 Play() 才开始。'],
-'파티클 하나가 살아 있는 시간(초)입니다.':['How long each particle lives (s).','パーティクル1つが生きている時間（秒）です。','每个粒子存在的时间（秒）。'],
-'파티클이 처음 날아가는 빠르기(1초에 몇 칸)입니다.':['Initial speed of each particle (cells per second).','パーティクルが最初に飛ぶ速さ（1秒に何マス）です。','粒子初始飞行速度（每秒几格）。'],
+'켜면 재생 시간이 끝나도 계속 뿜어낸다. 끄면 한 번만 뿜고 멈춘다 (폭발 · 타격 효과).':['On: keeps emitting after the duration ends. Off: emits once and stops (explosions, hits).','オンにすると再生時間が終わっても出し続けます。オフにすると一度だけ出して止まります（爆発・ヒット効果）。','开启后持续时间结束仍会继续发射。关闭则只发射一次（爆炸、打击效果）。'],
+'한 번 재생하는 길이(초)이다. 반복을 끄면 이 시간 동안만 뿜어낸다.':['Length of one cycle (s). With looping off, it only emits during this time.','1回の再生の長さ（秒）です。ループをオフにするとこの時間だけ出します。','一次播放的时长（秒）。关闭循环时只在这段时间内发射。'],
+'켜면 플레이를 시작하거나 오브젝트가 생길 때 바로 재생한다. 끄면 스크립트의 Play()를 불러야 시작한다.':['On: plays as soon as play starts or the object spawns. Off: starts only when a script calls Play().','オンにするとプレイ開始時やオブジェクト生成時にすぐ再生します。オフにするとスクリプトで Play() を呼ぶまで始まりません。','开启后在开始游戏或对象生成时立即播放。关闭则需脚本调用 Play() 才开始。'],
+'파티클 하나가 살아 있는 시간(초)이다.':['How long each particle lives (s).','パーティクル1つが生きている時間（秒）です。','每个粒子存在的时间（秒）。'],
+'파티클이 처음 날아가는 빠르기(1초에 몇 칸)이다.':['Initial speed of each particle (cells per second).','パーティクルが最初に飛ぶ速さ（1秒に何マス）です。','粒子初始飞行速度（每秒几格）。'],
 '수명 · 속도 · 크기를 얼마나 들쭉날쭉하게 할지 (0 = 모두 같음, 1 = 많이 다름).':['How much lifetime, speed and size vary (0 = all the same, 1 = very different).','寿命・速度・サイズのばらつき（0 = すべて同じ、1 = 大きく違う）。','寿命、速度、大小的随机程度（0 = 全部相同，1 = 差异很大）。'],
-'태어날 때의 크기(칸)입니다.':['Size when born (cells).','生まれたときのサイズ（マス）です。','出生时的大小（格）。'],'사라질 때의 크기(칸)입니다. 처음 크기에서 이 크기로 서서히 바뀝니다.':['Size when it disappears (cells). It changes gradually from the start size.','消えるときのサイズ（マス）です。開始サイズから徐々に変わります。','消失时的大小（格）。从初始大小逐渐变化。'],
-'태어날 때의 색입니다.':['Color when born.','生まれたときの色です。','出生时的颜色。'],'사라질 때의 색입니다.':['Color when it disappears.','消えるときの色です。','消失时的颜色。'],'0 = 투명, 1 = 불투명.':['0 = transparent, 1 = opaque.','0 = 透明、1 = 不透明。','0 = 透明，1 = 不透明。'],
-'사라질 때의 투명도입니다. 0이면 서서히 사라집니다.':['Alpha when it disappears. 0 fades it out.','消えるときの不透明度です。0 なら徐々に消えます。','消失时的不透明度。0 表示逐渐消失。'],
+'태어날 때의 크기(칸)이다.':['Size when born (cells).','生まれたときのサイズ（マス）です。','出生时的大小（格）。'],'사라질 때의 크기(칸)이다. 처음 크기에서 이 크기로 서서히 바뀐다.':['Size when it disappears (cells). It changes gradually from the start size.','消えるときのサイズ（マス）です。開始サイズから徐々に変わります。','消失时的大小（格）。从初始大小逐渐变化。'],
+'태어날 때의 색이다.':['Color when born.','生まれたときの色です。','出生时的颜色。'],'사라질 때의 색이다.':['Color when it disappears.','消えるときの色です。','消失时的颜色。'],'0 = 투명, 1 = 불투명.':['0 = transparent, 1 = opaque.','0 = 透明、1 = 不透明。','0 = 透明，1 = 不透明。'],
+'사라질 때의 투명도이다. 0이면 서서히 사라진다.':['Alpha when it disappears. 0 fades it out.','消えるときの不透明度です。0 なら徐々に消えます。','消失时的不透明度。0 表示逐渐消失。'],
 '양수면 아래로 떨어지고(비 · 불똥), 음수면 위로 떠오릅니다(연기 · 불꽃).':['Positive falls down (rain, sparks); negative floats up (smoke, flames).','正の値なら下に落ち（雨・火花）、負の値なら上に浮かびます（煙・炎）。','正值向下落（雨、火花），负值向上飘（烟雾、火焰）。'],
-'클수록 날아가다 빨리 느려집니다.':['Higher slows particles down faster.','大きいほど速く減速します。','越大减速越快。'],'한 번에 화면에 있을 수 있는 파티클 수의 한도입니다.':['Limit on how many particles can exist at once.','同時に存在できるパーティクル数の上限です。','同时存在的粒子数量上限。'],
-'1초에 몇 개를 뿜어낼지입니다.':['How many to emit per second.','1秒に何個出すかです。','每秒发射多少个。'],'재생을 시작하는 순간 한꺼번에 뿜는 개수입니다 (폭발 · 터지는 효과).':['How many to emit at once when playback starts (explosions, pops).','再生開始の瞬間にまとめて出す数です（爆発・はじける効果）。','开始播放瞬间一次性发射的数量（爆炸、迸发效果）。'],
-'파티클이 태어나는 자리의 모양입니다. 비 · 눈은 넓은 가로선이나 상자가 어울립니다.':['Shape of the area particles are born in. Rain and snow suit a wide line or box.','パーティクルが生まれる場所の形です。雨・雪は広い横線や箱が合います。','粒子出生区域的形状。雨、雪适合宽横线或方框。'],
-'원의 반지름 · 상자와 가로선의 반 너비(칸)입니다.':['Circle radius, or half-width of the box/line (cells).','円の半径、箱と横線の半分の幅（マス）です。','圆的半径，或方框/横线的半宽（格）。'],
-'뿜는 방향입니다. 0° = 오른쪽, 90° = 아래, -90° = 위.':['Emission direction. 0° = right, 90° = down, -90° = up.','放出方向です。0° = 右、90° = 下、-90° = 上。','发射方向。0° = 右，90° = 下，-90° = 上。'],
-'방향을 중심으로 얼마나 넓게 퍼질지(도)입니다. 360이면 사방으로 퍼집니다.':['How widely to spread around the direction (degrees). 360 spreads in all directions.','方向を中心にどれだけ広がるか（度）です。360 なら全方向に広がります。','围绕方向扩散的角度（度）。360 表示向四周扩散。'],
-'파티클 하나의 생김새입니다.':['What each particle looks like.','パーティクル1つの見た目です。','单个粒子的外观。'],
-'켜면 겹칠수록 밝아져서 불 · 마법 · 빛에 어울립니다. 연기 · 먼지는 끄세요. 어두운 씬에서도 빛나 보입니다.':['On: overlapping particles get brighter — good for fire, magic and light. Turn off for smoke and dust. Glows even in dark scenes.','オンにすると重なるほど明るくなり、炎・魔法・光に合います。煙・ほこりはオフに。暗いシーンでも光って見えます。','开启后重叠越多越亮，适合火焰、魔法、光效。烟雾、尘土请关闭。在暗场景中也会发光。'],
-'켜면 오브젝트가 움직여도 이미 나온 파티클은 그 자리에 남아 꼬리가 생깁니다. 끄면 오브젝트와 함께 움직입니다.':['On: particles already emitted stay put when the object moves, leaving a trail. Off: they move with the object.','オンにするとオブジェクトが動いても出たパーティクルはその場に残り、尾ができます。オフにするとオブジェクトと一緒に動きます。','开启后对象移动时已发射的粒子留在原地形成拖尾。关闭则随对象一起移动。'],
-'켜면 게임 오브젝트들 위에 그립니다. 끄면 이 오브젝트의 배치 순서대로 그립니다.':['On: draws above game objects. Off: draws at this object\'s sorting order.','オンにするとゲームオブジェクトの上に描きます。オフにするとこのオブジェクトの配置順で描きます。','开启后绘制在游戏对象上方。关闭则按该对象的排序顺序绘制。'],
-'반복이 꺼져 있을 때 모든 파티클이 사라지면 이 게임 오브젝트를 지웁니다. Instantiate로 만든 폭발 효과에 쓰세요.':['With looping off, deletes this game object once all particles are gone. Use it for explosion effects made with Instantiate.','ループがオフのとき、すべてのパーティクルが消えたらこのゲームオブジェクトを削除します。Instantiate で作った爆発効果に使います。','关闭循环时，所有粒子消失后删除此游戏对象。适用于用 Instantiate 生成的爆炸效果。']
+'클수록 날아가다 빨리 느려진다.':['Higher slows particles down faster.','大きいほど速く減速します。','越大减速越快。'],'한 번에 화면에 있을 수 있는 파티클 수의 한도이다.':['Limit on how many particles can exist at once.','同時に存在できるパーティクル数の上限です。','同时存在的粒子数量上限。'],
+'1초에 몇 개를 뿜어낼지이다.':['How many to emit per second.','1秒に何個出すかです。','每秒发射多少个。'],'재생을 시작하는 순간 한꺼번에 뿜는 개수이다 (폭발 · 터지는 효과).':['How many to emit at once when playback starts (explosions, pops).','再生開始の瞬間にまとめて出す数です（爆発・はじける効果）。','开始播放瞬间一次性发射的数量（爆炸、迸发效果）。'],
+'파티클이 태어나는 자리의 모양이다. 비 · 눈은 넓은 가로선이나 상자가 어울린다.':['Shape of the area particles are born in. Rain and snow suit a wide line or box.','パーティクルが生まれる場所の形です。雨・雪は広い横線や箱が合います。','粒子出生区域的形状。雨、雪适合宽横线或方框。'],
+'원의 반지름 · 상자와 가로선의 반 너비(칸)이다.':['Circle radius, or half-width of the box/line (cells).','円の半径、箱と横線の半分の幅（マス）です。','圆的半径，或方框/横线的半宽（格）。'],
+'뿜는 방향이다. 0° = 오른쪽, 90° = 아래, -90° = 위.':['Emission direction. 0° = right, 90° = down, -90° = up.','放出方向です。0° = 右、90° = 下、-90° = 上。','发射方向。0° = 右，90° = 下，-90° = 上。'],
+'방향을 중심으로 얼마나 넓게 퍼질지(도)이다. 360이면 사방으로 퍼진다.':['How widely to spread around the direction (degrees). 360 spreads in all directions.','方向を中心にどれだけ広がるか（度）です。360 なら全方向に広がります。','围绕方向扩散的角度（度）。360 表示向四周扩散。'],
+'파티클 하나의 생김새이다.':['What each particle looks like.','パーティクル1つの見た目です。','单个粒子的外观。'],
+'켜면 겹칠수록 밝아져서 불 · 마법 · 빛에 어울린다. 연기 · 먼지는 끈다. 어두운 씬에서도 빛나 보인다.':['On: overlapping particles get brighter — good for fire, magic and light. Turn off for smoke and dust. Glows even in dark scenes.','オンにすると重なるほど明るくなり、炎・魔法・光に合います。煙・ほこりはオフに。暗いシーンでも光って見えます。','开启后重叠越多越亮，适合火焰、魔法、光效。烟雾、尘土请关闭。在暗场景中也会发光。'],
+'켜면 오브젝트가 움직여도 이미 나온 파티클은 그 자리에 남아 꼬리가 생긴다. 끄면 오브젝트와 함께 움직인다.':['On: particles already emitted stay put when the object moves, leaving a trail. Off: they move with the object.','オンにするとオブジェクトが動いても出たパーティクルはその場に残り、尾ができます。オフにするとオブジェクトと一緒に動きます。','开启后对象移动时已发射的粒子留在原地形成拖尾。关闭则随对象一起移动。'],
+'켜면 게임 오브젝트들 위에 그린다. 끄면 이 오브젝트의 배치 순서대로 그린다.':['On: draws above game objects. Off: draws at this object\'s sorting order.','オンにするとゲームオブジェクトの上に描きます。オフにするとこのオブジェクトの配置順で描きます。','开启后绘制在游戏对象上方。关闭则按该对象的排序顺序绘制。'],
+'반복이 꺼져 있을 때 모든 파티클이 사라지면 이 게임 오브젝트를 지운다. Instantiate로 만든 폭발 효과에 쓴다.':['With looping off, deletes this game object once all particles are gone. Use it for explosion effects made with Instantiate.','ループがオフのとき、すべてのパーティクルが消えたらこのゲームオブジェクトを削除します。Instantiate で作った爆発効果に使います。','关闭循环时，所有粒子消失后删除此游戏对象。适用于用 Instantiate 生成的爆炸效果。']
 });
 window.PSYS={FIELDS,GROUPS,PRESETS,DEF,normalize,applyPreset,newState,spawn,step,draw,inspHtml,setField};
 })();

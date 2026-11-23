@@ -9,72 +9,72 @@ var KEY='thaniya.tour.v1';
 
 /* ---------- 번역 (i18n.js 사전에 등록 → 화면 글자를 자동으로 바꿈) ---------- */
 var TR={
-'Thaniya Engine에 오신 걸 환영해요':['Welcome to Thaniya Engine','Thaniya Engine へようこそ','欢迎使用 Thaniya Engine'],
-'화면 곳곳의 패널과 탭을 1분 안에 둘러볼게요.':['Let’s take a one-minute tour of the panels and tabs on screen.','画面のパネルとタブを1分で見て回りましょう。','用一分钟看看界面上的面板和标签页。'],
+'Thaniya Engine에 오신 걸 환영한다':['Welcome to Thaniya Engine','Thaniya Engine へようこそ','欢迎使用 Thaniya Engine'],
+'화면 곳곳의 패널과 탭을 1분 안에 둘러본다.':['Let’s take a one-minute tour of the panels and tabs on screen.','画面のパネルとタブを1分で見て回りましょう。','用一分钟看看界面上的面板和标签页。'],
 '건너뛰기':['Skip','スキップ','跳过'],
 '둘러보기 시작':['Start the tour','ツアーを始める','开始导览'],
 '이전':['Back','戻る','上一步'],
 '다음':['Next','次へ','下一步'],
 '이 패널의 탭':['Tabs in this panel','このパネルのタブ','此面板的标签页'],
-'탭을 누르면 그 자리에서 바뀌어요.':['Click a tab to switch it in place.','タブを押すとその場で切り替わります。','点击标签页即可在原位切换。'],
-'씬에 있는 타일맵 · 게임 오브젝트 · UI · 매니저를 나무 모양으로 보여 줘요.':['Shows the tilemaps, game objects, UI and managers in your scene as a tree.','シーンのタイルマップ・ゲームオブジェクト・UI・マネージャーをツリーで表示します。','以树状结构显示场景中的图块地图、游戏对象、UI 和管理器。'],
-'고른 것의 위치 · 컴포넌트 · 스크립트를 보고 바꿔요.':['View and edit the position, components and scripts of what you select.','選んだものの位置・コンポーネント・スクリプトを確認・変更します。','查看并修改所选对象的位置、组件和脚本。'],
-'그림 · 소리 · 스크립트 같은 에셋을 폴더로 정리해요. 에셋스토어와 직접 그리기도 여기 있어요.':['Organize assets like images, sounds and scripts in folders. The Asset Store and Draw tools live here too.','画像・サウンド・スクリプトなどのアセットをフォルダで整理します。アセットストアと「直接描く」もここにあります。','用文件夹整理图片、声音、脚本等资源。资源商店和“亲手绘制”也在这里。'],
-'Debug.Log 출력과 오류 메시지를 확인해요.':['Check Debug.Log output and error messages.','Debug.Log の出力とエラーを確認します。','查看 Debug.Log 输出和错误信息。'],
-'C# 스크립트를 자동완성과 함께 써요.':['Write C# scripts with autocomplete.','自動補完つきで C# スクリプトを書きます。','借助自动补全编写 C# 脚本。'],
-'상태와 전환으로 캐릭터 애니메이션의 흐름을 짜요.':['Build animation flow with states and transitions.','ステートと遷移でアニメーションの流れを組みます。','用状态和过渡编排动画流程。'],
-'버튼 · 텍스트 같은 게임 화면 UI를 끌어다 놓아 만들어요.':['Drag and drop buttons, text and more to build game UI.','ボタンやテキストなどのゲーム UI をドラッグ＆ドロップで作ります。','拖放按钮、文本等来制作游戏 UI。'],
-'노드를 선으로 이어 코드 없이 게임을 움직여요.':['Wire nodes together to make your game move without code.','ノードを線でつなぎ、コードなしでゲームを動かします。','用连线连接节点，无需代码即可让游戏动起来。'],
-'키프레임을 찍어 움직임 클립을 만들어요.':['Set keyframes to create motion clips.','キーフレームを打って動きのクリップを作ります。','设置关键帧来制作动作片段。'],
-'여러 오브젝트의 연출을 시간 위에 배치하고 녹화해요.':['Arrange and record multi-object sequences over time.','複数オブジェクトの演出を時間軸に並べて録画します。','在时间轴上编排并录制多个对象的演出。'],
-'타일을 골라 씬에 맵을 칠해요.':['Pick tiles and paint maps in the scene.','タイルを選んでシーンにマップを塗ります。','选择图块并在场景中绘制地图。'],
+'탭을 누르면 그 자리에서 바뀐다.':['Click a tab to switch it in place.','タブを押すとその場で切り替わります。','点击标签页即可在原位切换。'],
+'씬에 있는 타일맵 · 게임 오브젝트 · UI · 매니저를 나무 모양으로 보여 준다.':['Shows the tilemaps, game objects, UI and managers in your scene as a tree.','シーンのタイルマップ・ゲームオブジェクト・UI・マネージャーをツリーで表示します。','以树状结构显示场景中的图块地图、游戏对象、UI 和管理器。'],
+'고른 것의 위치 · 컴포넌트 · 스크립트를 보고 바꾼다.':['View and edit the position, components and scripts of what you select.','選んだものの位置・コンポーネント・スクリプトを確認・変更します。','查看并修改所选对象的位置、组件和脚本。'],
+'그림 · 소리 · 스크립트 같은 에셋을 폴더로 정리한다. 에셋스토어와 직접 그리기도 여기 있다.':['Organize assets like images, sounds and scripts in folders. The Asset Store and Draw tools live here too.','画像・サウンド・スクリプトなどのアセットをフォルダで整理します。アセットストアと「直接描く」もここにあります。','用文件夹整理图片、声音、脚本等资源。资源商店和“亲手绘制”也在这里。'],
+'Debug.Log 출력과 오류 메시지를 확인한다.':['Check Debug.Log output and error messages.','Debug.Log の出力とエラーを確認します。','查看 Debug.Log 输出和错误信息。'],
+'C# 스크립트를 자동완성과 함께 쓴다.':['Write C# scripts with autocomplete.','自動補完つきで C# スクリプトを書きます。','借助自动补全编写 C# 脚本。'],
+'상태와 전환으로 캐릭터 애니메이션의 흐름을 짠다.':['Build animation flow with states and transitions.','ステートと遷移でアニメーションの流れを組みます。','用状态和过渡编排动画流程。'],
+'버튼 · 텍스트 같은 게임 화면 UI를 끌어다 놓아 만든다.':['Drag and drop buttons, text and more to build game UI.','ボタンやテキストなどのゲーム UI をドラッグ＆ドロップで作ります。','拖放按钮、文本等来制作游戏 UI。'],
+'노드를 선으로 이어 코드 없이 게임을 움직인다.':['Wire nodes together to make your game move without code.','ノードを線でつなぎ、コードなしでゲームを動かします。','用连线连接节点，无需代码即可让游戏动起来。'],
+'키프레임을 찍어 움직임 클립을 만든다.':['Set keyframes to create motion clips.','キーフレームを打って動きのクリップを作ります。','设置关键帧来制作动作片段。'],
+'여러 오브젝트의 연출을 시간 위에 배치하고 녹화한다.':['Arrange and record multi-object sequences over time.','複数オブジェクトの演出を時間軸に並べて録画します。','在时间轴上编排并录制多个对象的演出。'],
+'타일을 골라 씬에 맵을 칠한다.':['Pick tiles and paint maps in the scene.','タイルを選んでシーンにマップを塗ります。','选择图块并在场景中绘制地图。'],
 '씬 · 게임 뷰':['Scene · Game view','シーン・ゲームビュー','场景 · 游戏视图'],
-'맵을 그리고 오브젝트를 배치하는 작업 공간이에요.':['The workspace where you paint maps and place objects.','マップを描きオブジェクトを配置する作業スペースです。','绘制地图、摆放对象的工作区。'],
-'실제 게임 화면이 어떻게 보일지 미리 봐요.':['Preview how the actual game screen will look.','実際のゲーム画面の見え方をプレビューします。','预览实际游戏画面的样子。'],
-'씬과 게임 화면을 좌우로 함께 봐요.':['See the scene and game views side by side.','シーンとゲーム画面を左右に並べて表示します。','左右并排查看场景和游戏画面。'],
-'왼쪽 도구 막대로 손 · 선택 · 브러시 · 지우개 같은 도구를 바꿔요.':['Switch tools like Hand, Select, Brush and Eraser on the toolbar at the left.','左のツールバーで手・選択・ブラシ・消しゴムなどのツールを切り替えます。','用左侧工具栏切换抓手、选择、画笔、橡皮擦等工具。'],
+'맵을 그리고 오브젝트를 배치하는 작업 공간이다.':['The workspace where you paint maps and place objects.','マップを描きオブジェクトを配置する作業スペースです。','绘制地图、摆放对象的工作区。'],
+'실제 게임 화면이 어떻게 보일지 미리 본다.':['Preview how the actual game screen will look.','実際のゲーム画面の見え方をプレビューします。','预览实际游戏画面的样子。'],
+'씬과 게임 화면을 좌우로 함께 본다.':['See the scene and game views side by side.','シーンとゲーム画面を左右に並べて表示します。','左右并排查看场景和游戏画面。'],
+'왼쪽 도구 막대로 손 · 선택 · 브러시 · 지우개 같은 도구를 바꾼다.':['Switch tools like Hand, Select, Brush and Eraser on the toolbar at the left.','左のツールバーで手・選択・ブラシ・消しゴムなどのツールを切り替えます。','用左侧工具栏切换抓手、选择、画笔、橡皮擦等工具。'],
 '위쪽 도구 막대':['Top toolbar','上部ツールバー','顶部工具栏'],
-'자주 쓰는 기능이 모여 있어요.':['Your most-used actions live here.','よく使う機能がまとまっています。','常用功能都集中在这里。'],
+'자주 쓰는 기능이 모여 있다.':['Your most-used actions live here.','よく使う機能がまとまっています。','常用功能都集中在这里。'],
 '편집 레이어':['Edit layers','編集レイヤー','编辑图层'],
-'지금 무엇을 칠하고 고를지 정해요 (타일맵 · 콜라이더 · 게임 오브젝트 · UI).':['Choose what you paint and select (Tilemap, Collider, Game Object, UI).','何を塗り・選ぶかを決めます（タイルマップ・コライダー・ゲームオブジェクト・UI）。','决定当前绘制和选择的对象（图块地图、碰撞体、游戏对象、UI）。'],
-'버튼과 텍스트로 게임 화면을 꾸미는 UI 빌더를 열어요.':['Opens the UI Builder to design screens with buttons and text.','ボタンやテキストで画面を作る UI ビルダーを開きます。','打开 UI 构建器，用按钮和文本设计界面。'],
+'지금 무엇을 칠하고 고를지 정한다 (타일맵 · 콜라이더 · 게임 오브젝트 · UI).':['Choose what you paint and select (Tilemap, Collider, Game Object, UI).','何を塗り・選ぶかを決めます（タイルマップ・コライダー・ゲームオブジェクト・UI）。','决定当前绘制和选择的对象（图块地图、碰撞体、游戏对象、UI）。'],
+'버튼과 텍스트로 게임 화면을 꾸미는 UI 빌더를 연다.':['Opens the UI Builder to design screens with buttons and text.','ボタンやテキストで画面を作る UI ビルダーを開きます。','打开 UI 构建器，用按钮和文本设计界面。'],
 'C# · 비주얼 스크립트':['C# · Visual Script','C#・ビジュアルスクリプト','C# · 可视化脚本'],
-'코드로 쓰거나, 노드를 이어 스크립트를 만들어요.':['Write scripts in code, or build them by wiring nodes.','コードで書くか、ノードをつないでスクリプトを作ります。','用代码编写，或连接节点来制作脚本。'],
-'만든 게임을 바로 실행해 봐요.':['Run your game right away.','作ったゲームをすぐに実行します。','立即运行你的游戏。'],
-'학습 기능이 있어요':['There’s a built-in Learn mode','学習機能があります','内置学习功能'],
-'「학습」을 누르면 Thaniya Engine Edu 학습 창이 엔진 위에 떠서, 레슨을 따라 하며 엔진과 C#을 배울 수 있어요.':['Press “Learn” to open the Thaniya Engine Edu window on top of the engine and learn the engine and C# by following lessons.','「学習」を押すと Thaniya Engine Edu の学習ウィンドウがエンジンの上に開き、レッスンに沿ってエンジンと C# を学べます。','点击“学习”，Thaniya Engine Edu 学习窗口会浮现在引擎上方，跟着课程学习引擎和 C#。'],
-'패널마다 있는 작은 「학습」 버튼은 그 창과 관련된 레슨으로 바로 데려가요.':['The small “Learn” button on each panel jumps straight to lessons about that panel.','各パネルの小さな「学習」ボタンは、そのウィンドウに関するレッスンへ直接案内します。','每个面板上的小“学习”按钮会直接带你进入相关课程。'],
-'전체 화면을 권장해요':['We recommend full screen','全画面がおすすめです','建议使用全屏'],
-'브라우저 주소창과 탭이 사라져 작업 공간이 넓어지고, 단축키가 브라우저와 덜 겹쳐요.':['The address bar and tabs disappear for more workspace, and shortcuts clash less with the browser.','アドレスバーやタブが消えて作業スペースが広がり、ショートカットもブラウザと重なりにくくなります。','地址栏和标签页会隐藏，工作区更宽，快捷键也更少与浏览器冲突。'],
-'오른쪽 위 이 버튼이나 F11로 언제든 켜고 끌 수 있어요.':['Toggle it anytime with this button at the top right or F11.','右上のこのボタンか F11 でいつでも切り替えられます。','随时可用右上角的此按钮或 F11 切换。'],
-'이미 전체 화면이에요. 좋아요!':['You’re already in full screen. Nice!','すでに全画面です。いいですね！','已经是全屏了，很好！'],
+'코드로 쓰거나, 노드를 이어 스크립트를 만든다.':['Write scripts in code, or build them by wiring nodes.','コードで書くか、ノードをつないでスクリプトを作ります。','用代码编写，或连接节点来制作脚本。'],
+'만든 게임을 바로 실행해 본다.':['Run your game right away.','作ったゲームをすぐに実行します。','立即运行你的游戏。'],
+'학습 기능이 있다':['There’s a built-in Learn mode','学習機能があります','内置学习功能'],
+'「학습」을 누르면 Thaniya Engine Edu 학습 창이 엔진 위에 떠서, 레슨을 따라 하며 엔진과 C#을 배울 수 있다.':['Press “Learn” to open the Thaniya Engine Edu window on top of the engine and learn the engine and C# by following lessons.','「学習」を押すと Thaniya Engine Edu の学習ウィンドウがエンジンの上に開き、レッスンに沿ってエンジンと C# を学べます。','点击“学习”，Thaniya Engine Edu 学习窗口会浮现在引擎上方，跟着课程学习引擎和 C#。'],
+'패널마다 있는 작은 「학습」 버튼은 그 창과 관련된 레슨으로 바로 데려간다.':['The small “Learn” button on each panel jumps straight to lessons about that panel.','各パネルの小さな「学習」ボタンは、そのウィンドウに関するレッスンへ直接案内します。','每个面板上的小“学习”按钮会直接带你进入相关课程。'],
+'전체 화면을 권장한다':['We recommend full screen','全画面がおすすめです','建议使用全屏'],
+'브라우저 주소창과 탭이 사라져 작업 공간이 넓어지고, 단축키가 브라우저와 덜 겹친다.':['The address bar and tabs disappear for more workspace, and shortcuts clash less with the browser.','アドレスバーやタブが消えて作業スペースが広がり、ショートカットもブラウザと重なりにくくなります。','地址栏和标签页会隐藏，工作区更宽，快捷键也更少与浏览器冲突。'],
+'오른쪽 위 이 버튼이나 F11로 언제든 켜고 끌 수 있다.':['Toggle it anytime with this button at the top right or F11.','右上のこのボタンか F11 でいつでも切り替えられます。','随时可用右上角的此按钮或 F11 切换。'],
+'이미 전체 화면이다. 좋다!':['You’re already in full screen. Nice!','すでに全画面です。いいですね！','已经是全屏了，很好！'],
 '나중에':['Later','あとで','稍后'],
 '전체 화면으로 시작':['Go full screen','全画面で始める','全屏开始'],
 '완료':['Done','完了','完成'],
 '닫기':['Close','閉じる','关闭'],
 '처음 안내 다시 보기':['Replay the intro tour','初回ガイドをもう一度見る','重新观看入门导览'],
-'엔진을 처음 열었을 때 나온 튜토리얼을 다시 봅니다. 패널과 탭, 학습 기능, 전체 화면을 차례로 소개합니다.':['Replay the tutorial shown when you first opened the engine. It walks through panels and tabs, Learn mode and full screen.','エンジンを初めて開いたときのチュートリアルをもう一度見ます。パネルとタブ、学習機能、全画面を順に紹介します。','重新观看首次打开引擎时的教程，依次介绍面板与标签页、学习功能和全屏。'],
+'엔진을 처음 열었을 때 나온 튜토리얼을 다시 본다. 패널과 탭, 학습 기능, 전체 화면을 차례로 소개한다.':['Replay the tutorial shown when you first opened the engine. It walks through panels and tabs, Learn mode and full screen.','エンジンを初めて開いたときのチュートリアルをもう一度見ます。パネルとタブ、学習機能、全画面を順に紹介します。','重新观看首次打开引擎时的教程，依次介绍面板与标签页、学习功能和全屏。'],
 '튜토리얼 보기':['Show tutorial','チュートリアルを見る','查看教程'],
 '정보: ':['About: ','情報: ','信息: '],
 '패널 목록':['Panels','パネル一覧','面板列表'],
-'아래 버튼으로 패널을 하나씩 바꿔 봐요.':['Switch panels one at a time with the buttons below.','下のボタンでパネルを1つずつ切り替えます。','用下方按钮逐个切换面板。']
+'아래 버튼으로 패널을 하나씩 바꿔 본다.':['Switch panels one at a time with the buttons below.','下のボタンでパネルを1つずつ切り替えます。','用下方按钮逐个切换面板。']
 };
 if(window.TI18N&&TI18N.add)TI18N.add(TR);
 
 var PD={
-  hier:'씬에 있는 타일맵 · 게임 오브젝트 · UI · 매니저를 나무 모양으로 보여 줘요.',
-  insp:'고른 것의 위치 · 컴포넌트 · 스크립트를 보고 바꿔요.',
-  assets:'그림 · 소리 · 스크립트 같은 에셋을 폴더로 정리해요. 에셋스토어와 직접 그리기도 여기 있어요.',
-  console:'Debug.Log 출력과 오류 메시지를 확인해요.',
-  script:'C# 스크립트를 자동완성과 함께 써요.',
-  animator:'상태와 전환으로 캐릭터 애니메이션의 흐름을 짜요.',
-  uib:'버튼 · 텍스트 같은 게임 화면 UI를 끌어다 놓아 만들어요.',
-  vs:'노드를 선으로 이어 코드 없이 게임을 움직여요.',
-  anim:'키프레임을 찍어 움직임 클립을 만들어요.',
-  tl:'여러 오브젝트의 연출을 시간 위에 배치하고 녹화해요.',
-  palette:'타일을 골라 씬에 맵을 칠해요.'
+  hier:'씬에 있는 타일맵 · 게임 오브젝트 · UI · 매니저를 나무 모양으로 보여 준다.',
+  insp:'고른 것의 위치 · 컴포넌트 · 스크립트를 보고 바꾼다.',
+  assets:'그림 · 소리 · 스크립트 같은 에셋을 폴더로 정리한다. 에셋스토어와 직접 그리기도 여기 있다.',
+  console:'Debug.Log 출력과 오류 메시지를 확인한다.',
+  script:'C# 스크립트를 자동완성과 함께 쓴다.',
+  animator:'상태와 전환으로 캐릭터 애니메이션의 흐름을 짠다.',
+  uib:'버튼 · 텍스트 같은 게임 화면 UI를 끌어다 놓아 만든다.',
+  vs:'노드를 선으로 이어 코드 없이 게임을 움직인다.',
+  anim:'키프레임을 찍어 움직임 클립을 만든다.',
+  tl:'여러 오브젝트의 연출을 시간 위에 배치하고 녹화한다.',
+  palette:'타일을 골라 씬에 맵을 칠한다.'
 };
-var VD=['맵을 그리고 오브젝트를 배치하는 작업 공간이에요.','실제 게임 화면이 어떻게 보일지 미리 봐요.','씬과 게임 화면을 좌우로 함께 봐요.'];
+var VD=['맵을 그리고 오브젝트를 배치하는 작업 공간이다.','실제 게임 화면이 어떻게 보일지 미리 본다.','씬과 게임 화면을 좌우로 함께 본다.'];
 
 /* ---------- 아이콘 ---------- */
 var SV=function(p){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+p+'</svg>'};
@@ -190,7 +190,7 @@ function buildSteps(){
   var nt=$('.ntabs');
   if(nt&&vis(nt)){
     var items=$$('button[data-id]',nt).map(function(b){return{name:txt(b),desc:PD[b.dataset.id]||'',icon:IC.panel,el:b,act:function(){b.click()}}});
-    groups.push({el:function(){return $('.ntabs')},rect:null,title:'패널 목록',icon:IC.panel,lead:'아래 버튼으로 패널을 하나씩 바꿔 봐요.',items:items});
+    groups.push({el:function(){return $('.ntabs')},rect:null,title:'패널 목록',icon:IC.panel,lead:'아래 버튼으로 패널을 하나씩 바꿔 본다.',items:items});
   }else{
     var seen={};
     $$('.panel[data-id]').forEach(function(p){
@@ -212,7 +212,7 @@ function buildSteps(){
       var r=sp.getBoundingClientRect(),vt=$$('.vtab',sp).filter(vis);
       groups.push({sort:Math.round(r.top/80)*100000+r.left,el:function(){return $('#scenepanel')},title:'씬 · 게임 뷰',icon:IC.scene,tabs:vt.length>1,
         items:vt.map(function(b,i){return{name:txt(b),desc:VD[i]||'',icon:IC.scene,on:b.classList.contains('on'),act:function(){b.click()}}}),
-        foot:vis($('#sbar'))?'왼쪽 도구 막대로 손 · 선택 · 브러시 · 지우개 같은 도구를 바꿔요.':''});
+        foot:vis($('#sbar'))?'왼쪽 도구 막대로 손 · 선택 · 브러시 · 지우개 같은 도구를 바꾼다.':''});
     }
     groups.sort(function(a,b){return a.sort-b.sort});
   }
@@ -220,11 +220,11 @@ function buildSteps(){
   var tb=$('#toolbar');
   if(vis(tb)){
     var it=[];
-    if(vis($('#layers')))it.push({name:'편집 레이어',desc:'지금 무엇을 칠하고 고를지 정해요 (타일맵 · 콜라이더 · 게임 오브젝트 · UI).',icon:IC.layer,el:'#layers'});
-    if(vis($('#bUib')))it.push({name:'UI 화면 만들기',desc:'버튼과 텍스트로 게임 화면을 꾸미는 UI 빌더를 열어요.',icon:IC.ui,el:'#bUib'});
-    if(vis($('#bSed'))||vis($('#bVs')))it.push({name:'C# · 비주얼 스크립트',desc:'코드로 쓰거나, 노드를 이어 스크립트를 만들어요.',icon:IC.code,el:'.codegrp'});
-    if(vis($('#bPlay')))it.push({name:'플레이',desc:'만든 게임을 바로 실행해 봐요.',icon:IC.play,el:'#bPlay'});
-    S.push({kind:'group',g:{el:function(){return $('#toolbar')},title:'위쪽 도구 막대',icon:IC.bar,lead:'자주 쓰는 기능이 모여 있어요.',items:it,hoverOnly:true}});
+    if(vis($('#layers')))it.push({name:'편집 레이어',desc:'지금 무엇을 칠하고 고를지 정한다 (타일맵 · 콜라이더 · 게임 오브젝트 · UI).',icon:IC.layer,el:'#layers'});
+    if(vis($('#bUib')))it.push({name:'UI 화면 만들기',desc:'버튼과 텍스트로 게임 화면을 꾸미는 UI 빌더를 연다.',icon:IC.ui,el:'#bUib'});
+    if(vis($('#bSed'))||vis($('#bVs')))it.push({name:'C# · 비주얼 스크립트',desc:'코드로 쓰거나, 노드를 이어 스크립트를 만든다.',icon:IC.code,el:'.codegrp'});
+    if(vis($('#bPlay')))it.push({name:'플레이',desc:'만든 게임을 바로 실행해 본다.',icon:IC.play,el:'#bPlay'});
+    S.push({kind:'group',g:{el:function(){return $('#toolbar')},title:'위쪽 도구 막대',icon:IC.bar,lead:'자주 쓰는 기능이 모여 있다.',items:it,hoverOnly:true}});
   }
   if(vis($('#bLearn')))S.push({kind:'learn'});
   if(vis($('#bFull')))S.push({kind:'full'});
@@ -259,7 +259,7 @@ function render(){
   if(s.kind==='hero'){
     root.classList.add('tc-center');card.classList.add('tc-hero');
     h='<div class="tc-logo"><img src="assets/thaniya-logo.png" alt=""></div><div class="tc-ey">WELCOME</div>'+
-      '<h3>Thaniya Engine에 오신 걸 환영해요</h3><p class="tc-p">화면 곳곳의 패널과 탭을 1분 안에 둘러볼게요.</p>'+
+      '<h3>Thaniya Engine에 오신 걸 환영한다</h3><p class="tc-p">화면 곳곳의 패널과 탭을 1분 안에 둘러본다.</p>'+
       '<div class="tc-map" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>'+
       '<div class="tc-foot"><div class="tc-btns"><button type="button" class="tc-b tc-ghost" data-a="close">건너뛰기</button><button type="button" class="tc-b tc-pri" data-a="next">둘러보기 시작</button></div></div>';
   }else{
@@ -272,20 +272,20 @@ function render(){
       else if(!g.lead&&g.items.length===1&&g.items[0].desc){h+='<p class="tc-p">'+esc(g.items[0].desc)+'</p>'}
       if(g.tabs||g.lead){
         h+='<ul class="tc-tabs">'+g.items.map(function(it,i){return '<li><button type="button" data-i="'+i+'" class="'+(it.on?'tc-on':'')+'"><span class="tc-ti">'+it.icon+'</span><span><b>'+esc(it.name)+'</b>'+(it.desc?'<small>'+esc(it.desc)+'</small>':'')+'</span></button></li>'}).join('')+'</ul>';
-        if(g.tabs)h+='<p class="tc-p tc-m" style="margin:8px 0 0">탭을 누르면 그 자리에서 바뀌어요.</p>';
+        if(g.tabs)h+='<p class="tc-p tc-m" style="margin:8px 0 0">탭을 누르면 그 자리에서 바뀐다.</p>';
       }
       if(g.foot)h+='<p class="tc-p tc-m" style="margin:8px 0 0">'+esc(g.foot)+'</p>';
       h+='<div class="tc-foot">'+dots()+navBtns()+'</div>';
     }else if(s.kind==='learn'){
-      h=head(IC.learn,'학습 기능이 있어요')+
-        '<p class="tc-p">「학습」을 누르면 Thaniya Engine Edu 학습 창이 엔진 위에 떠서, 레슨을 따라 하며 엔진과 C#을 배울 수 있어요.</p>'+
-        '<p class="tc-p tc-m">패널마다 있는 작은 「학습」 버튼은 그 창과 관련된 레슨으로 바로 데려가요.</p>'+
+      h=head(IC.learn,'학습 기능이 있다')+
+        '<p class="tc-p">「학습」을 누르면 Thaniya Engine Edu 학습 창이 엔진 위에 떠서, 레슨을 따라 하며 엔진과 C#을 배울 수 있다.</p>'+
+        '<p class="tc-p tc-m">패널마다 있는 작은 「학습」 버튼은 그 창과 관련된 레슨으로 바로 데려간다.</p>'+
         '<div class="tc-foot">'+dots()+navBtns()+'</div>';
     }else if(s.kind==='full'){
       var isFull=!!(document.fullscreenElement||document.webkitFullscreenElement);
-      h=head(IC.full,'전체 화면을 권장해요')+
-        '<p class="tc-p">브라우저 주소창과 탭이 사라져 작업 공간이 넓어지고, 단축키가 브라우저와 덜 겹쳐요.</p>'+
-        '<p class="tc-p tc-m">'+(isFull?'이미 전체 화면이에요. 좋아요!':'오른쪽 위 이 버튼이나 F11로 언제든 켜고 끌 수 있어요.')+'</p>'+
+      h=head(IC.full,'전체 화면을 권장한다')+
+        '<p class="tc-p">브라우저 주소창과 탭이 사라져 작업 공간이 넓어지고, 단축키가 브라우저와 덜 겹친다.</p>'+
+        '<p class="tc-p tc-m">'+(isFull?'이미 전체 화면이다. 좋다!':'오른쪽 위 이 버튼이나 F11로 언제든 켜고 끌 수 있다.')+'</p>'+
         '<div class="tc-foot">'+dots()+navBtns(isFull?'<button type="button" class="tc-b tc-pri" data-a="close">완료</button>':
           '<button type="button" class="tc-b" data-a="close">나중에</button><button type="button" class="tc-b tc-pri" data-a="full">전체 화면으로 시작</button>')+'</div>';
     }

@@ -178,8 +178,11 @@ function tick(p,dt){
     for(const d of[...R.dirs.values()]){
       if(!m.objs.includes(d.o)){tlAudStop(d);R.dirs.delete(d.o.id);continue}
       const dc=tlDirOf(d.o);if(!dc){tlAudStop(d);R.dirs.delete(d.o.id);continue}
-      const tl=tlGet(dc.tl),on=objOn(m,d.o);
-      if(!d.boot){d.boot=true;if(dc.awake!==false&&tl&&on)tlPlay(p,d)}
+      /* 꺼진 디렉터 (인스펙터 체크박스 · director.enabled = false): 멈춰 있다가 켜지면 이어서 · 시작할 때 재생은 처음 켜질 때 */
+      const tl=tlGet(dc.tl),en=dc.on!==false,on=objOn(m,d.o)&&en;
+      if(!d.boot&&en){d.boot=true;if(dc.awake!==false&&tl&&on)tlPlay(p,d)}
+      if(!en&&d.st==='playing'&&!d.offA){d.offA=true;tlAudStop(d)}
+      if(en&&d.offA){d.offA=false;if(d.st==='playing'&&tl)tlAudSync(p,d,tl)}
       if(d.st!=='playing'||!tl||!on)continue;
       const dur=tlDur(tl),t0=d.t;let t1=t0+dt;const incl=d.first;d.first=false;
       if(t1>=dur){
@@ -223,6 +226,7 @@ function dirProxy(m,o){
   return{__h:'PlayableDirector',__o:o,name:o.name,
     get(n){
       if(n==='gameObject')return goProxy(m,o);if(n==='transform')return trProxy(m,o);if(n==='name')return o.name;
+      if(n==='enabled'){const dc=tlDirOf(o);return!!dc&&dc.on!==false}
       const d=D();
       if(n==='time')return d.t;
       if(n==='duration')return tlDur(TLo());
@@ -234,6 +238,7 @@ function dirProxy(m,o){
       throw csUnsup('PlayableDirector.'+n);
     },
     set(n,v){
+      if(n==='enabled'){const dc=tlDirOf(o);if(!dc)throw new Error(`MissingComponentException: ${o.name}의 플레이어블 디렉터(PlayableDirector) 컴포넌트가 제거되었습니다`);if(v)delete dc.on;else dc.on=false;return}
       const d=D();
       if(n==='time'){const tl=TLo();d.t=clamp(csN(v),0,tlDur(tl)||0);if(tl&&d.st==='playing'){tlAudStop(d);tlAudSync(play,d,tl)}if(d.st==='stopped')d.st='paused';tlRtCollect(play);return}
       if(n==='playOnAwake'){o.props.director.awake=!!v;return}
@@ -264,14 +269,14 @@ function directorComp(o){
   const binds=tl?tl.tracks.filter(tr=>TL_T[tr.type].bind).map(tr=>{const cur0=d.binds[tr.id]||'';const miss=cur0&&!objs.some(q=>q.id===cur0);
     return`<div class="tlib"><span class="tlibn" style="--tc:${TL_T[tr.type].c}" title="${esc(_t(TL_T[tr.type].n))}">${ico(TL_T[tr.type].ic)}<span data-i18n-skip>${esc(tr.name)}</span></span><select data-tldb="${tr.id}" aria-label="${esc(tr.name)}"><option value="">(없음)</option>${objs.map(q=>`<option value="${q.id}"${q.id===cur0?' selected':''} data-i18n-skip>${esc(q.name)}</option>`).join('')}${miss?`<option value="${esc(cur0)}" selected>(찾을 수 없음)</option>`:''}</select></div>`}).join(''):'';
   return comp('cd','timeline','플레이어블 디렉터'+compEn('PlayableDirector'),
-    fr('타임라인',`<select data-tld="tl"><option value="">(없음)</option>${L0.map(x=>`<option value="${x.id}"${x.id===d.tl?' selected':''} data-i18n-skip>${esc(x.name)}</option>`).join('')}${d.tl&&!tl?'<option value="'+esc(d.tl)+'" selected>(찾을 수 없음)</option>':''}<option value="+new">＋ 새 타임라인…</option></select>`,false,'playableAsset','이 디렉터가 재생할 타임라인 에셋입니다. 타임라인 창에서 트랙과 클립을 편집합니다.')+
+    fr('타임라인',`<select data-tld="tl"><option value="">(없음)</option>${L0.map(x=>`<option value="${x.id}"${x.id===d.tl?' selected':''} data-i18n-skip>${esc(x.name)}</option>`).join('')}${d.tl&&!tl?'<option value="'+esc(d.tl)+'" selected>(찾을 수 없음)</option>':''}<option value="+new">＋ 새 타임라인…</option></select>`,false,'playableAsset','이 디렉터가 재생할 타임라인 에셋이다. 타임라인 창에서 트랙과 클립을 편집한다.')+
     fr('시작할 때 재생',`<input type="checkbox" data-tld="awake"${d.awake!==false?' checked':''}>`,false,'playOnAwake','켜면 플레이를 시작하거나 이 씬에 들어올 때 바로 재생합니다. 끄면 스크립트에서 director.Play()로 재생합니다.')+
     fr('끝나면',`<select data-tld="wrap">${TL_WRAP.map(([v,l])=>`<option value="${v}"${v===d.wrap?' selected':''}>${l}</option>`).join('')}</select>`,false,'extrapolationMode','타임라인 끝에 닿았을 때: 없음 = 멈추고 처음 상태로, 유지 = 마지막 장면에 머묾, 반복 = 처음부터 다시.')+
     (tl?(()=>{const nb=tl.tracks.filter(tr=>TL_T[tr.type].bind),set=nb.filter(tr=>d.binds[tr.id]).length;
-      return`<button type="button" class="tlibh tlbf${tlBindOpen?' open':''}" data-tlbfold aria-expanded="${tlBindOpen}" title="${esc(_t(tlBindOpen?'바인딩 접기':'바인딩 펼치기'))}"><i class="tlbcar" aria-hidden="true"></i><span>바인딩</span><em>${nb.length?set+' / '+nb.length:''}</em><small>트랙이 움직일 게임 오브젝트 · 계층 구조에서 타임라인 창의 트랙 머리로 끌어다 놓아도 됩니다</small></button>`+
-      (tlBindOpen?`<div class="tlibs">${binds||'<p class="hint" style="margin:2px 0 6px">아직 트랙이 없습니다. 타임라인 창의 「＋ 트랙」으로 추가하세요.</p>'}</div>`:'')})():'')+
+      return`<button type="button" class="tlibh tlbf${tlBindOpen?' open':''}" data-tlbfold aria-expanded="${tlBindOpen}" title="${esc(_t(tlBindOpen?'바인딩 접기':'바인딩 펼치기'))}"><i class="tlbcar" aria-hidden="true"></i><span>바인딩</span><em>${nb.length?set+' / '+nb.length:''}</em><small>트랙이 움직일 게임 오브젝트 · 계층 구조에서 타임라인 창의 트랙 머리로 끌어다 놓아도 된다</small></button>`+
+      (tlBindOpen?`<div class="tlibs">${binds||'<p class="hint" style="margin:2px 0 6px">아직 트랙이 없다. 타임라인 창의 「＋ 트랙」으로 추가한다.</p>'}</div>`:'')})():'')+
     `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button type="button" class="btn sm" data-anopen="tl">${ico('timeline')} 타임라인 창</button></div>`,
-    '타임라인을 재생하는 컴포넌트입니다(유니티 PlayableDirector). 컷신처럼 여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출(시그널)을 시간에 맞춰 한 번에 연출합니다. 스크립트: GetComponent<PlayableDirector>().Play()');
+    '타임라인을 재생하는 컴포넌트입니다(유니티 PlayableDirector). 컷신처럼 여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출(시그널)을 시간에 맞춰 한 번에 연출한다. 스크립트: GetComponent<PlayableDirector>().Play()');
 }
 function newTimeline(name){const tl=tlNormOne({id:uid(),name:anUniq(tlList().map(x=>x.name),name||_t('타임라인')),fps:60,tracks:[]});tlList().push(tl);return tl}
 /* 오브젝트에 디렉터 + 새 타임라인 (애니메이터 · 스프라이트가 있으면 애니메이션 트랙도 하나) */
@@ -311,13 +316,13 @@ function render(){
   if(!o){
     tlSig='';
     const C=TLC(),L=ANX.anLines;
-    box.innerHTML=so?`<div class="anempty"><b data-i18n-skip>${esc(so.name)}</b>${so.mgr?L([['{a}에는 {b}을 붙일 수 없습니다.',{a:C.mgr,b:C.tl}]]):L([['이 오브젝트로 타임라인을 시작하려면 {a} 컴포넌트와 {b} 에셋을 만드세요.',{a:C.dir,b:C.tl}]])+ANX.anMk('<button class="btn pri sm" data-tl="create">만들기</button>',['플레이어블 디렉터와 타임라인을 한 번에 만듭니다.','애니메이터나 스프라이트가 있으면 이 오브젝트를 움직이는 애니메이션 트랙도 넣습니다.'])}</div>`
-      :`<div class="anempty"><b>타임라인</b>${L([['타임라인을 만들려면 {a}에서 {b}를 선택하세요.',{a:C.hier,b:C.go}]])}${L(['여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출을 한 줄의 시간 위에 늘어놓습니다.','컷신처럼 연출할 때 씁니다 (유니티 Timeline).'],true)}</div>`;
+    box.innerHTML=so?`<div class="anempty"><b data-i18n-skip>${esc(so.name)}</b>${so.mgr?L([['{a}에는 {b}을 붙일 수 없다.',{a:C.mgr,b:C.tl}]]):L([['이 오브젝트로 타임라인을 시작하려면 {a} 컴포넌트와 {b} 에셋을 만든다.',{a:C.dir,b:C.tl}]])+ANX.anMk('<button class="btn pri sm" data-tl="create">만들기</button>',['플레이어블 디렉터와 타임라인을 한 번에 만든다.','애니메이터나 스프라이트가 있으면 이 오브젝트를 움직이는 애니메이션 트랙도 넣는다.'])}</div>`
+      :`<div class="anempty"><b>타임라인</b>${L([['타임라인을 만들려면 {a}에서 {b}를 선택한다.',{a:C.hier,b:C.go}]])}${L(['여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출을 한 줄의 시간 위에 늘어놓는다.','컷신처럼 연출할 때 쓴다 (유니티 Timeline).'],true)}</div>`;
     tlPrevRefresh();return}
   if(!tl){
     tlSig='';
     const C=TLC(),L=ANX.anLines;
-    box.innerHTML=`<div class="anempty"><b data-i18n-skip>${esc(o.name)}</b>${L([['{a}에 {b}이 지정되지 않았습니다.',{a:C.dir,b:C.tl}]])}<button class="btn pri sm" data-tl="newtl">＋ 새 타임라인</button>${tlList().length?L([['또는 {a}의 {b}에서 기존 타임라인을 고르세요.',{a:C.insp,b:C.dir}]],true):''}</div>`;
+    box.innerHTML=`<div class="anempty"><b data-i18n-skip>${esc(o.name)}</b>${L([['{a}에 {b}이 지정되지 않았다.',{a:C.dir,b:C.tl}]])}<button class="btn pri sm" data-tl="newtl">＋ 새 타임라인</button>${tlList().length?L([['또는 {a}의 {b}에서 기존 타임라인을 고른다.',{a:C.insp,b:C.dir}]],true):''}</div>`;
     tlPrevRefresh();return}
   const dur=tlDur(tl),rt=play&&play.tl&&play.tl.dirs.get(o.id);
   if(rt)TL.t=rt.t;
@@ -326,7 +331,7 @@ function render(){
   const rec=TL.rec&&tlTrack(tl,TL.rec.tr),recO=rec&&m.objs.find(x=>x.id===TL.rec.oid);
   box.innerHTML=`<div class="awwin tlwin${rec?' recon':''}">
     <div class="antop">
-      <button class="awpv${TL.preview?' on':''}" data-tl="preview" title="미리보기: 씬 뷰에서 이 시간의 타임라인 결과를 보여 줍니다"${play?' disabled':''}><i></i>미리보기</button>
+      <button class="awpv${TL.preview?' on':''}" data-tl="preview" title="미리보기: 씬 뷰에서 이 시간의 타임라인 결과를 보여 준다"${play?' disabled':''}><i></i>미리보기</button>
       <span class="awtr">
         <button class="ib" data-tl="first" title="처음으로" aria-label="처음으로">⏮</button><button class="ib" data-tl="prev" title="이전 프레임 (,)" aria-label="이전 프레임">◀</button>
         <button class="ib awplay${tlIsPlaying(o)?' on':''}" data-tl="play" title="재생 / 일시 정지 (Space)" aria-label="재생">${tlIsPlaying(o)?'❚❚':'▶'}</button>
@@ -339,18 +344,18 @@ function render(){
       <button class="ib" data-tl="menu" title="타임라인 메뉴" aria-label="타임라인 메뉴">${ico('more')}</button>
       <span class="awlen" title="${esc(_t(tl.fixed?'고정 길이':'자동 길이 (마지막 클립까지)'))}">${tl.fixed?esc(_t('고정'))+' · ':''}${dur.toFixed(2)}s · ${tl.fps}fps</span>
       <span class="spacer"></span>
-      <button class="ib tllock${TL.lock?' on':''}" data-tl="lock" title="${TL.lock?'잠금 해제: 다른 디렉터를 선택하면 그 타임라인으로 바뀝니다':'잠금: 다른 오브젝트를 선택해도 이 타임라인을 계속 보여 줍니다'}" aria-label="잠금">${TL.lock?'🔒':'🔓'}</button>
+      <button class="ib tllock${TL.lock?' on':''}" data-tl="lock" title="${TL.lock?'잠금 해제: 다른 디렉터를 선택하면 그 타임라인으로 바뀐다':'잠금: 다른 오브젝트를 선택해도 이 타임라인을 계속 보여 준다'}" aria-label="잠금">${TL.lock?'🔒':'🔓'}</button>
       <span class="anchip on" title="플레이어블 디렉터가 있는 오브젝트">${ico('cube')}<span data-i18n-skip>${esc(o.name)}</span></span>
     </div>
-    ${rec?`<div class="tlrecbar"><b>● 녹화 중</b><span class="tlrecn" data-i18n-skip>${esc(rec.name)} · ${esc(recO?recO.name:'')}</span><button class="btn sm" data-tl="reckey" title="지금 상태를 이 시간에 키로 남깁니다 (가만히 서 있는 구간을 만들 때)">◆ 키 남기기</button><button class="btn sm" data-tl="recdel" title="이 시간에 있는 녹화 키를 지웁니다">이 시간 키 지우기</button><button class="btn sm pri" data-tl="recstop">녹화 끝</button><span class="spacer"></span>${qb(['재생 위치를 옮기고 씬 뷰나 인스펙터에서 위치 · 회전 · 크기 · 스프라이트를 바꾸면 그 시간에 키가 생깁니다.','키와 키 사이는 천천히 이어집니다.','◆ 키를 끌면 0.05초 단위로 옮겨집니다.','Shift를 누른 채 끌면 단위 없이 옮깁니다.','◆ 키를 누른 뒤 Delete로 지웁니다 (녹화 중이 아니어도 됩니다).'].map(x=>_t(x)).join('\n'),'qwide')}</div>`:''}
+    ${rec?`<div class="tlrecbar"><b>● 녹화 중</b><span class="tlrecn" data-i18n-skip>${esc(rec.name)} · ${esc(recO?recO.name:'')}</span><button class="btn sm" data-tl="reckey" title="지금 상태를 이 시간에 키로 남긴다 (가만히 서 있는 구간을 만들 때)">◆ 키 남기기</button><button class="btn sm" data-tl="recdel" title="이 시간에 있는 녹화 키를 지운다">이 시간 키 지우기</button><button class="btn sm pri" data-tl="recstop">녹화 끝</button><span class="spacer"></span>${qb(['재생 위치를 옮기고 씬 뷰나 인스펙터에서 위치 · 회전 · 크기 · 스프라이트를 바꾸면 그 시간에 키가 생긴다.','키와 키 사이는 천천히 이어진다.','◆ 키를 끌면 0.05초 단위로 옮겨진다.','Shift를 누른 채 끌면 단위 없이 옮긴다.','◆ 키를 누른 뒤 Delete로 지운다 (녹화 중이 아니어도 된다).'].map(x=>_t(x)).join('\n'),'qwide')}</div>`:''}
     <div id="tlProp">${selC?tlPropHtml(tl,selC):tlPropEmpty()}</div>
     <div class="awmain tlmain">
       <div class="tlleft" id="tlLeft">
         <div class="awlh tllh"><span>트랙</span><span class="spacer"></span><span class="tlhint">${d.awake!==false?'▶ 시작할 때 재생':'스크립트로 재생'} · ${({none:'끝나면 멈춤',hold:'끝나면 유지',loop:'반복'})[d.wrap]}</span></div>
         ${tl.tracks.map(tr=>tlHeadHtml(m,o,d,tl,tr)).join('')}
-        <div class="awadd"><button class="btn sm" data-tl="addtrack">＋ 트랙 추가</button><small class="awaddh">계층 구조의 오브젝트를 트랙 머리에 끌어다 놓으면 그 오브젝트에 묶이고, 프로젝트 패널의 오디오는 오디오 트랙에 끌어다 놓으면 클립이 됩니다.</small></div>
+        <div class="awadd"><button class="btn sm" data-tl="addtrack">＋ 트랙 추가</button><small class="awaddh">계층 구조의 오브젝트를 트랙 머리에 끌어다 놓으면 그 오브젝트에 묶이고, 프로젝트 패널의 오디오는 오디오 트랙에 끌어다 놓으면 클립이 된다.</small></div>
       </div>
-      <div class="awright" id="tlCvWrap" tabindex="0"><canvas id="tlCv"></canvas>${tl.tracks.length?'':`<div class="awdrop">「＋ 트랙」으로 활성화 · 애니메이션 · 오디오 · 시그널 트랙을 추가하세요</div>`}</div>
+      <div class="awright" id="tlCvWrap" tabindex="0"><canvas id="tlCv"></canvas>${tl.tracks.length?'':`<div class="awdrop">「＋ 트랙」으로 활성화 · 애니메이션 · 오디오 · 시그널 트랙을 추가한다</div>`}</div>
     </div></div>`;
   tlSig=tl.id;
   const lf=$('#tlLeft');if(lf){lf.scrollTop=TL.sy||0}
@@ -361,12 +366,12 @@ function tlHeadHtml(m,o,d,tl,tr){
   const T=TL_T[tr.type],b=tlBound(m,o,tr),bid=d.binds[tr.id]||'';
   const objs=m.objs.filter(q=>!isUiEl(q));
   const bsel=T.bind?`<select class="tlbind" data-tlb="${tr.id}" title="이 트랙이 움직일 게임 오브젝트 (바인딩)" aria-label="바인딩"><option value="">${tr.type==='sig'?'(디렉터 오브젝트)':'(없음)'}</option>${objs.map(q=>`<option value="${q.id}"${q.id===bid?' selected':''} data-i18n-skip>${esc(q.name)}</option>`).join('')}${bid&&!b?`<option value="${esc(bid)}" selected>(찾을 수 없음)</option>`:''}</select>`
-    :`<span class="tlnob">${tr.clips.length?_t('클립 {n}개',{n:tr.clips.length}):'오디오를 끌어다 놓으세요'}</span>`;
+    :`<span class="tlnob">${tr.clips.length?_t('클립 {n}개',{n:tr.clips.length}):'오디오를 끌어다 놓는다'}</span>`;
   const sel=TL.sel&&TL.sel.tr===tr.id;
   return`<div class="tlhead${tr.mute?' muted':''}${sel?' on':''}${T.bind&&!b&&tr.type!=='sig'?' nobind':''}" data-tlh="${tr.id}" style="--tc:${T.c}">
     <span class="tlbar"></span>
     <div class="tlhc"><div class="tlhr"><span class="tlic" title="${esc(_t(T.n))} (${T.en})">${ico(T.ic)}</span><span class="tlnm" data-tl="rename" data-tr="${tr.id}" title="${esc(_t(T.n))} · 더블클릭해서 이름 바꾸기" data-i18n-skip>${esc(tr.name)}</span>
-      ${tr.type==='anim'?`<button class="ib tlrec${TL.rec&&TL.rec.tr===tr.id?' on':''}" data-tl="rec" data-tr="${tr.id}" title="${TL.rec&&TL.rec.tr===tr.id?'녹화 끝':'녹화: 재생 위치마다 바인딩된 오브젝트의 위치 · 회전 · 크기 · 스프라이트를 바꾸면 키로 기록하고, 키 사이는 천천히 이어집니다'}" aria-label="녹화">●</button>`:''}<button class="ib tlm${tr.mute?' on':''}" data-tl="mute" data-tr="${tr.id}" title="${tr.mute?'음소거 해제 (이 트랙을 다시 재생)':'음소거 (이 트랙을 재생하지 않음)'}" aria-label="음소거">M</button><button class="ib" data-tl="trmenu" data-tr="${tr.id}" title="트랙 메뉴" aria-label="트랙 메뉴">${ico('more')}</button></div>
+      ${tr.type==='anim'?`<button class="ib tlrec${TL.rec&&TL.rec.tr===tr.id?' on':''}" data-tl="rec" data-tr="${tr.id}" title="${TL.rec&&TL.rec.tr===tr.id?'녹화 끝':'녹화: 재생 위치마다 바인딩된 오브젝트의 위치 · 회전 · 크기 · 스프라이트를 바꾸면 키로 기록하고, 키 사이는 천천히 이어진다'}" aria-label="녹화">●</button>`:''}<button class="ib tlm${tr.mute?' on':''}" data-tl="mute" data-tr="${tr.id}" title="${tr.mute?'음소거 해제 (이 트랙을 다시 재생)':'음소거 (이 트랙을 재생하지 않음)'}" aria-label="음소거">M</button><button class="ib" data-tl="trmenu" data-tr="${tr.id}" title="트랙 메뉴" aria-label="트랙 메뉴">${ico('more')}</button></div>
     <div class="tlhr">${bsel}</div></div></div>`;
 }
 /* 선택한 클립 · 마커 속성 줄 */
@@ -379,7 +384,7 @@ function tlSelGet(tl){
   TL.sel=null;return null;
 }
 /* 아무것도 고르지 않았을 때도 같은 높이로 (더블클릭 사이에 캔버스가 움직이지 않게) */
-const tlPropEmpty=()=>TL.rec?'':`<div class="tlprop tlprop0"><span>클립이나 시그널을 누르면 여기에서 시작 · 길이 · 모션 등을 바꿉니다 · 빈 곳 더블클릭 = 추가 · 끝을 끌면 길이 조절 · Alt = 맞춤 끄기</span></div>`;
+const tlPropEmpty=()=>TL.rec?'':`<div class="tlprop tlprop0"><span>클립이나 시그널을 누르면 여기에서 시작 · 길이 · 모션 등을 바꾼다 · 빈 곳 더블클릭 = 추가 · 끝을 끌면 길이 조절 · Alt = 맞춤 끄기</span></div>`;
 function tlPropHtml(tl,S){
   if(S.kf!=null){const T=TL_T.anim,t=tlKeyT(S.c,S.k,S.kf);
     return`<div class="tlprop" style="--tc:${T.c}"><b>◆ <span>녹화 키</span></b><label class="tlpf" title="${esc(_t('초'))}"><span>시간</span><input type="number" data-tlp="kt" step="0.05" min="0" value="${+t.toFixed(3)}"></label>
@@ -388,7 +393,7 @@ function tlPropHtml(tl,S){
   const fld=(lab,h,tip)=>`<label class="tlpf"${tip?` title="${esc(tip)}"`:''}><span>${lab}</span>${h}</label>`;
   if(S.mk)return`<div class="tlprop" style="--tc:${T.c}"><b>${ico('tlsig')}시그널</b>
     ${fld('시간',`<input type="number" data-tlp="mt" step="${1/fps}" min="0" value="${f(S.mk.t)}">`,'초')}
-    ${fld('부를 메서드',`<input type="text" data-tlp="mm" value="${esc(S.mk.m)}" placeholder="${esc(_t('메서드 이름'))}" spellcheck="false" style="width:150px">`,'이 시간에 바인딩된 오브젝트(없으면 디렉터 오브젝트)의 스크립트에서 이 이름의 메서드를 부릅니다 (예: ShowTitle)')}
+    ${fld('부를 메서드',`<input type="text" data-tlp="mm" value="${esc(S.mk.m)}" placeholder="${esc(_t('메서드 이름'))}" spellcheck="false" style="width:150px">`,'이 시간에 바인딩된 오브젝트(없으면 디렉터 오브젝트)의 스크립트에서 이 이름의 메서드를 부른다 (예: ShowTitle)')}
     <span class="spacer"></span><button class="ib" data-tl="delsel" title="삭제 (Delete)" aria-label="삭제">${ico('trash')}</button></div>`;
   const c=S.c;let ex='';
   if(S.tr.type==='anim'){const k=ANX.anClip(c.k);ex=fld('모션',`<button type="button" class="tpbtn tlclip" data-tl="clippick" title="애니메이션 클립 (눌러서 선택)"><img alt="" src="${ANX.clipThumbURL(k,48)}"><span class="tpn"><b data-i18n-skip>${esc(k?k.name:_t('(클립 없음)'))}</b></span></button>`)+fld('속도',`<input type="number" data-tlp="spd" step="0.05" min="0.05" max="10" value="${f(c.spd)}">`,'재생 속도 배율')+fld('시작 지점',`<input type="number" data-tlp="in" step="${1/fps}" min="0" value="${f(c.in)}">`,'클립을 몇 초 지점부터 재생할지 (Clip In)')+(k?`<button class="btn sm" data-tl="fitclip" title="타임라인 클립 길이를 애니메이션 클립 한 번 재생 길이에 맞춤">길이 맞추기</button><button class="btn sm" data-tl="editclip" title="애니메이션 창에서 이 클립 편집">${ico('anim')} 편집</button>`:'')}
@@ -699,7 +704,7 @@ function tlAddClip(trId,t,ref){
     const pk=id=>{const a=audOf(id);if(!a)return;put(()=>({s:t,d:Math.max(1/tl.fps,+a.dur||2),a:id,vol:1,in:0}))};
     if(ref){pk(ref);return}
     if(!audios.length){toast('오디오가 없습니다. 프로젝트 패널의 「＋ 오디오 가져오기」로 소리 파일을 넣으세요');return}
-    showMenuAt(TL.mx||100,TL.my||100,[{head:_t('오디오 클립'),sub:_t('재생 위치에 넣습니다'),kind:'gen'},...audios.map(a=>({label:a.name+(a.dur?' ('+(+a.dur).toFixed(1)+'s)':''),fn:()=>pk(a.id)}))]);return}
+    showMenuAt(TL.mx||100,TL.my||100,[{head:_t('오디오 클립'),sub:_t('재생 위치에 넣는다'),kind:'gen'},...audios.map(a=>({label:a.name+(a.dur?' ('+(+a.dur).toFixed(1)+'s)':''),fn:()=>pk(a.id)}))]);return}
 }
 function tlDelSel(){
   const R=tlCur();if(!R||!TL.sel)return;const s=TL.sel;
@@ -904,7 +909,7 @@ if(window.TI18N)TI18N.add({
 '트랙':['Tracks','トラック','轨道'],'＋ 트랙':['＋ Track','＋ トラック','＋ 轨道'],'트랙 추가':['Add Track','トラックを追加','添加轨道'],'＋ 트랙 추가':['＋ Add Track','＋ トラックを追加','＋ 添加轨道'],
 '유니티 Timeline 트랙':['Unity Timeline tracks','Unity Timeline のトラック','Unity Timeline 轨道'],
 '활성':['Active','アクティブ','激活'],'(클립 없음)':['(no clip)','(クリップなし)','(无片段)'],'(오디오 없음)':['(no audio)','(オーディオなし)','(无音频)'],'(메서드 없음)':['(no method)','(メソッドなし)','(无方法)'],
-'(디렉터 오브젝트)':['(Director object)','(ディレクターのオブジェクト)','(导演对象)'],'오디오를 끌어다 놓으세요':['Drop audio here','オーディオをドロップ','拖入音频'],'클립 {n}개':['{n} clips','クリップ {n} 個','{n} 个片段'],
+'(디렉터 오브젝트)':['(Director object)','(ディレクターのオブジェクト)','(导演对象)'],'오디오를 끌어다 놓는다':['Drop audio here','オーディオをドロップ','拖入音频'],'클립 {n}개':['{n} clips','クリップ {n} 個','{n} 个片段'],
 '시작할 때 재생':['Play On Awake','開始時に再生','唤醒时播放'],'끝나면':['Wrap Mode','終了時','结束时'],'바인딩':['Bindings','バインディング','绑定'],'바인딩 접기':['Collapse bindings','バインディングを折りたたむ','折叠绑定'],'바인딩 펼치기':['Expand bindings','バインディングを展開','展开绑定'],
 '없음 (끝나면 멈춤)':['None (stop at end)','なし（終わると停止）','无（结束时停止）'],'유지 (마지막 장면에서 멈춤)':['Hold (stay on last frame)','ホールド（最後の場面で停止）','保持（停在最后一帧）'],'반복':['Loop','ループ','循环'],
 '되돌리기 (원래 상태)':['Revert (original state)','元に戻す（元の状態）','还原（原始状态）'],'켜 두기':['Active','アクティブのまま','保持激活'],'꺼 두기':['Inactive','非アクティブ','保持停用'],'마지막 상태 그대로':['Leave as is','最後の状態のまま','保持最后状态'],
@@ -912,9 +917,9 @@ if(window.TI18N)TI18N.add({
 '＋ 새 타임라인':['＋ New Timeline','＋ 新しいタイムライン','＋ 新建时间轴'],'＋ 새 타임라인…':['＋ New Timeline…','＋ 新しいタイムライン…','＋ 新建时间轴…'],'새 타임라인':['New Timeline','新しいタイムライン','新建时间轴'],'새 타임라인…':['New Timeline…','新しいタイムライン…','新建时间轴…'],'타임라인 이름':['Timeline name','タイムライン名','时间轴名称'],
 '{name} 타임라인':['{name} Timeline','{name} タイムライン','{name} 时间轴'],'타임라인 창':['Timeline window','タイムラインウィンドウ','时间轴窗口'],
 '「{name}」 타임라인과 플레이어블 디렉터를 만들었습니다':['Created timeline “{name}” and a Playable Director','タイムライン「{name}」とプレイアブルディレクターを作成しました','已创建时间轴“{name}”和可播放导演'],
-'타임라인을 만들려면 계층 구조에서 게임 오브젝트를 선택하세요.':['Select a GameObject in the Hierarchy to create a timeline.','タイムラインを作成するには、ヒエラルキーでゲームオブジェクトを選択してください。','要创建时间轴，请在层级中选择游戏对象。'],
-'이 오브젝트로 타임라인을 시작하려면 플레이어블 디렉터 컴포넌트와 타임라인 에셋을 만드세요.':['To begin a new timeline with this object, create a Director component and a Timeline asset.','このオブジェクトでタイムラインを始めるには、ディレクターコンポーネントとタイムラインアセットを作成します。','要用此对象开始时间轴，请创建导演组件和时间轴资源。'],
-'플레이어블 디렉터에 타임라인이 지정되지 않았습니다.':['The Playable Director has no timeline assigned.','プレイアブルディレクターにタイムラインが設定されていません。','可播放导演未指定时间轴。'],
+'타임라인을 만들려면 계층 구조에서 게임 오브젝트를 선택한다.':['Select a GameObject in the Hierarchy to create a timeline.','タイムラインを作成するには、ヒエラルキーでゲームオブジェクトを選択してください。','要创建时间轴，请在层级中选择游戏对象。'],
+'이 오브젝트로 타임라인을 시작하려면 플레이어블 디렉터 컴포넌트와 타임라인 에셋을 만든다.':['To begin a new timeline with this object, create a Director component and a Timeline asset.','このオブジェクトでタイムラインを始めるには、ディレクターコンポーネントとタイムラインアセットを作成します。','要用此对象开始时间轴，请创建导演组件和时间轴资源。'],
+'플레이어블 디렉터에 타임라인이 지정되지 않았다.':['The Playable Director has no timeline assigned.','プレイアブルディレクターにタイムラインが設定されていません。','可播放导演未指定时间轴。'],
 '만들기':['Create','作成','创建'],'잠금':['Lock','ロック','锁定'],'시그널':['Signal','シグナル','信号'],'부를 메서드':['Method','呼び出すメソッド','调用方法'],'시작':['Start','開始','开始'],'길이':['Duration','長さ','时长'],'모션':['Motion','モーション','动作'],'속도':['Speed','速度','速度'],'시작 지점':['Clip In','開始位置','片段起点'],'볼륨':['Volume','音量','音量'],'오디오':['Audio','オーディオ','音频'],
 '길이 맞추기':['Match length','長さを合わせる','匹配时长'],'고정 길이':['Fixed length','固定の長さ','固定时长'],'자동 길이 (마지막 클립까지)':['Auto length (to last clip)','自動の長さ（最後のクリップまで）','自动时长（到最后一个片段）'],
 '자동 (마지막 클립까지)':['Auto (to last clip)','自動（最後のクリップまで）','自动（到最后一个片段）'],'고정 길이…':['Fixed length…','固定の長さ…','固定时长…'],'프레임 속도':['Frame rate','フレームレート','帧率'],'모두 보기 (F)':['Frame all (F)','すべて表示 (F)','全部显示 (F)'],
@@ -922,45 +927,45 @@ if(window.TI18N)TI18N.add({
 '활성 클립 추가 (재생 위치)':['Add Active clip (at playhead)','アクティブクリップを追加（再生位置）','添加激活片段（播放头处）'],'애니메이션 클립 추가… (재생 위치)':['Add Animation clip… (at playhead)','アニメーションクリップを追加…（再生位置）','添加动画片段…（播放头处）'],
 '오디오 클립 추가… (재생 위치)':['Add Audio clip… (at playhead)','オーディオクリップを追加…（再生位置）','添加音频片段…（播放头处）'],'시그널 추가 (재생 위치)':['Add Signal (at playhead)','シグナルを追加（再生位置）','添加信号（播放头处）'],
 '음소거':['Mute','ミュート','静音'],'음소거 해제':['Unmute','ミュート解除','取消静音'],'위로 옮기기':['Move up','上へ移動','上移'],'아래로 옮기기':['Move down','下へ移動','下移'],'트랙 복제':['Duplicate track','トラックを複製','复制轨道'],'트랙 삭제':['Delete track','トラックを削除','删除轨道'],'트랙 이름':['Track name','トラック名','轨道名称'],
-'클립이나 시그널을 누르면 여기에서 시작 · 길이 · 모션 등을 바꿉니다 · 빈 곳 더블클릭 = 추가 · 끝을 끌면 길이 조절 · Alt = 맞춤 끄기':['Click a clip or signal to edit its start, duration, motion and more here · double-click empty space to add · drag an edge to trim · Alt = no snapping','クリップやシグナルを押すと、ここで開始・長さ・モーションなどを変更できます · 空いた所をダブルクリック = 追加 · 端をドラッグで長さ調整 · Alt = スナップなし','点击片段或信号即可在此修改开始、时长、动作等 · 双击空白处 = 添加 · 拖动边缘调整时长 · Alt = 不吸附'],
+'클립이나 시그널을 누르면 여기에서 시작 · 길이 · 모션 등을 바꾼다 · 빈 곳 더블클릭 = 추가 · 끝을 끌면 길이 조절 · Alt = 맞춤 끄기':['Click a clip or signal to edit its start, duration, motion and more here · double-click empty space to add · drag an edge to trim · Alt = no snapping','クリップやシグナルを押すと、ここで開始・長さ・モーションなどを変更できます · 空いた所をダブルクリック = 追加 · 端をドラッグで長さ調整 · Alt = スナップなし','点击片段或信号即可在此修改开始、时长、动作等 · 双击空白处 = 添加 · 拖动边缘调整时长 · Alt = 不吸附'],
 '복제 (Ctrl+D)':['Duplicate (Ctrl+D)','複製 (Ctrl+D)','复制 (Ctrl+D)'],'삭제 (Delete)':['Delete (Delete)','削除 (Delete)','删除 (Delete)'],'길이를 원래 길이에 맞추기':['Match original length','元の長さに合わせる','匹配原始时长'],'애니메이션 창에서 클립 편집':['Edit clip in Animation window','アニメーションウィンドウでクリップを編集','在动画窗口中编辑片段'],
-'{t} 추가':['Add {t}','{t} を追加','添加{t}'],'바인딩된 오브젝트의 클립':['Clips of the bound object','バインドされたオブジェクトのクリップ','绑定对象的片段'],'오디오 클립':['Audio clip','オーディオクリップ','音频片段'],'재생 위치에 넣습니다':['Inserted at the playhead','再生位置に入れます','插入到播放头处'],
+'{t} 추가':['Add {t}','{t} を追加','添加{t}'],'바인딩된 오브젝트의 클립':['Clips of the bound object','バインドされたオブジェクトのクリップ','绑定对象的片段'],'오디오 클립':['Audio clip','オーディオクリップ','音频片段'],'재생 위치에 넣는다':['Inserted at the playhead','再生位置に入れます','插入到播放头处'],
 '타임라인 검색':['Search timelines','タイムラインを検索','搜索时间轴'],'타임라인 길이 (초)':['Timeline length (seconds)','タイムラインの長さ（秒）','时间轴时长（秒）'],
 '타임라인이 비어 있습니다. 트랙에 클립을 넣으세요':['The timeline is empty. Add clips to a track.','タイムラインが空です。トラックにクリップを入れてください','时间轴为空，请向轨道添加片段'],
 '부를 메서드 이름 (예: ShowTitle)':['Method name to call (e.g. ShowTitle)','呼び出すメソッド名（例: ShowTitle）','要调用的方法名（例: ShowTitle）'],
 '메서드 이름은 글자 · 숫자 · _ 만 쓸 수 있습니다':['Method names may only use letters, digits and _','メソッド名には文字・数字・_ だけ使えます','方法名只能使用字母、数字和 _'],
 '▶ 시작할 때 재생':['▶ Play On Awake','▶ 開始時に再生','▶ 唤醒时播放'],'스크립트로 재생':['Played by script','スクリプトで再生','由脚本播放'],'끝나면 멈춤':['stop at end','終わると停止','结束时停止'],'끝나면 유지':['hold at end','終わるとホールド','结束时保持'],
-'미리보기: 씬 뷰에서 이 시간의 타임라인 결과를 보여 줍니다':['Preview: show the timeline at this time in the Scene view','プレビュー: この時間のタイムライン結果をシーンビューに表示','预览：在场景视图中显示此时刻的时间轴效果'],
+'미리보기: 씬 뷰에서 이 시간의 타임라인 결과를 보여 준다':['Preview: show the timeline at this time in the Scene view','プレビュー: この時間のタイムライン結果をシーンビューに表示','预览：在场景视图中显示此时刻的时间轴效果'],
 '처음으로':['Go to start','先頭へ','到开头'],'끝으로':['Go to end','末尾へ','到结尾'],'재생 / 일시 정지 (Space)':['Play / Pause (Space)','再生 / 一時停止 (Space)','播放 / 暂停 (Space)'],
 '이 디렉터가 재생할 타임라인 (눌러서 선택)':['Timeline played by this director (click to choose)','このディレクターが再生するタイムライン（クリックで選択）','此导演播放的时间轴（点击选择）'],'타임라인 메뉴':['Timeline menu','タイムラインメニュー','时间轴菜单'],'트랙 메뉴':['Track menu','トラックメニュー','轨道菜单'],
 '플레이어블 디렉터가 있는 오브젝트':['Object with the Playable Director','プレイアブルディレクターを持つオブジェクト','带可播放导演的对象'],
 '이 트랙이 움직일 게임 오브젝트 (바인딩)':['GameObject driven by this track (binding)','このトラックが動かすゲームオブジェクト（バインディング）','此轨道驱动的游戏对象（绑定）'],
-'「＋ 트랙」으로 활성화 · 애니메이션 · 오디오 · 시그널 트랙을 추가하세요':['Use “＋ Track” to add Activation, Animation, Audio or Signal tracks','「＋ トラック」でアクティベーション・アニメーション・オーディオ・シグナルのトラックを追加します','用“＋ 轨道”添加激活、动画、音频或信号轨道'],
-'계층 구조의 오브젝트를 트랙 머리에 끌어다 놓으면 그 오브젝트에 묶이고, 프로젝트 패널의 오디오는 오디오 트랙에 끌어다 놓으면 클립이 됩니다.':['Drag an object from the Hierarchy onto a track header to bind it. Drag audio from the Project panel onto an audio track to add a clip.','ヒエラルキーのオブジェクトをトラックヘッダーにドラッグするとバインドされ、プロジェクトパネルのオーディオをオーディオトラックにドラッグするとクリップになります。','把层级中的对象拖到轨道头即可绑定；把项目面板中的音频拖到音频轨道即可生成片段。'],
-'여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출을 한 줄의 시간 위에 늘어놓아 컷신처럼 연출합니다 (유니티 Timeline).':['Arrange animation, activation, sound and script calls for several objects on one time line to stage cutscenes (Unity Timeline).','複数のオブジェクトのアニメーション・オンオフ・音・スクリプト呼び出しを一本の時間軸に並べ、カットシーンのように演出します（Unity Timeline）。','把多个对象的动画、启用/停用、声音和脚本调用排在一条时间线上，像过场动画一样编排（Unity Timeline）。'],
-'디렉터 컴포넌트 · 타임라인을 한 번에 만들고, 애니메이터나 스프라이트가 있으면 이 오브젝트를 움직이는 애니메이션 트랙도 넣습니다.':['Creates a Director component and a Timeline together, plus an Animation track for this object if it has an Animator or sprite.','ディレクターコンポーネントとタイムラインを一度に作り、アニメーターかスプライトがあればこのオブジェクトを動かすアニメーショントラックも入れます。','一次创建导演组件和时间轴；若对象有动画器或精灵，还会加入驱动它的动画轨道。'],
-'또는 인스펙터의 플레이어블 디렉터에서 기존 타임라인을 고르세요.':['Or pick an existing timeline in the Playable Director in the Inspector.','またはインスペクターのプレイアブルディレクターで既存のタイムラインを選んでください。','或在检查器的可播放导演中选择已有时间轴。'],
-'매니저에는 타임라인을 붙일 수 없습니다.':['Timelines cannot be added to managers.','マネージャーにはタイムラインを付けられません。','管理器无法添加时间轴。'],
-'아직 트랙이 없습니다. 타임라인 창의 「＋ 트랙」으로 추가하세요.':['No tracks yet. Add one with “＋ Track” in the Timeline window.','まだトラックがありません。タイムラインウィンドウの「＋ トラック」で追加してください。','还没有轨道。请在时间轴窗口用“＋ 轨道”添加。'],
-'트랙이 움직일 게임 오브젝트 · 계층 구조에서 타임라인 창의 트랙 머리로 끌어다 놓아도 됩니다':['GameObjects driven by each track · you can also drag from the Hierarchy onto a track header in the Timeline window','各トラックが動かすゲームオブジェクト · ヒエラルキーからタイムラインウィンドウのトラックヘッダーへドラッグしても設定できます','各轨道驱动的游戏对象 · 也可从层级拖到时间轴窗口的轨道头'],
+'「＋ 트랙」으로 활성화 · 애니메이션 · 오디오 · 시그널 트랙을 추가한다':['Use “＋ Track” to add Activation, Animation, Audio or Signal tracks','「＋ トラック」でアクティベーション・アニメーション・オーディオ・シグナルのトラックを追加します','用“＋ 轨道”添加激活、动画、音频或信号轨道'],
+'계층 구조의 오브젝트를 트랙 머리에 끌어다 놓으면 그 오브젝트에 묶이고, 프로젝트 패널의 오디오는 오디오 트랙에 끌어다 놓으면 클립이 된다.':['Drag an object from the Hierarchy onto a track header to bind it. Drag audio from the Project panel onto an audio track to add a clip.','ヒエラルキーのオブジェクトをトラックヘッダーにドラッグするとバインドされ、プロジェクトパネルのオーディオをオーディオトラックにドラッグするとクリップになります。','把层级中的对象拖到轨道头即可绑定；把项目面板中的音频拖到音频轨道即可生成片段。'],
+'여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출을 한 줄의 시간 위에 늘어놓아 컷신처럼 연출한다 (유니티 Timeline).':['Arrange animation, activation, sound and script calls for several objects on one time line to stage cutscenes (Unity Timeline).','複数のオブジェクトのアニメーション・オンオフ・音・スクリプト呼び出しを一本の時間軸に並べ、カットシーンのように演出します（Unity Timeline）。','把多个对象的动画、启用/停用、声音和脚本调用排在一条时间线上，像过场动画一样编排（Unity Timeline）。'],
+'디렉터 컴포넌트 · 타임라인을 한 번에 만들고, 애니메이터나 스프라이트가 있으면 이 오브젝트를 움직이는 애니메이션 트랙도 넣는다.':['Creates a Director component and a Timeline together, plus an Animation track for this object if it has an Animator or sprite.','ディレクターコンポーネントとタイムラインを一度に作り、アニメーターかスプライトがあればこのオブジェクトを動かすアニメーショントラックも入れます。','一次创建导演组件和时间轴；若对象有动画器或精灵，还会加入驱动它的动画轨道。'],
+'또는 인스펙터의 플레이어블 디렉터에서 기존 타임라인을 고른다.':['Or pick an existing timeline in the Playable Director in the Inspector.','またはインスペクターのプレイアブルディレクターで既存のタイムラインを選んでください。','或在检查器的可播放导演中选择已有时间轴。'],
+'매니저에는 타임라인을 붙일 수 없다.':['Timelines cannot be added to managers.','マネージャーにはタイムラインを付けられません。','管理器无法添加时间轴。'],
+'아직 트랙이 없다. 타임라인 창의 「＋ 트랙」으로 추가한다.':['No tracks yet. Add one with “＋ Track” in the Timeline window.','まだトラックがありません。タイムラインウィンドウの「＋ トラック」で追加してください。','还没有轨道。请在时间轴窗口用“＋ 轨道”添加。'],
+'트랙이 움직일 게임 오브젝트 · 계층 구조에서 타임라인 창의 트랙 머리로 끌어다 놓아도 된다':['GameObjects driven by each track · you can also drag from the Hierarchy onto a track header in the Timeline window','各トラックが動かすゲームオブジェクト · ヒエラルキーからタイムラインウィンドウのトラックヘッダーへドラッグしても設定できます','各轨道驱动的游戏对象 · 也可从层级拖到时间轴窗口的轨道头'],
 '애니메이션 트랙':['Animation Track','アニメーショントラック','动画轨道'],'인스펙터':['Inspector','インスペクター','检查器'],'매니저':['Manager','マネージャー','管理器'],
-'{a}에는 {b}을 붙일 수 없습니다.':['A {b} cannot be added to a {a}.','{a} には {b} を付けられません。','{a} 无法添加 {b}。'],
-'이 오브젝트로 타임라인을 시작하려면 {a} 컴포넌트와 {b} 에셋을 만드세요.':['To begin a timeline with this object, create a {a} component and a {b} asset.','このオブジェクトでタイムラインを始めるには、{a} コンポーネントと {b} アセットを作成してください。','要用此对象开始时间轴，请创建 {a} 组件和 {b} 资源。'],
-'플레이어블 디렉터와 타임라인을 한 번에 만듭니다.':['Creates the Playable Director and the Timeline at once.','プレイアブルディレクターとタイムラインを一度に作ります。','一次创建可播放导演和时间轴。'],
-'애니메이터나 스프라이트가 있으면 이 오브젝트를 움직이는 애니메이션 트랙도 넣습니다.':['If the object has an Animator or a Sprite, an Animation Track that moves it is added too.','アニメーターかスプライトがあれば、このオブジェクトを動かすアニメーショントラックも入れます。','如果对象有动画器或精灵，还会加入驱动它的动画轨道。'],
-'{a}와 {b}을 한 번에 만듭니다.':['Creates the {a} and the {b} at once.','{a} と {b} を一度に作ります。','一次创建 {a} 和 {b}。'],
-'{a}나 {b}가 있으면 이 오브젝트를 움직이는 {c}도 넣습니다.':['If the object has an {a} or a {b}, an {c} that moves it is added too.','{a} か {b} があれば、このオブジェクトを動かす {c} も入れます。','如果对象有 {a} 或 {b}，还会加入驱动它的 {c}。'],
-'타임라인을 만들려면 {a}에서 {b}를 선택하세요.':['To create a timeline, select a {b} in the {a}.','タイムラインを作るには、{a} で {b} を選択してください。','要创建时间轴，请在 {a} 中选择 {b}。'],
-'여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출을 한 줄의 시간 위에 늘어놓습니다.':['Lay out animation, activation, sound and script calls for several objects on one time line.','複数のオブジェクトのアニメーション・オンオフ・音・スクリプト呼び出しを一本の時間軸に並べます。','把多个对象的动画、启用/停用、声音和脚本调用排在一条时间线上。'],
-'컷신처럼 연출할 때 씁니다 (유니티 Timeline).':['Use it to stage cutscenes (Unity Timeline).','カットシーンのような演出に使います（Unity Timeline）。','用于编排过场动画（Unity Timeline）。'],
-'{a}에 {b}이 지정되지 않았습니다.':['The {a} has no {b} assigned.','{a} に {b} が設定されていません。','{a} 未指定 {b}。'],
-'또는 {a}의 {b}에서 기존 타임라인을 고르세요.':['Or pick an existing timeline in the {b} in the {a}.','または {a} の {b} で既存のタイムラインを選んでください。','或在 {a} 的 {b} 中选择已有时间轴。'],
-'재생 위치를 옮기고 씬 뷰나 인스펙터에서 위치 · 회전 · 크기 · 스프라이트를 바꾸면 그 시간에 키가 생깁니다.':['Move the playhead, then change position, rotation, scale or sprite in the Scene view or Inspector to key it at that time.','再生位置を動かし、シーンビューやインスペクターで位置・回転・サイズ・スプライトを変えると、その時間にキーが入ります。','移动播放头后，在场景视图或检查器中修改位置、旋转、缩放或精灵，即会在该时间添加关键帧。'],
-'키와 키 사이는 천천히 이어집니다.':['Motion between keys eases smoothly.','キーとキーの間はなめらかにつながります。','关键帧之间会平滑过渡。'],
-'◆ 키를 끌면 시간을 옮기고, 누른 뒤 Delete로 지웁니다 (녹화 중이 아니어도 됩니다).':['Drag a ◆ key to change its time; click it and press Delete to remove it (works even when not recording).','◆ キーをドラッグすると時間を動かし、クリックして Delete で消します（録画中でなくても使えます）。','拖动 ◆ 关键帧可改变时间，点击后按 Delete 删除（不在录制时也可以）。'],
-'◆ 키를 끌면 0.05초 단위로 옮겨집니다.':['Dragging a ◆ key moves it in 0.05 s steps.','◆ キーをドラッグすると 0.05 秒単位で動きます。','拖动 ◆ 关键帧时以 0.05 秒为单位移动。'],
-'Shift를 누른 채 끌면 단위 없이 옮깁니다.':['Hold Shift while dragging to move freely.','Shift を押しながらドラッグすると単位なしで動かせます。','按住 Shift 拖动可自由移动。'],
-'◆ 키를 누른 뒤 Delete로 지웁니다 (녹화 중이 아니어도 됩니다).':['Click a ◆ key and press Delete to remove it (works even when not recording).','◆ キーをクリックして Delete で消します（録画中でなくても使えます）。','点击 ◆ 关键帧后按 Delete 删除（不在录制时也可以）。'],
+'{a}에는 {b}을 붙일 수 없다.':['A {b} cannot be added to a {a}.','{a} には {b} を付けられません。','{a} 无法添加 {b}。'],
+'이 오브젝트로 타임라인을 시작하려면 {a} 컴포넌트와 {b} 에셋을 만든다.':['To begin a timeline with this object, create a {a} component and a {b} asset.','このオブジェクトでタイムラインを始めるには、{a} コンポーネントと {b} アセットを作成してください。','要用此对象开始时间轴，请创建 {a} 组件和 {b} 资源。'],
+'플레이어블 디렉터와 타임라인을 한 번에 만든다.':['Creates the Playable Director and the Timeline at once.','プレイアブルディレクターとタイムラインを一度に作ります。','一次创建可播放导演和时间轴。'],
+'애니메이터나 스프라이트가 있으면 이 오브젝트를 움직이는 애니메이션 트랙도 넣는다.':['If the object has an Animator or a Sprite, an Animation Track that moves it is added too.','アニメーターかスプライトがあれば、このオブジェクトを動かすアニメーショントラックも入れます。','如果对象有动画器或精灵，还会加入驱动它的动画轨道。'],
+'{a}와 {b}을 한 번에 만든다.':['Creates the {a} and the {b} at once.','{a} と {b} を一度に作ります。','一次创建 {a} 和 {b}。'],
+'{a}나 {b}가 있으면 이 오브젝트를 움직이는 {c}도 넣는다.':['If the object has an {a} or a {b}, an {c} that moves it is added too.','{a} か {b} があれば、このオブジェクトを動かす {c} も入れます。','如果对象有 {a} 或 {b}，还会加入驱动它的 {c}。'],
+'타임라인을 만들려면 {a}에서 {b}를 선택한다.':['To create a timeline, select a {b} in the {a}.','タイムラインを作るには、{a} で {b} を選択してください。','要创建时间轴，请在 {a} 中选择 {b}。'],
+'여러 오브젝트의 애니메이션 · 켜고 끄기 · 소리 · 스크립트 호출을 한 줄의 시간 위에 늘어놓는다.':['Lay out animation, activation, sound and script calls for several objects on one time line.','複数のオブジェクトのアニメーション・オンオフ・音・スクリプト呼び出しを一本の時間軸に並べます。','把多个对象的动画、启用/停用、声音和脚本调用排在一条时间线上。'],
+'컷신처럼 연출할 때 쓴다 (유니티 Timeline).':['Use it to stage cutscenes (Unity Timeline).','カットシーンのような演出に使います（Unity Timeline）。','用于编排过场动画（Unity Timeline）。'],
+'{a}에 {b}이 지정되지 않았다.':['The {a} has no {b} assigned.','{a} に {b} が設定されていません。','{a} 未指定 {b}。'],
+'또는 {a}의 {b}에서 기존 타임라인을 고른다.':['Or pick an existing timeline in the {b} in the {a}.','または {a} の {b} で既存のタイムラインを選んでください。','或在 {a} 的 {b} 中选择已有时间轴。'],
+'재생 위치를 옮기고 씬 뷰나 인스펙터에서 위치 · 회전 · 크기 · 스프라이트를 바꾸면 그 시간에 키가 생긴다.':['Move the playhead, then change position, rotation, scale or sprite in the Scene view or Inspector to key it at that time.','再生位置を動かし、シーンビューやインスペクターで位置・回転・サイズ・スプライトを変えると、その時間にキーが入ります。','移动播放头后，在场景视图或检查器中修改位置、旋转、缩放或精灵，即会在该时间添加关键帧。'],
+'키와 키 사이는 천천히 이어진다.':['Motion between keys eases smoothly.','キーとキーの間はなめらかにつながります。','关键帧之间会平滑过渡。'],
+'◆ 키를 끌면 시간을 옮기고, 누른 뒤 Delete로 지운다 (녹화 중이 아니어도 된다).':['Drag a ◆ key to change its time; click it and press Delete to remove it (works even when not recording).','◆ キーをドラッグすると時間を動かし、クリックして Delete で消します（録画中でなくても使えます）。','拖动 ◆ 关键帧可改变时间，点击后按 Delete 删除（不在录制时也可以）。'],
+'◆ 키를 끌면 0.05초 단위로 옮겨진다.':['Dragging a ◆ key moves it in 0.05 s steps.','◆ キーをドラッグすると 0.05 秒単位で動きます。','拖动 ◆ 关键帧时以 0.05 秒为单位移动。'],
+'Shift를 누른 채 끌면 단위 없이 옮긴다.':['Hold Shift while dragging to move freely.','Shift を押しながらドラッグすると単位なしで動かせます。','按住 Shift 拖动可自由移动。'],
+'◆ 키를 누른 뒤 Delete로 지운다 (녹화 중이 아니어도 된다).':['Click a ◆ key and press Delete to remove it (works even when not recording).','◆ キーをクリックして Delete で消します（録画中でなくても使えます）。','点击 ◆ 关键帧后按 Delete 删除（不在录制时也可以）。'],
 '애니메이션 트랙에 추가':['Add to Animation Track','アニメーショントラックに追加','添加到动画轨道'],
 '빈 클립 (이동 · 방향만) — 녹화로 키 넣기':['Empty clip (movement · direction only) — key it by recording','空のクリップ（移動・向きだけ）— 録画でキーを入れる','空片段（仅移动 · 方向）— 用录制添加关键帧'],
 '애니메이션 클립 고르기…':['Choose an animation clip…','アニメーションクリップを選ぶ…','选择动画片段…'],
@@ -969,11 +974,11 @@ if(window.TI18N)TI18N.add({
 '빈 클립을 만들었어요. 트랙에 움직일 오브젝트를 묶은 뒤 ●로 녹화하세요':['Created an empty clip. Bind an object to the track, then record with ●.','空のクリップを作りました。トラックに動かすオブジェクトをバインドしてから ● で録画してください','已创建空片段。为轨道绑定对象后用 ● 录制。'],
 '녹화 키':['Recorded key','録画キー','录制关键帧'],'시간':['Time','時間','时间'],'위치':['Position','位置','位置'],'회전':['Rotation','回転','旋转'],'재생 위치를 이 키로':['Move playhead to this key','再生位置をこのキーへ','把播放头移到此关键帧'],'키 삭제 (Delete)':['Delete key (Delete)','キーを削除 (Delete)','删除关键帧 (Delete)'],
 '● 녹화 중':['● Recording','● 録画中','● 录制中'],'◆ 키 남기기':['◆ Add key','◆ キーを残す','◆ 添加关键帧'],'이 시간 키 지우기':['Delete key here','この時間のキーを消す','删除此处关键帧'],'녹화 끝':['Stop recording','録画終了','结束录制'],
-'재생 위치를 옮기고 씬 뷰나 인스펙터에서 위치 · 회전 · 크기 · 스프라이트를 바꾸면 그 시간에 키가 생깁니다. 키와 키 사이는 천천히 이어집니다.':['Move the playhead, then change position, rotation, scale or sprite in the Scene view or Inspector to key it at that time. Motion between keys eases smoothly.','再生位置を動かし、シーンビューやインスペクターで位置・回転・サイズ・スプライトを変えると、その時間にキーが入ります。キーとキーの間はなめらかにつながります。','移动播放头后，在场景视图或检查器中修改位置、旋转、缩放或精灵，即会在该时间添加关键帧。关键帧之间会平滑过渡。'],
-'지금 상태를 이 시간에 키로 남깁니다 (가만히 서 있는 구간을 만들 때)':['Keep the current state as a key at this time (to make a pause)','今の状態をこの時間にキーとして残します（止まっている区間を作るとき）','把当前状态记录为此时间的关键帧（用于制作停顿）'],
-'이 시간에 있는 녹화 키를 지웁니다':['Delete the recorded key at this time','この時間の録画キーを消します','删除此时间的录制关键帧'],
+'재생 위치를 옮기고 씬 뷰나 인스펙터에서 위치 · 회전 · 크기 · 스프라이트를 바꾸면 그 시간에 키가 생긴다. 키와 키 사이는 천천히 이어진다.':['Move the playhead, then change position, rotation, scale or sprite in the Scene view or Inspector to key it at that time. Motion between keys eases smoothly.','再生位置を動かし、シーンビューやインスペクターで位置・回転・サイズ・スプライトを変えると、その時間にキーが入ります。キーとキーの間はなめらかにつながります。','移动播放头后，在场景视图或检查器中修改位置、旋转、缩放或精灵，即会在该时间添加关键帧。关键帧之间会平滑过渡。'],
+'지금 상태를 이 시간에 키로 남긴다 (가만히 서 있는 구간을 만들 때)':['Keep the current state as a key at this time (to make a pause)','今の状態をこの時間にキーとして残します（止まっている区間を作るとき）','把当前状态记录为此时间的关键帧（用于制作停顿）'],
+'이 시간에 있는 녹화 키를 지운다':['Delete the recorded key at this time','この時間の録画キーを消します','删除此时间的录制关键帧'],
 '녹화 끝':['Stop recording','録画終了','结束录制'],
-'녹화: 재생 위치마다 바인딩된 오브젝트의 위치 · 회전 · 크기 · 스프라이트를 바꾸면 키로 기록하고, 키 사이는 천천히 이어집니다':['Record: change the bound object’s position, rotation, scale or sprite at each playhead time to key it; motion between keys eases smoothly','録画: 再生位置ごとにバインドされたオブジェクトの位置・回転・サイズ・スプライトを変えるとキーとして記録し、キーの間はなめらかにつながります','录制：在各播放时间修改绑定对象的位置、旋转、缩放或精灵即记录为关键帧，关键帧之间平滑过渡'],
+'녹화: 재생 위치마다 바인딩된 오브젝트의 위치 · 회전 · 크기 · 스프라이트를 바꾸면 키로 기록하고, 키 사이는 천천히 이어진다':['Record: change the bound object’s position, rotation, scale or sprite at each playhead time to key it; motion between keys eases smoothly','録画: 再生位置ごとにバインドされたオブジェクトの位置・回転・サイズ・スプライトを変えるとキーとして記録し、キーの間はなめらかにつながります','录制：在各播放时间修改绑定对象的位置、旋转、缩放或精灵即记录为关键帧，关键帧之间平滑过渡'],
 '{name} 녹화':['{name} Recording','{name} 録画','{name} 录制'],
 '● 녹화: 재생 위치를 옮기고 「{name}」을(를) 움직여 보세요':['● Recording: move the playhead and move “{name}”','● 録画: 再生位置を動かして「{name}」を動かしてみましょう','● 录制：移动播放头并移动“{name}”'],
 '먼저 이 트랙에 움직일 게임 오브젝트를 묶어 주세요 (트랙 머리의 바인딩)':['Bind a GameObject to this track first (binding in the track header)','先にこのトラックに動かすゲームオブジェクトをバインドしてください（トラックヘッダーのバインディング）','请先为此轨道绑定要移动的游戏对象（轨道头的绑定）'],
@@ -982,9 +987,9 @@ if(window.TI18N)TI18N.add({
 /* 설정 · 애니메이션 창 (이번에 함께 추가한 문구) */
 '애니메이션 타일 미리 재생':['Preview animated tiles','アニメーションタイルをプレビュー再生','预览动画图块'],
 '플레이 중이 아닐 때도 애니메이션 타일 재생':['Play animated tiles even when not in Play mode','プレイ中でなくてもアニメーションタイルを再生','非运行时也播放动画图块'],
-'플레이 중이 아닐 때 씬 뷰 · 게임 뷰에 칠한 애니메이션 타일(룰 타일의 「애니메이션」 출력 포함)을 움직이게 할지 정합니다. 끄면(기본) 첫 프레임에 멈춰 있어 타일을 칠하고 고르기 편하고, 플레이를 누르면 언제나 움직입니다. 타일 팔레트 · 인스펙터의 특수 타일 미리보기는 이 설정과 상관없이 움직입니다.':['Choose whether animated tiles painted in the Scene and Game views (including Rule Tile “Animation” outputs) move while not in Play mode. Off (default) keeps them on the first frame so painting and picking is easier; they always animate in Play mode. Special-tile previews in the Tile Palette and Inspector always animate.','プレイ中でないとき、シーンビュー・ゲームビューに塗ったアニメーションタイル（ルールタイルの「アニメーション」出力を含む）を動かすかを決めます。オフ（既定）なら最初のフレームで止まり、塗ったり選んだりしやすくなります。プレイ中は常に動きます。タイルパレット・インスペクターの特殊タイルのプレビューはこの設定に関係なく動きます。','设置非运行时场景视图和游戏视图中绘制的动画图块（包括规则图块的“动画”输出）是否播放。关闭（默认）时停在第一帧，便于绘制和选择；运行时总会播放。图块调色板和检查器中的特殊图块预览不受此设置影响。'],
-'프로젝트 패널의 스프라이트를 스프라이트 속성(또는 여기)에 끌어다 놓으면 현재 프레임에 키가 들어갑니다':['Drop sprites from the Project panel onto the Sprite property (or here) to key them at the current frame','プロジェクトパネルのスプライトをスプライトプロパティ（またはここ）にドロップすると現在のフレームにキーが入ります','把项目面板中的精灵拖到精灵属性（或这里）即可在当前帧添加关键帧'],
-'이 프레임의 스프라이트 (눌러서 선택 · 프로젝트 패널에서 끌어다 놓아도 됩니다 · 바꾸면 키가 만들어집니다)':['Sprite at this frame (click to choose · or drop from the Project panel · changing it creates a key)','このフレームのスプライト（クリックで選択・プロジェクトパネルからドロップも可・変えるとキーが作られます）','此帧的精灵（点击选择 · 也可从项目面板拖入 · 修改会创建关键帧）']
+'플레이 중이 아닐 때 씬 뷰 · 게임 뷰에 칠한 애니메이션 타일(룰 타일의 「애니메이션」 출력 포함)을 움직이게 할지 정한다. 끄면(기본) 첫 프레임에 멈춰 있어 타일을 칠하고 고르기 편하고, 플레이를 누르면 언제나 움직인다. 타일 팔레트 · 인스펙터의 특수 타일 미리보기는 이 설정과 상관없이 움직인다.':['Choose whether animated tiles painted in the Scene and Game views (including Rule Tile “Animation” outputs) move while not in Play mode. Off (default) keeps them on the first frame so painting and picking is easier; they always animate in Play mode. Special-tile previews in the Tile Palette and Inspector always animate.','プレイ中でないとき、シーンビュー・ゲームビューに塗ったアニメーションタイル（ルールタイルの「アニメーション」出力を含む）を動かすかを決めます。オフ（既定）なら最初のフレームで止まり、塗ったり選んだりしやすくなります。プレイ中は常に動きます。タイルパレット・インスペクターの特殊タイルのプレビューはこの設定に関係なく動きます。','设置非运行时场景视图和游戏视图中绘制的动画图块（包括规则图块的“动画”输出）是否播放。关闭（默认）时停在第一帧，便于绘制和选择；运行时总会播放。图块调色板和检查器中的特殊图块预览不受此设置影响。'],
+'프로젝트 패널의 스프라이트를 스프라이트 속성(또는 여기)에 끌어다 놓으면 현재 프레임에 키가 들어간다':['Drop sprites from the Project panel onto the Sprite property (or here) to key them at the current frame','プロジェクトパネルのスプライトをスプライトプロパティ（またはここ）にドロップすると現在のフレームにキーが入ります','把项目面板中的精灵拖到精灵属性（或这里）即可在当前帧添加关键帧'],
+'이 프레임의 스프라이트 (눌러서 선택 · 프로젝트 패널에서 끌어다 놓아도 된다 · 바꾸면 키가 만들어진다)':['Sprite at this frame (click to choose · or drop from the Project panel · changing it creates a key)','このフレームのスプライト（クリックで選択・プロジェクトパネルからドロップも可・変えるとキーが作られます）','此帧的精灵（点击选择 · 也可从项目面板拖入 · 修改会创建关键帧）']
 });
 
 return{pose,act,tick,render,live,playEnd,directorComp,dirProxy,tlCreateFor,recHook,recStop,TL};

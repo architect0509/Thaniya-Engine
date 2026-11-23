@@ -119,7 +119,7 @@ function cpObjs(n){const v=n.v||{},m=curScene();
 function ctrlOfObj(o){const a=o&&o.props&&o.props.animator,L0=P&&P.anim&&P.anim.ctrls||[];return a?L0.find(c=>c.id===a.ctrl)||null:null}
 function cpBtn(n,set){const i=cpInfo(n.v&&n.v.cp),objs=cpObjs(n);
   const miss=!!i&&objs.length>0&&!objs.some(o=>i.comp[4](o));
-  const t=miss?L10('대상에 「{c}」 컴포넌트가 없어요',{c:L10(i.comp[1])}):L10(set?'바꿀 컴포넌트 값 고르기':'가져올 컴포넌트 값 고르기');
+  const t=miss?L10('대상에 「{c}」 컴포넌트가 없다',{c:L10(i.comp[1])}):L10(set?'바꿀 컴포넌트 값 고르기':'가져올 컴포넌트 값 고르기');
   return`<button type="button" class="vtp vcp${miss?' miss':''}${i?'':' empty'}" data-cpick="${n.id}" title="${ex(t)}"><span class="vtpi" style="--oc:${i?i.comp[3]:'var(--mute)'}">${ico(i?i.comp[2]:'gear')}</span>${i?`<i>${ex(L10(i.comp[1]).replace(/ \(.*\)$/,''))} ›</i><b>${ex(i.short)}</b>`:`<b>${ex(L10('값 고르기'))}</b>`}<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>`}
 /* 「값」 고르기: 계층 구조처럼 컴포넌트를 펼쳐서 값을 고름 (대상에 없는 컴포넌트는 접힌 묶음 하나) */
 const CPF={};
@@ -149,8 +149,8 @@ function cpMenu(btn,n,set,done){
   let draw=()=>{const k=q.value.trim().toLowerCase();let h=mine.map(c=>compRows(c,0,k)).join('');
     if(rest.length){const inner=rest.map(c=>compRows(c,1,k)).join('');
       if(!k||inner){const on=k?true:open('g:rest');h+=`<div class="vor vcg" style="--d:0" data-fk="g:rest" tabindex="0" role="treeitem" aria-expanded="${on}">${fold('g:rest',on)}<span class="vtpi" style="--oc:var(--mute)">${ico('folder')}</span><b>${ex(L10(objs.length?'대상에 없는 컴포넌트':'다른 컴포넌트'))}</b><small>${rest.length}</small></div>`+(on?inner:'')}}
-    T.innerHTML=h||`<p class="vcm0">${ex(L10('맞는 값이 없습니다'))}</p>`;
-    foot.textContent=objs.length?L10('대상에 붙은 컴포넌트만 위에 보여요 · ▸ 를 눌러 펼치기'):L10('대상을 고르면 그 오브젝트의 컴포넌트가 위로 와요')};
+    T.innerHTML=h||`<p class="vcm0">${ex(L10('맞는 값이 없다'))}</p>`;
+    foot.textContent=objs.length?L10('대상에 붙은 컴포넌트만 위에 보인다 · ▸ 를 눌러 펼치기'):L10('대상을 고르면 그 오브젝트의 컴포넌트가 위로 온다')};
   /* 펼치거나 접어 높이가 바뀌면 화면 안으로 다시 맞춤 (단추 아래 → 모자라면 위로 → 그래도 모자라면 화면 안쪽 끝) */
   const place=()=>{const ar=btn.getBoundingClientRect(),r=el.getBoundingClientRect(),W=win.innerWidth,H=win.innerHeight;
     let x=ar.left;if(x+r.width>W-6)x=Math.max(6,W-r.width-6);
@@ -176,11 +176,11 @@ function cpMenu(btn,n,set,done){
 function cpTarget(M,to,tn){if(to==='hero')return startSpawn(M.m);return tgt(M,to,tn)}
 function cpWarn(c,msg){if(c.mem.w===msg)return;c.mem.w=msg;clog('warn',L10('[비주얼 스크립트 {g}] {m}',{g:c.M.gname,m:msg}))}
 function cpProxy(c,to,tn,s){
-  const i=cpInfo(s);if(!i){cpWarn(c,L10('「컴포넌트 값」 노드에서 바꿀 값을 고르세요'));return null}
+  const i=cpInfo(s);if(!i){cpWarn(c,L10('「컴포넌트 값」 노드에서 바꿀 값을 고른다'));return null}
   const o=cpTarget(c.M,to,tn);if(!o)return null;
   if(i.comp[0]==='Light'&&!o.props.light&&o._lightOff&&i.key==='enabled')return{i,o,px:null};
   let px=null;try{px=csGetComp(c.M.m,o,i.comp[0])}catch(e){cpWarn(c,String(e&&e.message||e));return null}
-  if(!px){cpWarn(c,L10('「{o}」에 {c} 컴포넌트가 없어요',{o:o.name,c:L10(i.comp[1])}));return null}
+  if(!px){cpWarn(c,L10('「{o}」에 {c} 컴포넌트가 없다',{o:o.name,c:L10(i.comp[1])}));return null}
   return{i,o,px};
 }
 function compGet(c,to,tn,s){
@@ -195,7 +195,7 @@ function compGet(c,to,tn,s){
 }
 function compSet(c,to,tn,s,v){
   const r=cpProxy(c,to,tn,s);if(!r)return;const {i,o,px}=r;
-  if(!i.rw){cpWarn(c,L10('「{p}」은(는) 읽기만 할 수 있어요',{p:i.label}));return}
+  if(!i.rw){cpWarn(c,L10('「{p}」은(는) 읽기만 할 수 있다',{p:i.label}));return}
   v=i.type==='num'?tN(v):i.type==='bool'?tB(v):tS(v);
   try{
     if(!px){if(v){o.props.light=o._lightOff;delete o._lightOff}return}
@@ -213,17 +213,17 @@ function compSet(c,to,tn,s,v){
 
 const NT={
   /* ---- 이벤트 ---- */
-  'ev.start':{cat:'ev',label:'시작 (Start)',ev:1,outs:[F('out','','flow')],tip:'머신이 시작될 때 (씬에 들어오거나 오브젝트가 켜질 때) 한 번 실행합니다.'},
-  'ev.update':{cat:'ev',label:'업데이트 (Update)',ev:1,outs:[F('out','','flow'),F('dt','델타 시간','num')],tip:'매 프레임 실행합니다. 델타 시간 = 지난 프레임부터 흐른 초.'},
-  'ev.enter':{cat:'ev',label:'상태 진입 (On Enter State)',ev:1,only:'state',outs:[F('out','','flow')],tip:'이 상태로 들어올 때 한 번 실행합니다 (상태 안의 그래프에서만).'},
-  'ev.exit':{cat:'ev',label:'상태 나감 (On Exit State)',ev:1,only:'state',outs:[F('out','','flow')],tip:'이 상태에서 다른 상태로 넘어가기 직전에 실행합니다.'},
-  'ev.key':{cat:'ev',label:'키 입력 (On Key)',ev:1,f:[['key','키','sel','Space',KEYS],['mode','언제','sel','down',[['down','눌렀을 때'],['up','뗐을 때'],['hold','누르는 동안']]]],outs:[F('out','','flow')],tip:'키보드 키를 누르거나 뗄 때 실행합니다.'},
+  'ev.start':{cat:'ev',label:'시작 (Start)',ev:1,outs:[F('out','','flow')],tip:'머신이 시작될 때 (씬에 들어오거나 오브젝트가 켜질 때) 한 번 실행한다.'},
+  'ev.update':{cat:'ev',label:'업데이트 (Update)',ev:1,outs:[F('out','','flow'),F('dt','델타 시간','num')],tip:'매 프레임 실행한다. 델타 시간 = 지난 프레임부터 흐른 초.'},
+  'ev.enter':{cat:'ev',label:'상태 진입 (On Enter State)',ev:1,only:'state',outs:[F('out','','flow')],tip:'이 상태로 들어올 때 한 번 실행한다 (상태 안의 그래프에서만).'},
+  'ev.exit':{cat:'ev',label:'상태 나감 (On Exit State)',ev:1,only:'state',outs:[F('out','','flow')],tip:'이 상태에서 다른 상태로 넘어가기 직전에 실행한다.'},
+  'ev.key':{cat:'ev',label:'키 입력 (On Key)',ev:1,f:[['key','키','sel','Space',KEYS],['mode','언제','sel','down',[['down','눌렀을 때'],['up','뗐을 때'],['hold','누르는 동안']]]],outs:[F('out','','flow')],tip:'키보드 키를 누르거나 뗄 때 실행한다.'},
   'ev.custom':{cat:'ev',label:'커스텀 이벤트 받기',ev:1,f:[['name','이벤트','evpick','이벤트']],outs:[F('out','','flow'),F('arg','받은 값','any')],tip:'「커스텀 이벤트 보내기」 노드나 C#의 VisualScript.Trigger("이름")가 보낸 이벤트를 받습니다.'},
-  'ev.msg':{cat:'ev',label:'엔진 메시지 받기',ev:1,f:[['msg','메시지','sel','OnInteract',MSGS]],outs:[F('out','','flow')],tip:'엔진이 보내는 메시지(말 걸기 · 들어오기 · 클릭 …)를 받습니다. C# 스크립트의 같은 이름 메서드와 함께 불립니다.'},
-  'ev.timer':{cat:'ev',label:'타이머 (매 N초)',ev:1,f:[['sec','간격(초)','num',1]],outs:[F('out','','flow'),F('n','횟수','num')],tip:'정한 간격마다 실행합니다.'},
-  'ev.btn':{cat:'ev',label:'버튼을 누르면 (On Click)',ev:1,f:[['who','버튼','btn','name']],outs:[F('out','','flow'),F('name','버튼 이름','str'),F('screen','화면 이름','str')],tip:'플레이 중 UI 버튼을 클릭하면(누르면) 실행합니다. 화면 · 버튼 칸을 비우면 아무 화면 · 아무 버튼이나 받아요.'},
-  'ev.screen':{cat:'ev',label:'화면을 클릭하면',ev:1,f:[['btn','마우스 버튼','sel','0',[['0','왼쪽'],['2','오른쪽'],['any','아무 버튼']]]],outs:[F('out','','flow'),F('x','화면 X','num'),F('y','화면 Y','num'),F('tx','칸 X','num'),F('ty','칸 Y','num')],tip:'게임 화면을 클릭(터치)하면 실행합니다. UI 버튼 위를 누른 것은 빼고, 누른 곳의 화면 위치와 칸 위치가 나와요.'},
-  'g.in':{cat:'state',label:'그래프 입력',ev:1,only:'sub',outs:[F('out','','flow'),F('value','값','any')],tip:'바깥 「서브그래프」 노드로 흐름이 들어오면 여기서 시작합니다.'},
+  'ev.msg':{cat:'ev',label:'엔진 메시지 받기',ev:1,f:[['msg','메시지','sel','OnInteract',MSGS]],outs:[F('out','','flow')],tip:'엔진이 보내는 메시지(말 걸기 · 들어오기 · 클릭 …)를 받는다. C# 스크립트의 같은 이름 메서드와 함께 불린다.'},
+  'ev.timer':{cat:'ev',label:'타이머 (매 N초)',ev:1,f:[['sec','간격(초)','num',1]],outs:[F('out','','flow'),F('n','횟수','num')],tip:'정한 간격마다 실행한다.'},
+  'ev.btn':{cat:'ev',label:'버튼을 누르면 (On Click)',ev:1,f:[['who','버튼','btn','name']],outs:[F('out','','flow'),F('name','버튼 이름','str'),F('screen','화면 이름','str')],tip:'플레이 중 UI 버튼을 클릭하면(누르면) 실행한다. 화면 · 버튼 칸을 비우면 아무 화면 · 아무 버튼이나 받는다.'},
+  'ev.screen':{cat:'ev',label:'화면을 클릭하면',ev:1,f:[['btn','마우스 버튼','sel','0',[['0','왼쪽'],['2','오른쪽'],['any','아무 버튼']]]],outs:[F('out','','flow'),F('x','화면 X','num'),F('y','화면 Y','num'),F('tx','칸 X','num'),F('ty','칸 Y','num')],tip:'게임 화면을 클릭(터치)하면 실행한다. UI 버튼 위를 누른 것은 빼고, 누른 곳의 화면 위치와 칸 위치가 나온다.'},
+  'g.in':{cat:'state',label:'그래프 입력',ev:1,only:'sub',outs:[F('out','','flow'),F('value','값','any')],tip:'바깥 「서브그래프」 노드로 흐름이 들어오면 여기서 시작한다.'},
   /* ---- 흐름 제어 ---- */
   'if':{cat:'flow',label:'만약 (If)',ins:[F('in','','flow'),F('cond','조건','bool',true)],outs:[F('yes','참','flow'),F('no','거짓','flow')],run:c=>tB(c.v('cond'))?'yes':'no'},
   'seq':{cat:'flow',label:'순서대로 (Sequence)',ins:[F('in','','flow')],outs:[F('o1','1','flow'),F('o2','2','flow'),F('o3','3','flow')],run:()=>['o1','o2','o3']},
@@ -232,17 +232,17 @@ const NT={
     run:c=>{const a=Math.round(tN(c.v('first'))),b=Math.round(tN(c.v('last')));for(let i=a;i<b&&i-a<1000;i++){c.slot('i',i);c.go('body')}return'exit'}},
   'once':{cat:'flow',label:'한 번만 (Once)',ins:[F('in','','flow'),F('reset','다시 열기','flow')],outs:[F('first','처음 한 번','flow'),F('after','그 다음부터','flow')],
     run:c=>{if(c.port==='reset'){c.mem.done=false;return null}if(c.mem.done)return'after';c.mem.done=true;return'first'}},
-  'g.out':{cat:'state',label:'그래프 출력',only:'sub',ins:[F('in','','flow'),F('result','결과','any','')],run:c=>{c.subReturn(c.v('result'));return null},tip:'바깥 「서브그래프」 노드의 「다음」으로 흐름을 돌려보냅니다.'},
-  'sub':{cat:'state',label:'서브그래프',sub:'flow',ins:[F('in','','flow'),F('value','값','any','')],outs:[F('out','다음','flow'),F('result','결과','any')],tip:'그래프 안에 넣은 작은 스크립트 그래프입니다. 더블클릭하면 안으로 들어갑니다.'},
-  'smu':{cat:'state',label:'상태 머신 유닛',sub:'state',ins:[F('start','시작','flow'),F('stop','멈춤','flow')],outs:[F('out','다음','flow'),F('state','지금 상태','str')],tip:'스크립트 그래프 안에 넣은 상태 그래프입니다. 「시작」으로 켜고 「멈춤」으로 끕니다. 더블클릭하면 안으로 들어갑니다.'},
-  'st.go':{cat:'state',label:'상태 바꾸기',f:[['state','상태 이름','text','']],ins:[F('in','','flow')],outs:[F('out','','flow')],tip:'이 그래프를 품은 상태 그래프를 그 이름의 상태로 바꿉니다 (가장 가까운 상태 그래프부터 찾음).'},
-  'st.done':{cat:'state',label:'상태 끝내기',ins:[F('in','','flow')],outs:[F('out','','flow')],tip:'지금 상태가 끝났다고 알립니다. 전환 조건 「상태가 끝나면」인 화살표를 따라 다음 상태로 넘어갑니다.'},
+  'g.out':{cat:'state',label:'그래프 출력',only:'sub',ins:[F('in','','flow'),F('result','결과','any','')],run:c=>{c.subReturn(c.v('result'));return null},tip:'바깥 「서브그래프」 노드의 「다음」으로 흐름을 돌려보낸다.'},
+  'sub':{cat:'state',label:'서브그래프',sub:'flow',ins:[F('in','','flow'),F('value','값','any','')],outs:[F('out','다음','flow'),F('result','결과','any')],tip:'그래프 안에 넣은 작은 스크립트 그래프이다. 더블클릭하면 안으로 들어간다.'},
+  'smu':{cat:'state',label:'상태 머신 유닛',sub:'state',ins:[F('start','시작','flow'),F('stop','멈춤','flow')],outs:[F('out','다음','flow'),F('state','지금 상태','str')],tip:'스크립트 그래프 안에 넣은 상태 그래프이다. 「시작」으로 켜고 「멈춤」으로 끈다. 더블클릭하면 안으로 들어간다.'},
+  'st.go':{cat:'state',label:'상태 바꾸기',f:[['state','상태 이름','text','']],ins:[F('in','','flow')],outs:[F('out','','flow')],tip:'이 그래프를 품은 상태 그래프를 그 이름의 상태로 바꾼다 (가장 가까운 상태 그래프부터 찾음).'},
+  'st.done':{cat:'state',label:'상태 끝내기',ins:[F('in','','flow')],outs:[F('out','','flow')],tip:'지금 상태가 끝났다고 알린다. 전환 조건 「상태가 끝나면」인 화살표를 따라 다음 상태로 넘어간다.'},
   'st.cur':{cat:'state',label:'현재 상태',outs:[F('name','상태 이름','str')],data:c=>c.curState()},
   /* ---- 이벤트 보내기 · C# ---- */
   'trig':{cat:'send',label:'커스텀 이벤트 보내기',f:[['name','이벤트 이름','text','이벤트'],['to','받는 곳','target','self',{allow:['self','all','name'],kinds:['obj','ui','mgr']},'tname']],ins:[F('in','','flow'),F('arg','보낼 값','any','')],outs:[F('out','','flow')],
-    run:c=>{c.trigger(c.f('to'),c.f('tname'),c.f('name'),c.v('arg'));return'out'},tip:'커스텀 이벤트를 보냅니다. 상태 그래프의 전환(「이벤트를 받으면」)과 다른 머신의 「커스텀 이벤트 받기」가 받습니다.'},
+    run:c=>{c.trigger(c.f('to'),c.f('tname'),c.f('name'),c.v('arg'));return'out'},tip:'커스텀 이벤트를 보낸다. 상태 그래프의 전환(「이벤트를 받으면」)과 다른 머신의 「커스텀 이벤트 받기」가 받는다.'},
   'cs':{cat:'send',label:'C# 메서드 부르기',f:[['method','메서드 이름','text','OnInteract'],['to','대상','target','self',{allow:['self','name'],kinds:['obj','ui','mgr']},'tname']],ins:[F('in','','flow')],outs:[F('out','','flow')],
-    run:c=>{c.callCs(c.f('to'),c.f('tname'),c.f('method'));return'out'},tip:'대상 오브젝트에 붙은 C# 스크립트의 메서드를 부릅니다 (SendMessage처럼 그 오브젝트의 비주얼 스크립트도 같은 메시지를 받음).'},
+    run:c=>{c.callCs(c.f('to'),c.f('tname'),c.f('method'));return'out'},tip:'대상 오브젝트에 붙은 C# 스크립트의 메서드를 부른다 (SendMessage처럼 그 오브젝트의 비주얼 스크립트도 같은 메시지를 받음).'},
   /* ---- 변수 ---- */
   'var.get':{cat:'var',label:'변수 가져오기',f:[['scope','범위','sel','graph',SCOPES],['name','이름','text','점수']],outs:[F('value','값','any')],data:c=>c.getVar(c.f('scope'),c.f('name'))},
   'var.set':{cat:'var',label:'변수 설정',f:[['scope','범위','sel','graph',SCOPES],['name','이름','text','점수']],ins:[F('in','','flow'),F('value','값','any',0)],outs:[F('out','','flow'),F('now','설정한 값','any')],
@@ -270,20 +270,20 @@ const NT={
   'self':{cat:'obj',label:'자신 이름',outs:[F('name','','str')],data:c=>c.o.name||''},
   'pos':{cat:'obj',label:'위치 가져오기',f:[['to','대상','target','self',{allow:['self','hero','name'],kinds:['obj']},'tname']],outs:[F('x','X(칸)','num'),F('y','Y(칸)','num')],data:(c,k)=>{const q=c.posOf(c.f('to'),c.f('tname'));return q?q[k]:0}},
   'dist':{cat:'obj',label:'거리',f:[['from','A','target','self',{allow:['self','hero','name'],kinds:['obj']},'fname'],['to','B','target','hero',{allow:['self','hero','name'],kinds:['obj']},'tname']],outs:[F('d','칸','num')],
-    data:c=>c.dist(c.f('from')||'self',c.f('fname'),c.f('to')||'hero',c.f('tname')),tip:'두 오브젝트 사이의 거리(칸)입니다. 기본은 자신 ↔ 주인공이고, A · B를 눌러 다른 게임 오브젝트로 바꿀 수 있어요.'},
+    data:c=>c.dist(c.f('from')||'self',c.f('fname'),c.f('to')||'hero',c.f('tname')),tip:'두 오브젝트 사이의 거리(칸)이다. 기본은 자신 ↔ 주인공이고, A · B를 눌러 다른 게임 오브젝트로 바꿀 수 있다.'},
   'move':{cat:'obj',label:'이동하기 (Translate)',f:[['to','대상','target','self',{allow:['self','name'],kinds:['obj']},'tname']],ins:[F('in','','flow'),F('dx','가로(칸)','num',1),F('dy','세로(칸)','num',0)],outs:[F('out','','flow')],
     run:c=>{c.moveBy(c.f('to'),c.f('tname'),tN(c.v('dx')),tN(c.v('dy')));return'out'}},
   'active':{cat:'obj',label:'켜기 / 끄기 (SetActive)',f:[['to','대상','target','self',{allow:['self','name'],kinds:['obj','ui']},'tname']],ins:[F('in','','flow'),F('on','켜기','bool',false)],outs:[F('out','','flow')],
     run:c=>{c.setActive(c.f('to'),c.f('tname'),tB(c.v('on')));return'out'}},
   'comp.get':{cat:'obj',label:'컴포넌트 값 가져오기',f:[['to','대상','target','self',{allow:['self','hero','name'],kinds:['obj']},'tname'],['cp','값','cprop','']],outs:[F('value','값','any')],
     outsFn:n=>{const i=cpInfo(n.v&&n.v.cp);return[F('value',i?i.short:'값',i?i.type:'any')]},data:c=>c.compGet(c.f('to'),c.f('tname'),c.f('cp')),
-    tip:'오브젝트에 붙은 컴포넌트(애니메이터 · 오디오 소스 · 빛 · 카메라 · 주인공 · 몬스터 …)의 값을 읽습니다. C#의 GetComponent<…>().속성 과 같아요.'},
+    tip:'오브젝트에 붙은 컴포넌트(애니메이터 · 오디오 소스 · 빛 · 카메라 · 주인공 · 몬스터 …)의 값을 읽는다. C#의 GetComponent<…>().속성 과 같다.'},
   'comp.set':{cat:'obj',label:'컴포넌트 값 바꾸기',f:[['to','대상','target','self',{allow:['self','hero','name'],kinds:['obj']},'tname'],['cp','값','cprop','',1]],ins:[F('in','','flow'),F('value','새 값','any','')],outs:[F('out','','flow')],
     insFn:n=>{const i=cpInfo(n.v&&n.v.cp);return[F('in','','flow'),F('value',i?i.short:'새 값',i?i.type:'any',i?({num:0,bool:false,str:''})[i.type]:'')]},
     run:c=>{c.compSet(c.f('to'),c.f('tname'),c.f('cp'),c.v('value'));return'out'},
-    tip:'오브젝트에 붙은 컴포넌트의 값을 바꿉니다 (음량 · 빛 밝기 · 애니메이터 파라미터 · 카메라 크기 · 몬스터 속도 …). C#의 GetComponent<…>().속성 = 값 과 같아요.'},
+    tip:'오브젝트에 붙은 컴포넌트의 값을 바꾼다 (음량 · 빛 밝기 · 애니메이터 파라미터 · 카메라 크기 · 몬스터 속도 …). C#의 GetComponent<…>().속성 = 값 과 같다.'},
   /* ---- 게임 기능 ---- */
-  'log':{cat:'game',label:'Debug.Log',ins:[F('in','','flow'),F('msg','내용','any','Hello')],outs:[F('out','','flow')],run:c=>{c.log(tS(c.v('msg')));return'out'},tip:'콘솔에 글을 찍습니다 (로그 출력).'},
+  'log':{cat:'game',label:'Debug.Log',ins:[F('in','','flow'),F('msg','내용','any','Hello')],outs:[F('out','','flow')],run:c=>{c.log(tS(c.v('msg')));return'out'},tip:'콘솔에 글을 찍는다 (로그 출력).'},
   'msg':{cat:'game',label:'알림 메시지',ins:[F('in','','flow'),F('text','글','str','안녕!'),F('sec','초','num',1.6)],outs:[F('out','','flow')],run:c=>{c.world('message',tS(c.v('text')),Math.max(.1,tN(c.v('sec'))));return'out'}},
   'dialog':{cat:'game',label:'대화창 보이기',ins:[F('in','','flow'),F('name','이름','str',''),F('text','대사','str','안녕하세요')],outs:[F('out','','flow')],run:c=>{c.world('say',tS(c.v('name'))||c.o.name,tS(c.v('text')));return'out'}},
   'ui':{cat:'game',label:'UI 화면 열기 / 닫기',f:[['mode','','sel','Show',[['Show','열기 (Show)'],['Hide','닫기 (Hide)'],['Toggle','전환 (Toggle)']]]],ins:[F('in','','flow'),F('screen','화면(UI 그룹)','str','')],outs:[F('out','','flow')],run:c=>{c.ui(c.f('mode'),[tS(c.v('screen'))]);return'out'}},
@@ -306,179 +306,179 @@ const nodeLabel=n=>{const d=def(n);if(n.t==='ev.custom')return'⚡ '+(n.v&&n.v.n
    dd : 아래 줄 값 노드 — [몇 번째 위 노드에 넣는지, 분류, 이름, 값 표시]
    cs : 같은 일을 하는 C# 코드 */
 const NEX={
-  'ev.start':{d:'머신이 처음 켜질 때 딱 한 번 흐름이 시작됩니다. 처음 위치 · 처음 값 정하기, 인사말처럼 한 번만 할 일을 여기에 잇습니다.',
+  'ev.start':{d:'머신이 처음 켜질 때 딱 한 번 흐름이 시작된다. 처음 위치 · 처음 값 정하기, 인사말처럼 한 번만 할 일을 여기에 잇는다.',
     g:[['ev','!시작'],['game','Debug.Log','"준비 완료"']],cs:'void Start()\n{\n    Debug.Log("준비 완료");\n}'},
-  'ev.update':{d:'매 프레임마다 흐름이 나갑니다. 키 확인 · 계속 움직이기처럼 쉬지 않고 확인할 일을 잇습니다. 「델타 시간」으로 프레임 속도와 상관없이 같은 빠르기를 낼 수 있어요.',
+  'ev.update':{d:'매 프레임마다 흐름이 나간다. 키 확인 · 계속 움직이기처럼 쉬지 않고 확인할 일을 잇는다. 「델타 시간」으로 프레임 속도와 상관없이 같은 빠르기를 낼 수 있다.',
     g:[['ev','!업데이트'],['obj','이동하기','가로 = 2 × 델타']],cs:'void Update()\n{\n    transform.Translate(new Vector3(2 * Time.deltaTime, 0, 0));\n}'},
-  'ev.enter':{d:'상태 그래프의 한 상태 안에서만 씁니다. 이 상태로 들어오는 순간 한 번 실행돼요. 상태마다 처음 할 일(대사 · 애니메이션 · 알림)을 둡니다.',
+  'ev.enter':{d:'상태 그래프의 한 상태 안에서만 쓴다. 이 상태로 들어오는 순간 한 번 실행된다. 상태마다 처음 할 일(대사 · 애니메이션 · 알림)을 둔다.',
     g:[['ev','!상태 진입'],['game','알림 메시지','"순찰 시작!"']],cs:'// 상태 머신의 「순찰」 상태에 들어올 때\nMessage.Show("순찰 시작!");'},
-  'ev.exit':{d:'이 상태에서 다른 상태로 넘어가기 직전에 한 번 실행됩니다. 켜 둔 것 끄기 · 뒷정리에 씁니다.',
+  'ev.exit':{d:'이 상태에서 다른 상태로 넘어가기 직전에 한 번 실행된다. 켜 둔 것 끄기 · 뒷정리에 쓴다.',
     g:[['ev','!상태 나감'],['obj','켜기 / 끄기','느낌표 · 끄기']],cs:'// 상태를 떠날 때\nGameObject.Find("느낌표").SetActive(false);'},
-  'ev.key':{d:'고른 키를 눌렀을 때 · 뗐을 때 · 누르는 동안 흐름이 나갑니다. 「업데이트 → 만약 → 키를 누르고 있나」를 한 노드로 줄인 것과 같아요.',
+  'ev.key':{d:'고른 키를 눌렀을 때 · 뗐을 때 · 누르는 동안 흐름이 나간다. 「업데이트 → 만약 → 키를 누르고 있나」를 한 노드로 줄인 것과 같다.',
     g:[['ev','!키 입력','Space · 눌렀을 때'],['game','Debug.Log','"점프!"']],cs:'void Update()\n{\n    if (Input.GetKeyDown(KeyCode.Space))\n        Debug.Log("점프!");\n}'},
-  'ev.custom':{d:'「커스텀 이벤트 보내기」나 C# VisualScript.Trigger로 보낸 같은 이름의 이벤트를 받습니다. 「이벤트」 단추를 누르면 계층 구조 › 오브젝트 › 스크립트 › 그 스크립트가 보내는 이벤트 순서로 고를 수 있고, 검색 칸에 새 이름을 써도 돼요. 함께 보낸 값은 「받은 값」으로 나와요.',
+  'ev.custom':{d:'「커스텀 이벤트 보내기」나 C# VisualScript.Trigger로 보낸 같은 이름의 이벤트를 받는다. 「이벤트」 단추를 누르면 계층 구조 › 오브젝트 › 스크립트 › 그 스크립트가 보내는 이벤트 순서로 고를 수 있고, 검색 칸에 새 이름을 써도 된다. 함께 보낸 값은 「받은 값」으로 나온다.',
     g:[['ev','!커스텀 이벤트 받기','"문 열기"'],['game','알림 메시지','"문이 열렸다"']],cs:'// 다른 곳에서 보내기\nVisualScript.Trigger("문 열기");\n// → 이 그래프의 「문 열기」 이벤트가 실행됨'},
-  'ev.msg':{d:'엔진이 보내는 메시지(말 걸기 · 주인공이 들어옴 · 클릭 …)를 받습니다. C# 스크립트의 같은 이름 메서드와 똑같은 때에 실행돼요.',
-    g:[['ev','!엔진 메시지 받기','OnInteract'],['game','대화창 보이기','상인 · "어서 오세요!"']],cs:'void OnInteract()\n{\n    Dialog.Show("상인", "어서 오세요!");\n}'},
-  'ev.timer':{d:'정한 초마다 흐름이 나갑니다. 「횟수」는 몇 번째 실행인지 알려 줘요. 매 프레임까지는 필요 없는 반복 작업에 좋아요.',
+  'ev.msg':{d:'엔진이 보내는 메시지(말 걸기 · 주인공이 들어옴 · 클릭 …)를 받는다. C# 스크립트의 같은 이름 메서드와 똑같은 때에 실행된다.',
+    g:[['ev','!엔진 메시지 받기','OnInteract'],['game','대화창 보이기','상인 · "어서 온다!"']],cs:'void OnInteract()\n{\n    Dialog.Show("상인", "어서 오세요!");\n}'},
+  'ev.timer':{d:'정한 초마다 흐름이 나간다. 「횟수」는 몇 번째 실행인지 알려 준다. 매 프레임까지는 필요 없는 반복 작업에 좋다.',
     g:[['ev','!타이머','2초마다'],['var','변수에 더하기','점수 + 1']],cs:'float t;\nvoid Update()\n{\n    t += Time.deltaTime;\n    if (t >= 2) { t = 0; score += 1; }\n}'},
-  'ev.btn':{d:'플레이 중 UI 버튼을 누르면 흐름이 나갑니다. 「버튼」 단추를 누르면 계층 구조처럼 UI 화면과 버튼이 나와요. 버튼을 고르면 그 버튼만, 화면(폴더)을 고르면 그 화면의 아무 버튼, 「아무 버튼」은 모든 버튼을 받아요. 매니저나 어느 오브젝트에 붙여도 됩니다. 「자신」은 이 그래프를 붙인 UI 요소를 누를 때예요.',
+  'ev.btn':{d:'플레이 중 UI 버튼을 누르면 흐름이 나간다. 「버튼」 단추를 누르면 계층 구조처럼 UI 화면과 버튼이 나온다. 버튼을 고르면 그 버튼만, 화면(폴더)을 고르면 그 화면의 아무 버튼, 「아무 버튼」은 모든 버튼을 받는다. 매니저나 어느 오브젝트에 붙여도 된다. 「자신」은 이 그래프를 붙인 UI 요소를 누를 때이다.',
     g:[['ev','!버튼을 누르면','메인 메뉴 · 시작'],['game','UI 화면 열기 / 닫기','닫기 · 메인 메뉴'],['game','씬 불러오기','"마을"']],cs:'// 버튼에 붙인 C# 스크립트\nvoid OnClick()\n{\n    UIScreen.Hide("메인 메뉴");\n    SceneManager.LoadScene("마을");\n}'},
-  'ev.screen':{d:'게임 화면을 클릭(터치)하면 흐름이 나갑니다. UI 버튼을 누른 것은 빠져요. 화면 X · Y는 게임 화면 안의 위치(px), 칸 X · Y는 누른 곳의 씬 칸 위치예요.',
+  'ev.screen':{d:'게임 화면을 클릭(터치)하면 흐름이 나간다. UI 버튼을 누른 것은 빠진다. 화면 X · Y는 게임 화면 안의 위치(px), 칸 X · Y는 누른 곳의 씬 칸 위치이다.',
     g:[['ev','!화면을 클릭하면','왼쪽'],['game','Debug.Log','칸 X']],cs:'void Update()\n{\n    if (Input.GetMouseButtonDown(0))\n        Debug.Log(Input.mousePosition);\n}'},
-  'g.in':{d:'서브그래프 안에서만 씁니다. 바깥 「서브그래프」 노드로 흐름이 들어오면 여기서 시작하고, 바깥에서 넣은 값이 「값」으로 나와요.',
+  'g.in':{d:'서브그래프 안에서만 쓴다. 바깥 「서브그래프」 노드로 흐름이 들어오면 여기서 시작하고, 바깥에서 넣은 값이 「값」으로 나온다.',
     g:[['state','!그래프 입력','값 = 3'],['val','계산','값 × 2'],['state','그래프 출력','결과 = 6']],cs:'// 서브그래프 = 작은 함수\nint Double(int value)\n{\n    return value * 2;\n}'},
-  'if':{d:'「조건」이 참이면 「참」으로, 거짓이면 「거짓」으로 흐름을 나눕니다. 조건 칸에는 비교 · 키를 누르고 있나 같은 참/거짓 값을 잇습니다.',
+  'if':{d:'「조건」이 참이면 「참」으로, 거짓이면 「거짓」으로 흐름을 나눈다. 조건 칸에는 비교 · 키를 누르고 있나 같은 참/거짓 값을 잇는다.',
     g:[['ev','업데이트'],['flow','!만약','조건'],['game','Debug.Log','"가까워!"']],dd:[[1,'val','비교','거리 < 2']],cs:'void Update()\n{\n    if (distance < 2)\n        Debug.Log("가까워!");\n}'},
-  'seq':{d:'들어온 흐름을 1 → 2 → 3 차례로 내보냅니다. 한 이벤트에서 여러 일을 정리해서 잇고 싶을 때 씁니다.',
+  'seq':{d:'들어온 흐름을 1 → 2 → 3 차례로 내보낸다. 한 이벤트에서 여러 일을 정리해서 잇고 싶을 때 쓴다.',
     g:[['ev','시작'],['flow','!순서대로'],['game','Debug.Log','1, 2, 3 차례로']],cs:'void Start()\n{\n    Step1();\n    Step2();\n    Step3();\n}'},
-  'wait':{d:'정한 초만큼 기다린 뒤 다음 노드로 흐름을 넘깁니다. 그동안 게임은 멈추지 않아요 (C#의 코루틴 + WaitForSeconds와 같음).',
+  'wait':{d:'정한 초만큼 기다린 뒤 다음 노드로 흐름을 넘긴다. 그동안 게임은 멈추지 않는다 (C#의 코루틴 + WaitForSeconds와 같음).',
     g:[['ev','시작'],['flow','!기다리기','1초'],['game','알림 메시지','"시작!"']],cs:'IEnumerator Start()\n{\n    yield return new WaitForSeconds(1);\n    Message.Show("시작!");\n}'},
-  'for':{d:'「처음」부터 「끝」 바로 앞까지 번호를 하나씩 늘리며 「반복할 일」을 실행합니다. 다 돌면 「끝나면」으로 나가요.',
+  'for':{d:'「처음」부터 「끝」 바로 앞까지 번호를 하나씩 늘리며 「반복할 일」을 실행한다. 다 돌면 「끝나면」으로 나간다.',
     g:[['ev','시작'],['flow','!반복','0 ~ 3'],['game','Debug.Log','번호']],cs:'for (int i = 0; i < 3; i++)\n{\n    Debug.Log(i);\n}'},
-  'once':{d:'처음 들어온 흐름만 「처음 한 번」으로 보내고, 그 다음부터는 「그 다음부터」로 보냅니다. 「다시 열기」로 처음 상태로 되돌려요.',
+  'once':{d:'처음 들어온 흐름만 「처음 한 번」으로 보내고, 그 다음부터는 「그 다음부터」로 보낸다. 「다시 열기」로 처음 상태로 되돌린다.',
     g:[['ev','엔진 메시지','OnInteract'],['flow','!한 번만'],['game','대화창 보이기','첫 인사']],cs:'bool done;\nvoid OnInteract()\n{\n    if (!done) { done = true; Dialog.Show("촌장", "처음 보는 얼굴이군"); }\n    else Dialog.Show("촌장", "또 왔구나");\n}'},
-  'g.out':{d:'서브그래프 안에서만 씁니다. 흐름이 여기에 닿으면 바깥 「서브그래프」 노드의 「다음」으로 나가고, 「결과」 값을 돌려줘요.',
+  'g.out':{d:'서브그래프 안에서만 쓴다. 흐름이 여기에 닿으면 바깥 「서브그래프」 노드의 「다음」으로 나가고, 「결과」 값을 돌려준다.',
     g:[['state','그래프 입력','값'],['val','계산','값 × 2'],['state','!그래프 출력','결과']],cs:'int Double(int value)\n{\n    return value * 2;  // ← 그래프 출력\n}'},
-  'sub':{d:'그래프 안에 작은 스크립트 그래프를 넣어 묶습니다. 더블클릭으로 안에 들어가 편집해요. 길어진 그래프를 정리하거나 같은 동작을 묶을 때 씁니다.',
+  'sub':{d:'그래프 안에 작은 스크립트 그래프를 넣어 묶는다. 더블클릭으로 안에 들어가 편집한다. 길어진 그래프를 정리하거나 같은 동작을 묶을 때 쓴다.',
     g:[['ev','시작'],['state','!서브그래프','값 = 3'],['game','Debug.Log','결과']],cs:'void Start()\n{\n    int r = Double(3);  // ← 서브그래프\n    Debug.Log(r);\n}'},
-  'smu':{d:'스크립트 그래프 안에 상태 머신을 넣습니다. 「시작」으로 켜고 「멈춤」으로 끄며, 「지금 상태」로 현재 상태 이름을 읽어요. 더블클릭하면 상태 지도가 열립니다.',
+  'smu':{d:'스크립트 그래프 안에 상태 머신을 넣는다. 「시작」으로 켜고 「멈춤」으로 끄며, 「지금 상태」로 현재 상태 이름을 읽는다. 더블클릭하면 상태 지도가 열린다.',
     g:[['ev','시작'],['state','!상태 머신 유닛','대기 → 순찰']],cs:'// C#에서 상태 머신 읽기\nstring s = VisualScript.CurrentState(gameObject);\nDebug.Log(s);'},
-  'st.go':{d:'이 그래프를 품은 상태 그래프를 이름이 같은 상태로 바로 바꿉니다. 화살표(전환)를 그리지 않고도 상태를 옮길 수 있어요.',
+  'st.go':{d:'이 그래프를 품은 상태 그래프를 이름이 같은 상태로 바로 바꾼다. 화살표(전환)를 그리지 않고도 상태를 옮길 수 있다.',
     g:[['ev','키 입력','E'],['state','!상태 바꾸기','"쫓아가기"']],cs:'VisualScript.SetState(gameObject, "쫓아가기");'},
-  'st.done':{d:'지금 상태의 일이 끝났다고 알립니다. 상태 그래프에서 조건이 「상태가 끝나면」인 화살표가 이때 지나가요.',
+  'st.done':{d:'지금 상태의 일이 끝났다고 알린다. 상태 그래프에서 조건이 「상태가 끝나면」인 화살표가 이때 지나간다.',
     g:[['ev','상태 진입'],['flow','기다리기','2초'],['state','!상태 끝내기']],cs:'// 상태 안 그래프에서만 쓰는 노드\n// 조건 「상태가 끝나면」 화살표로 다음 상태에 갑니다'},
-  'st.cur':{d:'바깥 상태 그래프가 지금 어느 상태에 있는지 이름을 돌려줍니다. 비교 노드와 이어 「지금 쉬는 중이면 …」 같은 판단에 씁니다.',
+  'st.cur':{d:'바깥 상태 그래프가 지금 어느 상태에 있는지 이름을 돌려준다. 비교 노드와 이어 「지금 쉬는 중이면 …」 같은 판단에 쓴다.',
     g:[['ev','업데이트'],['game','Debug.Log','내용']],dd:[[1,'state','!현재 상태','"순찰"']],cs:'Debug.Log(VisualScript.CurrentState(gameObject));'},
-  'trig':{d:'이름 붙인 커스텀 이벤트를 보냅니다. 받는 곳은 자신 · 씬 전체 · 이름으로 고른 오브젝트예요. 받는 쪽의 「커스텀 이벤트 받기」와 상태 전환이 함께 반응합니다.',
+  'trig':{d:'이름 붙인 커스텀 이벤트를 보낸다. 받는 곳은 자신 · 씬 전체 · 이름으로 고른 오브젝트이다. 받는 쪽의 「커스텀 이벤트 받기」와 상태 전환이 함께 반응한다.',
     g:[['ev','엔진 메시지','OnInteract'],['send','!커스텀 이벤트 보내기','"문 열기" → 문']],cs:'VisualScript.TriggerOn(GameObject.Find("문"), "문 열기");\n// 씬 전체: VisualScript.TriggerAll("문 열기");'},
-  'cs':{d:'대상 오브젝트에 붙은 C# 스크립트의 메서드를 이름으로 부릅니다. 비주얼 스크립트와 C# 스크립트를 함께 쓸 때 다리 역할을 해요.',
+  'cs':{d:'대상 오브젝트에 붙은 C# 스크립트의 메서드를 이름으로 부른다. 비주얼 스크립트와 C# 스크립트를 함께 쓸 때 다리 역할을 한다.',
     g:[['ev','키 입력','Space'],['send','!C# 메서드 부르기','Attack → 자신']],cs:'// 대상에 붙은 C# 스크립트\nvoid Attack()\n{\n    Debug.Log("공격!");\n}'},
-  'var.get':{d:'변수 값을 읽습니다. 범위: 그래프(이 그래프만) · 오브젝트(이 오브젝트의 모든 머신) · 씬 · 앱(씬이 바뀌어도 유지).',
+  'var.get':{d:'변수 값을 읽는다. 범위: 그래프(이 그래프만) · 오브젝트(이 오브젝트의 모든 머신) · 씬 · 앱(씬이 바뀌어도 유지).',
     g:[['ev','업데이트'],['game','UI 글자 바꾸기','HUD · 점수']],dd:[[1,'var','!변수 가져오기','점수']],cs:'int score = (int)VisualScript.GetVariable(gameObject, "점수");\nUIScreen.SetText("게임 HUD", "점수", "점수 " + score);'},
-  'var.set':{d:'변수에 새 값을 넣습니다. 값 칸에 숫자를 바로 쓰거나 다른 노드의 값을 이을 수 있어요. 「지금 값」으로 넣은 값을 다시 내보냅니다.',
+  'var.set':{d:'변수에 새 값을 넣는다. 값 칸에 숫자를 바로 쓰거나 다른 노드의 값을 이을 수 있다. 「지금 값」으로 넣은 값을 다시 내보낸다.',
     g:[['ev','시작'],['var','!변수 설정','체력 = 10']],cs:'VisualScript.SetVariable(gameObject, "체력", 10);'},
-  'var.add':{d:'숫자 변수에 값을 더합니다 (빼려면 음수). 점수 올리기 · 체력 깎기에 씁니다. 「지금 값」으로 더한 뒤 값을 내보내요.',
+  'var.add':{d:'숫자 변수에 값을 더한다 (빼려면 음수). 점수 올리기 · 체력 깎기에 쓴다. 「지금 값」으로 더한 뒤 값을 내보낸다.',
     g:[['ev','엔진 메시지','OnHit'],['var','!변수에 더하기','체력 + (−1)']],cs:'void OnHit()\n{\n    hp += -1;\n}'},
-  'num':{d:'숫자 하나를 내보내는 값 노드입니다. 여러 곳에 같은 숫자를 이어 줄 때 씁니다.',
+  'num':{d:'숫자 하나를 내보내는 값 노드이다. 여러 곳에 같은 숫자를 이어 줄 때 쓴다.',
     g:[['ev','시작'],['flow','기다리기','초']],dd:[[1,'val','!숫자','1.5']],cs:'float sec = 1.5f;'},
-  'str':{d:'글자(문자열) 하나를 내보내는 값 노드입니다.',
+  'str':{d:'글자(문자열) 하나를 내보내는 값 노드이다.',
     g:[['ev','시작'],['game','Debug.Log','내용']],dd:[[1,'val','!글자','"안녕"']],cs:'Debug.Log("안녕");'},
-  'bool':{d:'참 또는 거짓을 내보내는 값 노드입니다. 「만약」의 조건이나 「켜기 / 끄기」에 잇습니다.',
+  'bool':{d:'참 또는 거짓을 내보내는 값 노드이다. 「만약」의 조건이나 「켜기 / 끄기」에 잇는다.',
     g:[['ev','시작'],['obj','켜기 / 끄기','켜기']],dd:[[1,'val','!참 / 거짓','참']],cs:'gameObject.SetActive(true);'},
-  'math':{d:'두 숫자 A · B로 더하기 · 빼기 · 곱하기 · 나누기 · 나머지 · 작은 값 · 큰 값을 계산합니다.',
+  'math':{d:'두 숫자 A · B로 더하기 · 빼기 · 곱하기 · 나누기 · 나머지 · 작은 값 · 큰 값을 계산한다.',
     g:[['ev','시작'],['var','변수 설정','점수']],dd:[[1,'val','!계산','점수 × 2']],cs:'score = score * 2;\n// 작은 값: Mathf.Min(a, b)'},
-  'cmp':{d:'A와 B를 비교해 참/거짓을 냅니다 (> < ≥ ≤ = ≠). 주로 「만약」의 조건에 잇습니다.',
+  'cmp':{d:'A와 B를 비교해 참/거짓을 낸다 (> < ≥ ≤ = ≠). 주로 「만약」의 조건에 잇는다.',
     g:[['ev','업데이트'],['flow','만약','조건'],['game','알림 메시지','"승리!"']],dd:[[1,'val','!비교','점수 ≥ 10']],cs:'if (score >= 10)\n    Message.Show("승리!");'},
-  'logic':{d:'두 참/거짓 값을 「그리고」(둘 다 참) 또는 「또는」(하나라도 참)으로 묶습니다.',
+  'logic':{d:'두 참/거짓 값을 「그리고」(둘 다 참) 또는 「또는」(하나라도 참)으로 묶는다.',
     g:[['ev','업데이트'],['flow','만약','조건']],dd:[[1,'val','!그리고 / 또는','열쇠 AND 가까움']],cs:'if (hasKey && near)\n    OpenDoor();'},
-  'not':{d:'참은 거짓으로, 거짓은 참으로 뒤집습니다.',
+  'not':{d:'참은 거짓으로, 거짓은 참으로 뒤집는다.',
     g:[['ev','업데이트'],['flow','만약','조건']],dd:[[1,'val','!반대로','열쇠 있음']],cs:'if (!hasKey)\n    Message.Show("열쇠가 필요해");'},
-  'concat':{d:'글자 A 뒤에 B를 이어 붙입니다. 숫자도 글자로 바꿔서 붙어요.',
+  'concat':{d:'글자 A 뒤에 B를 이어 붙인다. 숫자도 글자로 바꿔서 붙는다.',
     g:[['ev','업데이트'],['game','UI 글자 바꾸기','글자']],dd:[[1,'val','!글자 잇기','"점수 " + 점수']],cs:'UIScreen.SetText("게임 HUD", "점수", "점수 " + score);'},
-  'rand':{d:'최소 이상, 최대 미만의 무작위 숫자를 만듭니다. 정수 또는 소수를 고를 수 있어요.',
+  'rand':{d:'최소 이상, 최대 미만의 무작위 숫자를 만든다. 정수 또는 소수를 고를 수 있다.',
     g:[['ev','엔진 메시지','OnInteract'],['game','Debug.Log','내용']],dd:[[1,'val','!무작위 숫자','0 ~ 6']],cs:'int n = Random.Range(0, 6);\nDebug.Log(n);'},
   'time':{d:'시간 값을 읽습니다: 델타 시간(지난 프레임부터 흐른 초) · 플레이 시간 · 이 상태에 머문 시간.',
     g:[['ev','업데이트'],['obj','이동하기','가로']],dd:[[1,'val','!시간','델타 시간']],cs:'transform.Translate(new Vector3(3 * Time.deltaTime, 0, 0));\n// 플레이 시간: Time.time'},
-  'in.key':{d:'고른 키를 지금 누르고 있으면 참을 냅니다. 「만약」과 함께 써서 누르는 동안만 하는 일을 만들어요.',
+  'in.key':{d:'고른 키를 지금 누르고 있으면 참을 낸다. 「만약」과 함께 써서 누르는 동안만 하는 일을 만든다.',
     g:[['ev','업데이트'],['flow','만약','조건'],['obj','이동하기','가로 1']],dd:[[1,'input','!키를 누르고 있나','Shift']],cs:'if (Input.GetKey(KeyCode.LeftShift))\n    transform.Translate(Vector2.right);'},
-  'in.axis':{d:'방향키 · WASD 입력을 숫자로 냅니다. 가로: 왼쪽 −1 · 오른쪽 1, 세로: 위 −1 · 아래 1, 안 누르면 0.',
+  'in.axis':{d:'방향키 · WASD 입력을 숫자로 낸다. 가로: 왼쪽 −1 · 오른쪽 1, 세로: 위 −1 · 아래 1, 안 누르면 0.',
     g:[['ev','업데이트'],['obj','이동하기','가로 · 세로']],dd:[[1,'input','!방향 입력','가로 · 세로']],cs:'float x = Input.GetAxisRaw("Horizontal");\nfloat y = Input.GetAxisRaw("Vertical");\ntransform.Translate(new Vector3(x, y, 0));'},
-  'self':{d:'이 머신이 붙은 오브젝트의 이름을 냅니다. 대사나 로그에 자기 이름을 넣을 때 씁니다.',
+  'self':{d:'이 머신이 붙은 오브젝트의 이름을 낸다. 대사나 로그에 자기 이름을 넣을 때 쓴다.',
     g:[['ev','시작'],['game','Debug.Log','내용']],dd:[[1,'obj','!자신 이름','"상자"']],cs:'Debug.Log(gameObject.name);'},
-  'pos':{d:'대상(자신 · 주인공 · 이름으로 고른 오브젝트)의 칸 위치 X · Y를 냅니다.',
+  'pos':{d:'대상(자신 · 주인공 · 이름으로 고른 오브젝트)의 칸 위치 X · Y를 낸다.',
     g:[['ev','업데이트'],['game','Debug.Log','X']],dd:[[1,'obj','!위치 가져오기','주인공']],cs:'Debug.Log(Hero.main.position.x);'},
-  'dist':{d:'두 오브젝트 사이의 거리(칸)입니다. 기본은 자신 ↔ 주인공이에요. 비교 노드와 이어 「가까이 오면」을 만듭니다.',
+  'dist':{d:'두 오브젝트 사이의 거리(칸)이다. 기본은 자신 ↔ 주인공이다. 비교 노드와 이어 「가까이 오면」을 만든다.',
     g:[['ev','업데이트'],['flow','만약','거리 < 3'],['game','알림 메시지','"들켰다!"']],dd:[[1,'obj','!거리','자신 ↔ 주인공']],cs:'float d = Vector2.Distance(transform.position, Hero.main.position);\nif (d < 3) Message.Show("들켰다!");'},
-  'move':{d:'대상 오브젝트를 가로 · 세로로 정한 칸만큼 옮깁니다. 업데이트에서 델타 시간을 곱하면 부드럽게 움직여요.',
+  'move':{d:'대상 오브젝트를 가로 · 세로로 정한 칸만큼 옮긴다. 업데이트에서 델타 시간을 곱하면 부드럽게 움직인다.',
     g:[['ev','키 입력','→'],['obj','!이동하기','가로 1 · 세로 0']],cs:'if (Input.GetKeyDown(KeyCode.RightArrow))\n    transform.Translate(new Vector3(1, 0, 0));'},
-  'comp.get':{d:'대상 오브젝트의 컴포넌트 값을 읽습니다. 「값」 단추를 누르면 대상에 붙은 컴포넌트(위치 · 주인공 · 애니메이터 · 오디오 소스 · 빛 · 카메라 · 몬스터 · NPC …)와 그 값 목록이 나와요. 애니메이터는 컨트롤러의 파라미터도 고를 수 있어요.',
+  'comp.get':{d:'대상 오브젝트의 컴포넌트 값을 읽는다. 「값」 단추를 누르면 대상에 붙은 컴포넌트(위치 · 주인공 · 애니메이터 · 오디오 소스 · 빛 · 카메라 · 몬스터 · NPC …)와 그 값 목록이 나온다. 애니메이터는 컨트롤러의 파라미터도 고를 수 있다.',
     g:[['ev','업데이트'],['flow','만약','조건']],dd:[[1,'obj','!컴포넌트 값 가져오기','주인공 · 체력']],cs:'Hero hero = GetComponent<Hero>();\nif (hero.hp < 30)\n    Debug.Log("위험!");'},
-  'comp.set':{d:'대상 오브젝트의 컴포넌트 값을 바꿉니다. 「값」에서 고른 종류(숫자 · 글자 · 참/거짓)에 맞게 「새 값」 칸이 바뀌어요. 오디오 소스 「재생 중」을 참으로 하면 재생, 거짓이면 멈춰요. 애니메이터 Trigger 파라미터는 참이면 발동해요.',
+  'comp.set':{d:'대상 오브젝트의 컴포넌트 값을 바꾼다. 「값」에서 고른 종류(숫자 · 글자 · 참/거짓)에 맞게 「새 값」 칸이 바뀐다. 오디오 소스 「재생 중」을 참으로 하면 재생, 거짓이면 멈춘다. 애니메이터 Trigger 파라미터는 참이면 발동한다.',
     g:[['ev','키 입력','Space'],['obj','!컴포넌트 값 바꾸기','애니메이터 · Jump = 참']],cs:'Animator anim = GetComponent<Animator>();\nif (Input.GetKeyDown(KeyCode.Space))\n    anim.SetTrigger("Jump");'},
-  'active':{d:'오브젝트나 UI 요소를 켜거나 끕니다. 꺼진 오브젝트는 보이지 않고 스크립트도 멈춰요.',
+  'active':{d:'오브젝트나 UI 요소를 켜거나 끈다. 꺼진 오브젝트는 보이지 않고 스크립트도 멈춘다.',
     g:[['ev','엔진 메시지','OnInteract'],['obj','!켜기 / 끄기','상자 · 끄기']],cs:'void OnInteract()\n{\n    gameObject.SetActive(false);\n}'},
-  'log':{d:'콘솔 창에 글을 찍습니다. 흐름이 어디까지 왔는지, 값이 얼마인지 확인할 때 가장 많이 써요.',
+  'log':{d:'콘솔 창에 글을 찍는다. 흐름이 어디까지 왔는지, 값이 얼마인지 확인할 때 가장 많이 쓴다.',
     g:[['ev','시작'],['game','!Debug.Log','"안녕 비주얼!"']],cs:'Debug.Log("안녕 비주얼!");'},
-  'msg':{d:'게임 화면에 잠깐 알림 글을 띄웁니다. 「초」 동안 보였다가 사라져요.',
+  'msg':{d:'게임 화면에 잠깐 알림 글을 띄운다. 「초」 동안 보였다가 사라진다.',
     g:[['ev','엔진 메시지','OnHeroEnter'],['game','!알림 메시지','"열쇠 획득" · 2초']],cs:'Message.Show("열쇠 획득", 2f);'},
-  'dialog':{d:'이름과 대사가 있는 대화창을 띄웁니다. 대화창 UI가 연결되어 있으면 그 UI로 보여요.',
-    g:[['ev','엔진 메시지','OnInteract'],['game','!대화창 보이기','상인 · "어서 오세요!"']],cs:'void OnInteract()\n{\n    Dialog.Show("상인", "어서 오세요!");\n}'},
-  'ui':{d:'UI 빌더에서 만든 화면(UI 그룹)을 열거나 닫거나 전환합니다.',
+  'dialog':{d:'이름과 대사가 있는 대화창을 띄운다. 대화창 UI가 연결되어 있으면 그 UI로 보인다.',
+    g:[['ev','엔진 메시지','OnInteract'],['game','!대화창 보이기','상인 · "어서 온다!"']],cs:'void OnInteract()\n{\n    Dialog.Show("상인", "어서 오세요!");\n}'},
+  'ui':{d:'UI 빌더에서 만든 화면(UI 그룹)을 열거나 닫거나 전환한다.',
     g:[['ev','키 입력','Esc'],['game','!UI 화면 열기 / 닫기','전환 · 메인 메뉴']],cs:'if (Input.GetKeyDown(KeyCode.Escape))\n    UIScreen.Toggle("메인 메뉴");'},
-  'ui.text':{d:'UI 화면 안의 요소(글자 · 버튼 …)에 보이는 글자를 바꿉니다. 점수 · 체력 표시에 씁니다.',
+  'ui.text':{d:'UI 화면 안의 요소(글자 · 버튼 …)에 보이는 글자를 바꾼다. 점수 · 체력 표시에 쓴다.',
     g:[['ev','업데이트'],['game','!UI 글자 바꾸기','게임 HUD · 점수']],dd:[[1,'val','글자 잇기','"점수 " + 점수']],cs:'UIScreen.SetText("게임 HUD", "점수", "점수 " + score);'},
-  'ui.val':{d:'UI 요소의 지금 값(슬라이더 · 체크박스 · 입력 상자 …)을 읽습니다.',
+  'ui.val':{d:'UI 요소의 지금 값(슬라이더 · 체크박스 · 입력 상자 …)을 읽는다.',
     g:[['ev','엔진 메시지','OnValueChanged'],['var','변수 설정','음량']],dd:[[1,'game','!UI 값 읽기','설정 창 · 음량']],cs:'float v = UIScreen.GetValue("설정 창", "음량");'},
-  'scene':{d:'이름이 같은 씬으로 넘어갑니다. 흐름은 여기서 끝나요.',
+  'scene':{d:'이름이 같은 씬으로 넘어간다. 흐름은 여기서 끝난다.',
     g:[['ev','엔진 메시지','OnHeroEnter'],['game','!씬 불러오기','"마을"']],cs:'void OnHeroEnter()\n{\n    SceneManager.LoadScene("마을");\n}'},
-  'inv.add':{d:'주인공 소지품에 물건을 넣습니다. 개수를 음수로 하면 뺍니다.',
+  'inv.add':{d:'주인공 소지품에 물건을 넣는다. 개수를 음수로 하면 뺀다.',
     g:[['ev','엔진 메시지','OnInteract'],['game','!소지품 넣기 / 빼기','열쇠 · 1'],['obj','켜기 / 끄기','끄기']],cs:'void OnInteract()\n{\n    Inventory.Add("열쇠", 1);\n    gameObject.SetActive(false);\n}'},
-  'inv.count':{d:'소지품에 그 물건이 몇 개 있는지 냅니다. 0보다 큰지 비교하면 「가지고 있나」가 돼요.',
+  'inv.count':{d:'소지품에 그 물건이 몇 개 있는지 낸다. 0보다 큰지 비교하면 「가지고 있나」가 된다.',
     g:[['ev','엔진 메시지','OnInteract'],['flow','만약','개수 > 0'],['game','알림 메시지','"문이 열렸다"']],dd:[[1,'game','!소지품 개수','열쇠']],cs:'if (Inventory.Count("열쇠") > 0)\n    Message.Show("문이 열렸다");'}
 };
 /* ---- 포트 도움말 (노드의 연결 칸 이름 옆 ? 에 마우스를 올리면 뜸) — '노드:포트' → 짧은 설명 ---- */
 const PEX={
-  'ev.update:dt':'지난 프레임부터 흐른 시간(초)이 나와요. 이동 칸 수에 곱하면 컴퓨터 속도와 상관없이 같은 빠르기로 움직여요.',
-  'ev.custom:arg':'보내는 쪽이 「보낼 값」에 넣은 값이 나와요. 아무것도 안 보냈으면 비어 있어요.',
-  'ev.timer:n':'몇 번째 실행인지 나와요 (1, 2, 3 …).',
-  'ev.btn:name':'누른 버튼의 이름이 나와요. 「아무 버튼」으로 받을 때 비교 노드로 어떤 버튼인지 가를 수 있어요.',
-  'ev.btn:screen':'누른 버튼이 있는 화면(UI 그룹)의 이름이 나와요. 「UI 화면 열기 / 닫기」의 화면에 이으면 그 화면을 닫을 수 있어요.',
-  'ev.screen:x':'누른 곳의 가로 위치예요. 게임 화면 왼쪽 끝이 0인 화면 픽셀이에요.',
-  'ev.screen:y':'누른 곳의 세로 위치예요. 게임 화면 위쪽 끝이 0인 화면 픽셀이에요.',
-  'ev.screen:tx':'누른 곳이 씬의 몇 번째 칸인지(가로) 나와요. 카메라가 움직여도 씬 기준이에요. 「위치 가져오기」의 X와 비교할 수 있어요.',
-  'ev.screen:ty':'누른 곳이 씬의 몇 번째 칸인지(세로) 나와요.',
-  'g.in:value':'바깥 「서브그래프」 노드의 「값」에 넣은 값이 나와요.',
-  'if:cond':'참/거짓 값을 이어요. 보통 「비교」 · 「그리고 / 또는」 · 「키를 누르고 있나」를 잇습니다. 잇지 않으면 체크 칸 값을 써요.',
-  'if:yes':'조건이 참일 때 실행할 노드의 ▶ 입력에 이어요.',
-  'if:no':'조건이 거짓일 때 실행할 노드의 ▶ 입력에 이어요.',
-  'seq:o1':'가장 먼저 실행할 노드에 이어요.','seq:o2':'1 다음에 실행할 노드에 이어요.','seq:o3':'마지막으로 실행할 노드에 이어요.',
-  'wait:sec':'기다릴 시간(초)이에요. 숫자를 바로 쓰거나 「무작위 숫자」 등을 이어요.',
-  'for:first':'처음 번호예요 (보통 0).','for:last':'이 번호 바로 앞까지 돌아요. 3이면 0 · 1 · 2.',
-  'for:body':'번호마다 한 번씩 실행할 노드에 이어요.','for:i':'지금 몇 번째인지 번호가 나와요. 「반복할 일」 안의 노드에 이어 써요.',
-  'for:exit':'반복이 다 끝난 뒤 실행할 노드에 이어요.',
-  'once:reset':'여기로 흐름이 들어오면 다시 「처음 한 번」부터 시작해요.',
-  'once:first':'처음 한 번만 실행할 노드에 이어요.','once:after':'두 번째부터 실행할 노드에 이어요.',
-  'g.out:result':'바깥 「서브그래프」 노드의 「결과」로 돌려줄 값을 이어요.',
-  'sub:value':'서브그래프 안 「그래프 입력」의 「값」으로 넘겨줄 값을 이어요.',
-  'sub:out':'서브그래프 안 일이 끝나면(「그래프 출력」에 닿으면) 다음에 실행할 노드에 이어요.',
-  'sub:result':'서브그래프 안 「그래프 출력」이 돌려준 값이 나와요.',
-  'smu:start':'여기로 흐름이 들어오면 안의 상태 머신을 켜요.','smu:stop':'여기로 흐름이 들어오면 안의 상태 머신을 꺼요.',
-  'smu:out':'켜거나 끈 다음 바로 실행할 노드에 이어요.','smu:state':'안의 상태 머신이 지금 어느 상태인지 이름이 나와요.',
-  'st.cur:name':'바깥 상태 그래프의 지금 상태 이름이 나와요. 「비교」에 이어 「지금 쉬는 중이면 …」을 만들어요.',
-  'trig:arg':'이벤트와 함께 보낼 값을 이어요 (숫자 · 글자 무엇이든). 받는 쪽 「커스텀 이벤트 받기」의 「받은 값」으로 나와요. 비워도 돼요.',
-  'var.get:value':'변수의 지금 값이 나와요.',
-  'var.set:value':'변수에 넣을 값을 이어요. 숫자 · 글자를 바로 쓰거나 계산 결과를 이어요.',
-  'var.set:now':'방금 넣은 값이 그대로 나와요. Debug.Log 등에 이어 확인할 때 써요.',
-  'var.add:amount':'더할 값이에요. 빼려면 음수(−1)를 써요.',
-  'var.add:now':'더한 뒤의 값이 나와요. 「비교」에 이어 「10점이 되면」을 만들어요.',
-  'math:a':'계산할 첫 번째 숫자예요.','math:b':'계산할 두 번째 숫자예요.','math:r':'계산 결과 숫자가 나와요.',
-  'cmp:a':'비교할 첫 번째 값이에요 (숫자 · 글자).','cmp:b':'비교할 두 번째 값이에요.',
-  'cmp:r':'비교가 맞으면 참이 나와요. 「만약」의 「조건」에 이어요.',
-  'logic:a':'첫 번째 참/거짓 값이에요.','logic:b':'두 번째 참/거짓 값이에요.','logic:r':'묶은 결과 참/거짓이 나와요. 「만약」의 「조건」에 이어요.',
-  'concat:a':'앞에 올 글자예요.','concat:b':'뒤에 붙일 글자예요. 숫자를 이어도 글자로 바뀌어 붙어요.',
-  'rand:min':'나올 수 있는 가장 작은 수예요.','rand:max':'이 수보다 작은 수까지 나와요 (이 수는 안 나와요).',
-  'in.axis:x':'왼쪽 −1 · 오른쪽 1 · 안 누르면 0. 「이동하기」의 가로에 이어요.',
-  'in.axis:y':'위 −1 · 아래 1 · 안 누르면 0. 「이동하기」의 세로에 이어요.',
-  'pos:x':'대상의 가로 칸 위치가 나와요.','pos:y':'대상의 세로 칸 위치가 나와요.',
-  'dist:d':'두 오브젝트 사이 거리(칸)가 나와요. 「비교」에 이어 「3칸보다 가까우면」을 만들어요.',
-  'move:dx':'가로로 옮길 칸 수예요. 오른쪽 +, 왼쪽 −.','move:dy':'세로로 옮길 칸 수예요. 아래 +, 위 −.',
-  'active:on':'참이면 켜고, 거짓이면 꺼요. 체크 칸을 쓰거나 참/거짓 값을 이어요.',
-  'log:msg':'콘솔에 찍을 내용이에요. 숫자 · 글자 · 참/거짓 무엇이든 이을 수 있어요.',
-  'msg:text':'화면에 띄울 글이에요.','msg:sec':'글이 떠 있을 시간(초)이에요.',
-  'dialog:name':'대화창에 보일 말하는 사람 이름이에요. 비워도 돼요.','dialog:text':'대화창에 보일 대사예요.',
-  'ui:screen':'열거나 닫을 화면(UI 그룹) 이름이에요. 「버튼을 누르면」의 「화면 이름」을 이으면 누른 버튼의 화면이 돼요.',
-  'ui.text:screen':'글자를 바꿀 요소가 있는 화면(UI 그룹) 이름이에요.','ui.text:el':'글자를 바꿀 요소(텍스트 · 버튼) 이름이에요.',
-  'ui.text:text':'새로 보일 글자예요. 「글자 잇기」로 \"점수 \" + 점수 처럼 만들어 이어요.',
-  'ui.val:screen':'값을 읽을 요소가 있는 화면 이름이에요.','ui.val:el':'값을 읽을 요소(슬라이더 · 체크박스 · 입력 상자) 이름이에요.',
-  'ui.val:r':'요소의 지금 값이 나와요 (슬라이더는 숫자, 체크박스는 참/거짓, 입력 상자는 글자).',
-  'scene:name':'불러올 씬 이름이에요. 프로젝트 패널의 씬 이름과 똑같이 써요.',
-  'inv.add:item':'넣거나 뺄 물건 이름이에요.','inv.add:n':'넣을 개수예요. 빼려면 음수(−1)를 써요.',
-  'inv.count:item':'개수를 셀 물건 이름이에요.',
-  'comp.get:value':'고른 컴포넌트 값이 나와요. 종류(숫자 · 글자 · 참/거짓)는 「값」에서 고른 것에 따라 정해져요.',
-  'comp.set:value':'컴포넌트에 넣을 새 값이에요. 칸에 바로 쓰거나, 계산 · 변수 · 다른 컴포넌트 값을 이어요.'
+  'ev.update:dt':'지난 프레임부터 흐른 시간(초)이 나온다. 이동 칸 수에 곱하면 컴퓨터 속도와 상관없이 같은 빠르기로 움직인다.',
+  'ev.custom:arg':'보내는 쪽이 「보낼 값」에 넣은 값이 나온다. 아무것도 안 보냈으면 비어 있다.',
+  'ev.timer:n':'몇 번째 실행인지 나온다 (1, 2, 3 …).',
+  'ev.btn:name':'누른 버튼의 이름이 나온다. 「아무 버튼」으로 받을 때 비교 노드로 어떤 버튼인지 가를 수 있다.',
+  'ev.btn:screen':'누른 버튼이 있는 화면(UI 그룹)의 이름이 나온다. 「UI 화면 열기 / 닫기」의 화면에 이으면 그 화면을 닫을 수 있다.',
+  'ev.screen:x':'누른 곳의 가로 위치이다. 게임 화면 왼쪽 끝이 0인 화면 픽셀이다.',
+  'ev.screen:y':'누른 곳의 세로 위치이다. 게임 화면 위쪽 끝이 0인 화면 픽셀이다.',
+  'ev.screen:tx':'누른 곳이 씬의 몇 번째 칸인지(가로) 나온다. 카메라가 움직여도 씬 기준이다. 「위치 가져오기」의 X와 비교할 수 있다.',
+  'ev.screen:ty':'누른 곳이 씬의 몇 번째 칸인지(세로) 나온다.',
+  'g.in:value':'바깥 「서브그래프」 노드의 「값」에 넣은 값이 나온다.',
+  'if:cond':'참/거짓 값을 잇는다. 보통 「비교」 · 「그리고 / 또는」 · 「키를 누르고 있나」를 잇는다. 잇지 않으면 체크 칸 값을 쓴다.',
+  'if:yes':'조건이 참일 때 실행할 노드의 ▶ 입력에 잇는다.',
+  'if:no':'조건이 거짓일 때 실행할 노드의 ▶ 입력에 잇는다.',
+  'seq:o1':'가장 먼저 실행할 노드에 잇는다.','seq:o2':'1 다음에 실행할 노드에 잇는다.','seq:o3':'마지막으로 실행할 노드에 잇는다.',
+  'wait:sec':'기다릴 시간(초)이다. 숫자를 바로 쓰거나 「무작위 숫자」 등을 잇는다.',
+  'for:first':'처음 번호이다 (보통 0).','for:last':'이 번호 바로 앞까지 돈다. 3이면 0 · 1 · 2.',
+  'for:body':'번호마다 한 번씩 실행할 노드에 잇는다.','for:i':'지금 몇 번째인지 번호가 나온다. 「반복할 일」 안의 노드에 이어 쓴다.',
+  'for:exit':'반복이 다 끝난 뒤 실행할 노드에 잇는다.',
+  'once:reset':'여기로 흐름이 들어오면 다시 「처음 한 번」부터 시작한다.',
+  'once:first':'처음 한 번만 실행할 노드에 잇는다.','once:after':'두 번째부터 실행할 노드에 잇는다.',
+  'g.out:result':'바깥 「서브그래프」 노드의 「결과」로 돌려줄 값을 잇는다.',
+  'sub:value':'서브그래프 안 「그래프 입력」의 「값」으로 넘겨줄 값을 잇는다.',
+  'sub:out':'서브그래프 안 일이 끝나면(「그래프 출력」에 닿으면) 다음에 실행할 노드에 잇는다.',
+  'sub:result':'서브그래프 안 「그래프 출력」이 돌려준 값이 나온다.',
+  'smu:start':'여기로 흐름이 들어오면 안의 상태 머신을 켠다.','smu:stop':'여기로 흐름이 들어오면 안의 상태 머신을 끈다.',
+  'smu:out':'켜거나 끈 다음 바로 실행할 노드에 잇는다.','smu:state':'안의 상태 머신이 지금 어느 상태인지 이름이 나온다.',
+  'st.cur:name':'바깥 상태 그래프의 지금 상태 이름이 나온다. 「비교」에 이어 「지금 쉬는 중이면 …」을 만든다.',
+  'trig:arg':'이벤트와 함께 보낼 값을 잇는다 (숫자 · 글자 무엇이든). 받는 쪽 「커스텀 이벤트 받기」의 「받은 값」으로 나온다. 비워도 된다.',
+  'var.get:value':'변수의 지금 값이 나온다.',
+  'var.set:value':'변수에 넣을 값을 잇는다. 숫자 · 글자를 바로 쓰거나 계산 결과를 잇는다.',
+  'var.set:now':'방금 넣은 값이 그대로 나온다. Debug.Log 등에 이어 확인할 때 쓴다.',
+  'var.add:amount':'더할 값이다. 빼려면 음수(−1)를 쓴다.',
+  'var.add:now':'더한 뒤의 값이 나온다. 「비교」에 이어 「10점이 되면」을 만든다.',
+  'math:a':'계산할 첫 번째 숫자이다.','math:b':'계산할 두 번째 숫자이다.','math:r':'계산 결과 숫자가 나온다.',
+  'cmp:a':'비교할 첫 번째 값이다 (숫자 · 글자).','cmp:b':'비교할 두 번째 값이다.',
+  'cmp:r':'비교가 맞으면 참이 나온다. 「만약」의 「조건」에 잇는다.',
+  'logic:a':'첫 번째 참/거짓 값이다.','logic:b':'두 번째 참/거짓 값이다.','logic:r':'묶은 결과 참/거짓이 나온다. 「만약」의 「조건」에 잇는다.',
+  'concat:a':'앞에 올 글자이다.','concat:b':'뒤에 붙일 글자이다. 숫자를 이어도 글자로 바뀌어 붙는다.',
+  'rand:min':'나올 수 있는 가장 작은 수이다.','rand:max':'이 수보다 작은 수까지 나온다 (이 수는 안 나온다).',
+  'in.axis:x':'왼쪽 −1 · 오른쪽 1 · 안 누르면 0. 「이동하기」의 가로에 잇는다.',
+  'in.axis:y':'위 −1 · 아래 1 · 안 누르면 0. 「이동하기」의 세로에 잇는다.',
+  'pos:x':'대상의 가로 칸 위치가 나온다.','pos:y':'대상의 세로 칸 위치가 나온다.',
+  'dist:d':'두 오브젝트 사이 거리(칸)가 나온다. 「비교」에 이어 「3칸보다 가까우면」을 만든다.',
+  'move:dx':'가로로 옮길 칸 수이다. 오른쪽 +, 왼쪽 −.','move:dy':'세로로 옮길 칸 수이다. 아래 +, 위 −.',
+  'active:on':'참이면 켜고, 거짓이면 끈다. 체크 칸을 쓰거나 참/거짓 값을 잇는다.',
+  'log:msg':'콘솔에 찍을 내용이다. 숫자 · 글자 · 참/거짓 무엇이든 이을 수 있다.',
+  'msg:text':'화면에 띄울 글이다.','msg:sec':'글이 떠 있을 시간(초)이다.',
+  'dialog:name':'대화창에 보일 말하는 사람 이름이다. 비워도 된다.','dialog:text':'대화창에 보일 대사이다.',
+  'ui:screen':'열거나 닫을 화면(UI 그룹) 이름이다. 「버튼을 누르면」의 「화면 이름」을 이으면 누른 버튼의 화면이 된다.',
+  'ui.text:screen':'글자를 바꿀 요소가 있는 화면(UI 그룹) 이름이다.','ui.text:el':'글자를 바꿀 요소(텍스트 · 버튼) 이름이다.',
+  'ui.text:text':'새로 보일 글자이다. 「글자 잇기」로 \"점수 \" + 점수 처럼 만들어 잇는다.',
+  'ui.val:screen':'값을 읽을 요소가 있는 화면 이름이다.','ui.val:el':'값을 읽을 요소(슬라이더 · 체크박스 · 입력 상자) 이름이다.',
+  'ui.val:r':'요소의 지금 값이 나온다 (슬라이더는 숫자, 체크박스는 참/거짓, 입력 상자는 글자).',
+  'scene:name':'불러올 씬 이름이다. 프로젝트 패널의 씬 이름과 똑같이 쓴다.',
+  'inv.add:item':'넣거나 뺄 물건 이름이다.','inv.add:n':'넣을 개수이다. 빼려면 음수(−1)를 쓴다.',
+  'inv.count:item':'개수를 셀 물건 이름이다.',
+  'comp.get:value':'고른 컴포넌트 값이 나온다. 종류(숫자 · 글자 · 참/거짓)는 「값」에서 고른 것에 따라 정해진다.',
+  'comp.set:value':'컴포넌트에 넣을 새 값이다. 칸에 바로 쓰거나, 계산 · 변수 · 다른 컴포넌트 값을 잇는다.'
 };
-const PTY={flow:['흐름','다음에 실행할 노드의 ▶ 입력에 이어요.','앞 노드의 흐름(▶) 출력을 이어요.'],
+const PTY={flow:['흐름','다음에 실행할 노드의 ▶ 입력에 잇는다.','앞 노드의 흐름(▶) 출력을 잇는다.'],
   num:['숫자','숫자 · 계산 · 무작위 숫자 · 변수 가져오기 · 시간 같은 숫자 값','계산 · 비교 · 이동하기 · Debug.Log 같은 숫자를 받는 칸'],
   str:['글자','글자 · 글자 잇기 · 버튼 이름 · 자신 이름 같은 글자 값','글자 잇기 · 비교 · 대화창 · UI 글자 같은 글자를 받는 칸'],
   bool:['참/거짓','비교 · 그리고 / 또는 · 반대로 · 키를 누르고 있나','만약의 조건 · 그리고 / 또는 · 켜기 / 끄기'],
@@ -552,7 +552,7 @@ const usersOf=gid=>{const out=[];if(!P)return out;(P.mgrs||[]).forEach(o=>(o.vs|
 
 /* ===================== 실행기 (플레이 중) =====================
    머신(M) = 컴포넌트 하나 · 흐름 인스턴스(FI) = 스크립트 그래프 하나 · 상태 인스턴스(SI) = 상태 그래프 하나 */
-const R={on:false,mach:new Map(),ovars:new Map(),svars:{},avars:{},mid:null,mo:null,hot:new Map(),cur:new Map(),log:[],t0:0,depth:0,logUpd:false};
+const R={on:false,mach:new Map(),pend:new Map(),ovars:new Map(),svars:{},avars:{},mid:null,mo:null,hot:new Map(),cur:new Map(),log:[],t0:0,depth:0,logUpd:false};
 const HOTMS=700;
 function hot(M,id){R.hot.set(M.owner.id+'|'+id,now())}
 function rlog(M,kind,txt){if(!M)return;const e={tm:play?play.tm:0,who:M.owner.name||'',g:M.gname,kind,txt};R.log.push(e);if(R.log.length>80)R.log.shift();R.dirty=true}
@@ -684,7 +684,7 @@ function tgt(M,to,tname){if(to==='name'){const o=findOwner(M.m,String(tname||'')
 /* 커스텀 이벤트 · 메시지를 소유자의 모든 머신에 */
 function sendTo(o,name,arg,from){
   if(!o||!o.vs)return 0;let n=0;
-  for(const c of o.vs){const M=R.mach.get(o.id+'|'+c.id);if(!M)continue;n+=dispatch(M,{t:'event',name,arg},from)}
+  for(const c of o.vs){if(c.on===false)continue;const M=R.mach.get(o.id+'|'+c.id);if(!M)continue;n+=dispatch(M,{t:'event',name,arg},from)}
   return n;
 }
 function dispatch(M,ev,from){
@@ -726,14 +726,14 @@ function ctx(fi,n,port){
   return cx;
 }
 /* ---- 엔진에서 부르는 것 ---- */
-function playStart(){R.on=true;R.mach.clear();R.ovars.clear();R.svars={};R.avars={};R.mid=null;R.mo=null;R.hot.clear();R.cur.clear();R.log=[];R.dirty=true;
+function playStart(){R.on=true;R.mach.clear();R.pend.clear();R.ovars.clear();R.svars={};R.avars={};R.mid=null;R.mo=null;R.hot.clear();R.cur.clear();R.log=[];R.dirty=true;
   /* 컴포넌트에 넣어 둔 오브젝트 변수 초기값 */
   flowUi(true);}
-function playStop(){R.on=false;R.mach.clear();R.cur.clear();flowUi(false);paintLive(true)}
+function playStop(){R.on=false;R.mach.clear();R.pend.clear();R.cur.clear();flowUi(false);paintLive(true)}
 /* 모든 머신에 「이 노드가 맞으면 실행」 (버튼 · 화면 클릭) */
 function dispatchAll(m,match,slots){
   if(!R.on)return 0;let n=0;
-  for(const M of [...R.mach.values()]){if(!R.on)break;if(!ownerLive(M))continue;R.depth++;
+  for(const M of [...R.mach.values()]){if(!R.on)break;if(!ownerLive(M)||M.comp.on===false)continue;R.depth++;
     try{n+=M.root.kind==='flow'?fiEvent(M.root,n0=>match(n0,M),slots,true,null):siEvent(M.root,n0=>match(n0,M),slots,null)}finally{R.depth--}}
   return n;
 }
@@ -758,25 +758,28 @@ function msg(m,o,fns){
   if(!R.on||!o||!o.vs||!o.vs.length)return;
   for(const fn of fns){
     if(fn==='Awake')continue;
-    if(fn==='Start'){if(R.mo!==m&&!isMgr(o)){sceneSwap(m)}o.vs.forEach(c=>{if(R.on)startMachine(m,o,c)});continue}
-    o.vs.forEach(c=>{const M=R.mach.get(o.id+'|'+c.id);if(M&&R.on)dispatch(M,{t:'event',name:fn,arg:null})});
+    /* 꺼진 머신 (인스펙터 체크박스): 켜질 때까지 시작을 미루고 메시지도 받지 않음 */
+    if(fn==='Start'){if(R.mo!==m&&!isMgr(o)){sceneSwap(m)}o.vs.forEach(c=>{if(!R.on)return;if(c.on===false){R.pend.set(o.id+'|'+c.id,{m,o,c});return}startMachine(m,o,c)});continue}
+    o.vs.forEach(c=>{if(c.on===false)return;const M=R.mach.get(o.id+'|'+c.id);if(M&&R.on)dispatch(M,{t:'event',name:fn,arg:null})});
   }
 }
 function sceneSwap(m){
   /* 씬이 바뀜: 그 씬의 머신만 남기고(매니저는 이어짐) 씬 변수 초기화 */
   R.mid=m.id;R.mo=m;R.svars={};
-  [...R.mach.values()].forEach(M=>{if(!isMgr(M.owner)&&M.m!==m)R.mach.delete(M.key)});R.dirty=true;
+  [...R.mach.values()].forEach(M=>{if(!isMgr(M.owner)&&M.m!==m)R.mach.delete(M.key)});[...R.pend].forEach(([k,q])=>{if(!isMgr(q.o)&&q.m!==m)R.pend.delete(k)});R.dirty=true;
 }
 function tick(m,dt,uiOnly){
   if(!R.on||!play)return;
   if(R.mo!==m)sceneSwap(m);
   play.vsDt=dt;
+  /* 꺼진 채로 시작을 미룬 머신: 켜지면 그때 시작 */
+  if(R.pend.size)for(const [k,q] of [...R.pend]){if(q.c.on===false)continue;R.pend.delete(k);if(R.mach.has(k))continue;if(!(q.o.vs||[]).includes(q.c))continue;startMachine(isMgr(q.o)?m:q.m,q.o,q.c);if(!R.on||!play||play.m!==m)return}
   const list=[...R.mach.values()];
   for(const M of list){
     if(!R.on||!play||play.m!==m)return;
     if(!R.mach.has(M.key))continue;
     if(isMgr(M.owner))M.m=m;
-    if(!ownerLive(M))continue;
+    if(!ownerLive(M)||M.comp.on===false)continue;
     if(uiOnly&&!isUiEl(M.owner))continue;
     M.steps=0;
     /* 기다리기 끝난 것 이어서 */
@@ -847,7 +850,7 @@ function flowPaint(){
   const ms=[...R.mach.values()].filter(ownerLive);
   FE.querySelector('.vfm').innerHTML=ms.map(M=>{const sp=statePath(M);return`<div class="vfmr"><i class="vfk" style="--c:${M.root.kind==='state'?EC.FUNC:EC.FLOW}"></i><b data-i18n-skip>${ex(M.owner.name)}</b><span class="vfg" data-i18n-skip>${ex(M.gname)}</span>${sp.length?`<span class="vfst" data-i18n-skip>${sp.map(ex).join(' ▸ ')}</span>`:''}</div>`}).join('');
   const L0=R.log.slice(-14).reverse();
-  FE.querySelector('.vfl').innerHTML=L0.length?L0.map((e,i)=>{const k=KIND[e.kind]||KIND.event;return`<div class="vfe${i===0?' new':''}"><span class="vft">${(e.tm||0).toFixed(1)}s</span><i style="background:${k[1]}"></i><span class="vfw" data-i18n-skip>${ex(e.who)}</span><span class="vfx2" data-i18n-skip>${ex(e.txt)}</span></div>`}).join(''):`<div class="vfe0">${ex(L10('아직 이벤트가 없습니다'))}</div>`;
+  FE.querySelector('.vfl').innerHTML=L0.length?L0.map((e,i)=>{const k=KIND[e.kind]||KIND.event;return`<div class="vfe${i===0?' new':''}"><span class="vft">${(e.tm||0).toFixed(1)}s</span><i style="background:${k[1]}"></i><span class="vfw" data-i18n-skip>${ex(e.who)}</span><span class="vfx2" data-i18n-skip>${ex(e.txt)}</span></div>`}).join(''):`<div class="vfe0">${ex(L10('아직 이벤트가 없다'))}</div>`;
 }
 /* 업데이트 이벤트 기록 (켜 둔 경우만 · 0.5초마다 한 번) */
 let updLogT=0;
@@ -922,8 +925,8 @@ function render(){
     <div class="vgsel"><button type="button" class="vgpick" id="vsPick" title="${ex(L10('그래프 고르기 · 새로 만들기'))}">${root?(root.kind==='state'?IC.state:IC.flow):IC.flow}<span data-i18n-skip>${ex(root?root.name:L10('그래프 없음'))}</span><svg class="cv" viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button></div>
     ${E.path.length?`<nav class="vcrumb" aria-label="${ex(L10('그래프 위치'))}"><button type="button" class="ib vup" id="vsUp" title="${ex(L10('바깥 그래프로 (Backspace)'))}">${IC.up}</button>${crumbsH}</nav>`:`<span class="vkind">${root?(root.kind==='state'?L10('상태 그래프 · 상태 머신'):L10('스크립트 그래프 · 스크립트 머신')):''}</span>`}
     <span class="vsp"></span>
-    ${R.on&&dbgOpts.length?`<label class="vdbg" title="${ex(L10('플레이 중 흐름을 볼 오브젝트'))}"><i class="vlive"></i><select id="vsDbg">${dbgOpts.map(M=>`<option value="${ex(M.owner.id)}"${M.owner.id===E.dbg?' selected':''} data-i18n-skip>${ex(M.owner.name)}</option>`).join('')}</select></label>`:R.on?`<span class="vdbg off"><i class="vlive"></i>${L10('이 그래프를 쓰는 오브젝트가 실행 중이 아닙니다')}</span>`:''}
-    ${canAttach?`<button type="button" class="btn sm pri" id="vsAttach" title="${ex(L10('인스펙터에서 고른 오브젝트에 이 그래프를 컴포넌트로 붙입니다'))}">${IC.plus}<span>${L10('붙이기')}:</span><b data-i18n-skip>${ex(own.name)}</b></button>`:''}
+    ${R.on&&dbgOpts.length?`<label class="vdbg" title="${ex(L10('플레이 중 흐름을 볼 오브젝트'))}"><i class="vlive"></i><select id="vsDbg">${dbgOpts.map(M=>`<option value="${ex(M.owner.id)}"${M.owner.id===E.dbg?' selected':''} data-i18n-skip>${ex(M.owner.name)}</option>`).join('')}</select></label>`:R.on?`<span class="vdbg off"><i class="vlive"></i>${L10('이 그래프를 쓰는 오브젝트가 실행 중이 아니다')}</span>`:''}
+    ${canAttach?`<button type="button" class="btn sm pri" id="vsAttach" title="${ex(L10('인스펙터에서 고른 오브젝트에 이 그래프를 컴포넌트로 붙인다'))}">${IC.plus}<span>${L10('붙이기')}:</span><b data-i18n-skip>${ex(own.name)}</b></button>`:''}
     <button type="button" class="ib" id="vsSet" title="${ex(L10('비주얼 스크립트 설정'))}">${ico('gear')}</button>
     <button type="button" class="ib" id="vsFit" title="${ex(L10('전체 보기 (F)'))}">${IC.fit}</button>
     <button type="button" class="ib${E.lib?' on':''}" id="vsLibT" title="${ex(L10('노드 목록 보이기/숨기기'))}">${IC.lib}</button>
@@ -943,12 +946,12 @@ function render(){
   if(keepF){const c=VQ('#vsCv',BOX)||BOX;try{c.focus({preventScroll:true})}catch(e){}}
   paintLive(true);
 }
-function emptyHtml(){return`<div class="vemp"><div class="vemi">${IC.flow}</div><h3>${L10('비주얼 스크립트')}</h3><p>${L10('노드를 선으로 이어 코드 없이 동작을 만들어요.')}</p><div class="vemb"><button type="button" class="btn pri" data-new="flow">${IC.flow}${L10('새 스크립트 그래프')}</button><button type="button" class="btn" data-new="state">${IC.state}${L10('새 상태 그래프')}</button></div></div>`}
+function emptyHtml(){return`<div class="vemp"><div class="vemi">${IC.flow}</div><h3>${L10('비주얼 스크립트')}</h3><p>${L10('노드를 선으로 이어 코드 없이 동작을 만든다.')}</p><div class="vemb"><button type="button" class="btn pri" data-new="flow">${IC.flow}${L10('새 스크립트 그래프')}</button><button type="button" class="btn" data-new="state">${IC.state}${L10('새 상태 그래프')}</button></div></div>`}
 function libHtml(g){
   const q=E.libQ.trim().toLowerCase();
   if(g.kind==='state'){
     return`<div class="vlh">${L10('상태 추가')}</div><div class="vlst"><button type="button" class="vli" data-addst="flow">${IC.flow}<span>${L10('스크립트 상태')}</span><small>${L10('안에 스크립트 그래프')}</small></button><button type="button" class="vli" data-addst="super">${IC.state}<span>${L10('상위 상태')}</span><small>${L10('안에 또 상태 그래프')}</small></button></div>
-    <div class="vltip"><b>${L10('큰 지도 (상태 머신)')}</b><p>${L10('상태 = 지금 하고 있는 일 (예: 대기 · 쫓아가기 · 대화). 화살표 = 언제 다른 일로 바꿀지.')}</p><p>${L10('각 상태 안에는 스크립트 그래프가 있어 세부 작업을 처리해요. 그 안에서 「상태 바꾸기」 · 「상태 끝내기」 · 「커스텀 이벤트 보내기」로 이 지도를 움직일 수 있어요.')}</p></div>`;
+    <div class="vltip"><b>${L10('큰 지도 (상태 머신)')}</b><p>${L10('상태 = 지금 하고 있는 일 (예: 대기 · 쫓아가기 · 대화). 화살표 = 언제 다른 일로 바꿀지.')}</p><p>${L10('각 상태 안에는 스크립트 그래프가 있어 세부 작업을 처리한다. 그 안에서 「상태 바꾸기」 · 「상태 끝내기」 · 「커스텀 이벤트 보내기」로 이 지도를 움직일 수 있다.')}</p></div>`;
   }
   const md=mode();
   const ok=t=>{const d=NT[t];if(d.only==='state'&&md!=='state')return false;if(d.only==='sub'&&md!=='sub')return false;return true};
@@ -956,7 +959,7 @@ function libHtml(g){
   return`<div class="vlq"><input type="search" id="vsLibQ" placeholder="${ex(L10('노드 검색'))}" value="${ex(E.libQ)}" autocomplete="off" spellcheck="false"></div><div class="vll">`+
     CATS.map(([c,cn])=>{const L0=items.filter(t=>NT[t].cat===c);if(!L0.length)return'';const shut=!q&&!E.libOpen[c];
       return`<div class="vlc${shut?' vshut':''}"><button type="button" class="vlch" data-vfold="${c}" aria-expanded="${!shut}"><svg class="vchev" viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2l3 3-3 3"/></svg><i style="background:${CATC[c]}"></i><span>${L10(cn)}</span><small>${L0.length}</small></button><div class="vlcb">${L0.map(t=>`<button type="button" class="vln" data-add="${t}" draggable="true" style="--cc:${CATC[c]};--ch:${CATH[c]};--cd:${CATD[c]}"><span class="vlnt">${ex(L10(NT[t].label))}</span>${helpOn()?`<span class="vnq" data-nq="${t}" aria-label="${ex(L10('도움말'))}">?</span>`:''}</button>`).join('')}</div></div>`}).join('')+
-    (items.length?'':`<p class="vlnone">${L10('검색 결과가 없습니다')}</p>`)+'</div>';
+    (items.length?'':`<p class="vlnone">${L10('검색 결과가 없다')}</p>`)+'</div>';
 }
 function portHtml(n,p,io,g){
   const [k,lb,ty]=p,qh=lb&&helpOn()?`<i class="vpq" data-pq="${ex(n.t+'|'+k+'|'+io)}" aria-label="${ex(L10('도움말'))}">?</i>`:'',linked=g.links.some(l=>io==='i'?l.b===n.id&&l.bp===k:l.a===n.id&&l.ap===k);
@@ -976,7 +979,7 @@ function tpickBtn(spec,to,tname,attr){to=to||'self';let ic='cube',col=EC.MOVING,
   if(to==='self'){ic='target';col=EC.START}else if(to==='hero'){ic='user';col='#4cd98a'}else if(to==='all'){ic='scene';col=EC.HARDWARE}
   else{const o=findOwnerEd(tname);if(o){const r=ownerLook(o);ic=r.icon;col=r.color}lb=tname||L10('오브젝트 고르기')}
   const miss=to==='name'&&tname&&!findOwnerEd(tname);
-  return`<button type="button" class="vtp${miss?' miss':''}" ${attr} title="${ex(miss?L10('지금 씬에서 「{n}」을(를) 찾을 수 없어요',{n:tname}):L10('대상 고르기'))}"><span class="vtpi" style="--oc:${col}">${ic==='target'?IC.target:ico(ic)}</span><b${to==='name'?' data-i18n-skip':''}>${ex(lb)}</b><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>`}
+  return`<button type="button" class="vtp${miss?' miss':''}" ${attr} title="${ex(miss?L10('지금 씬에서 「{n}」을(를) 찾을 수 없다',{n:tname}):L10('대상 고르기'))}"><span class="vtpi" style="--oc:${col}">${ic==='target'?IC.target:ico(ic)}</span><b${to==='name'?' data-i18n-skip':''}>${ex(lb)}</b><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>`}
 /* UI 요소가 속한 화면(UI 그룹) 이름 */
 function uiGrpName(m,u){return u&&u.group?(((m&&m.uiGroups)||[]).find(g=>g.id===u.group)||{}).name||'':''}
 function curScene(){try{return cur()}catch(e){return null}}
@@ -986,7 +989,7 @@ function bpickBtn(n){const v=n.v||{},m=curScene();let ic='ui',col=EC.HARDWARE,lb
   else if(v.el){ic=UI_ICON.button||'ui';col=UI_COLOR.button||EC.HARDWARE;lb=v.el;sub=v.screen||'';
     miss=!!m&&!(m.ui||[]).some(u=>u.name===v.el&&(!v.screen||uiGrpName(m,u)===v.screen))}
   else if(v.screen){ic='folder';col='var(--warn)';lb=v.screen;sub=L10('아무 버튼');miss=!!m&&!(m.uiGroups||[]).some(g=>g.name===v.screen)}
-  const t=miss?L10('지금 씬에서 「{n}」을(를) 찾을 수 없어요',{n:v.el||v.screen}):L10('버튼 고르기');
+  const t=miss?L10('지금 씬에서 「{n}」을(를) 찾을 수 없다',{n:v.el||v.screen}):L10('버튼 고르기');
   return`<button type="button" class="vtp vbp${miss?' miss':''}" data-bpick="${n.id}" title="${ex(t)}"><span class="vtpi" style="--oc:${col}">${ic==='target'?IC.target:ico(ic)}</span>${sub&&v.el?`<i data-i18n-skip>${ex(sub)} ›</i>`:''}<b data-i18n-skip>${ex(lb)}</b>${sub&&!v.el?`<i>${ex(sub)}</i>`:''}<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>`}
 function findOwnerEd(nm){if(!nm||!P)return null;let m=null;try{m=cur()}catch(e){}if(m){const o=m.objs.find(q=>q.name===nm)||(m.ui||[]).find(q=>q.name===nm);if(o)return o}return(P.mgrs||[]).find(q=>q.name===nm)||null}
 function ownerLook(o){if(o.mgr)return{icon:'mgr',color:'#9a8cff',kind:'mgr'};if(isUiEl(o))return{icon:UI_ICON[o.type]||'ui',color:UI_COLOR[o.type]||'#8b90a3',kind:'ui'};return{icon:o.type==='spawn'?'user':(o.props&&o.props.camera?'cam':'cube'),color:(TYPES[o.type]||{}).color||'#8b90a3',kind:'obj'}}
@@ -1023,15 +1026,15 @@ function sideHtml(g,users){
   const vars=g.vars||[];
   const ul=users.map(u=>`<li><button type="button" class="vul" data-user="${ex(u.o.id)}" data-scene="${ex(u.scene?u.scene.id:'')}" data-i18n-skip>${ex(u.o.name)}</button><small>${u.kind==='mgr'?L10('매니저'):ex(u.scene.name)}</small></li>`).join('');
   return`<div class="vsec"><div class="vsh">${E.path.length?L10('이 그래프'):L10('그래프')}</div>
-    ${E.path.length?`<p class="vsx">${g.kind==='state'?L10('안쪽 상태 그래프'):L10('안쪽 스크립트 그래프')} · <span data-i18n-skip>${ex(root.name)}</span>${L10(' 안에 들어 있어요')}</p>`:`<label class="vsf"><span>${L10('이름')}</span><input type="text" id="vsName" value="${ex(g.name)}" maxlength="40" data-i18n-skip></label><p class="vsx">${g.kind==='state'?L10('상태 그래프 — 상태 머신 컴포넌트로 붙여요'):L10('스크립트 그래프 — 스크립트 머신 컴포넌트로 붙여요')}</p>`}</div>
+    ${E.path.length?`<p class="vsx">${g.kind==='state'?L10('안쪽 상태 그래프'):L10('안쪽 스크립트 그래프')} · <span data-i18n-skip>${ex(root.name)}</span>${L10(' 안에 들어 있다')}</p>`:`<label class="vsf"><span>${L10('이름')}</span><input type="text" id="vsName" value="${ex(g.name)}" maxlength="40" data-i18n-skip></label><p class="vsx">${g.kind==='state'?L10('상태 그래프 — 상태 머신 컴포넌트로 붙인다'):L10('스크립트 그래프 — 스크립트 머신 컴포넌트로 붙인다')}</p>`}</div>
   <div class="vsec"><div class="vsh">${IC.vars}${L10('그래프 변수')}<span class="vsp"></span><button type="button" class="ib" id="vsVarAdd" title="${ex(L10('변수 추가'))}">${IC.plus}</button></div>
-    ${vars.length?`<div class="vvars">${vars.map((v,i)=>`<div class="vvar"><input type="text" data-vn="${i}" value="${ex(v.name)}" spellcheck="false" data-i18n-skip><select data-vt="${i}">${[['num','숫자'],['str','글자'],['bool','참/거짓']].map(o=>`<option value="${o[0]}"${v.type===o[0]?' selected':''}>${L10(o[1])}</option>`).join('')}</select>${v.type==='bool'?`<input type="checkbox" data-vd="${i}"${tB(v.def)?' checked':''}>`:`<input type="${v.type==='num'?'number':'text'}" data-vd="${i}" value="${ex(v.def)}" step="any" data-i18n-skip>`}<button type="button" class="ib" data-vx="${i}" aria-label="${ex(L10('삭제'))}">${IC.x}</button></div>`).join('')}</div>`:`<p class="vsx">${L10('「변수 가져오기 / 설정」 노드의 범위를 「그래프」로 두면 여기 변수를 씁니다. 컴포넌트마다 처음 값을 바꿀 수 있어요.')}</p>`}
+    ${vars.length?`<div class="vvars">${vars.map((v,i)=>`<div class="vvar"><input type="text" data-vn="${i}" value="${ex(v.name)}" spellcheck="false" data-i18n-skip><select data-vt="${i}">${[['num','숫자'],['str','글자'],['bool','참/거짓']].map(o=>`<option value="${o[0]}"${v.type===o[0]?' selected':''}>${L10(o[1])}</option>`).join('')}</select>${v.type==='bool'?`<input type="checkbox" data-vd="${i}"${tB(v.def)?' checked':''}>`:`<input type="${v.type==='num'?'number':'text'}" data-vd="${i}" value="${ex(v.def)}" step="any" data-i18n-skip>`}<button type="button" class="ib" data-vx="${i}" aria-label="${ex(L10('삭제'))}">${IC.x}</button></div>`).join('')}</div>`:`<p class="vsx">${L10('「변수 가져오기 / 설정」 노드의 범위를 「그래프」로 두면 여기 변수를 쓴다. 컴포넌트마다 처음 값을 바꿀 수 있다.')}</p>`}
     ${R.on&&E.dbg?liveVars():''}</div>
-  ${E.path.length?'':`<div class="vsec"><div class="vsh">${L10('이 그래프를 쓰는 곳')} <small>${users.length}</small></div>${users.length?`<ul class="vusers">${ul}</ul>`:`<p class="vsx">${L10('아직 아무 오브젝트에도 붙지 않았어요. 인스펙터의 「스크립트 추가 → 비주얼 스크립트」나 위의 「붙이기」로 붙이세요.')}</p>`}</div>`}
+  ${E.path.length?'':`<div class="vsec"><div class="vsh">${L10('이 그래프를 쓰는 곳')} <small>${users.length}</small></div>${users.length?`<ul class="vusers">${ul}</ul>`:`<p class="vsx">${L10('아직 아무 오브젝트에도 붙지 않았다. 인스펙터의 「스크립트 추가 → 비주얼 스크립트」나 위의 「붙이기」로 붙인다.')}</p>`}</div>`}
   <div class="vsec vhelp"><div class="vsh">${L10('서로 이어 주기')}</div>
-    <p>${L10('⚡ 커스텀 이벤트: 「보내기」 노드 → 다른 머신의 「받기」 노드와 상태 전환(이벤트를 받으면)이 받아요.')}</p>
+    <p>${L10('⚡ 커스텀 이벤트: 「보내기」 노드 → 다른 머신의 「받기」 노드와 상태 전환(이벤트를 받으면)이 받는다.')}</p>
     <p>${L10('C# 스크립트에서: VisualScript.Trigger("이름") · SetVariable("이름", 값) · SetState("상태") · CurrentState')}</p>
-    <p>${L10('엔진 메시지(말 걸기 · 클릭 …)는 C# 메서드와 비주얼 스크립트가 함께 받아요.')}</p></div>`;
+    <p>${L10('엔진 메시지(말 걸기 · 클릭 …)는 C# 메서드와 비주얼 스크립트가 함께 받는다.')}</p></div>`;
 }
 function liveVars(){const M=[...R.mach.values()].find(x=>x.owner.id===E.dbg&&x.gid===E.gid);if(!M)return'';const ov=R.ovars.get(M.owner.id)||{};
   const row=(k,v,s)=>`<div class="vlv"><small>${s}</small><b data-i18n-skip>${ex(k)}</b><span data-i18n-skip>${ex(tS(v))}</span></div>`;
@@ -1045,7 +1048,7 @@ function stateSide(g,s){return`<div class="vsec"><div class="vsh">${s.kind==='su
   <label class="vsf"><span>${L10('이름')}</span><input type="text" id="vsStName" value="${ex(s.name)}" maxlength="30" data-i18n-skip></label>
   <label class="vsf"><span>${L10('종류')}</span><select id="vsStKind"><option value="flow"${s.kind!=='super'?' selected':''}>${L10('스크립트 상태 (안에 스크립트 그래프)')}</option><option value="super"${s.kind==='super'?' selected':''}>${L10('상위 상태 (안에 상태 그래프)')}</option></select></label>
   <div class="vsbtns"><button type="button" class="btn pri sm" data-enterst="${s.id}">${IC.enter}${L10('안으로 들어가기')}</button>${g.start===s.id?`<span class="vsx">★ ${L10('시작 상태')}</span>`:`<button type="button" class="btn sm" id="vsStart">${L10('시작 상태로')}</button>`}</div>
-  <div class="vsh" style="margin-top:12px">${L10('나가는 전환')}</div>${g.trans.filter(t=>t.a===s.id).map(t=>`<button type="button" class="vtr" data-tl="${t.id}">→ <b data-i18n-skip>${ex((g.states.find(q=>q.id===t.b)||{}).name||'?')}</b><small>${ex(condText(t.c||{}))}</small></button>`).join('')||`<p class="vsx">${L10('오른쪽 ◉를 끌어 다른 상태에 놓으세요.')}</p>`}
+  <div class="vsh" style="margin-top:12px">${L10('나가는 전환')}</div>${g.trans.filter(t=>t.a===s.id).map(t=>`<button type="button" class="vtr" data-tl="${t.id}">→ <b data-i18n-skip>${ex((g.states.find(q=>q.id===t.b)||{}).name||'?')}</b><small>${ex(condText(t.c||{}))}</small></button>`).join('')||`<p class="vsx">${L10('오른쪽 ◉를 끌어 다른 상태에 놓는다.')}</p>`}
   <div class="vsbtns"><button type="button" class="btn sm danger" id="vsDel">${L10('상태 삭제')}</button></div></div>`}
 function transSide(g,t){const c=t.c||(t.c={t:'event',name:'이벤트'}),a=g.states.find(q=>q.id===t.a),b=g.states.find(q=>q.id===t.b);
   const ty=[['event','이벤트를 받으면'],['time','시간이 지나면'],['done','상태가 끝나면'],['var','변수 조건'],['key','키를 누르면'],['dist','오브젝트와의 거리'],['always','바로 (조건 없음)']];
@@ -1055,7 +1058,7 @@ function transSide(g,t){const c=t.c||(t.c={t:'event',name:'이벤트'}),a=g.stat
   if(c.t==='key')p=`<label class="vsf"><span>${L10('키')}</span><select data-c="key">${KEYS.map(k=>`<option value="${k[0]}"${c.key===k[0]?' selected':''}>${ex(L10(k[1]))}</option>`).join('')}</select></label>`;
   if(c.t==='var')p=`<div class="vsf"><span>${L10('변수')}</span>${vpickBtn(c.scope,c.name,`data-vpickt="${t.id}"`)}</div><label class="vsf"><span>${L10('비교')}</span><select data-c="op">${['==','!=','>','<','>=','<='].map(o=>`<option${(c.op||'==')===o?' selected':''}>${o}</option>`).join('')}</select></label><label class="vsf"><span>${L10('값')}</span><input type="text" data-c="val" value="${ex(c.val==null?'':c.val)}" data-i18n-skip></label>`;
   if(c.t==='dist')p=`<div class="vsf"><span>${L10('누구와')}</span>${tpickBtn({allow:['hero','name'],kinds:['obj']},c.to||'hero',c.tname,`data-tpickt="${t.id}"`)}</div>`+`<label class="vsf"><span>${L10('비교')}</span><select data-c="op"><option value="<"${c.op!=='>'?' selected':''}>${L10('가까우면 (<)')}</option><option value=">"${c.op==='>'?' selected':''}>${L10('멀면 (>)')}</option></select></label><label class="vsf"><span>${L10('칸')}</span><input type="number" data-c="val" value="${ex(c.val==null?2:c.val)}" step="any"></label>`;
-  if(c.t==='done')p=`<p class="vsx">${L10('상태 안 그래프의 「상태 끝내기」 노드가 실행되면 넘어갑니다.')}</p>`;
+  if(c.t==='done')p=`<p class="vsx">${L10('상태 안 그래프의 「상태 끝내기」 노드가 실행되면 넘어간다.')}</p>`;
   return`<div class="vsec"><div class="vsh">${L10('전환')}</div><p class="vtrn"><b data-i18n-skip>${ex(a?a.name:'?')}</b> → <b data-i18n-skip>${ex(b?b.name:'?')}</b></p>
   <label class="vsf"><span>${L10('언제')}</span><select data-c="t">${ty.map(o=>`<option value="${o[0]}"${c.t===o[0]?' selected':''}>${L10(o[1])}</option>`).join('')}</select></label>${p}
   <div class="vsbtns"><button type="button" class="btn sm danger" id="vsDel">${L10('전환 삭제')}</button></div></div>`}
@@ -1114,8 +1117,8 @@ function evPicker(btn,opt,pick){
     h+=rows(tree,0);
     const oth=[...others].filter(n=>m(n));if(oth.length){const on=k?true:isOpen('g:oth',false);h+=`<div class="vor vevg" style="--d:0" data-fk="g:oth" tabindex="0" role="treeitem" aria-expanded="${on}">${fold('g:oth',on)}<span class="vtpi" style="--oc:var(--mute)">${ico('folder')}</span><b>${ex(L10('다른 이벤트 이름'))}</b><small>${oth.length}</small></div>`+(on?oth.map(n=>evRow({name:n},1,k,'')).join(''):'')}
     if(opt.msgs){const ms=MSGS.filter(x=>m(x[0])||m(L10(x[1])));if(ms.length){const on=k?true:isOpen('g:msg',false);h+=`<div class="vor vevg" style="--d:0" data-fk="g:msg" tabindex="0" role="treeitem" aria-expanded="${on}">${fold('g:msg',on)}<span class="vtpi" style="--oc:var(--mute)">${ico('folder')}</span><b>${ex(L10('엔진 메시지'))}</b><small>${ms.length}</small></div>`+(on?ms.map(x=>evRow({name:x[0]},1,k,L10(x[1]).replace(/ \(.*\)$/,''))).join(''):'')}}
-    T.innerHTML=h||`<p class="vcm0">${ex(L10(tree.length?'맞는 이벤트가 없습니다':'이 씬에는 이벤트를 보내는 스크립트가 없어요. 위 칸에 이름을 쓰면 새 이름으로 받아요'))}</p>`;
-    foot.textContent=L10('오브젝트 › 스크립트 › 그 스크립트가 보내는 이벤트 · 검색 칸에 새 이름을 써도 돼요');place()};
+    T.innerHTML=h||`<p class="vcm0">${ex(L10(tree.length?'맞는 이벤트가 없다':'이 씬에는 이벤트를 보내는 스크립트가 없다. 위 칸에 이름을 쓰면 새 이름으로 받는다'))}</p>`;
+    foot.textContent=L10('오브젝트 › 스크립트 › 그 스크립트가 보내는 이벤트 · 검색 칸에 새 이름을 써도 된다');place()};
   const place=()=>{const ar=btn.getBoundingClientRect(),r=el.getBoundingClientRect(),W=win.innerWidth,H=win.innerHeight;
     let x=ar.left;if(x+r.width>W-6)x=Math.max(6,W-r.width-6);let y=ar.bottom+4;if(y+r.height>H-6){const up=ar.top-r.height-4;y=up>=6?up:Math.max(6,H-6-r.height)}
     el.style.left=x+'px';el.style.top=y+'px'};
@@ -1291,7 +1294,7 @@ function catMenu(cx,cy,groups,pick){
     let top=rr.top-er.top-4;const H=win.innerHeight;if(er.top+top+P2.offsetHeight>H-6)top=Math.max(-er.top+6,H-6-er.top-P2.offsetHeight);P2.style.marginTop=top+'px'};
   const search=()=>{const k=q.value.trim().toLowerCase();if(!k){cats();return}P2.hidden=true;cur=-1;
     const hits=[];groups.forEach(g=>g.items.forEach(it=>{if((it.label+' '+it.t+' '+(it.tip||'')).toLowerCase().includes(k))hits.push(item(it,g.c))}));
-    L1.innerHTML=hits.join('')||`<p class="vcm0">${ex(L10('검색 결과가 없습니다'))}</p>`};
+    L1.innerHTML=hits.join('')||`<p class="vcm0">${ex(L10('검색 결과가 없다'))}</p>`};
   cats();place();
   let hoverT=0;
   L1.addEventListener('pointerover',e=>{const b=e.target.closest('.vcmc');if(!b||+b.dataset.g===cur)return;clearTimeout(hoverT);hoverT=setTimeout(()=>openSub(+b.dataset.g),90)});
@@ -1339,7 +1342,7 @@ function varPicker(anchor,scope0,name0,pick){
     list.innerHTML=all.map(g=>{const its=g.items.filter(it=>!k||it.name.toLowerCase().includes(k));if(!its.length)return'';n0+=its.length;
       return`<div class="vvg"><div class="vvgh">${g.kind==='cs'?'<em>C#</em>':g.kind==='state'?IC.state:IC.flow}<span data-i18n-skip>${ex(g.title)}</span>${g.cur?`<small class="cur">${L10('지금 편집 중')}</small>`:''}<small>${its.length}</small></div>`+
         its.map(it=>{if(it.name===q.value.trim()&&it.scope===scope)exact=true;const on=it.name===name0&&it.scope===scope0;
-          return`<button type="button" class="vvi${on?' on':''}" data-pn="${ex(it.name)}" data-ps="${it.scope}"><i style="--sc:${SCOPEC[it.scope]}">${ex(scopeName(it.scope))}</i><b data-i18n-skip>${ex(it.name)}</b>${it.type?`<small>${ex(L10(VTN[it.type]||it.type))}</small>`:''}${it.decl?`<small class="dc">${L10('선언')}</small>`:''}${it.uses>0?`<small>×${it.uses}</small>`:''}${on?'<span class="ck">✓</span>':''}</button>`}).join('')+'</div>'}).join('')||`<p class="vcm0">${ex(k?L10('맞는 변수가 없습니다'):L10('아직 쓰는 변수가 없습니다'))}</p>`;
+          return`<button type="button" class="vvi${on?' on':''}" data-pn="${ex(it.name)}" data-ps="${it.scope}"><i style="--sc:${SCOPEC[it.scope]}">${ex(scopeName(it.scope))}</i><b data-i18n-skip>${ex(it.name)}</b>${it.type?`<small>${ex(L10(VTN[it.type]||it.type))}</small>`:''}${it.decl?`<small class="dc">${L10('선언')}</small>`:''}${it.uses>0?`<small>×${it.uses}</small>`:''}${on?'<span class="ck">✓</span>':''}</button>`}).join('')+'</div>'}).join('')||`<p class="vcm0">${ex(k?L10('맞는 변수가 없다'):L10('아직 쓰는 변수가 없다'))}</p>`;
     const typed=q.value.trim();nw.hidden=!typed||exact;
     if(typed&&!exact)nw.innerHTML=`<button type="button" class="vvadd" data-new="1">${IC.plus}<span>${L10('새 변수')}</span><i style="--sc:${SCOPEC[scope]}">${ex(scopeName(scope))}</i><b data-i18n-skip>${ex(typed)}</b><kbd>Enter</kbd></button>`};
   syncSc();draw();
@@ -1383,8 +1386,8 @@ function objPicker(anchor,spec,to0,name0,pick){
       const hit=!!k&&String(nd.label||'').toLowerCase().includes(k);
       const row=`<div class="vor${nd.o?'':' fol'}${can?'':' no'}${on?' on':''}${nd.off?' off':''}${hit?' hit':''}" style="--d:${d}"${can?` data-pk="${ex(nd.o?nd.o.name:'')}"${grpRow(nd)?` data-pg="${ex(nd.label)}"`:''}${BT&&nd.o?` data-ps="${ex(uiGrpName(m0,nd.o))}"`:''} tabindex="0" role="treeitem"`:''}>${kids.length?`<button type="button" class="vof${open?' open':''}" data-fk="${ex(key)}" aria-label="${ex(L10('펼치기/접기'))}"><svg viewBox="0 0 10 10"><path d="M3.5 2l3 3-3 3"/></svg></button>`:'<span class="vof sp"></span>'}<span class="vtpi" style="--oc:${nd.color||'var(--mute)'}">${ico(nd.icon||'cube')}</span><b data-i18n-skip>${ex(nd.label)}</b>${nd.kind==='scene'?`<small>${L10('지금 씬')}</small>`:nd.sub?`<small>${ex(L10(nd.sub))}</small>`:''}${on?'<span class="ck">✓</span>':''}</div>`;
       return row+(kids.length&&open?rows(kids,d+1,k):'')}).join('');
-  const draw=()=>{if(!T)return;const k=q.value.trim().toLowerCase();const h=rows(tree,0,k);T.innerHTML=h||`<p class="vcm0">${ex(L10(BT?(tree.length?'맞는 버튼이 없습니다':'이 씬에 UI 화면이 없어요'):'맞는 오브젝트가 없습니다'))}</p>`;
-    foot.textContent=BT?L10('버튼을 고르거나, 화면(폴더)을 고르면 그 화면의 아무 버튼'):kinds.has('ui')||kinds.has('mgr')?L10('흐린 줄은 이 노드에서 고를 수 없어요'):L10('위치가 있는 게임 오브젝트만 고를 수 있어요')};
+  const draw=()=>{if(!T)return;const k=q.value.trim().toLowerCase();const h=rows(tree,0,k);T.innerHTML=h||`<p class="vcm0">${ex(L10(BT?(tree.length?'맞는 버튼이 없다':'이 씬에 UI 화면이 없다'):'맞는 오브젝트가 없다'))}</p>`;
+    foot.textContent=BT?L10('버튼을 고르거나, 화면(폴더)을 고르면 그 화면의 아무 버튼'):kinds.has('ui')||kinds.has('mgr')?L10('흐린 줄은 이 노드에서 고를 수 없다'):L10('위치가 있는 게임 오브젝트만 고를 수 있다')};
   draw();
   const ar=anchor.getBoundingClientRect(),r=el.getBoundingClientRect();
   let x=ar.left,y=ar.bottom+4;if(x+r.width>win.innerWidth-6)x=Math.max(6,win.innerWidth-r.width-6);if(y+r.height>win.innerHeight-6)y=Math.max(6,ar.top-r.height-4);
@@ -1631,7 +1634,7 @@ function renderInspSafe(){try{renderInsp()}catch(e){}}
 function pickMenu(btn){
   const gl=GL();const items=[{head:L10('그래프')}];
   gl.forEach(g=>items.push({label:(g.kind==='state'?'◆ ':'◇ ')+g.name,checked:g.id===E.gid,fn:()=>{E.gid=g.id;E.path=[];E.sel.clear();render();requestAnimationFrame(fitIfNew)}}));
-  if(!gl.length)items.push({label:L10('아직 그래프가 없습니다'),disabled:true});
+  if(!gl.length)items.push({label:L10('아직 그래프가 없다'),disabled:true});
   items.push({sep:1},{label:L10('＋ 새 스크립트 그래프 (시작 · 업데이트)'),fn:()=>{const g=newAsset('flow');E.gid=g.id;E.path=[];render();requestAnimationFrame(fitIfNew)}},{label:L10('＋ 새 상태 그래프 (상태 머신)'),fn:()=>{const g=newAsset('state');E.gid=g.id;E.path=[];render();requestAnimationFrame(fitIfNew)}});
   showMenu(btn,items,false,gl.length>6?{search:L10('그래프 검색')}:undefined);
 }
@@ -1660,7 +1663,8 @@ function compsHtml(o){
       return`<div class="fr"><label data-i18n-skip>${ex(v.name)}</label><div class="fv">${v.type==='bool'?`<input type="checkbox" ${at}${tB(val)?' checked':''}>`:`<input type="${v.type==='num'?'number':'text'}" ${at} value="${ex(val)}" step="any">`}</div></div>`}).join('');
     if(R.on&&play){const M=[...R.mach.values()].find(x=>x.owner.id===o.id&&x.comp.id===c.id);if(M){const sp=statePath(M);if(sp.length)b+=`<p class="hint" style="margin:6px 0 0"><span class="vlive"></span> ${L10('지금 상태')}: <b data-i18n-skip>${ex(sp.join(' ▸ '))}</b></p>`}}
     b+=`<div style="margin-top:8px;display:flex;gap:6px"><button class="btn" data-vsedit="${ex(c.gid)}" style="height:24px">${L10('그래프 편집')}</button></div>`;
-    return`<div class="comp vscomp${fold?' closed':''}" data-comp="${key}"><button class="chead">${st?IC.state:IC.flow}<span>${st?L10('상태 머신'):L10('스크립트 머신')} <small style="color:var(--mute);font-weight:400">(${st?'State Machine':'Script Machine'})</small></span></button><button class="crm" data-vsrm="${c.id}" title="${ex(L10('컴포넌트 제거'))}" aria-label="${ex(L10('컴포넌트 제거'))}">✕</button><div class="cbody">${b}</div></div>`}).join('');
+    const con=c.on!==false;
+    return`<div class="comp vscomp${fold?' closed':''}${con?'':' coff'}" data-comp="${key}"><button class="chead">${st?IC.state:IC.flow}<i class="censp"></i><span>${st?L10('상태 머신'):L10('스크립트 머신')} <small style="color:var(--mute);font-weight:400">(${st?'State Machine':'Script Machine'})</small></span></button><input type="checkbox" class="cen" data-vsen="${c.id}"${con?' checked':''} title="켜기 / 끄기 (enabled) · 끄면 설정은 그대로 두고 동작만 멈춘다" aria-label="컴포넌트 켜기 / 끄기"><button class="crm" data-vsrm="${c.id}" title="${ex(L10('컴포넌트 제거'))}" aria-label="${ex(L10('컴포넌트 제거'))}">✕</button><div class="cbody">${b}</div></div>`}).join('');
 }
 function menuItems(o){
   if(!o)return[];const items=[{sep:1},{head:L10('비주얼 스크립트'),sub:L10('노드로 만드는 스크립트 · 상태 머신')}];
@@ -1677,6 +1681,7 @@ if(INSP){
   });
   INSP.addEventListener('change',e=>{
     const t=e.target;
+    if(t.dataset.vsen){const o=ownerNow(),c=o&&(o.vs||[]).find(q=>q.id===t.dataset.vsen);if(c){if(t.checked)delete c.on;else c.on=false;const cc=t.closest('.comp');if(cc)cc.classList.toggle('coff',!t.checked);bump();try{commit()}catch(_){}if(!play)markDirty()}return}
     if(t.dataset.vsg){const o=ownerNow(),c=o&&(o.vs||[]).find(q=>q.id===t.dataset.vsg);if(c){c.gid=t.value;c.vals={};bump();try{commit()}catch(_){}markDirty();renderInspSafe()}return}
     if(t.dataset.vsv){const o=ownerNow(),c=o&&(o.vs||[]).find(q=>q.id===t.dataset.vsv);if(!c)return;const g=gOf(c.gid),v=g&&(g.vars||[]).find(q=>q.name===t.dataset.vsn);c.vals=c.vals||{};c.vals[t.dataset.vsn]=t.type==='checkbox'?t.checked:conv(t.value,v?v.type:'str');try{commit()}catch(_){}markDirty();return}
   });
@@ -1952,17 +1957,17 @@ html[data-theme="light"] .vxcs{background:rgba(0,0,0,.05);color:#2a2a33}
 if(window.TI18N)TI18N.add({
 '비주얼 스크립트':['Visual Scripting','ビジュアルスクリプト','可视化脚本'],
 '선 연결 자석':['Wire magnet','ワイヤーのマグネット','连线磁吸'],'가까운 포트에 선 끝을 착 붙이기':['Snap wire ends to nearby ports','近くのポートに線をくっつける','连线末端吸附到附近端口'],
-'거리':['Distance','距離','距离'],'대상 고르기':['Pick target','対象を選ぶ','选择目标'],'오브젝트 고르기':['Pick object','オブジェクトを選ぶ','选择对象'],'오브젝트 이름 검색':['Search objects','オブジェクトを検索','搜索对象'],'지금 씬':['Current scene','現在のシーン','当前场景'],'맞는 오브젝트가 없습니다':['No matching objects','一致するオブジェクトはありません','没有匹配的对象'],'누구와':['With','誰と','与谁'],'오브젝트와의 거리':['Distance to object','オブジェクトとの距離','与对象的距离'],'위치가 있는 게임 오브젝트만 고를 수 있어요':['Only game objects with a position','位置のあるゲームオブジェクトのみ','只能选择有位置的游戏对象'],'흐린 줄은 이 노드에서 고를 수 없어요':['Dimmed rows cannot be picked here','薄い行は選べません','灰色行无法选择'],
-'변수 고르기':['Pick variable','変数を選ぶ','选择变量'],'변수 이름 검색 · 새 이름 입력':['Search or type a new name','変数を検索 · 新しい名前','搜索或输入新名称'],'새 변수':['New variable','新しい変数','新变量'],'지금 편집 중':['Editing','編集中','正在编辑'],'선언':['declared','宣言','已声明'],'맞는 변수가 없습니다':['No matching variables','一致する変数はありません','没有匹配的变量'],'아직 쓰는 변수가 없습니다':['No variables yet','まだ変数がありません','还没有变量'],'노드 목록 · 속성 패널 좌우 바꾸기':['Swap node list and properties','ノード一覧とプロパティを左右入れ替え','交换节点列表和属性面板'],'끌어서 너비 조절 · 더블클릭: 기본 너비':['Drag to resize · Double-click to reset','ドラッグで幅調整 · ダブルクリックで既定','拖动调整宽度 · 双击恢复'],
+'거리':['Distance','距離','距离'],'대상 고르기':['Pick target','対象を選ぶ','选择目标'],'오브젝트 고르기':['Pick object','オブジェクトを選ぶ','选择对象'],'오브젝트 이름 검색':['Search objects','オブジェクトを検索','搜索对象'],'지금 씬':['Current scene','現在のシーン','当前场景'],'맞는 오브젝트가 없다':['No matching objects','一致するオブジェクトはありません','没有匹配的对象'],'누구와':['With','誰と','与谁'],'오브젝트와의 거리':['Distance to object','オブジェクトとの距離','与对象的距离'],'위치가 있는 게임 오브젝트만 고를 수 있다':['Only game objects with a position','位置のあるゲームオブジェクトのみ','只能选择有位置的游戏对象'],'흐린 줄은 이 노드에서 고를 수 없다':['Dimmed rows cannot be picked here','薄い行は選べません','灰色行无法选择'],
+'변수 고르기':['Pick variable','変数を選ぶ','选择变量'],'변수 이름 검색 · 새 이름 입력':['Search or type a new name','変数を検索 · 新しい名前','搜索或输入新名称'],'새 변수':['New variable','新しい変数','新变量'],'지금 편집 중':['Editing','編集中','正在编辑'],'선언':['declared','宣言','已声明'],'맞는 변수가 없다':['No matching variables','一致する変数はありません','没有匹配的变量'],'아직 쓰는 변수가 없다':['No variables yet','まだ変数がありません','还没有变量'],'노드 목록 · 속성 패널 좌우 바꾸기':['Swap node list and properties','ノード一覧とプロパティを左右入れ替え','交换节点列表和属性面板'],'끌어서 너비 조절 · 더블클릭: 기본 너비':['Drag to resize · Double-click to reset','ドラッグで幅調整 · ダブルクリックで既定','拖动调整宽度 · 双击恢复'],
 '선 삭제':['Delete wire','線を削除','删除连线'],'방향 뒤집기':['Reverse direction','向きを反転','反转方向'],'조건 바꾸기':['Edit condition','条件を変更','修改条件'],'연결 효과':['Connect effect','接続エフェクト','连接特效'],'연결할 때 반짝이는 효과':['Sparkle when connecting','接続時にきらめく','连接时闪光'],
 'C#':['C#','C#','C#'],
 '스크립트 그래프':['Script Graph','スクリプトグラフ','脚本图'],'상태 그래프':['State Graph','ステートグラフ','状态图'],
 '새 스크립트 그래프':['New Script Graph','新しいスクリプトグラフ','新建脚本图'],'새 상태 그래프':['New State Graph','新しいステートグラフ','新建状态图'],
 '스크립트 머신':['Script Machine','スクリプトマシン','脚本机'],'상태 머신':['State Machine','ステートマシン','状态机'],
 '이벤트 흐름':['Event Flow','イベントフロー','事件流'],'업데이트 포함':['Include Update','Updateも表示','包含 Update'],'지우기':['Clear','クリア','清除'],'닫기':['Close','閉じる','关闭'],
-'아직 이벤트가 없습니다':['No events yet','まだイベントはありません','还没有事件'],
+'아직 이벤트가 없다':['No events yet','まだイベントはありません','还没有事件'],
 '이벤트':['Events','イベント','事件'],'흐름 제어':['Flow Control','フロー制御','流程控制'],'상태 · 그래프':['State · Graph','ステート · グラフ','状态 · 图'],'이벤트 보내기 · C#':['Send Events · C#','イベント送信 · C#','发送事件 · C#'],'변수':['Variables','変数','变量'],'값 · 계산':['Values · Math','値 · 計算','值 · 计算'],'입력':['Input','入力','输入'],'게임 오브젝트':['Game Object','ゲームオブジェクト','游戏对象'],'게임 기능':['Game Features','ゲーム機能','游戏功能'],
-'노드 검색':['Search nodes','ノードを検索','搜索节点'],'검색 결과가 없습니다':['No results','検索結果がありません','没有搜索结果'],
+'노드 검색':['Search nodes','ノードを検索','搜索节点'],'검색 결과가 없다':['No results','検索結果がありません','没有搜索结果'],
 '시작 (Start)':['Start','Start','Start'],'업데이트 (Update)':['Update','Update','Update'],'상태 진입 (On Enter State)':['On Enter State','On Enter State','On Enter State'],'상태 나감 (On Exit State)':['On Exit State','On Exit State','On Exit State'],
 '키 입력 (On Key)':['On Key','キー入力','按键输入'],'커스텀 이벤트 받기':['Receive Custom Event','カスタムイベントを受信','接收自定义事件'],'엔진 메시지 받기':['Receive Engine Message','エンジンメッセージを受信','接收引擎消息'],'타이머 (매 N초)':['Timer (every N s)','タイマー (N秒ごと)','计时器 (每N秒)'],
 '그래프 입력':['Graph Input','グラフ入力','图输入'],'그래프 출력':['Graph Output','グラフ出力','图输出'],'만약 (If)':['If','If','If'],'순서대로 (Sequence)':['Sequence','Sequence','Sequence'],'기다리기 (Wait)':['Wait','Wait','Wait'],'반복 (For)':['For Loop','For ループ','For 循环'],'한 번만 (Once)':['Once','Once','Once'],
@@ -1981,9 +1986,9 @@ if(window.TI18N)TI18N.add({
 '그래프 편집':['Edit Graph','グラフを編集','编辑图'],'그래프 변수 (처음 값)':['Graph variables (initial)','グラフ変数 (初期値)','图变量 (初始值)'],'컴포넌트 제거':['Remove component','コンポーネントを削除','移除组件'],
 '새 스크립트 머신 (스크립트 그래프)…':['New Script Machine (Script Graph)…','新しいスクリプトマシン…','新建脚本机…'],'새 상태 머신 (상태 그래프)…':['New State Machine (State Graph)…','新しいステートマシン…','新建状态机…'],'노드로 만드는 스크립트 · 상태 머신':['Node-based scripts · State machines','ノードで作るスクリプト · ステートマシン','节点脚本 · 状态机'],
 '전체 보기 (F)':['Frame all (F)','全体表示 (F)','全部显示 (F)'],'노드 목록 보이기/숨기기':['Toggle node library','ノード一覧の表示切替','显示/隐藏节点列表'],'속성 패널 보이기/숨기기':['Toggle properties','プロパティの表示切替','显示/隐藏属性'],'더 보기':['More','その他','更多'],
-'비주얼 스크립트 — 노드를 선으로 이어 스크립트 머신 · 상태 머신을 만듭니다':['Visual Scripting — connect nodes to build Script Machines and State Machines','ビジュアルスクリプト — ノードをつないでスクリプトマシン・ステートマシンを作ります','可视化脚本 — 连接节点创建脚本机和状态机'],
-'C# 스크립트 편집하기 — 스크립트 창을 열고, 현재 씬과 매니저의 스크립트를 계층 구조 그대로 골라 편집합니다':['Edit C# Scripts — open the Script window and pick scripts from the current scene and managers, laid out like the Hierarchy','C# スクリプト編集 — スクリプトウィンドウを開き、ヒエラルキーの形でスクリプトを選んで編集します','编辑 C# 脚本 — 打开脚本窗口，按层级结构选择脚本进行编辑'],
-'노드를 선으로 이어 코드 없이 동작을 만들어요.':['Connect nodes with wires to build behaviour without code.','ノードを線でつないで、コードなしで動きを作ります。','用连线连接节点，无需代码即可创建行为。'],
+'비주얼 스크립트 — 노드를 선으로 이어 스크립트 머신 · 상태 머신을 만든다':['Visual Scripting — connect nodes to build Script Machines and State Machines','ビジュアルスクリプト — ノードをつないでスクリプトマシン・ステートマシンを作ります','可视化脚本 — 连接节点创建脚本机和状态机'],
+'C# 스크립트 편집하기 — 스크립트 창을 열고, 현재 씬과 매니저의 스크립트를 계층 구조 그대로 골라 편집한다':['Edit C# Scripts — open the Script window and pick scripts from the current scene and managers, laid out like the Hierarchy','C# スクリプト編集 — スクリプトウィンドウを開き、ヒエラルキーの形でスクリプトを選んで編集します','编辑 C# 脚本 — 打开脚本窗口，按层级结构选择脚本进行编辑'],
+'노드를 선으로 이어 코드 없이 동작을 만든다.':['Connect nodes with wires to build behaviour without code.','ノードを線でつないで、コードなしで動きを作ります。','用连线连接节点，无需代码即可创建行为。'],
 '포트를 끌어 선으로 잇기 · 오른쪽 클릭으로 노드 추가 · 빈 곳을 끌면 화면 이동 · 휠로 확대':['Drag ports to connect · Right-click to add nodes · Drag empty space to pan · Wheel to zoom','ポートをドラッグして接続 · 右クリックでノード追加 · 空白ドラッグで移動 · ホイールで拡大','拖动端口连线 · 右键添加节点 · 拖动空白处平移 · 滚轮缩放'],
 '상태를 더블클릭하면 안으로 · 오른쪽 ◉를 끌어 다른 상태에 놓으면 전환 · 오른쪽 클릭으로 상태 추가':['Double-click a state to open it · Drag the ◉ onto another state for a transition · Right-click to add states','ステートをダブルクリックで中へ · ◉ を別のステートへドラッグで遷移 · 右クリックでステート追加','双击状态进入 · 将 ◉ 拖到另一状态创建转换 · 右键添加状态']
 });

@@ -139,6 +139,8 @@ function anPoseFor(m,o,p){
 function anPoseBase(m,o,p){
   if(!play&&AW.preview&&AW.obj===o.id&&anVis('anim')){const c=anClip(AW.clip);if(c)return anEval(c,AW.f)}
   const a=o.props.animator;if(!a)return null;
+  /* 꺼진 애니메이터: 플레이 중 마지막 포즈에서 멈춤 · 한 번도 돌지 않았으면(편집 중 포함) 포즈 없음 */
+  if(a.on===false){const rt0=p&&p.anim&&p.anim.get(o.id);return rt0&&rt0.ran?rt0.pose:null}
   let q=null,got=false;
   if(p&&p.anim){const rt=p.anim.get(o.id);if(rt){q=rt.pose;got=true}}
   if(!got)q=anRestPose(a);
@@ -215,10 +217,10 @@ function anStep(m,o,rt,dt){
 function animTick(p,dt){
   const m=p.m;if(!m)return;if(!p.anim)p.anim=new Map();
   for(const o of m.objs.slice()){
-    const a=o.props&&o.props.animator;if(!a||!objOn(m,o))continue;
+    const a=o.props&&o.props.animator;if(!a||a.on===false||!objOn(m,o))continue;
     if(o.type==='monster'){const z=monOf(m,o);if(z&&z.dead)continue}
     const rt=anRt(m,o);if(!rt||rt.off)continue;
-    anStep(m,o,rt,dt*(a.speed==null?1:+a.speed));if(!play||play.m!==m)return;
+    rt.ran=true;anStep(m,o,rt,dt*(a.speed==null?1:+a.speed));if(!play||play.m!==m)return;
   }
 }
 /* ---- 스크립트: GetComponent<Animator>() ---- */
@@ -235,14 +237,14 @@ function animProxy(m,o){
       if(n==='gameObject')return goProxy(m,o);if(n==='transform')return trProxy(m,o);if(n==='name')return o.name;
       const a=o.props.animator;if(!a)throw new Error(`MissingComponentException: ${o.name}의 애니메이터 컴포넌트가 제거되었습니다`);
       if(n==='speed')return a.speed==null?1:+a.speed;
-      if(n==='enabled'){const rt=anRt(m,o);return!(rt&&rt.off)}
+      if(n==='enabled'){const rt=anRt(m,o);return a.on!==false&&!(rt&&rt.off)}
       if(n==='runtimeAnimatorController'||n==='controllerName'){const c=anCtrl(a.ctrl);return c?c.name:''}
       throw csUnsup('Animator.'+n);
     },
     set(n,v){
       const a=o.props.animator;if(!a)throw new Error(`MissingComponentException: ${o.name}의 애니메이터 컴포넌트가 제거되었습니다`);
       if(n==='speed'){a.speed=clamp(csN(v),0,10);return}
-      if(n==='enabled'){const rt=R();rt.off=!v;return}
+      if(n==='enabled'){if(v)delete a.on;else a.on=false;const rt=anRt(m,o);if(rt)rt.off=false;return}
       throw csUnsup('Animator.'+n+' 대입');
     },
     call(n,a){
@@ -269,9 +271,9 @@ function animProxy(m,o){
 function animatorComp(o){
   const a=o.props.animator,D=anData(),c=anCtrl(a.ctrl),rt=play&&play.anim&&play.anim.get(o.id),st=rt&&anState(rt.c,rt.st);
   return comp('ca','animator','애니메이터'+compEn('Animator'),
-    fr('컨트롤러',`<select data-an="ctrl"><option value="">(없음)</option>${D.ctrls.map(x=>`<option value="${x.id}"${x.id===a.ctrl?' selected':''} data-i18n-skip>${esc(x.name)}</option>`).join('')}${a.ctrl&&!c?'<option value="'+esc(a.ctrl)+'" selected>(찾을 수 없음)</option>':''}<option value="+new">＋ 새 컨트롤러…</option></select>`,false,'runtimeAnimatorController','플레이 중 이 오브젝트의 애니메이션 흐름(상태 · 전환 · 파라미터)을 정하는 애니메이터 컨트롤러입니다. 애니메이터 창에서 편집합니다.')+
-    fr('속도',num('S','data-an="speed" data-step="0.05"',a.speed==null?1:a.speed,0,10),false,'speed','애니메이션 재생 속도 배율입니다. 1이 기본, 0이면 멈춥니다. 스크립트: animator.speed')+
-    (rt?fr('현재 상태 (실시간)',`<span style="font-family:var(--f-mono)" data-i18n-skip>${esc(st?st.n:'-')}</span>`,false,'state','플레이 중 지금 재생 중인 상태입니다.'):'')+
+    fr('컨트롤러',`<select data-an="ctrl"><option value="">(없음)</option>${D.ctrls.map(x=>`<option value="${x.id}"${x.id===a.ctrl?' selected':''} data-i18n-skip>${esc(x.name)}</option>`).join('')}${a.ctrl&&!c?'<option value="'+esc(a.ctrl)+'" selected>(찾을 수 없음)</option>':''}<option value="+new">＋ 새 컨트롤러…</option></select>`,false,'runtimeAnimatorController','플레이 중 이 오브젝트의 애니메이션 흐름(상태 · 전환 · 파라미터)을 정하는 애니메이터 컨트롤러이다. 애니메이터 창에서 편집한다.')+
+    fr('속도',num('S','data-an="speed" data-step="0.05"',a.speed==null?1:a.speed,0,10),false,'speed','애니메이션 재생 속도 배율이다. 1이 기본, 0이면 멈춘다. 스크립트: animator.speed')+
+    (rt?fr('현재 상태 (실시간)',`<span style="font-family:var(--f-mono)" data-i18n-skip>${esc(st?st.n:'-')}</span>`,false,'state','플레이 중 지금 재생 중인 상태이다.'):'')+
     (c?`<p class="hint" style="margin:2px 0 6px">상태 ${c.states.length}개 · 파라미터 ${c.params.map(q=>esc(q.n)).join(', ')||'없음'}</p>`:'')+
     `<div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="btn sm" data-anopen="animator">${ico('animator')} 애니메이터 창</button><button type="button" class="btn sm" data-anopen="anim">${ico('anim')} 애니메이션 창</button></div>`,
     '스프라이트를 프레임마다 바꾸거나 위치·크기·회전·투명도를 움직이는 애니메이션을 재생합니다. 어떤 클립을 언제 재생할지는 애니메이터 컨트롤러(상태와 전환)가 정하고, 스크립트는 animator.SetBool("IsMoving", true) 처럼 파라미터만 바꿉니다.');
@@ -300,17 +302,17 @@ const anMk=(btn,L)=>`<span class="anmk">${btn}${qb(L.map(q=>_t(q)).join('\n'),'q
 if(window.TI18N)TI18N.onChange(()=>{try{anRenderAll(true)}catch(e){}});
 if(window.TI18N)TI18N.add({
 '애니메이터':['Animator','アニメーター','动画器'],'애니메이터 컨트롤러':['Animator Controller','アニメーターコントローラー','动画控制器'],'애니메이션 클립':['Animation Clip','アニメーションクリップ','动画片段'],'스프라이트':['Sprite','スプライト','精灵'],'게임 오브젝트':['GameObject','ゲームオブジェクト','游戏对象'],'씬 뷰':['Scene view','シーンビュー','场景视图'],'계층 구조':['Hierarchy','ヒエラルキー','层级'],
-'{a}는 상태(클립)와 전환으로 오브젝트의 애니메이션 흐름을 정합니다.':['An {a} decides an object’s animation flow with states (clips) and transitions.','{a} は、ステート（クリップ）と遷移でオブジェクトのアニメーションの流れを決めます。','{a} 用状态（片段）和过渡决定对象的动画流程。'],
-'{a} 컴포넌트에 컨트롤러가 없습니다.':['The {a} component has no controller.','{a} コンポーネントにコントローラーがありません。','{a} 组件没有控制器。'],
-'애니메이션을 시작하려면 {a}와 {b}을 만드세요.':['To begin animating, create an {a} and an {b}.','アニメーションを始めるには、{a} と {b} を作成してください。','要开始制作动画，请创建 {a} 和 {b}。'],
-'{a} 컴포넌트 · 컨트롤러 · 클립을 한 번에 만듭니다.':['Creates the {a} component, controller and clip at once.','{a} コンポーネント・コントローラー・クリップを一度に作ります。','一次创建 {a} 组件、控制器和片段。'],
-'애니메이터 컴포넌트 · 컨트롤러 · 클립을 한 번에 만듭니다.':['Creates the Animator component, controller and clip at once.','アニメーターコンポーネント・コントローラー・クリップを一度に作ります。','一次创建动画器组件、控制器和片段。'],
-'지금 스프라이트를 첫 프레임으로 넣습니다.':['The current sprite becomes the first frame.','今のスプライトを最初のフレームにします。','当前的精灵会成为第一帧。'],
-'지금 {a}를 첫 프레임으로 넣습니다.':['The current {a} becomes the first frame.','今の {a} を最初のフレームにします。','当前的 {a} 会成为第一帧。'],
-'새 클립을 만들면 {a}에 상태로 함께 추가됩니다.':['New clips are also added to the {a} as states.','新しいクリップは {a} にステートとしても追加されます。','新建的片段也会作为状态添加到 {a}。'],
-'{a}에서 {b}를 선택하면 그 오브젝트의 클립을 편집할 수 있습니다.':['Select a {b} in the {a} to edit its clips.','{a} で {b} を選ぶと、そのオブジェクトのクリップを編集できます。','在 {a} 中选择 {b} 即可编辑它的片段。'],
-'부드럽게':['Smooth','なめらか','平滑'],'부드럽게: 키 사이를 천천히 출발해 천천히 멈춥니다 (끄면 일정한 속도)':['Smooth: ease in and out between keys (off = constant speed)','なめらか: キーの間をゆっくり動き出してゆっくり止まります（オフ = 一定の速さ）','平滑：关键帧之间缓入缓出（关闭 = 匀速）'],
-'편집한 클립은 {a}에서 바로 미리 볼 수 있습니다.':['Edited clips preview right away in the {a}.','編集したクリップは {a} ですぐにプレビューできます。','编辑后的片段可在 {a} 中立即预览。']
+'{a}는 상태(클립)와 전환으로 오브젝트의 애니메이션 흐름을 정한다.':['An {a} decides an object’s animation flow with states (clips) and transitions.','{a} は、ステート（クリップ）と遷移でオブジェクトのアニメーションの流れを決めます。','{a} 用状态（片段）和过渡决定对象的动画流程。'],
+'{a} 컴포넌트에 컨트롤러가 없다.':['The {a} component has no controller.','{a} コンポーネントにコントローラーがありません。','{a} 组件没有控制器。'],
+'애니메이션을 시작하려면 {a}와 {b}을 만든다.':['To begin animating, create an {a} and an {b}.','アニメーションを始めるには、{a} と {b} を作成してください。','要开始制作动画，请创建 {a} 和 {b}。'],
+'{a} 컴포넌트 · 컨트롤러 · 클립을 한 번에 만든다.':['Creates the {a} component, controller and clip at once.','{a} コンポーネント・コントローラー・クリップを一度に作ります。','一次创建 {a} 组件、控制器和片段。'],
+'애니메이터 컴포넌트 · 컨트롤러 · 클립을 한 번에 만든다.':['Creates the Animator component, controller and clip at once.','アニメーターコンポーネント・コントローラー・クリップを一度に作ります。','一次创建动画器组件、控制器和片段。'],
+'지금 스프라이트를 첫 프레임으로 넣는다.':['The current sprite becomes the first frame.','今のスプライトを最初のフレームにします。','当前的精灵会成为第一帧。'],
+'지금 {a}를 첫 프레임으로 넣는다.':['The current {a} becomes the first frame.','今の {a} を最初のフレームにします。','当前的 {a} 会成为第一帧。'],
+'새 클립을 만들면 {a}에 상태로 함께 추가된다.':['New clips are also added to the {a} as states.','新しいクリップは {a} にステートとしても追加されます。','新建的片段也会作为状态添加到 {a}。'],
+'{a}에서 {b}를 선택하면 그 오브젝트의 클립을 편집할 수 있다.':['Select a {b} in the {a} to edit its clips.','{a} で {b} を選ぶと、そのオブジェクトのクリップを編集できます。','在 {a} 中选择 {b} 即可编辑它的片段。'],
+'부드럽게':['Smooth','なめらか','平滑'],'부드럽게: 키 사이를 천천히 출발해 천천히 멈춘다 (끄면 일정한 속도)':['Smooth: ease in and out between keys (off = constant speed)','なめらか: キーの間をゆっくり動き出してゆっくり止まります（オフ = 一定の速さ）','平滑：关键帧之间缓入缓出（关闭 = 匀速）'],
+'편집한 클립은 {a}에서 바로 미리 볼 수 있다.':['Edited clips preview right away in the {a}.','編集したクリップは {a} ですぐにプレビューできます。','编辑后的片段可在 {a} 中立即预览。']
 });
 /* 패널이 화면에 보이는지 (접힘·숨김·다른 탭 뒤가 아님) */
 const anVis=id=>{const el=panelEl[id];return!!el&&el.isConnected&&!el.classList.contains('collapsed')&&!el.classList.contains('nhide')&&el.offsetWidth>0};
@@ -420,13 +422,13 @@ function agRender(){
       <button class="ib" data-ag="menu" title="컨트롤러 메뉴" aria-label="컨트롤러 메뉴">${ico('more')}</button>
       <span class="ancrumb">Base Layer</span>
       <span class="spacer"></span>
-      ${o?`<span class="anchip${linked?' on':''}" title="${linked?'선택한 오브젝트가 이 컨트롤러를 씁니다':'선택한 오브젝트에는 이 컨트롤러가 연결되어 있지 않습니다'}">${ico('cube')}<span data-i18n-skip>${esc(o.name)}</span></span>`:''}
+      ${o?`<span class="anchip${linked?' on':''}" title="${linked?'선택한 오브젝트가 이 컨트롤러를 쓴다':'선택한 오브젝트에는 이 컨트롤러가 연결되어 있지 않는다'}">${ico('cube')}<span data-i18n-skip>${esc(o.name)}</span></span>`:''}
       <button class="btn sm" data-ag="fit" title="모든 상태가 보이게 맞춤 (F)">맞춤</button>
     </div>
     <div class="agmain">
       <aside class="agside">${c?agParamsHtml(c):''}</aside><div class="agrz" data-rz="side" role="separator" aria-orientation="vertical" title="끌어서 파라미터 패널 너비 조절"></div>
       <div class="agcv" id="agCvWrap" tabindex="0"><canvas id="agCv"></canvas>
-        ${c?`<div class="aghint">우클릭: 상태 만들기 · 상태 우클릭: 전환 만들기 · 드래그: 이동 · 휠: 확대 · 더블클릭: 클립 편집</div>`:`<div class="anempty"><b>애니메이터 컨트롤러가 없습니다</b>${anLines([['{a}는 상태(클립)와 전환으로 오브젝트의 애니메이션 흐름을 정합니다.',{a:AC.ctrl()}]])}<button class="btn pri sm" data-ag="new">＋ 새 컨트롤러</button></div>`}
+        ${c?`<div class="aghint">우클릭: 상태 만들기 · 상태 우클릭: 전환 만들기 · 드래그: 이동 · 휠: 확대 · 더블클릭: 클립 편집</div>`:`<div class="anempty"><b>애니메이터 컨트롤러가 없다</b>${anLines([['{a}는 상태(클립)와 전환으로 오브젝트의 애니메이션 흐름을 정한다.',{a:AC.ctrl()}]])}<button class="btn pri sm" data-ag="new">＋ 새 컨트롤러</button></div>`}
       </div>
       <div class="agrz" data-rz="prop" role="separator" aria-orientation="vertical" title="끌어서 상태 패널 너비 조절"></div><aside class="agprop" id="agProp">${c?agPropHtml(c):''}</aside>
     </div></div>`;
@@ -441,7 +443,7 @@ function agParamsHtml(c){
         :`<input type="number" data-agp="v" data-i="${i}" step="${q.t==='int'?1:'any'}" value="${q.t==='int'?Math.round(+v||0):+(+v||0).toFixed(3)}">`;
       return`<div class="agp"><span class="agpt t-${q.t}" title="${AN_PT[q.t]}">${AN_PT[q.t][0]}</span><input type="text" class="agpn" data-agp="n" data-i="${i}" value="${esc(q.n)}" maxlength="40" spellcheck="false" aria-label="파라미터 이름" data-i18n-skip>${ed}<button class="ib" data-agp="x" data-i="${i}" title="파라미터 삭제" aria-label="파라미터 삭제">${ico('x')}</button></div>`}).join('')
     :'<p class="hint">＋로 Float · Int · Bool · Trigger 파라미터를 추가하세요. 스크립트에서 animator.SetBool("이름", true) 처럼 값을 바꾸면 전환 조건에 쓰입니다.</p>'}</div>
-  ${rt?'<p class="hint" style="margin:6px 8px">플레이 중에는 지금 값을 보여 주고, 바꾸면 바로 반영됩니다.</p>':''}`;
+  ${rt?'<p class="hint" style="margin:6px 8px">플레이 중에는 지금 값을 보여 주고, 바꾸면 바로 반영된다.</p>':''}`;
 }
 /* 조건 한 줄 요약: IsMoving = true · Dir == 2 · Speed > 0.1 · Jump ⚡ */
 function agCondTxt(c,q){const d=c.params.find(x=>x.n===q.p);if(!d)return q.p+' ?';
@@ -475,7 +477,7 @@ function clipPickerModal(groups,cur,o,onPick){
     groups.forEach(g=>{const it=g.clips.filter(k=>!q||k.name.toLowerCase().includes(q));if(!it.length)return;
       h+=(g.title?`<div class="tpsec">${esc(_t(g.title))}</div>`:'')+'<div class="tpgrid">'+it.map(k=>card(k.id,k,k.name,info(k))).join('')+'</div>'});
     if(o.add&&!q)h+=`<div class="tpgrid" style="margin-top:8px"><button type="button" class="tpi" data-clip="+new"><img alt="" src="${clipThumbURL(null,176)}"><span class="tn">＋ 새 클립…</span><small>새로 만들기</small></button></div>`;
-    list.innerHTML=h||'<div class="tpnone">찾는 클립이 없습니다</div>';
+    list.innerHTML=h||'<div class="tpnone">찾는 클립이 없다</div>';
     const all=groups.flatMap(g=>g.clips);
     list.querySelectorAll('.tpi[data-clip]').forEach(b=>{
       const k=all.find(x=>x.id===b.dataset.clip),im=b.querySelector('img');if(!k||!im||!k.tracks.some(t=>t.p==='sprite'&&t.keys.length>1))return;
@@ -544,14 +546,14 @@ function agPropHtml(c){
       <label>이름<input type="text" data-ags="n" value="${esc(s.n)}" maxlength="40" data-i18n-skip></label>
       <div class="agclipf"><span style="font-size:11px;color:var(--mute)">모션 (클립)</span>${(()=>{const k=clips.find(x=>x.id===s.clip);return`<button type="button" class="tpbtn" data-agclip aria-label="모션 (클립) 선택" title="모션 (클립) 선택"><img alt="" src="${clipThumbURL(k,64)}"><span class="tpn"><b data-i18n-skip>${k?esc(k.name):esc(_t('(없음)'))}</b><small>${k?anLen(k)+'프레임 · '+(k.fps||12)+'fps':'클립 선택'}</small></span><svg class="tpc" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`})()}</div>
       <label>속도<input type="number" data-ags="spd" step="0.1" value="${s.spd==null?1:s.spd}"></label>
-      <label class="chk" title="반복하지 않는 클립을 끝까지 재생하는 동안 Any State에서 나가는 전환이 이 상태를 끊지 않습니다 (한 번짜리 동작용)"><input type="checkbox" data-ags="lock"${s.lock?' checked':''}>끝까지 재생 (Any State 전환이 끊지 않음)</label>
+      <label class="chk" title="반복하지 않는 클립을 끝까지 재생하는 동안 Any State에서 나가는 전환이 이 상태를 끊지 않는다 (한 번짜리 동작용)"><input type="checkbox" data-ags="lock"${s.lock?' checked':''}>끝까지 재생 (Any State 전환이 끊지 않음)</label>
       <button class="btn sm" data-ag="editclip"${s.clip?'':' disabled'}>애니메이션 창에서 편집</button>
       <div class="agsub">나가는 전환 (${out.length})</div>
       ${out.map(t=>agTrBtn(c,t)).join('')}
       <button class="btn sm" data-ag="link">＋ 전환 만들기</button>
       <div class="agsub">들어오는 전환 (${inc.length})</div>
-      ${inc.length?inc.map(t=>agTrBtn(c,t)).join(''):'<p class="hint">다른 상태나 Any State를 우클릭해 「전환 만들기」로 이 상태와 잇습니다.</p>'}
-      <p class="hint">전환을 누르면 파라미터 조건을 정할 수 있습니다.</p>
+      ${inc.length?inc.map(t=>agTrBtn(c,t)).join(''):'<p class="hint">다른 상태나 Any State를 우클릭해 「전환 만들기」로 이 상태와 잇는다.</p>'}
+      <p class="hint">전환을 누르면 파라미터 조건을 정할 수 있다.</p>
       <button class="btn sm danger" data-ag="del">상태 삭제</button>
     </div>`}
   if(S&&S.k==='tr'){const t=c.trans.find(x=>x.id===S.id);if(!t){AG.sel=null;return agPropHtml(c)}
@@ -568,21 +570,21 @@ function agPropHtml(c){
         return`<div class="agcond">${d?`<span class="agpt t-${d.t}" title="${AN_PT[d.t]}">${AN_PT[d.t][0]}</span>`:''}<select data-agc="p" data-i="${i}" aria-label="파라미터">${d?'':`<option value="${esc(q.p)}" selected>${esc(q.p)} (없음)</option>`}${c.params.map(x=>`<option value="${esc(x.n)}"${x.n===q.p?' selected':''} data-i18n-skip>${esc(x.n)}</option>`).join('')}</select>
           ${d&&d.t==='trigger'?'<span class="agtrig">발동되면</span>':d?`<select data-agc="op" data-i="${i}" aria-label="비교">${ops.map(o2=>`<option value="${o2[0]}"${o2[0]===q.op?' selected':''}>${o2[1]}</option>`).join('')}</select>`:''}
           ${d&&(d.t==='float'||d.t==='int')?`<input type="number" data-agc="v" data-i="${i}" step="${d.t==='int'?1:'any'}" value="${q.v}" aria-label="값">`:''}
-          <button class="ib" data-agc="x" data-i="${i}" title="조건 삭제" aria-label="조건 삭제">${ico('x')}</button></div>`}).join('')||'<p class="hint" style="margin:0">아직 조건이 없습니다.</p>'}</div>
+          <button class="ib" data-agc="x" data-i="${i}" title="조건 삭제" aria-label="조건 삭제">${ico('x')}</button></div>`}).join('')||'<p class="hint" style="margin:0">아직 조건이 없다.</p>'}</div>
       <button class="btn sm" data-ag="addc">＋ 조건 추가</button>
-      ${warn?'<p class="anwarn">조건이 없고 종료 시간도 꺼져 있어 이 전환은 일어나지 않습니다.</p>':''}
-      <p class="hint">${t.a==='any'?'Any State 전환은 지금 어떤 상태에 있든 조건이 맞으면 곧바로 넘어갑니다.':t.exit?'종료 시간 1 = 클립을 한 번 다 재생한 뒤. 조건도 있으면 그 시점에 조건을 확인합니다.':'조건이 맞는 순간 곧바로 넘어갑니다.'}</p>
+      ${warn?'<p class="anwarn">조건이 없고 종료 시간도 꺼져 있어 이 전환은 일어나지 않는다.</p>':''}
+      <p class="hint">${t.a==='any'?'Any State 전환은 지금 어떤 상태에 있든 조건이 맞으면 곧바로 넘어간다.':t.exit?'종료 시간 1 = 클립을 한 번 다 재생한 뒤. 조건도 있으면 그 시점에 조건을 확인한다.':'조건이 맞는 순간 곧바로 넘어간다.'}</p>
       <button class="btn sm danger" data-ag="del">전환 삭제</button>
     </div>`}
   if(S&&S.k==='any'){const out=c.trans.filter(t=>t.a==='any');
-    return`<div class="aghd"><b>Any State</b></div><div class="agform"><p class="hint">어떤 상태에서든 조건이 맞으면 곧바로 넘어가는 전환입니다. 전환을 누르면 파라미터 조건을 정할 수 있습니다.</p>
+    return`<div class="aghd"><b>Any State</b></div><div class="agform"><p class="hint">어떤 상태에서든 조건이 맞으면 곧바로 넘어가는 전환이다. 전환을 누르면 파라미터 조건을 정할 수 있다.</p>
       <div class="agsub">전환 (${out.length})</div>${out.map(t=>agTrBtn(c,t,'→ '+((anState(c,t.b)||{}).n||'?'))).join('')}
       <button class="btn sm" data-ag="link">＋ 전환 만들기</button></div>`}
-  if(S&&S.k==='entry')return`<div class="aghd"><b>Entry</b></div><div class="agform"><p class="hint">플레이를 시작하면 기본 상태(주황색)부터 재생합니다. 다른 상태를 우클릭해 「기본 상태로 지정」으로 바꿀 수 있습니다.</p></div>`;
+  if(S&&S.k==='entry')return`<div class="aghd"><b>Entry</b></div><div class="agform"><p class="hint">플레이를 시작하면 기본 상태(주황색)부터 재생한다. 다른 상태를 우클릭해 「기본 상태로 지정」으로 바꿀 수 있다.</p></div>`;
   return`<div class="aghd"><b>컨트롤러</b></div><div class="agform">
     <label>이름<input type="text" data-agk="name" value="${esc(c.name)}" maxlength="40" data-i18n-skip></label>
     <p class="hint">상태 ${c.states.length}개 · 전환 ${c.trans.length}개 · 파라미터 ${c.params.length}개</p>
-    <p class="hint">상태를 클릭하면 이름·클립·속도를, 화살표(전환)를 클릭하면 조건을 고칩니다. 게임 오브젝트에 쓰려면 인스펙터의 애니메이터 컴포넌트에서 이 컨트롤러를 고르세요.</p></div>`;
+    <p class="hint">상태를 클릭하면 이름·클립·속도를, 화살표(전환)를 클릭하면 조건을 고친다. 게임 오브젝트에 쓰려면 인스펙터의 애니메이터 컴포넌트에서 이 컨트롤러를 고른다.</p></div>`;
 }
 function agDraw(){
   const cv=$('#agCv');if(!cv||!cv.isConnected)return;const c=agCtrl();const{w,h,d}=anFitCanvas(cv);const g=cv.getContext('2d'),C=anCol();
@@ -834,14 +836,14 @@ function awRender(){
   const box=$('#awBox');if(!box||!anVis('anim'))return;
   const{o,c,k,list}=awTarget(),D=anData();
   if(o&&!c){
-    box.innerHTML=`<div class="anempty"><b data-i18n-skip>${esc(o.name)}</b>${anLines([o.props.animator?['{a} 컴포넌트에 컨트롤러가 없습니다.',{a:AC.animator()}]:['애니메이션을 시작하려면 {a}와 {b}을 만드세요.',{a:AC.animator(),b:AC.clip()}]])}${anMk('<button class="btn pri sm" data-aw="create">만들기</button>',['애니메이터 컴포넌트 · 컨트롤러 · 클립을 한 번에 만듭니다.','지금 스프라이트를 첫 프레임으로 넣습니다.'])}</div>`;return}
+    box.innerHTML=`<div class="anempty"><b data-i18n-skip>${esc(o.name)}</b>${anLines([o.props.animator?['{a} 컴포넌트에 컨트롤러가 없다.',{a:AC.animator()}]:['애니메이션을 시작하려면 {a}와 {b}을 만든다.',{a:AC.animator(),b:AC.clip()}]])}${anMk('<button class="btn pri sm" data-aw="create">만들기</button>',['애니메이터 컴포넌트 · 컨트롤러 · 클립을 한 번에 만든다.','지금 스프라이트를 첫 프레임으로 넣는다.'])}</div>`;return}
   if(!k){
-    box.innerHTML=`<div class="anempty"><b>${o?'이 컨트롤러에 클립이 없습니다':'애니메이션 클립이 없습니다'}</b>${anLines(o?[['새 클립을 만들면 {a}에 상태로 함께 추가됩니다.',{a:AC.ctrl()}]]:[['{a}에서 {b}를 선택하면 그 오브젝트의 클립을 편집할 수 있습니다.',{a:AC.hier(),b:AC.go()}],['편집한 클립은 {a}에서 바로 미리 볼 수 있습니다.',{a:AC.scene()}]])}${o?'<button class="btn pri sm" data-aw="newclip">＋ 새 클립</button>':''}</div>`;return}
+    box.innerHTML=`<div class="anempty"><b>${o?'이 컨트롤러에 클립이 없다':'애니메이션 클립이 없다'}</b>${anLines(o?[['새 클립을 만들면 {a}에 상태로 함께 추가된다.',{a:AC.ctrl()}]]:[['{a}에서 {b}를 선택하면 그 오브젝트의 클립을 편집할 수 있다.',{a:AC.hier(),b:AC.go()}],['편집한 클립은 {a}에서 바로 미리 볼 수 있다.',{a:AC.scene()}]])}${o?'<button class="btn pri sm" data-aw="newclip">＋ 새 클립</button>':''}</div>`;return}
   const tr=k.tracks,len=anLen(k);AW.f=clamp(AW.f,0,Math.max(len-1,AW.f));
   const opts=(o?list:D.clips).map(x=>`<option value="${x.id}"${x.id===k.id?' selected':''} data-i18n-skip>${esc(x.name)}</option>`).join('')+(o?(D.clips.some(x=>!list.includes(x))?`<optgroup label="${esc(_t('다른 클립'))}">${D.clips.filter(x=>!list.includes(x)).map(x=>`<option value="${x.id}" data-i18n-skip>${esc(x.name)}</option>`).join('')}</optgroup>`:''):'')+'<option value="+new">＋ 새 클립…</option>';
   box.innerHTML=`<div class="awwin">
     <div class="antop">
-      <button class="awpv${AW.preview?' on':''}" data-aw="preview" title="미리보기: 씬 뷰에서 선택한 오브젝트에 이 프레임을 보여 줍니다"${o?'':' disabled'}><i></i>미리보기</button>
+      <button class="awpv${AW.preview?' on':''}" data-aw="preview" title="미리보기: 씬 뷰에서 선택한 오브젝트에 이 프레임을 보여 준다"${o?'':' disabled'}><i></i>미리보기</button>
       <span class="awtr">
         <button class="ib" data-aw="first" title="첫 프레임" aria-label="첫 프레임">⏮</button><button class="ib" data-aw="prev" title="이전 프레임 (,)" aria-label="이전 프레임">◀</button>
         <button class="ib awplay${AW.playing?' on':''}" data-aw="play" title="재생 / 정지 (Space)" aria-label="재생">${AW.playing?'❚❚':'▶'}</button>
@@ -852,7 +854,7 @@ function awRender(){
       <button class="ib" data-aw="menu" title="클립 메뉴" aria-label="클립 메뉴">${ico('more')}</button>
       <label class="awfps" title="1초에 재생하는 프레임 수 (Samples)">샘플<input type="number" data-aw="fps" min="1" max="60" value="${k.fps}"></label>
       <label class="chk" title="끝까지 재생하면 처음부터 다시 (Loop Time)"><input type="checkbox" data-aw="loop"${k.loop?' checked':''}>반복</label>
-      <label class="chk" title="부드럽게: 키 사이를 천천히 출발해 천천히 멈춥니다 (끄면 일정한 속도)"><input type="checkbox" data-aw="smooth"${k.smooth?' checked':''}>부드럽게</label>
+      <label class="chk" title="부드럽게: 키 사이를 천천히 출발해 천천히 멈춘다 (끄면 일정한 속도)"><input type="checkbox" data-aw="smooth"${k.smooth?' checked':''}>부드럽게</label>
       <span class="awlen">${len}프레임 · ${(len/k.fps).toFixed(2)}초</span>
       <span class="spacer"></span>
       ${o?`<span class="anchip on">${ico('cube')}<span data-i18n-skip>${esc(o.name)}</span></span>`:''}
@@ -862,9 +864,9 @@ function awRender(){
       <div class="awleft">
         <div class="awlh"><span>속성</span><span class="spacer"></span><button class="ib" data-aw="keyall" title="모든 속성에 이 프레임 키 추가" aria-label="키 추가">◆</button></div>
         ${tr.map(t=>awRowHtml(k,t)).join('')}
-        <div class="awadd"><button class="btn sm" data-aw="addprop">＋ 속성 추가</button><small class="awaddh">프로젝트 패널의 스프라이트를 스프라이트 속성(또는 여기)에 끌어다 놓으면 현재 프레임에 키가 들어갑니다</small></div>
+        <div class="awadd"><button class="btn sm" data-aw="addprop">＋ 속성 추가</button><small class="awaddh">프로젝트 패널의 스프라이트를 스프라이트 속성(또는 여기)에 끌어다 놓으면 현재 프레임에 키가 들어간다</small></div>
       </div>
-      <div class="awright" id="awCvWrap" tabindex="0"><canvas id="awCv"></canvas>${tr.length?'':`<div class="awdrop">프로젝트 패널의 스프라이트(나눈 조각)를 여기로 끌어다 놓으면 프레임이 차례로 들어갑니다</div>`}</div>
+      <div class="awright" id="awCvWrap" tabindex="0"><canvas id="awCv"></canvas>${tr.length?'':`<div class="awdrop">프로젝트 패널의 스프라이트(나눈 조각)를 여기로 끌어다 놓으면 프레임이 차례로 들어간다</div>`}</div>
     </div></div>`;
   requestAnimationFrame(awDraw);
 }
@@ -873,12 +875,12 @@ function awMiss(k){const t=k&&anTrack(k,'sprite');if(!t)return[];return t.keys.f
 function awMissHtml(k){
   const miss=awMiss(k);if(!miss.length)return'';
   const B=window.THANIYA_BASE_ASSETS||[],base=[...new Set(miss.map(refAid))].filter(id=>B.some(b=>b.id===id));
-  return`<div class="awmiss">⚠ <span>스프라이트 키 ${miss.length}개가 가리키는 그림을 찾을 수 없습니다${base.length?' (기본 에셋 「'+esc(base.map(id=>B.find(b=>b.id===id).name).join(', '))+'」이 없음)':' — 에셋이 지워졌거나 아직 불러오는 중입니다'}.</span>${base.length?`<button class="btn sm pri" data-aw="restore" data-ids="${esc(base.join(','))}">기본 에셋 되살리기</button>`:''}</div>`;
+  return`<div class="awmiss">⚠ <span>스프라이트 키 ${miss.length}개가 가리키는 그림을 찾을 수 없다${base.length?' (기본 에셋 「'+esc(base.map(id=>B.find(b=>b.id===id).name).join(', '))+'」이 없음)':' — 에셋이 지워졌거나 아직 불러오는 중이다'}.</span>${base.length?`<button class="btn sm pri" data-aw="restore" data-ids="${esc(base.join(','))}">기본 에셋 되살리기</button>`:''}</div>`;
 }
 const awSprBtn=ref=>`<img alt="" src="${spriteThumbURL(ref,48)}"><span class="tpn"><b data-i18n-skip>${esc(sprName(ref))}</b></span>`;
 function awRowHtml(k,t){
   const P0=AN_PROPS[t.p],f=Math.floor(AW.f),v=anValAt(t,AW.f),has=t.keys.some(q=>q.f===f);let ed='';
-  if(P0.kind==='spr')ed=`<button type="button" class="tpbtn" data-awv="${t.p}" data-ref="${esc(v||'')}" title="이 프레임의 스프라이트 (눌러서 선택 · 프로젝트 패널에서 끌어다 놓아도 됩니다 · 바꾸면 키가 만들어집니다)">${awSprBtn(v||'')}</button>`;
+  if(P0.kind==='spr')ed=`<button type="button" class="tpbtn" data-awv="${t.p}" data-ref="${esc(v||'')}" title="이 프레임의 스프라이트 (눌러서 선택 · 프로젝트 패널에서 끌어다 놓아도 된다 · 바꾸면 키가 만들어진다)">${awSprBtn(v||'')}</button>`;
   else if(P0.kind==='bool')ed=`<input type="checkbox" data-awv="${t.p}"${v?' checked':''}>`;
   else if(P0.kind==='ev'){const q=t.keys.find(x=>x.f===f);ed=`<input type="text" data-awv="${t.p}" value="${esc(q?q.v:'')}" placeholder="${esc(_t('메서드 이름'))}" spellcheck="false" title="이 프레임에서 부를 스크립트 메서드 이름 (예: Footstep)">`}
   else ed=`<input type="number" data-awv="${t.p}" step="${P0.step}" value="${v==null?P0.def:+(+v).toFixed(3)}">`;
@@ -994,7 +996,7 @@ function awPropMenu(anchor){
   const k=awClip();if(!k)return;
   showMenu(anchor,AN_ORDER.filter(p=>!k.tracks.some(t=>t.p===p)).map(p=>({label:AN_PROPS[p].n+' ('+AN_PROPS[p].en+')',fn:()=>anEdit(()=>{const t=anTrack(k,p,true);
     if(p!=='ev'&&p!=='sprite'){const o=getSel();t.keys.push({f:0,v:AN_PROPS[p].def});void o}
-    else if(p==='sprite'){const o=getSel();if(o&&o.props.sprite)t.keys.push({f:0,v:o.props.sprite})}})})).concat(k.tracks.length>=AN_ORDER.length?[{label:'모든 속성이 이미 있습니다',disabled:true}]:[]));
+    else if(p==='sprite'){const o=getSel();if(o&&o.props.sprite)t.keys.push({f:0,v:o.props.sprite})}})})).concat(k.tracks.length>=AN_ORDER.length?[{label:'모든 속성이 이미 있다',disabled:true}]:[]));
 }
 (()=>{
   const pan=panelEl.anim;

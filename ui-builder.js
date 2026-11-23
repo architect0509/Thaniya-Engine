@@ -72,15 +72,15 @@ const IC={
   reset:sv('<path d="M2.8 8a5.2 5.2 0 109-3.5M11.8 1.8v2.9H8.9"/>')
 };
 const TYPES={
-  panel:{n:'패널',box:1,tip:'다른 요소를 담는 상자 (div) · 자동 배치(가로/세로)를 켜면 CSS flex처럼 정렬됩니다',
+  panel:{n:'패널',box:1,tip:'다른 요소를 담는 상자 (div) · 자동 배치(가로/세로)를 켜면 CSS flex처럼 정렬된다',
     d:{w:320,h:200,st:{bg:'#1e2230',bgA:.92,radius:12},pr:{layout:'none',gap:12,pad:16,jc:'start',ai:'start',wrap:false,clip:false}}},
   text:{n:'텍스트',txt:1,tip:'글자 (label)',d:{w:200,h:36,st:{color:'#ffffff',fs:20,ta:'left',va:'middle'},pr:{text:'텍스트'}}},
-  button:{n:'버튼',txt:1,tip:'누를 수 있는 버튼 (button) · 오른쪽 「동작」에서 눌렀을 때 할 일을 고릅니다',
+  button:{n:'버튼',txt:1,tip:'누를 수 있는 버튼 (button) · 오른쪽 「동작」에서 눌렀을 때 할 일을 고른다',
     d:{w:160,h:44,st:{bg:'#3b82f6',bgA:1,color:'#ffffff',fs:16,fw:600,ta:'center',va:'middle',radius:10,sh:1},pr:{text:'버튼'},act:{t:'none'}}},
-  image:{n:'이미지',tip:'프로젝트의 스프라이트를 보여 줍니다 (img)',d:{w:96,h:96,st:{},pr:{src:'',fit:'contain',pix:true}}},
+  image:{n:'이미지',tip:'프로젝트의 스프라이트를 보여 준다 (img)',d:{w:96,h:96,st:{},pr:{src:'',fit:'contain',pix:true}}},
   toggle:{n:'체크박스',txt:1,tip:'켜고 끄는 체크박스 (input type=checkbox)',d:{w:180,h:32,st:{color:'#ffffff',fs:16,ac:'#3b82f6',tr:'#3a4050',va:'middle'},pr:{text:'체크박스',checked:false,bx:20}}},
   slider:{n:'슬라이더',tip:'값을 끌어서 고르는 막대 (input type=range)',d:{w:220,h:28,st:{ac:'#3b82f6',tr:'#3a4050',kc:'#ffffff'},pr:{min:0,max:100,step:1,value:50,tk:6,kb:18}}},
-  input:{n:'입력 상자',tip:'글자를 입력받는 칸 (input)',d:{w:240,h:40,st:{bg:'#11141c',bgA:1,color:'#ffffff',fs:15,radius:8,bw:1,bc:'#3a4050',pad:12},pr:{value:'',ph:'입력하세요',itype:'text',max:0}}},
+  input:{n:'입력 상자',tip:'글자를 입력받는 칸 (input)',d:{w:240,h:40,st:{bg:'#11141c',bgA:1,color:'#ffffff',fs:15,radius:8,bw:1,bc:'#3a4050',pad:12},pr:{value:'',ph:'입력한다',itype:'text',max:0}}},
   dropdown:{n:'드롭다운',tip:'목록에서 하나를 고르는 상자 (select)',d:{w:200,h:40,st:{bg:'#11141c',bgA:1,color:'#ffffff',fs:15,radius:8,bw:1,bc:'#3a4050',pad:12},pr:{opts:'항목 1\n항목 2\n항목 3',value:0}}},
   progress:{n:'진행 막대',tip:'체력·경험치처럼 채워지는 막대',d:{w:220,h:16,st:{bg:'#2a2f3d',bgA:1,ac:'#22c55e',radius:99},pr:{min:0,max:100,value:60}}}
 };
@@ -532,11 +532,11 @@ BOX.innerHTML=`<div class="uibBar" role="toolbar" aria-label="UI 빌더 도구">
   <span class="sep"></span>
   <button class="uibIb" data-a="undo" title="실행 취소 (Ctrl+Z)" aria-label="실행 취소">${IC.undo}</button>
   <button class="uibIb" data-a="redo" title="다시 실행 (Ctrl+Shift+Z)" aria-label="다시 실행">${IC.redo}</button>
-  <button class="uibIb danger" data-a="reset" title="이 UI 화면의 요소를 모두 지웁니다 (확인 후 · Ctrl+Z로 되돌리기 가능)">${IC.reset}<span>UI 초기화</span></button>
-  <button class="uibIb" data-a="preview" title="미리보기: 버튼·체크박스·슬라이더를 직접 눌러 봅니다" aria-label="미리보기">${IC.play}<span>미리보기</span></button>
+  <button class="uibIb danger" data-a="reset" title="이 UI 화면의 요소를 모두 지운다 (확인 후 · Ctrl+Z로 되돌리기 가능)">${IC.reset}<span>UI 초기화</span></button>
+  <button class="uibIb" data-a="preview" title="미리보기: 버튼·체크박스·슬라이더를 직접 눌러 본다" aria-label="미리보기">${IC.play}<span>미리보기</span></button>
   <span style="flex:1 0 8px"></span>
   <button class="uibIb" data-a="export" title="HTML 파일로 내보내기">HTML</button>
-  <button class="uibIb pri" data-a="save" title="프로젝트 저장 (Ctrl+S) · UI 화면은 프로젝트와 함께 저장됩니다">저장</button>
+  <button class="uibIb pri" data-a="save" title="프로젝트 저장 (Ctrl+S) · UI 화면은 프로젝트와 함께 저장된다">저장</button>
   <button class="uibIb" data-a="full" title="전체 화면 (Shift+Space · Esc: 돌아가기)" aria-label="전체 화면">${IC.fsOn}</button>
   <button class="uibIb uibNb" data-a="showR" title="속성" aria-label="속성">${IC.props}</button>
 </div>
@@ -635,7 +635,7 @@ function drawOver(extra){
     }else if(S.length>1){const b=bounds(S.map(domRect).filter(Boolean));if(b)h+=`<div class="uibSelB" style="${boxCss(b)}"></div><div class="uibSz" style="left:${vx(b.x+b.w/2)}px;top:${vy(b.y+b.h)}px">${Math.round(b.w)} × ${Math.round(b.h)}</div>`}
   }
   if(extra)h+=extra;
-  if(U.preview)h+=`<div class="uibPv">${esc(T('미리보기 중 · 직접 눌러 보세요 (Esc: 끝내기)'))}</div>`;
+  if(U.preview)h+=`<div class="uibPv">${esc(T('미리보기 중 · 직접 눌러 본다 (Esc: 끝내기)'))}</div>`;
   E.over.innerHTML=h;
 }
 const boxCss=r=>`left:${vx(r.x)}px;top:${vy(r.y)}px;width:${Math.max(1,r.w*U.z)}px;height:${Math.max(1,r.h*U.z)}px`;
@@ -643,7 +643,7 @@ function bounds(rs){if(!rs.length)return null;const x=Math.min(...rs.map(r=>r.x)
 
 /* ---- 계층 구조 ---- */
 function renderHier(){
-  const d=D();if(!d){E.hier.innerHTML=`<p class="uibHint" style="padding:10px">${esc(T('UI 화면이 없습니다. 위의 ＋로 만드세요.'))}</p>`;return}
+  const d=D();if(!d){E.hier.innerHTML=`<p class="uibHint" style="padding:10px">${esc(T('UI 화면이 없다. 위의 ＋로 만든다.'))}</p>`;return}
   let h='';
   walk(d.root,(n,p,dp)=>{
     let a=p;while(a){if(U.col.has(a.id))return;a=parOf(a)}
@@ -683,7 +683,7 @@ function anchorGrid(n){
     const nm=(ANCH_V.find(z=>z[0]===ay)[1])+' · '+(ANCH_H.find(z=>z[0]===ax)[1]);
     cells.push(`<button type="button" data-anc="${ax}${ay}" class="${on?'on':''}" title="${esc(T(nm))} — ${esc(T('Shift+클릭: 그 자리로 옮기기까지'))}" aria-label="${esc(T(nm))}">${i}</button>`);
   }));
-  return`<div class="uibAnW"><div class="uibAn">${cells.join('')}</div><div class="uibAnT"><b>${esc(T('앵커'))}</b><br>${esc(T('가로'))}: ${esc(T(ANCH_H.find(z=>z[0]===n.ax)[1]))}<br>${esc(T('세로'))}: ${esc(T(ANCH_V.find(z=>z[0]===n.ay)[1]))}<br><span style="opacity:.8">${esc(T('화면 크기가 바뀌어도 이 기준을 따라 자리를 지킵니다'))}</span></div></div>`;
+  return`<div class="uibAnW"><div class="uibAn">${cells.join('')}</div><div class="uibAnT"><b>${esc(T('앵커'))}</b><br>${esc(T('가로'))}: ${esc(T(ANCH_H.find(z=>z[0]===n.ax)[1]))}<br>${esc(T('세로'))}: ${esc(T(ANCH_V.find(z=>z[0]===n.ay)[1]))}<br><span style="opacity:.8">${esc(T('화면 크기가 바뀌어도 이 기준을 따라 자리를 지킨다'))}</span></div></div>`;
 }
 const alignRow=multi=>row(multi?'정렬':'부모에 맞춤',segI('al','',[['l',IC.aL,'왼쪽 맞춤'],['c',IC.aC,'가로 가운데'],['r',IC.aR,'오른쪽 맞춤']])+segI('al','',[['t',IC.aT,'위쪽 맞춤'],['m',IC.aM,'세로 가운데'],['b',IC.aB,'아래쪽 맞춤']]));
 function fontOpts(){const o=[];try{Object.keys(UI_FONTS).forEach(k=>o.push(['g:'+k,UI_FONTS[k].n]));(fonts||[]).forEach(a=>o.push(['f:'+a.id,a.name]))}catch(e){o.push(['g:sans','기본 고딕'])}return o}
@@ -705,11 +705,11 @@ function textSec(n){
 }
 function renderInsp(){
   const d=D(),S=sel();
-  if(!d){E.insp.innerHTML=`<div style="padding:12px"><p class="uibHint">${esc(T('위의 ＋ 버튼으로 첫 UI 화면을 만드세요.'))}</p></div>`;return}
+  if(!d){E.insp.innerHTML=`<div style="padding:12px"><p class="uibHint">${esc(T('위의 ＋ 버튼으로 첫 UI 화면을 만든다.'))}</p></div>`;return}
   let h='';
   if(S.length>1){
     h+=`<div class="uibIh"><span class="ty">${IC.free}</span><b>${esc(_t('{n}개 선택',{n:S.length}))}</b></div>`;
-    h+=sec('pos','배치',alignRow(true)+row('간격 맞추기',`<button type="button" class="uibIb" data-a="distH">${esc(T('가로 균등'))}</button><button type="button" class="uibIb" data-a="distV">${esc(T('세로 균등'))}</button>`)+`<p class="uibHint">${esc(T('채우기·테두리 같은 스타일을 바꾸면 고른 요소에 모두 적용됩니다.'))}</p>`);
+    h+=sec('pos','배치',alignRow(true)+row('간격 맞추기',`<button type="button" class="uibIb" data-a="distH">${esc(T('가로 균등'))}</button><button type="button" class="uibIb" data-a="distV">${esc(T('세로 균등'))}</button>`)+`<p class="uibHint">${esc(T('채우기·테두리 같은 스타일을 바꾸면 고른 요소에 모두 적용된다.'))}</p>`);
     const n=S[S.length-1];h+=styleSecs(n,true);
     E.insp.innerHTML=h;return;
   }
@@ -719,17 +719,17 @@ function renderInsp(){
     h+=sec('screen','그룹',row('미리보기 크기',numI('d.w',d.w,{lab:'W',min:64,max:8192})+numI('d.h',d.h,{lab:'H',min:64,max:8192}))+
       row('표시',selI('d.show',d.show,[['start','플레이 시작 시 보이기'],['manual','스크립트·버튼으로 열기']]),'꺼 두면 다른 버튼의 「UI 그룹 열기」나 스크립트 UIScreen.Show("그룹 이름")로 엽니다')+
       row('',chkI('d.modal',d.modal,'열려 있으면 뒤 게임 클릭 막기'))+
-      `<p class="uibHint">${esc(T('위 크기는 미리보기용입니다. 저장하면 씬의 UI 캔버스(기준 해상도)에 맞춰 앵커대로 자리를 잡습니다.'))}</p>`+
+      `<p class="uibHint">${esc(T('위 크기는 미리보기용이다. 저장하면 씬의 UI 캔버스(기준 해상도)에 맞춰 앵커대로 자리를 잡는다.'))}</p>`+
       `<div class="uibStat"><span>${esc(T('요소'))} <b>${countNodes(d)-1}</b></span><span>${esc(T('스크립트'))}: <code data-i18n-skip>UIGroup.Find("${esc(d.name)}")</code></span></div>`);
     h+=sec('layout','자동 배치',layoutBody(n));
     h+=sec('fill','배경',row('색',colI('st.bg',n.st.bg||'','st.bgA'))+row('이미지',sprPick('st.img',n.st.img))+(n.st.img?row('맞춤',selI('st.imgFit',n.st.imgFit||'stretch',[['stretch','늘이기'],['cover','채우기 (잘림)'],['contain','맞추기'],['tile','바둑판']])):''));
     E.insp.innerHTML=h;return;
   }
   const td=TYPES[n.type],p=parOf(n),fl=flowOf(p),rr=relRect(n);
-  h+=`<div class="uibIh"><span class="ty">${IC[n.type]}</span><input type="text" data-f="n.name" data-t="str" value="${esc(n.name)}" aria-label="이름" maxlength="60" title="${esc(T('스크립트에서 이 이름으로 찾습니다'))}"><small>${esc(T(td.n))}</small></div>`;
+  h+=`<div class="uibIh"><span class="ty">${IC[n.type]}</span><input type="text" data-f="n.name" data-t="str" value="${esc(n.name)}" aria-label="이름" maxlength="60" title="${esc(T('스크립트에서 이 이름으로 찾는다'))}"><small>${esc(T(td.n))}</small></div>`;
   /* 내용 */
   let c='';const pr=n.pr;
-  if(n.type==='text'||n.type==='button'||n.type==='toggle')c+=row('글자',txtI('pr.text',pr.text,'글자'),'캔버스에서 더블클릭해도 고칠 수 있습니다');
+  if(n.type==='text'||n.type==='button'||n.type==='toggle')c+=row('글자',txtI('pr.text',pr.text,'글자'),'캔버스에서 더블클릭해도 고칠 수 있다');
   if(n.type==='toggle')c+=row('',chkI('pr.checked',pr.checked,'처음에 켜짐'))+row('상자 크기',numI('pr.bx',pr.bx,{min:8,max:120,lab:'px'}));
   if(n.type==='slider'||n.type==='progress')c+=row('범위',numI('pr.min',pr.min,{lab:'최소',step:1})+numI('pr.max',pr.max,{lab:'최대',step:1}))+row('값',numI('pr.value',pr.value,{step:n.type==='slider'?pr.step||1:1}));
   if(n.type==='slider')c+=row('단계',numI('pr.step',pr.step,{min:0,step:.1}))+row('막대 · 손잡이',numI('pr.tk',pr.tk,{lab:'막대',min:1,max:100})+numI('pr.kb',pr.kb,{lab:'손잡이',min:4,max:200}));
@@ -740,7 +740,7 @@ function renderInsp(){
   /* 위치와 크기 */
   let ps='';
   if(fl){
-    ps+=`<p class="uibHint">${esc(_t('「{p}」의 자동 배치({d}) 안에 있어 자리는 순서로 정해집니다. 계층 구조나 캔버스에서 끌어 순서를 바꾸세요.',{p:p.name,d:T(p.pr.layout==='row'?'가로':'세로')}))}</p>`;
+    ps+=`<p class="uibHint">${esc(_t('「{p}」의 자동 배치({d}) 안에 있어 자리는 순서로 정해진다. 계층 구조나 캔버스에서 끌어 순서를 바꾼다.',{p:p.name,d:T(p.pr.layout==='row'?'가로':'세로')}))}</p>`;
     ps+=row('가로 크기',segI('fx',n.fx?'1':'0',[['0','고정','고정 크기'],['1','채우기','남는 공간 채우기']])+(n.fx?'':numI('r.w',rr.w,{lab:'W',min:1})));
     ps+=row('세로 크기',segI('fy',n.fy?'1':'0',[['0','고정','고정 크기'],['1','채우기','남는 공간 채우기']])+(n.fy?'':numI('r.h',rr.h,{lab:'H',min:1})));
   }else{
@@ -756,14 +756,14 @@ function renderInsp(){
   if(n.type==='button'){const a=n.act||{t:'none'};let ab=row('누르면',actSel(a.t));
     if(a.t==='open'||a.t==='toggle')ab+=row('UI 그룹',selI('act.v',a.v||'',[['','(고르기)']].concat(groupOpts())))+(a.t==='open'?row('',chkI('act.cs',a.cs,'이 그룹은 닫기')):'');
     if(a.t==='scene')ab+=row('씬',selI('act.v',a.v||'',[['','(고르기)']].concat((P.maps||[]).map(m=>[m.id,m.name]))));
-    if(a.t==='method')ab+=row('메서드 이름',inI('act.v',a.v||'','예: OnStartClick'))+`<p class="uibHint">${esc(T('씬의 게임 오브젝트 · UI · 매니저에 붙은 스크립트에서 이 이름의 메서드를 모두 실행합니다.'))}</p>`;
+    if(a.t==='method')ab+=row('메서드 이름',inI('act.v',a.v||'','예: OnStartClick'))+`<p class="uibHint">${esc(T('씬의 게임 오브젝트 · UI · 매니저에 붙은 스크립트에서 이 이름의 메서드를 모두 실행한다.'))}</p>`;
     if(a.t==='msg')ab+=row('알림 글자',inI('act.v',a.v||'',''));
     h+=sec('act','동작',ab);
   }
   if(['toggle','slider','input','dropdown'].includes(n.type))h+=sec('act','동작',row('값이 바뀌면',inI('pr.onChange',pr.onChange||'','메서드 이름 (예: OnVolumeChanged)'),'이 이름의 스크립트 메서드를 실행합니다. 값은 UIScreen.GetValue("화면", "요소")로 읽습니다')+`<p class="uibHint">${esc(_t('스크립트: UIScreen.GetValue("{s}", "{n}")',{s:d.name,n:n.name}))}</p>`);
   /* CSS */
   const o=cssOf(n,p),cs='.'+cssName(n.name)+' {\n'+Object.entries(o).map(([k,v])=>'  '+k+': '+(String(v).startsWith('url(data:')?'url(…)':v)+';').join('\n')+'\n}';
-  h+=sec('css','CSS',`<pre class="uibCss" data-i18n-skip>${esc(cs)}</pre>`+row('추가 CSS',txtI('n.css',n.css,'예: letter-spacing: 2px; text-transform: uppercase;',true),'직접 쓴 CSS가 위 값보다 나중에 붙어 우선합니다'),'');
+  h+=sec('css','CSS',`<pre class="uibCss" data-i18n-skip>${esc(cs)}</pre>`+row('추가 CSS',txtI('n.css',n.css,'예: letter-spacing: 2px; text-transform: uppercase;',true),'직접 쓴 CSS가 위 값보다 나중에 붙어 우선한다'),'');
   E.insp.innerHTML=h;
 }
 function layoutBody(n){
@@ -774,7 +774,7 @@ function layoutBody(n){
     b+=row(L==='row'?'가로 정렬':'세로 정렬',selI('pr.jc',pr.jc||'start',[['start','앞쪽'],['center','가운데'],['end','뒤쪽'],['between','양 끝 맞춤'],['around','고르게']]));
     b+=row(L==='row'?'세로 정렬':'가로 정렬',selI('pr.ai',pr.ai||'start',[['start','앞쪽'],['center','가운데'],['end','뒤쪽'],['stretch','늘이기']]));
     b+=row('',chkI('pr.wrap',pr.wrap,'넘치면 줄 바꿈'));
-  }else b+=`<p class="uibHint">${esc(T('가로/세로를 고르면 안의 요소가 CSS flex처럼 저절로 줄을 맞춥니다.'))}</p>`;
+  }else b+=`<p class="uibHint">${esc(T('가로/세로를 고르면 안의 요소가 CSS flex처럼 저절로 줄을 맞춘다.'))}</p>`;
   if(!isRoot(n))b+=row('',chkI('pr.clip',pr.clip,'넘치는 부분 자르기'));
   return b;
 }
@@ -1276,9 +1276,9 @@ function finishText(ok){
 E.scr.addEventListener('click',e=>{if(!U.preview)return;const el=e.target.closest('[data-n]');if(!el)return;const n=nodeOf(el.dataset.n);if(!n)return;
   if(n.type==='toggle'){const on=!el.classList.contains('on');setToggle(el,n,on);if(n.pr.onChange)toast(_t('값이 바뀜 → {m}()',{m:n.pr.onChange}))}
   if(n.type==='button'){const a=n.act||{},d=D();
-    const shut=(why)=>{const r=E.scr.querySelector('.uibS');if(r)r.style.visibility='hidden';const w=document.createElement('div');w.className='uibPvShut';w.innerHTML=`<div><b>${esc(_t('「{g}」 그룹이 닫혔어요',{g:d.name}))}</b><p>${esc(why)}</p><button type="button" class="uibIb" data-pvback="1">${esc(T('다시 보기'))}</button></div>`;E.view.append(w)};
-    if(a.t==='close')shut(T('플레이 중에도 이 버튼을 누르면 이렇게 사라져요.'));
-    else if(a.t==='open'&&a.v){if(a.cs)shut(_t('플레이에서는 「{v}」 그룹이 열리고 이 그룹은 닫혀요.',{v:a.v}));else toast(_t('플레이에서는 「{v}」 그룹이 열려요',{v:a.v}))}
+    const shut=(why)=>{const r=E.scr.querySelector('.uibS');if(r)r.style.visibility='hidden';const w=document.createElement('div');w.className='uibPvShut';w.innerHTML=`<div><b>${esc(_t('「{g}」 그룹이 닫혔다',{g:d.name}))}</b><p>${esc(why)}</p><button type="button" class="uibIb" data-pvback="1">${esc(T('다시 보기'))}</button></div>`;E.view.append(w)};
+    if(a.t==='close')shut(T('플레이 중에도 이 버튼을 누르면 이렇게 사라진다.'));
+    else if(a.t==='open'&&a.v){if(a.cs)shut(_t('플레이에서는 「{v}」 그룹이 열리고 이 그룹은 닫힌다.',{v:a.v}));else toast(_t('플레이에서는 「{v}」 그룹이 열려요',{v:a.v}))}
     else{const L0={none:'동작 없음',toggle:'UI 그룹 열기/닫기',scene:'씬 이동',method:'메서드 실행',msg:'알림',stop:'플레이 종료',open:'UI 그룹 열기'};toast(_t('「{n}」 → {a}',{n:n.name,a:T(L0[a.t]||'동작 없음')+(a.v&&a.t==='method'?' '+a.v+'()':'')}))}
     hostEv('preview',{n,a,d});
   }
@@ -1651,8 +1651,8 @@ if(window.TI18N)TI18N.add({
 '누르면':['On click','クリック時','点击时'],'없음':['None','なし','无'],'이 화면 닫기':['Close this screen','この画面を閉じる','关闭此界面'],'다른 UI 화면 열기':['Open another UI screen','別のUI画面を開く','打开其他 UI 界面'],'다른 UI 화면 열기/닫기':['Toggle another UI screen','別のUI画面を開閉','切换其他 UI 界面'],'씬 이동':['Load scene','シーン移動','切换场景'],'스크립트 메서드 실행':['Run script method','スクリプトメソッド実行','运行脚本方法'],'알림 표시':['Show message','通知を表示','显示提示'],'플레이 종료':['Stop play','プレイ終了','停止游戏'],
 '값이 바뀌면':['On value changed','値が変わったら','值改变时'],'메서드 이름':['Method name','メソッド名','方法名'],'추가 CSS':['Extra CSS','追加CSS','附加 CSS'],
 '빈 UI 화면':['Empty UI screen','空のUI画面','空 UI 界面'],'메인 메뉴':['Main menu','メインメニュー','主菜单'],'설정 창':['Settings window','設定ウィンドウ','设置窗口'],'게임 HUD':['Game HUD','ゲームHUD','游戏 HUD'],'확인 대화상자':['Confirm dialog','確認ダイアログ','确认对话框'],
-'왼쪽 아래 「요소」에서 버튼·텍스트·슬라이더 등을 캔버스로 끌어다 놓으세요.':['Drag buttons, text, sliders and more from “Elements” at the bottom left onto the canvas.','左下の「要素」からボタン・テキスト・スライダーなどをキャンバスにドラッグしてください。','从左下角「元素」把按钮、文本、滑块等拖到画布上。'],'전체 화면 (Shift+Space · Esc: 돌아가기)':['Fullscreen (Shift+Space · Esc to exit)','全画面 (Shift+Space · Esc: 戻る)','全屏 (Shift+Space · Esc 返回)'],'전체 화면 끝내기 (Esc)':['Exit fullscreen (Esc)','全画面を終了 (Esc)','退出全屏 (Esc)'],'고치려면 위의 「UI 빌더로 편집하기」를 누르세요.':['To change it, press “Edit with UI Builder” above.','編集するには上の「UIビルダーで編集」を押してください。','要修改，请点击上方「用 UI 构建器编辑」。'],'UI 빌더로 만든 UI 화면':['UI screen made with UI Builder','UIビルダーで作ったUI画面','用 UI 构建器创建的界面'],'UI 빌더로 만든 요소':['made with UI Builder','UIビルダーで作成','用 UI 构建器创建'],'UI 초기화':['Reset UI','UIをリセット','重置 UI'],'UI 초기화…':['Reset UI…','UIをリセット…','重置 UI…'],'UI 빌더로 편집하기':['Edit with UI Builder','UIビルダーで編集','用 UI 构建器编辑'],'UI 빌더로 편집':['Edit in UI Builder','UIビルダーで編集','在 UI 构建器中编辑'],'UI 저장':['Save UI','UIを保存','保存 UI'],'모든 씬 (공통 UI)':['All scenes (shared UI)','すべてのシーン (共通UI)','所有场景 (通用 UI)'],
-'미리보기 중 · 직접 눌러 보세요 (Esc: 끝내기)':['Previewing · try clicking (Esc to exit)','プレビュー中 · 実際に押してみてください (Esc: 終了)','预览中 · 试着点击 (Esc 退出)'],
+'왼쪽 아래 「요소」에서 버튼·텍스트·슬라이더 등을 캔버스로 끌어다 놓는다.':['Drag buttons, text, sliders and more from “Elements” at the bottom left onto the canvas.','左下の「要素」からボタン・テキスト・スライダーなどをキャンバスにドラッグしてください。','从左下角「元素」把按钮、文本、滑块等拖到画布上。'],'전체 화면 (Shift+Space · Esc: 돌아가기)':['Fullscreen (Shift+Space · Esc to exit)','全画面 (Shift+Space · Esc: 戻る)','全屏 (Shift+Space · Esc 返回)'],'전체 화면 끝내기 (Esc)':['Exit fullscreen (Esc)','全画面を終了 (Esc)','退出全屏 (Esc)'],'고치려면 위의 「UI 빌더로 편집하기」를 누른다.':['To change it, press “Edit with UI Builder” above.','編集するには上の「UIビルダーで編集」を押してください。','要修改，请点击上方「用 UI 构建器编辑」。'],'UI 빌더로 만든 UI 화면':['UI screen made with UI Builder','UIビルダーで作ったUI画面','用 UI 构建器创建的界面'],'UI 빌더로 만든 요소':['made with UI Builder','UIビルダーで作成','用 UI 构建器创建'],'UI 초기화':['Reset UI','UIをリセット','重置 UI'],'UI 초기화…':['Reset UI…','UIをリセット…','重置 UI…'],'UI 빌더로 편집하기':['Edit with UI Builder','UIビルダーで編集','用 UI 构建器编辑'],'UI 빌더로 편집':['Edit in UI Builder','UIビルダーで編集','在 UI 构建器中编辑'],'UI 저장':['Save UI','UIを保存','保存 UI'],'모든 씬 (공통 UI)':['All scenes (shared UI)','すべてのシーン (共通UI)','所有场景 (通用 UI)'],
+'미리보기 중 · 직접 눌러 본다 (Esc: 끝내기)':['Previewing · try clicking (Esc to exit)','プレビュー中 · 実際に押してみてください (Esc: 終了)','预览中 · 试着点击 (Esc 退出)'],
 '이름 바꾸기':['Rename','名前を変更','重命名'],'복제':['Duplicate','複製','复制副本'],'복사':['Copy','コピー','复制'],'잘라내기':['Cut','切り取り','剪切'],'붙여넣기':['Paste','貼り付け','粘贴'],'삭제':['Delete','削除','删除'],'맨 앞으로':['Bring to front','最前面へ','置于顶层'],'앞으로':['Bring forward','前面へ','上移一层'],'뒤로':['Send backward','背面へ','下移一层'],'맨 뒤로':['Send to back','最背面へ','置于底层'],
 '패널로 묶기':['Group into panel','パネルにまとめる','编组为面板'],'묶음 풀기':['Ungroup','グループ解除','取消编组'],'숨기기':['Hide','非表示','隐藏'],'보이기':['Show','表示','显示'],'잠그기':['Lock','ロック','锁定'],'잠금 풀기':['Unlock','ロック解除','解锁'],'글자 고치기':['Edit text','文字を編集','编辑文字'],
 'HTML 파일로 내보내기':['Export as HTML file','HTMLファイルに書き出す','导出为 HTML 文件'],'CSS 복사':['Copy CSS','CSSをコピー','复制 CSS'],'UI 화면 이름':['UI screen name','UI画面の名前','UI 界面名称'],'이름':['Name','名前','名称'],
@@ -1660,19 +1660,19 @@ if(window.TI18N)TI18N.add({
 '고정':['Fixed','固定','固定'],'가로 크기':['Width','幅','宽度'],'세로 크기':['Height','高さ','高度'],'간격 · 여백':['Gap · padding','間隔 · 余白','间距 · 内边距'],'넘치면 줄 바꿈':['Wrap','折り返し','换行'],'넘치는 부분 자르기':['Clip content','はみ出しを切る','裁剪溢出'],
 '스프라이트 고르기…':['Choose sprite…','スプライトを選ぶ…','选择精灵…'],'바꾸기…':['Change…','変更…','更换…'],'스프라이트':['Sprite','スプライト','精灵'],'픽셀 선명하게 (도트 그림)':['Crisp pixels (pixel art)','ピクセルをくっきり (ドット絵)','像素清晰 (像素画)'],
 '처음에 켜짐':['On at start','最初はオン','初始开启'],'범위':['Range','範囲','范围'],'값':['Value','値','值'],'단계':['Step','ステップ','步长'],'항목':['Options','項目','选项'],'안내 글자':['Placeholder','プレースホルダー','占位文字'],'처음 값':['Initial value','初期値','初始值'],'종류':['Type','種類','类型'],
-'플레이 시작':['Play','プレイ開始','开始游戏'],'가로/세로를 고르면 안의 요소가 CSS flex처럼 저절로 줄을 맞춥니다.':['Pick horizontal or vertical and children line up automatically, like CSS flex.','横/縦を選ぶと中の要素がCSS flexのように自動で並びます。','选择水平/垂直后，子元素会像 CSS flex 一样自动排列。'],'복사했습니다':['Copied','コピーしました','已复制'],'새 UI 화면을 만들었습니다':['Created a new UI screen','新しいUI画面を作りました','已创建新的 UI 界面']
+'플레이 시작':['Play','プレイ開始','开始游戏'],'가로/세로를 고르면 안의 요소가 CSS flex처럼 저절로 줄을 맞춘다.':['Pick horizontal or vertical and children line up automatically, like CSS flex.','横/縦を選ぶと中の要素がCSS flexのように自動で並びます。','选择水平/垂直后，子元素会像 CSS flex 一样自动排列。'],'복사했습니다':['Copied','コピーしました','已复制'],'새 UI 화면을 만들었다':['Created a new UI screen','新しいUI画面を作りました','已创建新的 UI 界面']
 });
 
 /* 엔진 인스펙터: UI 그룹 맨 위 「UI 빌더로 편집하기」 · 빌더로 만든 요소 안내 */
 function groupCard(o){
   const m=o.m,g=o.g,ed=srcInfo(),here=ed&&ed.g.id===g.id;
   return`<div class="uibCard"><button type="button" class="uibGo" data-uibg="${esc(g.id)}" data-uibs="${esc(m.id)}">${IC.screen}<span>${esc(T('UI 빌더로 편집하기'))}</span></button>
-    <div class="uibCardH"><div><small>${esc(g.uib?T('UI 빌더로 만든 그룹입니다. 누르면 이 그룹이 맨 위 폴더인 채로 UI 빌더에 열립니다.'):T('이 그룹을 맨 위 폴더로 UI 빌더에 불러옵니다. 저장하면 그룹 안 요소가 빌더 내용으로 바뀝니다.'))}${here&&isDirty()?' '+esc(T('(UI 빌더에 저장하지 않은 변경이 있음)')):''}</small></div></div></div>`;
+    <div class="uibCardH"><div><small>${esc(g.uib?T('UI 빌더로 만든 그룹이다. 누르면 이 그룹이 맨 위 폴더인 채로 UI 빌더에 열린다.'):T('이 그룹을 맨 위 폴더로 UI 빌더에 불러온다. 저장하면 그룹 안 요소가 빌더 내용으로 바뀐다.'))}${here&&isDirty()?' '+esc(T('(UI 빌더에 저장하지 않은 변경이 있음)')):''}</small></div></div></div>`;
 }
 function elemNote(o){
   const m=o.m,u=o.u;if(!u||!u.uibN||!u.group)return'';const g=(m.uiGroups||[]).find(x=>x.id===u.group);if(!g||!g.uib)return'';
   return`<div class="uibCard slim"><button type="button" class="uibGo" data-uibg="${esc(g.id)}" data-uibs="${esc(m.id)}" data-uibn="${esc(u.uibN)}">${IC.screen}<span>${esc(T('UI 빌더로 편집하기'))}</span></button>
-    <div class="uibCardH"><div><small>${esc(_t('「{g}」 그룹은 UI 빌더로 만들었습니다. 여기서 바꾼 값은 UI 빌더에서 다시 저장하면 빌더 내용으로 바뀝니다.',{g:g.name}))}</small></div></div></div>`;
+    <div class="uibCardH"><div><small>${esc(_t('「{g}」 그룹은 UI 빌더로 만들었다. 여기서 바꾼 값은 UI 빌더에서 다시 저장하면 빌더 내용으로 바뀐다.',{g:g.name}))}</small></div></div></div>`;
 }
 
 return{open,close,toggle,setFull,toggleFull:()=>setFull(!U.full),groupCard,elemNote,loadGroup,migrate,
