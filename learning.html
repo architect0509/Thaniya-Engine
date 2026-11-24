@@ -756,6 +756,31 @@ html[data-theme="light"] .rm-ln path.ex{stroke:rgba(20,120,160,.5)}html[data-the
 .rm-n.done .rm-bd{color:#4cd98a}
 .rm-n.done .rm-nf .rm-pb i{background:#4cd98a}
 .rm-n.done .rm-nt,.rm-n.done .rm-nf small{color:#9fe2bb}
+.rm-flt{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin:0 0 12px;padding:9px 12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+.rm-fg{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.rm-fl{font-size:11.5px;font-weight:600;color:var(--mut);margin-right:3px;white-space:nowrap}
+.rm-fb{height:27px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:var(--tx);font:500 12px var(--f);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;cursor:pointer;transition:background .15s,border-color .15s}
+.rm-fb:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
+.rm-fb:focus-visible{outline:2px solid #f6cd2a;outline-offset:2px}
+.rm-fb[aria-pressed="true"]{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);border-color:transparent;color:#1a1400;font-weight:600}
+.rm-fb b{font:500 10.5px var(--m);opacity:.6}
+.rm-fb .dots{gap:2px}.rm-fb .dots i{width:4px;height:4px}
+.rm-fc{display:inline-block;width:8px;height:8px;border-radius:2px}.rm-fc.c-feature{background:#31c1ec}.rm-fc.c-cs{background:#bf63ff}.rm-fc.c-vs{background:#10d35e;border-radius:50%}
+.rm-fb[aria-pressed="true"] .rm-fc{box-shadow:0 0 0 1.5px rgba(26,20,0,.55)}
+.rm-fs{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut)}
+.rm-fs[hidden]{display:none}
+.rm-fs .rm-btn{height:27px}
+.rm-3d{flex:none;font:700 9px/13px var(--m);padding:0 4px;border-radius:4px;background:rgba(143,212,236,.16);color:#8fd4ec;letter-spacing:.02em}
+.rm-board .rm-n.fo,.rm-board.hl .rm-n.fo{opacity:.17;filter:grayscale(.85)}
+.rm-board.hl .rm-n.fo.rel,.rm-board .rm-n.fo:hover,.rm-board .rm-n.fo:focus-visible,.rm-board .rm-n.fo.open{opacity:.55}
+.rm-board .rm-n.fo.next{animation:none;box-shadow:none}
+.rm-ln path.fo,.rm-ln circle.fo,.rm-ln.hl path.fo.on,.rm-ln.hl circle.fo{opacity:.07}
+.rm-ln path.fo.go{animation:none}
+html[data-theme="light"] .rm-flt{background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.08)}
+html[data-theme="light"] .rm-fb{border-color:rgba(0,0,0,.18);background:rgba(0,0,0,.04)}
+html[data-theme="light"] .rm-fb:hover{background:rgba(0,0,0,.1);border-color:rgba(0,0,0,.32)}
+html[data-theme="light"] .rm-fb[aria-pressed="true"]{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);border-color:transparent;color:#1a1400}
+html[data-theme="light"] .rm-3d{background:rgba(20,120,160,.12);color:#0b6f8f}
 @media (prefers-reduced-motion:reduce){.rm-n.next,.rm-ln path.go{animation:none}}
 /* 노드 소개창 */
 .rm-pop{position:fixed;z-index:60;width:310px;max-width:calc(100vw - 24px);padding:14px 15px 13px;border-radius:16px;background:#20232c;border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 50px -12px rgba(0,0,0,.7);color:var(--tx);font:13px/1.6 var(--f)}
@@ -3782,6 +3807,371 @@ const L19P=[
   {t:'<b>▶ 플레이</b> → 상자가 미끄러져 <b>골대</b>에 들어가기',ok:()=>enEv('trig3:상자:골대')}],
  hint:'힘이 약하면 바닥 마찰 때문에 골대 앞에서 멈춰요. Z 값을 8 ~ 12로 올려 보세요.\n방향이 틀리면 엉뚱한 곳으로 가요. 씬 뷰의 파란 화살표(Z)가 앞쪽이에요.\n골대에 들어올 때 Debug.Log를 찍고 싶다면 상자 스크립트에 void OnTriggerEnter(Collider other) { Debug.Log(other.name); } 를 넣어 보세요.'}
 ];
+/* ===== 3D 심화 레슨 20 · 21 · 22 — 진짜 엔진 실습장 · 3D 씬 · 리지드바디 3D 주인공 =====
+   스크립트는 문제마다 TODO 자리(@KEY@)를 하나씩 채움: 앞 문제까지는 정답이 들어 있음 (레슨 16과 같은 방식)
+   확인: enCode(스크립트 이름 · 주석 뺀 코드) · en:3d:move/jump/turn/drop:이름 · en:trig3:A:B · en:col3:A:B · en:log:… */
+const l3Fill=(tpl,B,n,order)=>{let s=tpl;order.forEach((k,i)=>{s=s.replace('@'+k+'@\n',n>i+1?B[k][1]:B[k][0])});return s};
+const l3Floor=(sx,sz,color)=>l3o('floor','바닥',0,0,0,Object.assign({mesh:L3MESH('plane',color||'#9a9a9e'),col3:L3COL()},sx!==1?{sx}:{},sz!==1?{sz}:{}));
+const l3Sun=()=>l3Base()[0];
+const L3RB=()=>({mass:1,grav:true,kin:false,drag:0,bounce:0,fzx:false,fzy:false,fzz:false});
+/* 리지드바디 3D로 걷는 주인공 (레슨 20 · 22에서 그대로 씀): 첫 번째 자식 카메라가 뒤를 따라다님 */
+const HERO_RB_CODE=`using UnityEngine;
+
+// 물리 주인공 (리지드바디 3D)
+// WASD · 방향키: 걷기 · Space: 점프 · Q · E: 카메라 돌리기
+// 첫 번째 자식(메인 카메라)이 주인공 뒤를 따라다녀요.
+public class HeroRB : MonoBehaviour
+{
+    public float moveSpeed = 5f;
+    public float jumpPower = 6f;
+    public float cameraDistance = 7f;
+    public float cameraHeight = 4f;
+    public float keyTurnSpeed = 120f;
+
+    Rigidbody rb;
+    Transform cam;
+    float yaw;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        if (transform.childCount > 0) cam = transform.GetChild(0);
+    }
+
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.Q)) yaw -= keyTurnSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.E)) yaw += keyTurnSpeed * Time.deltaTime;
+
+        // 카메라가 보는 쪽을 기준으로 걷기 (위아래 y는 중력에 맡겨요)
+        float r = yaw * Mathf.Deg2Rad;
+        Vector3 forward = new Vector3(Mathf.Sin(r), 0, Mathf.Cos(r));
+        Vector3 right = new Vector3(Mathf.Cos(r), 0, -Mathf.Sin(r));
+        Vector3 move = right * Input.GetAxisRaw("Horizontal") + forward * Input.GetAxisRaw("Vertical");
+        if (move.magnitude > 1f) move = move.normalized;
+        Vector3 v = rb.velocity;
+        rb.velocity = new Vector3(move.x * moveSpeed, v.y, move.z * moveSpeed);
+        if (rb.isGrounded && Input.GetButtonDown("Jump"))
+            rb.velocity = new Vector3(rb.velocity.x, jumpPower, rb.velocity.z);
+
+        if (cam != null)
+        {
+            Vector3 target = transform.position + new Vector3(0, 1f, 0);
+            cam.position = target - forward * cameraDistance + new Vector3(0, cameraHeight - 1f, 0);
+            cam.LookAt(target);
+        }
+    }
+}
+`;
+const l3Hero=(z,scripts)=>l3o('hero','주인공',0,1,z,{mesh:L3MESH('capsule','#4aa3ff'),col3:L3COL(),rb3:L3RB()},{tag:'Player',scripts});
+
+/* ---------- 레슨 20: 3D 코인 모으기 (중급) ---------- */
+const L20_COIN=`using UnityEngine;
+
+// 코인: 제자리에서 빙글빙글 돌다가, 주인공이 닿으면 사라져요.
+// 코인 3개가 모두 이 스크립트 하나를 같이 써요.
+public class Coin : MonoBehaviour
+{
+    public float spinSpeed = 120f;   // 1초에 도는 각도
+
+    void Update()
+    {
+@SPIN@
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+@GET@
+    }
+}
+`;
+const L20_MGR=`using UnityEngine;
+
+// 게임 매니저: 모은 코인 수를 세요.
+public class CoinManager : MonoBehaviour
+{
+    public int total = 3;   // 모아야 하는 코인 수
+    int count = 0;
+
+    public void Add()
+    {
+@ADD@
+    }
+}
+`;
+const L20_B={
+ SPIN:['        // TODO ① Y축으로 1초에 spinSpeed 도씩 돌려요\n        //   transform.Rotate(x, y, z) 는 지금 회전에 각도를 더해요\n','        transform.Rotate(0, spinSpeed * Time.deltaTime, 0);\n'],
+ GET:['        // TODO ② 닿은 것이 주인공(태그 Player)일 때만\n        //   콘솔에 「코인 1 획득!」처럼 찍고, 이 코인을 꺼서(SetActive) 사라지게 해요\n','        if (other.tag != "Player") return;\n        Debug.Log(gameObject.name + " 획득!");\n        gameObject.SetActive(false);\n'],
+ ADD:['        // TODO ③ count를 1 늘리고 「코인 1 / 3」처럼 찍어요\n        //   count가 total 이상이 되면 「모두 모았어요!」를 찍어요\n','        count++;\n        Debug.Log("코인 " + count + " / " + total);\n        if (count >= total) Debug.Log("모두 모았어요!");\n']};
+function labCoins3(n){
+  const coin=(i,x,z)=>l3o('coin'+i,'코인 '+i,x,1,z,{mesh:L3MESH('cylinder','#f6cd2a',{gloss:.8}),col3:Object.assign(L3COL(),{trigger:true}),sx:.8,sy:.15,sz:.8,rx:90},{scripts:[{id:'ci'+i,sid:'coin',vals:{}}]});
+  const objs=[l3Sun(),l3Floor(1,1,'#8fa39a'),l3Hero(-3,[{id:'hri',sid:'herorb',vals:{}}]),l3Cam('hero',4,-10),
+    coin(1,3,1),coin(2,-3,3),coin(3,0,6),
+    l3o('wall','담',-4.5,.5,0,{mesh:L3MESH('cube','#c98b4a'),col3:L3COL(),sx:1,sy:1,sz:8}),
+    l3o('mgr','게임 매니저',0,0,0,{},{scripts:[{id:'mgi',sid:'coinmgr',vals:{}}]})];
+  const B=L20_B,code=L20_COIN.replace('@SPIN@\n',B.SPIN[n>1?1:0]).replace('@GET@\n',n>2?B.GET[1]+'        // TODO ④ 위 줄들 사이에서 게임 매니저의 CoinManager를 꺼내 Add()를 불러요\n':B.GET[0]);
+  const mgr=L20_MGR.replace('@ADD@\n',B.ADD[0]);
+  return lab3D('코인 정원',objs,{scripts:[{id:'herorb',name:'HeroRB',code:HERO_RB_CODE},{id:'coin',name:'Coin',code},{id:'coinmgr',name:'CoinManager',code:mgr}]});
+}
+const L20={no:20,title:'3D 코인 모으기: 회전 · 트리거 · 매니저',clear:'통과했어요. 레슨 20 완료! 코인을 transform.Rotate로 돌리고, OnTriggerEnter와 태그로 주인공만 골라 코인을 모으고, 게임 매니저의 스크립트를 GetComponent로 꺼내 메서드를 불러 개수를 셌어요. 예제 「밤의 길거리 산책」의 반딧불도 똑같은 방식이니 열어서 비교해 보세요.',
+ lead:'3D 게임의 기본 재료는 「돌아가는 물건 · 닿으면 일어나는 일 · 전체를 세는 매니저」예요. 이 레슨은 리지드바디 3D 주인공이 정원을 돌아다니며 코인 3개를 모으는 작은 게임을 스크립트로 완성해요.'};
+const L20_HOW='<br><br><b>스크립트 여는 법</b>: 계층 구조에서 오브젝트를 고르고 인스펙터의 스크립트 칸에서 <b>스크립트 편집</b>(또는 프로젝트 창의 스크립트 더블클릭). <b>TODO</b> 주석 자리를 채우고 Ctrl+S로 저장해요.';
+const L20P=[
+{id:'c3-spin',task:true,en:{proj:()=>labCoins3(1),sel:'coin1'},title:'코인을 빙글빙글 돌리기',
+ desc:'노란 <b>코인 1 · 2 · 3</b>에는 <b>Coin</b> 스크립트 하나가 함께 붙어 있어요. 스크립트 하나를 여러 오브젝트에 붙이면 오브젝트마다 따로 실행돼요.<br><br><code>transform.Rotate(x, y, z)</code>는 지금 회전에 각도를 <b>더해요</b>. 매 프레임 <code>spinSpeed * Time.deltaTime</code>만큼 더하면 컴퓨터가 빠르든 느리든 <b>1초에 spinSpeed 도</b>씩 돌아요.<pre>void Update()\n{\n    transform.Rotate(0, spinSpeed * Time.deltaTime, 0);\n}</pre>'+L20_HOW,
+ goal:'Coin 스크립트의 TODO ①을 채워 플레이하면 세 코인이 Y축으로 빙글빙글 돌게 하세요.',
+ checks:[
+  {t:'<b>코인 1</b>을 고르고 인스펙터에서 <b>Coin</b> 스크립트와 <b>박스 콜라이더 3D</b>(트리거) 확인하기',ok:()=>enSelHad('코인 1')&&!!(enCol3('코인 1')||{}).trigger},
+  {t:'Coin 스크립트 <code>Update</code>에 <code>transform.Rotate</code>와 <code>Time.deltaTime</code> 쓰기',ok:()=>/transform\s*\.\s*Rotate\s*\(/.test(enCode('Coin'))&&/Time\s*\.\s*deltaTime/.test(enCode('Coin'))},
+  {t:'<b>▶ 플레이</b> → 코인이 <b>20° 넘게</b> 도는 것 보기',ok:()=>enEv('3d:turn:코인 1')&&enEv('3d:turn:코인 3')}],
+ hint:'Rotate(0, …, 0)처럼 가운데(Y) 자리에 각도를 넣어야 팽이처럼 돌아요. 첫 자리(X)에 넣으면 앞으로 구르듯 돌아요.\nTime.deltaTime을 빼면 1프레임에 120°씩 돌아서 깜빡이듯 보여요.\n인스펙터의 Spin Speed를 바꿔 빠르기를 조절해 보세요.'},
+{id:'c3-get',task:true,en:{proj:()=>labCoins3(2),sel:'coin1'},title:'주인공이 닿으면 코인 모으기',
+ desc:'코인의 박스 콜라이더 3D는 <b>트리거</b>라서 주인공을 막지 않고, 겹치는 순간 <code>OnTriggerEnter(Collider other)</code>를 불러요. <code>other</code>는 <b>닿은 상대</b>예요. 아무거나 닿아도 사라지면 안 되니 <b>태그</b>로 주인공(<code>"Player"</code>)인지 먼저 확인해요.<pre>void OnTriggerEnter(Collider other)\n{\n    if (other.tag != "Player") return;   // 주인공이 아니면 그만\n    Debug.Log(gameObject.name + " 획득!");\n    gameObject.SetActive(false);         // 이 코인 끄기\n}</pre><code>return</code>은 메서드를 그 자리에서 끝내요. <code>gameObject.name</code>은 이 스크립트가 붙은 오브젝트의 이름(「코인 1」…)이에요.'+L20_HOW,
+ goal:'TODO ②를 채워 주인공이 코인에 닿으면 콘솔에 「코인 N 획득!」이 찍히고 코인이 사라지게 하세요.',
+ checks:[
+  {t:'<b>주인공</b>의 태그가 <b>Player</b>이고 <b>리지드바디 3D</b>가 붙어 있는 것 확인하기 (트리거는 리지드바디가 있어야 알려 줘요)',ok:()=>enSelHad('주인공')&&!!enRb3('주인공')},
+  {t:'Coin의 <code>OnTriggerEnter</code>에서 <code>other.tag</code>로 주인공인지 확인하기',ok:()=>/OnTriggerEnter\s*\(\s*Collider/.test(enCode('Coin'))&&/other\s*\.\s*(tag|CompareTag)/.test(enCode('Coin'))},
+  {t:'<code>Debug.Log</code>로 획득을 찍고 <code>gameObject.SetActive(false)</code>로 끄기',ok:()=>/SetActive\s*\(\s*false\s*\)/.test(enCode('Coin'))&&/Debug\s*\.\s*Log/.test(enCode('Coin'))},
+  {t:'<b>▶ 플레이</b> → WASD로 걸어가 코인 <b>2개 이상</b> 모으기 (콘솔에 「획득」)',ok:()=>[...TASK.ev].filter(e=>/^en:log:[a-z]+:코인 \d 획득/.test(e)).length>=2}],
+ hint:'other.tag == "Player" 대신 other.CompareTag("Player")를 써도 같아요.\n코인이 안 사라지면 콘솔에 빨간 오류가 없는지 보세요. 세미콜론(;)과 큰따옴표를 확인해요.\nQ · E로 카메라를 돌리면 코인을 찾기 쉬워요. 갈색 담은 박스 콜라이더 3D라서 주인공이 뚫지 못하고 막혀요.'},
+{id:'c3-call',task:true,en:{proj:()=>labCoins3(3),sel:'mgr'},title:'게임 매니저 스크립트를 불러 개수 세기',
+ desc:'코인 하나하나는 자기가 몇 번째인지 몰라요. 그래서 전체를 세는 일은 <b>게임 매니저</b> 한 곳에 맡겨요. 다른 오브젝트의 스크립트는 <code>GameObject.Find("이름")</code>로 오브젝트를 찾고 <code>GetComponent&lt;스크립트 이름&gt;()</code>로 꺼내요. 꺼낸 스크립트의 <code>public</code> 메서드는 바로 부를 수 있어요.<pre>GameObject.Find("게임 매니저").GetComponent&lt;CoinManager&gt;().Add();</pre>CoinManager의 <code>Add()</code>는 <code>count</code>를 1 늘리고 개수를 찍어요. <code>count++</code>는 <code>count = count + 1</code>과 같아요.'+L20_HOW,
+ goal:'코인을 먹을 때마다 CoinManager.Add()가 불려 「코인 1 / 3」… 이 찍히고, 3개를 다 모으면 「모두 모았어요!」가 찍히게 하세요.',
+ checks:[
+  {t:'Coin 스크립트에서 <code>GetComponent&lt;CoinManager&gt;()</code>로 매니저를 꺼내 <code>Add()</code> 부르기 (TODO ④)',ok:()=>/GetComponent\s*<\s*CoinManager\s*>\s*\(\s*\)\s*\.\s*Add\s*\(/.test(enCode('Coin'))||(/GetComponent\s*<\s*CoinManager\s*>/.test(enCode('Coin'))&&/\.\s*Add\s*\(\s*\)/.test(enCode('Coin')))},
+  {t:'CoinManager의 <code>Add()</code>에서 <code>count</code>를 늘리고 「코인 N / 3」 찍기 (TODO ③)',ok:()=>/count\s*(\+\+|\+=\s*1|=\s*count\s*\+\s*1)/.test(enCode('CoinManager'))&&/Debug\s*\.\s*Log/.test(enCode('CoinManager'))},
+  {t:'<code>count &gt;= total</code>일 때 「모두 모았어요!」 찍기',ok:()=>/count\s*>=\s*total|total\s*<=\s*count/.test(enCode('CoinManager'))},
+  {t:'<b>▶ 플레이</b> → 코인 3개를 다 모아 콘솔에 <b>모두 모았어요!</b> 보기',ok:()=>enEvP(/^en:log:[a-z]+:모두 모았/)}],
+ hint:'GameObject.Find의 이름은 계층 구조의 이름과 한 글자도 틀리면 안 돼요(띄어쓰기 포함: 「게임 매니저」).\nAdd()가 public이 아니면 다른 스크립트에서 부를 수 없어요.\nSetActive(false) 뒤에 Add()를 불러도 되지만, 끄기 전에 부르는 습관을 들이면 헷갈리지 않아요.\n매니저의 Total 칸을 2로 바꾸면 2개만 모아도 끝나요.'}
+];
+
+/* ---------- 레슨 21: 물리 주인공 직접 만들기 (중상급) ---------- */
+const L21_SRC=`using UnityEngine;
+
+// 내가 만드는 물리 주인공 (리지드바디 3D)
+// 문제마다 TODO 자리를 하나씩 채워요.
+public class MyHero : MonoBehaviour
+{
+    public float moveSpeed = 5f;
+    public float jumpPower = 6f;
+    public float camHeight = 5f;
+    public float camDistance = 8f;
+    public float fallY = -5f;
+
+    Rigidbody rb;
+    Transform cam;
+    Vector3 startPos;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        cam = GameObject.Find("메인 카메라").transform;
+        startPos = transform.position;
+    }
+
+    void Update()
+    {
+@MOVE@
+@JUMP@
+@FALL@
+    }
+
+    // LateUpdate: 모든 Update가 끝난 뒤에 불려요 (카메라는 여기서 따라가요)
+    void LateUpdate()
+    {
+@CAM@
+    }
+}
+`;
+const L21_B={
+ MOVE:['        // TODO ① 이동: Horizontal · Vertical 입력을 읽어 리지드바디 속도(velocity)를 정해요\n        //   위아래(y) 속도는 지금 값(rb.velocity.y)을 그대로 둬야 중력이 살아 있어요\n','        float h = Input.GetAxisRaw("Horizontal");\n        float v = Input.GetAxisRaw("Vertical");\n        rb.velocity = new Vector3(h * moveSpeed, rb.velocity.y, v * moveSpeed);\n'],
+ CAM:['        // TODO ② 카메라를 주인공 뒤 · 위에 두고 주인공을 바라보게 해요\n','        if (cam == null) return;\n        cam.position = transform.position + new Vector3(0, camHeight, -camDistance);\n        cam.LookAt(transform.position);\n'],
+ JUMP:['        // TODO ③ 땅에 닿아 있을 때(rb.isGrounded) Space를 누르면 위로 jumpPower 속도를 줘요\n','        if (rb.isGrounded && Input.GetButtonDown("Jump"))\n            rb.velocity = new Vector3(rb.velocity.x, jumpPower, rb.velocity.z);\n'],
+ FALL:['        // TODO ④ fallY보다 아래로 떨어지면 처음 자리로 돌려놓고 속도를 0으로, 콘솔에 「다시 시작」\n','        if (transform.position.y < fallY)\n        {\n            transform.position = startPos;\n            rb.velocity = Vector3.zero;\n            Debug.Log("떨어졌어요! 다시 시작");\n        }\n']};
+function l21Code(n){return l3Fill(L21_SRC,L21_B,n,['MOVE','CAM','JUMP','FALL'])}
+function labMyHero(n){
+  const objs=[l3Sun(),l3Floor(1,1,'#9a9a9e'),
+    l3o('hero','주인공',0,1,-3,{mesh:L3MESH('capsule','#4aa3ff'),col3:L3COL(),rb3:L3RB()},{tag:'Player',scripts:[{id:'mhi',sid:'myhero',vals:{}}]}),
+    l3o('cam','메인 카메라',0,6,-11,{camera:{start:true,size:5,clamp:true,smooth:false,smoothTime:.3,fov:60},rx:25}),
+    l3o('step','발판',0,.5,2.5,{mesh:L3MESH('cube','#c98b4a'),col3:L3COL(),sx:3,sy:1,sz:3}),
+    l3o('step2','높은 발판',3.2,1,2.5,{mesh:L3MESH('cube','#a8743c'),col3:L3COL(),sx:2,sy:2,sz:2}),
+    l3o('edge','가장자리 표시',0,.02,4.9,{mesh:L3MESH('cube','#e5484d',{emit:true}),sx:10,sy:.04,sz:.2})];
+  return lab3D('물리 주인공 연습장',objs,{scripts:[{id:'myhero',name:'MyHero',code:l21Code(n)}]});
+}
+const L21={no:21,title:'물리 주인공 직접 만들기: velocity · 카메라 · 되살아나기',clear:'통과했어요. 레슨 21 완료! 리지드바디 3D의 velocity로 주인공을 움직이고, LateUpdate에서 카메라가 따라오게 하고, isGrounded로 땅에서만 점프하고, 떨어지면 처음 자리로 되살아나게 하는 3D 주인공을 처음부터 짰어요. 예제 「하늘 점프맵」의 FirstPersonJumper와 비교해 보세요.',
+ lead:'레슨 18의 주인공은 물리 없이 스크립트로만 움직여서 상자를 뚫고 지나갔어요. 이번에는 리지드바디 3D의 속도(velocity)로 움직이는 주인공을 직접 짜서, 벽에 막히고 · 발판에 올라서고 · 떨어지면 되살아나게 만들어요.'};
+const L21_HOW='<br><br><b>스크립트 여는 법</b>: 계층 구조에서 <b>주인공</b>을 고르고 인스펙터의 MyHero 칸에서 <b>스크립트 편집</b>. <b>TODO</b> 주석 자리를 채우고 Ctrl+S로 저장해요.';
+const enMyHero=()=>enCode('MyHero');
+const L21P=[
+{id:'mh-move',task:true,en:{proj:()=>labMyHero(1),sel:'hero'},title:'velocity로 주인공 움직이기',
+ desc:'리지드바디가 붙은 오브젝트를 <code>transform.position</code>으로 옮기면 물리를 건너뛰어 벽을 뚫어요. 대신 <b>속도</b>(<code>rb.velocity</code>)를 정하면 물리 엔진이 충돌을 계산하면서 움직여 줘요.<pre>float h = Input.GetAxisRaw("Horizontal");   // ← → / A D : -1 ~ 1\nfloat v = Input.GetAxisRaw("Vertical");     // ↑ ↓ / W S : -1 ~ 1\nrb.velocity = new Vector3(h * moveSpeed, rb.velocity.y, v * moveSpeed);</pre>가운데 <code>rb.velocity.y</code>가 중요해요. 여기에 0을 넣으면 매 프레임 떨어지는 속도가 지워져 <b>중력이 사라져요</b>.'+L21_HOW,
+ goal:'TODO ①을 채워 WASD로 주인공이 걷고, 갈색 발판에 부딪히면 막히게 하세요.',
+ checks:[
+  {t:'MyHero <code>Update</code>에서 <code>Input.GetAxis</code>(또는 GetAxisRaw)로 입력 읽기',ok:()=>/Input\s*\.\s*GetAxis(Raw)?\s*\(\s*"Horizontal"/.test(enMyHero())&&/Input\s*\.\s*GetAxis(Raw)?\s*\(\s*"Vertical"/.test(enMyHero())},
+  {t:'<code>rb.velocity = new Vector3(…, rb.velocity.y, …)</code>로 속도 정하기',ok:()=>/rb\s*\.\s*velocity\s*=\s*new\s+Vector3\s*\([^;]*rb\s*\.\s*velocity\s*\.\s*y/.test(enMyHero())},
+  {t:'<b>▶ 플레이</b> → <b>3m 넘게</b> 걷기',ok:()=>enEv('3d:move:주인공')},
+  {t:'걸어가 <b>발판</b>에 부딪히기 (뚫지 않고 막혀요)',ok:()=>enEv('col3:주인공:발판')||enEv('col3:주인공:높은 발판')}],
+ hint:'카메라는 아직 따라오지 않아요(다음 문제). 주인공이 화면 밖으로 나가면 플레이를 멈췄다 다시 눌러요.\nGetAxisRaw는 키를 떼면 바로 0, GetAxis는 부드럽게 줄어들어요.\nmoveSpeed는 인스펙터의 Move Speed 칸에서도 바꿀 수 있어요.'},
+{id:'mh-cam',task:true,en:{proj:()=>labMyHero(2),sel:'hero'},title:'LateUpdate로 카메라 따라가기',
+ desc:'카메라를 주인공의 <b>자식으로 넣지 않고</b> 스크립트로 따라가게 해 봐요. 그러면 주인공이 굴러도 카메라는 흔들리지 않아요. <code>Start()</code>에서 이미 <code>cam = GameObject.Find("메인 카메라").transform;</code>으로 카메라를 찾아 두었어요.<pre>void LateUpdate()\n{\n    cam.position = transform.position + new Vector3(0, camHeight, -camDistance);\n    cam.LookAt(transform.position);\n}</pre><b>LateUpdate</b>는 그 프레임의 모든 <code>Update</code>와 물리가 끝난 뒤에 불려요. 주인공이 다 움직인 다음 카메라를 옮겨야 덜덜 떨리지 않아요. <code>LookAt</code>은 그 지점을 바라보게 돌려요.'+L21_HOW,
+ goal:'TODO ②를 채워 카메라가 주인공 뒤 · 위에서 주인공을 바라보며 따라다니게 하세요.',
+ checks:[
+  {t:'<b>메인 카메라</b>가 주인공의 자식이 <b>아닌</b> 것 확인하기 (계층 구조에서 따로 있어요)',ok:()=>{const c=enO('메인 카메라');return enSelHad('메인 카메라')&&!!c&&!c.parent}},
+  {t:'<code>LateUpdate</code>에서 <code>cam.position</code>을 주인공 위치 + 거리로 정하기',ok:()=>/void\s+LateUpdate[\s\S]*cam\s*\.\s*position\s*=\s*transform\s*\.\s*position/.test(enMyHero())},
+  {t:'<code>cam.LookAt(…)</code>으로 주인공 바라보기',ok:()=>/cam\s*\.\s*LookAt\s*\(/.test(enMyHero())},
+  {t:'<b>▶ 플레이</b> → 걸어 다니면 카메라도 <b>3m 넘게</b> 따라오기',ok:()=>enEv('3d:move:메인 카메라')&&enEv('3d:move:주인공')}],
+ hint:'카메라가 바닥 밑을 보면 camHeight가 음수인지 확인해요. 위로 5, 뒤로 8(-Z)이 보기 좋아요.\ncam이 null이면 「메인 카메라」 이름을 확인해요. 계층 구조의 이름과 같아야 찾을 수 있어요.\nLookAt(transform.position + new Vector3(0, 1, 0))처럼 조금 위를 보게 하면 주인공 머리 쪽이 가운데에 와요.'},
+{id:'mh-jump',task:true,en:{proj:()=>labMyHero(3),sel:'hero'},title:'isGrounded로 땅에서만 점프하기',
+ desc:'공중에서도 Space를 누를 때마다 뛰면 하늘로 날아가 버려요. 리지드바디의 <code>isGrounded</code>는 <b>무언가를 밟고 있을 때만</b> 참(true)이에요.<pre>if (rb.isGrounded &amp;&amp; Input.GetButtonDown("Jump"))\n    rb.velocity = new Vector3(rb.velocity.x, jumpPower, rb.velocity.z);</pre><code>&amp;&amp;</code>는 「그리고」 — 두 조건이 <b>모두</b> 참일 때만 실행해요. <code>GetButtonDown</code>은 누른 <b>그 순간 한 번</b>만 참이라 꾹 눌러도 한 번만 뛰어요.<br><br>낮은 턱(0.35m 이하)은 걸어서 올라서지만, 갈색 <b>발판</b>(높이 1m)은 점프해야 올라갈 수 있어요.'+L21_HOW,
+ goal:'TODO ③을 채워 땅에서만 점프하게 하고, 점프로 발판 위에 올라서세요.',
+ checks:[
+  {t:'<code>rb.isGrounded</code>와 <code>Input.GetButtonDown("Jump")</code>를 <code>&amp;&amp;</code>로 함께 확인하기',ok:()=>/isGrounded[\s\S]{0,40}&&[\s\S]{0,40}GetButtonDown\s*\(\s*"Jump"|GetButtonDown\s*\(\s*"Jump"\s*\)[\s\S]{0,40}&&[\s\S]{0,40}isGrounded/.test(enMyHero())},
+  {t:'위(y)로 <code>jumpPower</code> 속도 주기',ok:()=>/velocity\s*=\s*new\s+Vector3\s*\([^;]*jumpPower/.test(enMyHero())},
+  {t:'<b>▶ 플레이</b> → Space로 점프하기',ok:()=>enEv('3d:jump:주인공')},
+  {t:'점프해서 <b>발판</b> 위에 올라서기',ok:()=>{const p=EN.play&&EN.play.l3&&EN.play.l3['주인공'];return enEv('3d:jump:주인공')&&enEv('col3:주인공:발판')&&!!p&&p[1]>=.9}}],
+ hint:'점프가 안 되면 rb.isGrounded가 false인 채로 있는지 Debug.Log(rb.isGrounded)로 찍어 봐요.\n점프가 낮으면 인스펙터의 Jump Power를 7 ~ 8로 올려요. 「높은 발판」(2m)은 Jump Power가 8 넘게 필요해요.\n발판 쪽으로 걸으면서(W를 누른 채) Space를 누르면 올라서기 쉬워요.'},
+{id:'mh-fall',task:true,en:{proj:()=>labMyHero(4),sel:'hero'},title:'떨어지면 처음 자리로 되살아나기',
+ desc:'바닥 끝(빨간 선 너머)으로 걸어 나가면 끝없이 떨어져요. 게임에서는 보통 일정 높이보다 아래로 떨어지면 <b>되살아나게</b>(리스폰) 해요. <code>Start()</code>에서 <code>startPos</code>에 처음 위치를 기억해 두었어요.<pre>if (transform.position.y &lt; fallY)\n{\n    transform.position = startPos;\n    rb.velocity = Vector3.zero;     // 떨어지던 속도도 지워요\n    Debug.Log("떨어졌어요! 다시 시작");\n}</pre>속도를 지우지 않으면 되살아난 자리에서 떨어지던 속도 그대로 바닥에 처박혀요.'+L21_HOW,
+ goal:'TODO ④를 채워 바닥 밖으로 떨어지면 처음 자리로 돌아오고 콘솔에 「다시 시작」이 찍히게 하세요.',
+ checks:[
+  {t:'<code>transform.position.y &lt; fallY</code>로 떨어졌는지 확인하기',ok:()=>/transform\s*\.\s*position\s*\.\s*y\s*<\s*fallY|fallY\s*>\s*transform\s*\.\s*position\s*\.\s*y/.test(enMyHero())},
+  {t:'<code>startPos</code>로 돌려놓고 <code>rb.velocity = Vector3.zero</code>',ok:()=>/transform\s*\.\s*position\s*=\s*startPos/.test(enMyHero())&&/velocity\s*=\s*Vector3\s*\.\s*zero/.test(enMyHero())},
+  {t:'<b>▶ 플레이</b> → 빨간 선 너머로 걸어가 <b>떨어지기</b>',ok:()=>enEv('3d:drop:주인공')},
+  {t:'콘솔에 <b>다시 시작</b>이 찍히고 처음 자리로 돌아오기',ok:()=>enEvP(/^en:log:[a-z]+:.*다시 시작/)}],
+ hint:'fallY는 -5예요. 떨어지고 잠깐 뒤에 되살아나요. 더 빨리 되살아나게 하려면 Fall Y를 -2로 올려요.\n되살아난 뒤 카메라도 바로 따라오는지 보세요 — LateUpdate 덕분이에요.\n유니티에서도 transform.position을 바꾸면 리지드바디가 순간 이동해요(텔레포트).'}
+];
+
+/* ---------- 레슨 22: 3D 장애물 달리기 (상급) ---------- */
+const L22_PATROL=`using UnityEngine;
+
+// 좌우로 왔다 갔다 하는 톱날 (태그 Trap)
+public class Patrol : MonoBehaviour
+{
+    public float distance = 4f;   // 처음 자리에서 좌우로 움직이는 거리
+    public float speed = 3f;      // 1초에 움직이는 거리
+
+    Vector3 a;
+    Vector3 b;
+    bool toB = true;
+
+    void Start()
+    {
+        a = transform.position + new Vector3(-distance, 0, 0);
+        b = transform.position + new Vector3(distance, 0, 0);
+    }
+
+    void Update()
+    {
+        transform.Rotate(0, 360 * Time.deltaTime, 0);   // 톱날 돌리기
+@PATROL@
+    }
+}
+`;
+const L22_RUN=`using UnityEngine;
+using System.Collections;
+
+// 장애물 달리기 규칙: 체크포인트 · 함정 · 골 · 기록
+// (걷기 · 점프 · 카메라는 HeroRB가 맡아요)
+public class Runner : MonoBehaviour
+{
+    public float fallY = -5f;
+
+    Rigidbody rb;
+    Vector3 startPos;
+    Vector3 respawn;
+    float startTime;
+    bool finished = false;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        startPos = transform.position;
+        respawn = startPos;
+        startTime = Time.time;
+    }
+
+    void Update()
+    {
+        if (transform.position.y < fallY) Respawn();
+    }
+
+    void Respawn()
+    {
+        transform.position = respawn;
+        rb.velocity = Vector3.zero;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+@CHECK@
+@TRAP@
+@GOAL@
+    }
+@CO@
+}
+`;
+const L22_B={
+ PATROL:['        // TODO ① 지금 목표(toB면 b, 아니면 a)를 향해 1초에 speed 만큼 다가가요 (Vector3.MoveTowards)\n        //   목표에 거의 닿으면(Vector3.Distance < 0.05) 방향을 바꿔요 (toB = !toB)\n','        Vector3 target = toB ? b : a;\n        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);\n        if (Vector3.Distance(transform.position, target) < 0.05f) toB = !toB;\n'],
+ CHECK:['        // TODO ② 「체크포인트」에 닿으면 respawn을 그 자리(조금 위)로 바꾸고, 초록으로 칠하고, 「체크포인트!」를 찍어요\n','        if (other.name == "체크포인트")\n        {\n            respawn = other.transform.position + new Vector3(0, 1, 0);\n            other.gameObject.GetComponent<MeshRenderer>().color = Color.green;\n            Debug.Log("체크포인트!");\n        }\n'],
+ TRAP:['        // TODO ③ 태그가 Trap인 것(톱날)에 닿으면 「아야!」를 찍고 Respawn()\n','        if (other.tag == "Trap")\n        {\n            Debug.Log("아야! 체크포인트로 돌아가요");\n            Respawn();\n        }\n'],
+ GOAL:['        // TODO ④ 「골」에 닿으면(한 번만) 걸린 시간을 찍고 코루틴 Restart()를 시작해요\n','        if (other.name == "골" && !finished)\n        {\n            finished = true;\n            float t = Time.time - startTime;\n            Debug.Log("완주! 기록 " + Mathf.Round(t * 10) / 10 + "초");\n            StartCoroutine(Restart());\n        }\n'],
+ CO:['    // TODO ⑤ IEnumerator Restart(): 2초 기다린 뒤 처음 자리로 돌려놓고 「다시 도전!」\n','\n    IEnumerator Restart()\n    {\n        yield return new WaitForSeconds(2f);\n        respawn = startPos;\n        Respawn();\n        startTime = Time.time;\n        finished = false;\n        Debug.Log("다시 도전!");\n    }\n']};
+function labRun(n){
+  const saw=(i,x,z,spd)=>l3o('saw'+i,'톱날 '+i,x,.6,z,{mesh:L3MESH('cylinder','#e5484d',{gloss:.6}),col3:Object.assign(L3COL(),{trigger:true}),sx:1.4,sy:.25,sz:1.4},{tag:'Trap',scripts:[{id:'pti'+i,sid:'patrol',vals:spd?{speed:spd}:{}}]});
+  const objs=[l3Sun(),l3Floor(1,3,'#8f96a8'),l3Hero(-12,[{id:'hri',sid:'herorb',vals:{}},{id:'rni',sid:'runner',vals:{}}]),l3Cam('hero',4,-19),
+    saw(1,0,-6),
+    l3o('cp','체크포인트',0,.15,0,{mesh:L3MESH('cube','#f6cd2a',{gloss:.4}),col3:Object.assign(L3COL(),{trigger:true}),sx:4,sy:.3,sz:2}),
+    saw(2,0,5,5),saw(3,0,8.5,4),
+    l3o('goal','골',0,1,13,{mesh:L3MESH('cube','#4cd98a',{emit:true}),col3:Object.assign(L3COL(),{trigger:true}),sx:4,sy:2,sz:.6}),
+    l3o('wl','왼쪽 벽',-5.2,.5,0,{mesh:L3MESH('cube','#5b6275'),col3:L3COL(),sx:.4,sy:1,sz:30}),
+    l3o('wr','오른쪽 벽',5.2,.5,0,{mesh:L3MESH('cube','#5b6275'),col3:L3COL(),sx:.4,sy:1,sz:30}),
+    l3o('wb','뒷벽',0,.5,14.8,{mesh:L3MESH('cube','#5b6275'),col3:L3COL(),sx:10.8,sy:1,sz:.4}),l3o('wf','앞벽',0,.5,-14.8,{mesh:L3MESH('cube','#5b6275'),col3:L3COL(),sx:10.8,sy:1,sz:.4})];
+  const keys=['CHECK','TRAP','GOAL','CO'],run=L22_RUN.replace(/@(CHECK|TRAP|GOAL|CO)@\n/g,(s,k)=>{const i=keys.indexOf(k),lv=k==='CO'?2:i;return n>lv+2?L22_B[k][1]:L22_B[k][0]});
+  const patrol=L22_PATROL.replace('@PATROL@\n',n>1?L22_B.PATROL[1]:L22_B.PATROL[0]);
+  return lab3D('장애물 달리기',objs,{scripts:[{id:'herorb',name:'HeroRB',code:HERO_RB_CODE},{id:'patrol',name:'Patrol',code:patrol},{id:'runner',name:'Runner',code:run}]});
+}
+const L22={no:22,title:'3D 장애물 달리기 완성: 순찰 · 체크포인트 · 코루틴',clear:'통과했어요. 레슨 22 완료! Vector3.MoveTowards로 왔다 갔다 하는 톱날, 이름과 태그로 나눠 처리하는 체크포인트 · 함정 · 골, Time.time으로 잰 완주 기록, 코루틴으로 2초 뒤 다시 시작하는 흐름까지 3D 미니게임 한 판을 완성했어요. 예제 「하늘 점프맵」을 열어 오르내리는 발판(Lift)과 체크포인트를 비교해 보세요.',
+ lead:'지금까지 익힌 것을 모아 3D 미니게임 한 판을 완성해요. 좌우로 순찰하는 톱날을 피해 체크포인트를 지나 골까지 달리고, 기록을 재고, 잠깐 뒤 다시 시작하는 규칙을 Runner · Patrol 스크립트로 짜요.'};
+const L22_HOW='<br><br><b>스크립트 여는 법</b>: 프로젝트 창(또는 계층 구조에서 오브젝트를 고르고 인스펙터의 스크립트 칸)에서 <b>스크립트 편집</b>. <b>TODO</b> 주석 자리를 채우고 Ctrl+S로 저장해요.';
+const L22P=[
+{id:'run-patrol',task:true,en:{proj:()=>labRun(1),sel:'saw1'},title:'MoveTowards로 톱날 순찰시키기',
+ desc:'빨간 <b>톱날 1 · 2 · 3</b>은 <b>Patrol</b> 스크립트를 같이 써요. <code>Start()</code>에서 처음 자리 왼쪽 · 오른쪽의 두 점 <code>a</code> · <code>b</code>를 정해 두었어요.<br><br><code>Vector3.MoveTowards(지금, 목표, 최대 거리)</code>는 목표 쪽으로 <b>최대 거리만큼만</b> 다가간 위치를 돌려줘요. 목표를 넘어가지 않아서 순찰에 딱 좋아요. <code>Vector3.Distance(A, B)</code>는 두 점 사이 거리예요.<pre>Vector3 target = toB ? b : a;        // 조건 ? 참일 때 : 거짓일 때\ntransform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);\nif (Vector3.Distance(transform.position, target) &lt; 0.05f) toB = !toB;</pre><code>!toB</code>는 참 ↔ 거짓을 뒤집어요.'+L22_HOW,
+ goal:'Patrol의 TODO ①을 채워 세 톱날이 좌우로 왔다 갔다 하게 하세요. (톱날 2 · 3은 인스펙터에서 Speed가 더 빨라요)',
+ checks:[
+  {t:'<b>톱날 1</b>을 고르고 태그가 <b>Trap</b>, 박스 콜라이더 3D가 <b>트리거</b>인 것 확인하기',ok:()=>{const o=enO('톱날 1');return enSelHad('톱날 1')&&!!o&&o.tag==='Trap'&&!!(enCol3('톱날 1')||{}).trigger}},
+  {t:'Patrol <code>Update</code>에 <code>Vector3.MoveTowards</code> 쓰기',ok:()=>/Vector3\s*\.\s*MoveTowards\s*\(/.test(enCode('Patrol'))},
+  {t:'<code>Vector3.Distance</code>로 목표에 닿았는지 보고 방향 바꾸기',ok:()=>/Vector3\s*\.\s*Distance\s*\(/.test(enCode('Patrol'))&&/toB\s*=\s*!\s*toB|toB\s*=\s*(true|false)/.test(enCode('Patrol'))},
+  {t:'<b>▶ 플레이</b> → 톱날이 <b>3m 넘게</b> 움직이고 되돌아오기',ok:()=>enEv('3d:move:톱날 1')&&enEv('3d:move:톱날 2')}],
+ hint:'MoveTowards의 세 번째 값에 Time.deltaTime을 곱해야 1초에 speed 만큼 움직여요.\n0.05 대신 == 로 딱 같은지 비교하면 소수점 오차 때문에 영영 안 바뀔 수 있어요.\n톱날이 한쪽 끝에서 멈춰 버리면 toB = !toB 줄이 if 안에 있는지 확인해요.'},
+{id:'run-check',task:true,en:{proj:()=>labRun(2),sel:'hero'},title:'체크포인트에서 되살아날 자리 바꾸기',
+ desc:'주인공에는 걷기를 맡은 <b>HeroRB</b>와 게임 규칙을 맡은 <b>Runner</b>, 스크립트 두 개가 붙어 있어요. 이렇게 <b>할 일마다 스크립트를 나누면</b> 고치기 쉬워요.<br><br>Runner는 떨어지면 <code>respawn</code> 자리로 돌아가요. 노란 <b>체크포인트</b>를 밟으면 respawn을 그 자리로 바꿔 줘요. 트리거로 닿은 상대 <code>other</code>의 <code>name</code>으로 무엇인지 알 수 있고, <code>other.transform.position</code>이 그 위치예요.<pre>if (other.name == "체크포인트")\n{\n    respawn = other.transform.position + new Vector3(0, 1, 0);\n    other.gameObject.GetComponent&lt;MeshRenderer&gt;().color = Color.green;\n    Debug.Log("체크포인트!");\n}</pre>'+L22_HOW,
+ goal:'Runner의 TODO ②를 채워, 체크포인트를 밟으면 초록으로 바뀌고 콘솔에 「체크포인트!」가 찍히게 하세요.',
+ checks:[
+  {t:'<b>주인공</b>에 <b>HeroRB</b>와 <b>Runner</b> 두 스크립트가 붙은 것 확인하기',ok:()=>{const o=enO('주인공');return enSelHad('주인공')&&!!o&&(o.scripts||[]).length>=2}},
+  {t:'<code>other.name == "체크포인트"</code>일 때 <code>respawn</code> 바꾸기',ok:()=>/other\s*\.\s*name\s*==\s*"체크포인트"/.test(enCode('Runner'))&&/respawn\s*=\s*other\s*\.\s*transform\s*\.\s*position/.test(enCode('Runner'))},
+  {t:'<code>GetComponent&lt;MeshRenderer&gt;().color</code>로 체크포인트 색 바꾸기',ok:()=>/GetComponent\s*<\s*MeshRenderer\s*>\s*\(\s*\)\s*\.\s*color\s*=/.test(enCode('Runner'))},
+  {t:'<b>▶ 플레이</b> → 톱날을 피해 체크포인트 밟기 (콘솔에 <b>체크포인트!</b>)',ok:()=>enEv('trig3:주인공:체크포인트')&&enEvP(/^en:log:[a-z]+:체크포인트/)}],
+ hint:'아직 톱날에 닿아도 아무 일도 없어요(다음 문제). 지금은 그냥 지나가도 돼요.\n이름은 계층 구조의 이름과 똑같아야 해요. 이름 대신 other.CompareTag(…)를 쓰려면 체크포인트에 태그를 붙여요.\nColor.green 대신 Color.cyan · Color.magenta 도 돼요.'},
+{id:'run-trap',task:true,en:{proj:()=>labRun(3),sel:'saw1'},title:'태그로 함정을 알아보고 되돌려 보내기',
+ desc:'톱날 세 개에 일일이 이름을 비교하는 대신 <b>태그</b>를 써요. 톱날은 모두 태그 <b>Trap</b>이라서 <code>other.tag == "Trap"</code> 하나로 전부 알아볼 수 있어요. 나중에 가시 · 불꽃 같은 함정을 더해도 태그만 Trap으로 주면 코드를 고칠 필요가 없어요.<pre>if (other.tag == "Trap")\n{\n    Debug.Log("아야! 체크포인트로 돌아가요");\n    Respawn();\n}</pre><code>Respawn()</code>은 Runner 안에 이미 있는 <b>내가 만든 메서드</b>예요. 같은 일을 여러 곳에서 해야 할 때 메서드로 묶어 두면 한 줄로 부를 수 있어요.'+L22_HOW,
+ goal:'Runner의 TODO ③을 채워, 톱날에 닿으면 「아야!」가 찍히고 마지막 체크포인트(없으면 출발점)로 돌아가게 하세요.',
+ checks:[
+  {t:'<code>other.tag == "Trap"</code>(또는 CompareTag)로 함정 알아보기',ok:()=>/other\s*\.\s*tag\s*==\s*"Trap"|CompareTag\s*\(\s*"Trap"\s*\)/.test(enCode('Runner'))},
+  {t:'함정에 닿으면 <code>Respawn()</code> 부르기',ok:()=>/"Trap"[\s\S]{0,160}Respawn\s*\(\s*\)/.test(enCode('Runner'))},
+  {t:'<b>▶ 플레이</b> → 톱날에 일부러 닿아 보기 (콘솔에 <b>아야!</b>)',ok:()=>enEvP(/^en:trig3:주인공:톱날 \d/)&&enEvP(/^en:log:[a-z]+:아야/)},
+  {t:'체크포인트를 밟은 뒤 <b>톱날 2 · 3</b>에 닿아 체크포인트에서 다시 시작하기',ok:()=>enEv('trig3:주인공:체크포인트')&&(enEv('trig3:주인공:톱날 2')||enEv('trig3:주인공:톱날 3'))&&enEvP(/^en:log:[a-z]+:아야/)}],
+ hint:'tag는 대소문자를 구분해요. "trap"이 아니라 "Trap"이에요.\n체크포인트에서 되살아나지 않고 출발점으로 가면, 체크포인트에 먼저 닿았는지(콘솔의 「체크포인트!」) 확인해요.\n톱날 크기를 키우고 싶으면 인스펙터의 크기 X · Z를 바꿔요. 박스 콜라이더 3D가 자동으로 따라와요.'},
+{id:'run-goal',task:true,en:{proj:()=>labRun(4),sel:'goal'},title:'골 · 기록 · 코루틴으로 한 판 완성하기',
+ desc:'초록 <b>골</b>에 닿으면 걸린 시간을 찍어요. <code>Time.time</code>은 플레이를 시작하고 지난 초예요. 시작할 때 <code>startTime</code>에 기억해 두었으니 <code>Time.time - startTime</code>이 기록이에요. <code>finished</code>로 골에 여러 번 닿아도 <b>한 번만</b> 처리해요.<br><br>2초 기다린 뒤 다시 시작하려면 <b>코루틴</b>을 써요. <code>IEnumerator</code> 메서드 안에서 <code>yield return new WaitForSeconds(2f);</code>를 만나면 거기서 2초 쉬었다가 다음 줄로 이어 가요. 코루틴은 <code>StartCoroutine(이름())</code>으로 시작해요.<pre>IEnumerator Restart()\n{\n    yield return new WaitForSeconds(2f);\n    respawn = startPos;\n    Respawn();\n    startTime = Time.time;\n    finished = false;\n    Debug.Log("다시 도전!");\n}</pre>'+L22_HOW,
+ goal:'Runner의 TODO ④ · ⑤를 채워, 골에 닿으면 「완주! 기록 N초」가 찍히고 2초 뒤 출발점에서 「다시 도전!」으로 새 판이 시작되게 하세요.',
+ checks:[
+  {t:'<code>other.name == "골"</code>이고 <code>!finished</code>일 때만 처리하기',ok:()=>/other\s*\.\s*name\s*==\s*"골"/.test(enCode('Runner'))&&/!\s*finished|finished\s*==\s*false/.test(enCode('Runner'))},
+  {t:'<code>Time.time - startTime</code>으로 기록을 재서 「완주!」 찍기',ok:()=>/Time\s*\.\s*time\s*-\s*startTime/.test(enCode('Runner'))},
+  {t:'<code>IEnumerator Restart()</code> 안에 <code>yield return new WaitForSeconds</code> 쓰고 <code>StartCoroutine</code>으로 시작하기',ok:()=>/IEnumerator\s+\w+\s*\(/.test(enCode('Runner'))&&/yield\s+return\s+new\s+WaitForSeconds\s*\(/.test(enCode('Runner'))&&/StartCoroutine\s*\(/.test(enCode('Runner'))},
+  {t:'<b>▶ 플레이</b> → 골까지 달려 콘솔에 <b>완주!</b> 보기',ok:()=>enEv('trig3:주인공:골')&&enEvP(/^en:log:[a-z]+:완주/)},
+  {t:'2초 뒤 <b>다시 도전!</b>이 찍히고 출발점으로 돌아오기',ok:()=>enEvP(/^en:log:[a-z]+:다시 도전/)}],
+ hint:'StartCoroutine(Restart()) — 괄호 안에 메서드를 「부른 것」을 넣어요. StartCoroutine(Restart)처럼 괄호를 빼면 안 돼요.\n코루틴을 쓰려면 맨 위에 using System.Collections; 이 있어야 해요(이미 들어 있어요).\nMathf.Round(t * 10) / 10 은 소수 첫째 자리까지 남겨요. 그냥 t를 찍어도 돼요.\n더 해 보기: 떨어진 횟수를 세어 완주할 때 같이 찍어 봐요.'}
+];
 const L15={no:15,title:'볼륨으로 화면 분위기 바꾸기',clear:'통과했어요. 레슨 15 완료! 전역 볼륨으로 마을 전체의 색감을 바꾸고, 프리셋과 무게로 효과를 섞고, 지역 볼륨으로 폐가 마당에 들어설 때만 화면이 으스스하게 변하게 했어요. 겹친 볼륨은 우선순위가 큰 쪽이 이긴다는 것도 확인했어요. 내 게임에서도 「게임 오브젝트」 창의 전역 볼륨 · 지역 볼륨으로 바로 쓸 수 있어요.',
  lead:'영화나 게임에서 장면마다 색감과 분위기가 달라지는 건 대부분 「후처리」 덕분이에요. 볼륨(Volume)은 카메라 화면에 색 보정 · 비네트 · 노이즈 · 렌즈 왜곡 같은 효과를 입히는 컴포넌트예요. 이 레슨은 진짜 엔진 화면에서 마을 전체와 폐가 마당의 분위기를 바꿔 봐요.'};
 const L15P=[
@@ -3921,9 +4311,12 @@ const LESSONS=[
   {...L13,problems:L13P,hash:'lesson-13',cats:['feature'],lv:2,kw:['프리팹','인스턴스','오버라이드'],preview:'계층 구조 슬라임 ─▶ 프로젝트 창 = 프리팹\n프리팹 ─▶ 씬 뷰에 끌어다 놓기 × 4\n인스펙터 체력 5 ─▶ 모두 적용\n대장 슬라임 = 오버라이드 (크기 2 · 체력 12)'},
   {...L14,problems:L14P,hash:'lesson-14',cats:['feature','cs'],lv:3,kw:['타임라인','플레이어블 디렉터','컷씬'],preview:'컷씬 + 플레이어블 디렉터 → 「촌장의 선물」\n애니메이션 트랙 ● 녹화  주인공 →→→→\n활성화 · 오디오 · 시그널(Greet)\nOnTriggerEnter2D → director.Play();'},
   {...L15,problems:L15P,hash:'lesson-15',cats:['feature'],lv:1,kw:['볼륨','후처리','지역 볼륨'],preview:'게임 오브젝트 → 전역 볼륨 · 지역 볼륨\n효과 추가 → 색 보정 · 비네트 · 렌즈 왜곡\n프리셋   → 오래된 필름 · 아날로그 호러\n무게 0.5 · 섞는 거리 2칸 · 우선순위 1'},
-  {...L17,problems:L17P,hash:'lesson-17',cats:['feature'],lv:1,kw:['3D','도형','하늘','빛'],preview:'게임 오브젝트 → 3D 오브젝트 · 큐브 · 구\n도구 막대   → 이동 W · 회전 E · 크기 R\n메시 렌더러 → 색 · 매끄러움\n씬 › 하늘   → 노을 · 점 빛'},
-  {...L18,problems:L18P,hash:'lesson-18',cats:['feature','cs'],lv:2,kw:['3인칭','자식 카메라','ThirdPersonController'],preview:'주인공 (캡슐)\n └ 메인 카메라 (자식)\nWASD 걷기 · Space 점프 · Q/E 둘러보기\nif (grounded && Input.GetButtonDown("Jump"))'},
-  {...L19,problems:L19P,hash:'lesson-19',cats:['feature','cs'],lv:2,kw:['리지드바디 3D','박스 콜라이더 3D','AddForce'],preview:'박스 콜라이더 3D = 부딪치는 모양\n리지드바디 3D   = 움직이는 몸\n튕김 0.8 → 통통\nrb.AddForce(new Vector3(0, 0, 8),\n            ForceMode.Impulse);'},
+  {...L17,problems:L17P,hash:'lesson-17',cats:['feature'],dim:'3d',lv:1,kw:['3D','도형','하늘','빛'],preview:'게임 오브젝트 → 3D 오브젝트 · 큐브 · 구\n도구 막대   → 이동 W · 회전 E · 크기 R\n메시 렌더러 → 색 · 매끄러움\n씬 › 하늘   → 노을 · 점 빛'},
+  {...L18,problems:L18P,hash:'lesson-18',cats:['feature','cs'],dim:'3d',lv:2,kw:['3인칭','자식 카메라','ThirdPersonController'],preview:'주인공 (캡슐)\n └ 메인 카메라 (자식)\nWASD 걷기 · Space 점프 · Q/E 둘러보기\nif (grounded && Input.GetButtonDown("Jump"))'},
+  {...L19,problems:L19P,hash:'lesson-19',cats:['feature','cs'],dim:'3d',lv:2,kw:['리지드바디 3D','박스 콜라이더 3D','AddForce'],preview:'박스 콜라이더 3D = 부딪치는 모양\n리지드바디 3D   = 움직이는 몸\n튕김 0.8 → 통통\nrb.AddForce(new Vector3(0, 0, 8),\n            ForceMode.Impulse);'},
+  {...L20,problems:L20P,hash:'lesson-20',cats:['feature','cs'],dim:'3d',lv:3,kw:['transform.Rotate','OnTriggerEnter','GetComponent'],preview:'void Update()\n{\n    transform.Rotate(0, spinSpeed * Time.deltaTime, 0);\n}\nvoid OnTriggerEnter(Collider other)\n{\n    if (other.tag != "Player") return;\n    manager.Add();\n}'},
+  {...L21,problems:L21P,hash:'lesson-21',cats:['cs'],dim:'3d',lv:4,kw:['rb.velocity','LateUpdate','isGrounded'],preview:'rb.velocity = new Vector3(h * moveSpeed,\n                         rb.velocity.y,\n                         v * moveSpeed);\nif (rb.isGrounded && Input.GetButtonDown("Jump"))\n    rb.velocity = …jumpPower…;\nvoid LateUpdate() { cam.LookAt(transform.position); }'},
+  {...L22,problems:L22P,hash:'lesson-22',cats:['feature','cs'],dim:'3d',lv:5,kw:['Vector3.MoveTowards','체크포인트','코루틴'],preview:'transform.position = Vector3.MoveTowards(\n    transform.position, target, speed * Time.deltaTime);\nif (other.tag == "Trap") Respawn();\nyield return new WaitForSeconds(2f);'},
   {...L16,problems:L16P,hash:'lesson-16',cats:['feature','cs'],lv:3,kw:['보스전','텔레그래프','상태 머신'],preview:'패턴 고르기 → 경고 표시 → 공격 → 쉬기\nif (Vector2.Distance(hero.position, target) < slamRadius)\n    hero.TakeDamage(slamDamage);\n2페이즈 → rageVolume.weight → 1'}
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
@@ -5309,6 +5702,10 @@ $('#enView').addEventListener('click',e=>{const b=e.target.closest('[data-ena]')
   if(b.dataset.ena==='reload'){const f=enFr();EN.ready=false;$('#enLoad').hidden=false;f.setAttribute('src','edit.html?learn=1&r='+Date.now().toString(36))}
   if(b.dataset.ena==='full'){const v=document.querySelector('.view-pn');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else if(v&&v.requestFullscreen)v.requestFullscreen().catch(()=>{})}});
 /* 「위치 보기」: 엔진 안의 창 이름 → 엔진에게 반짝이게 */
+if(window.TI18N)TI18N.add({"3D 코인 모으기: 회전 · 트리거 · 매니저":["3D Coin Collecting: Rotation · Triggers · Manager","3D コイン集め：回転・トリガー・マネージャー","3D 收集金币：旋转 · 触发器 · 管理器"],
+ "물리 주인공 직접 만들기: velocity · 카메라 · 되살아나기":["Build a Physics Hero: velocity · Camera · Respawn","物理主人公を自作：velocity・カメラ・リスポーン","亲手制作物理主角：velocity · 摄像机 · 重生"],
+ "3D 장애물 달리기 완성: 순찰 · 체크포인트 · 코루틴":["3D Obstacle Run: Patrol · Checkpoints · Coroutines","3D 障害物ラン完成：巡回・チェックポイント・コルーチン","完成 3D 障碍跑：巡逻 · 检查点 · 协程"],
+ "체크포인트":["Checkpoint","チェックポイント","检查点"],"코루틴":["Coroutine","コルーチン","协程"],"심화":["Advanced","応用","进阶"],"종합 프로젝트":["Capstone","総合プロジェクト","综合项目"]});
 if(window.TI18N)TI18N.add({"3D 씬과 오브젝트 다루기":["Working with 3D Scenes and Objects","3D シーンとオブジェクトを扱う","操作 3D 场景与对象"],"3인칭 주인공 움직이기":["Moving a Third-Person Hero","三人称の主人公を動かす","移动第三人称主角"],"리지드바디 3D로 물리 놀이":["Playing with Rigidbody 3D Physics","リジッドボディ 3D で物理遊び","用刚体 3D 玩物理"]});
 if(window.TI18N)TI18N.add({"엔진 실습장 · 진짜 Thaniya Engine":["Engine lab · the real Thaniya Engine","エンジン実習場・本物の Thaniya Engine","引擎练习场 · 真正的 Thaniya Engine"],"실습 전용 프로젝트 · 내 프로젝트는 그대로예요":["Practice-only project · your own projects stay untouched","練習専用プロジェクト・自分のプロジェクトはそのまま","练习专用项目 · 你自己的项目不受影响"],
  "엔진 다시 불러오기":["Reload engine","エンジンを再読み込み","重新加载引擎"],"화면 가득":["Full screen","全画面","全屏"],"엔진을 불러오는 중…":["Loading the engine…","エンジンを読み込み中…","正在加载引擎…"],
@@ -6158,9 +6555,9 @@ document.addEventListener('click',e=>{
   const o=e.target.closest&&e.target.closest('#exGrid [data-ex]');if(o){exOpen(o.dataset.ex)}
 });
 /* ===================== 추천 학습 로드맵 (왼쪽 → 오른쪽 트리 · 분류와 상관없이 쉽고 중요한 것부터) ===================== */
-const RM_TIERS=['첫걸음','기본 다지기','값과 상호작용','움직임과 구조','연출과 대화','예제로 응용'];
+const RM_TIERS=['첫걸음','기본 다지기','값과 상호작용','움직임과 구조','연출과 대화','심화','종합 프로젝트','예제로 응용'];
 /* 예제 카드(참고용): 학습 기록 · 완료 · 추천에는 들어가지 않음. after = 이 레슨 다음 열에 붙음 */
-const RM_EX=[{id:'coins',after:'lesson-4'},{id:'subway',after:'lesson-5'},{id:'escape',after:'lesson-10'},{id:'tycoon',after:'lesson-10'},{id:'boss',after:'lesson-16'},{id:'street',after:'lesson-18'},{id:'jump',after:'lesson-19'}];
+const RM_EX=[{id:'coins',after:'lesson-4'},{id:'subway',after:'lesson-5'},{id:'escape',after:'lesson-10'},{id:'tycoon',after:'lesson-10'},{id:'boss',after:'lesson-16'},{id:'street',after:'lesson-20'},{id:'jump',after:'lesson-22'}];
 /* h 레슨 · t 단계(열) · req 먼저 하면 좋은 레슨(첫째 = 트리에서 이어지는 줄기, 나머지는 마우스를 올렸을 때만 점선) · why 이 단계에 두는 까닭 */
 const RM=[
  {h:'lesson-2',t:0,req:[],why:'모든 C# 스크립트의 출발점이에요. 값이 어떻게 바뀌는지 콘솔로 확인하는 법을 먼저 익혀 두면 이후 모든 레슨이 쉬워져요.'},
@@ -6181,6 +6578,9 @@ const RM=[
  {h:'lesson-17',t:1,req:['lesson-1'],why:'3D 씬에서 도형을 만들고 이동 · 회전 · 크기 도구로 다듬고, 색 · 하늘 · 빛을 바꾸는 3D의 첫걸음이에요.'},
  {h:'lesson-18',t:2,req:['lesson-17','lesson-2'],why:'카메라를 자식으로 둔 3인칭 주인공을 움직이고, 인스펙터 값과 스크립트를 고쳐 봐요.'},
  {h:'lesson-19',t:3,req:['lesson-17','lesson-3'],why:'리지드바디 3D와 박스 콜라이더 3D로 떨어지고 튕기고 밀리는 물리를 다뤄요.'},
+ {h:'lesson-20',t:4,req:['lesson-19','lesson-4'],why:'돌아가는 코인 · 트리거로 모으기 · 매니저가 개수 세기 — 3D 게임의 기본 재료를 스크립트로 엮어요. 리지드바디 3D와 public 변수를 함께 써요.'},
+ {h:'lesson-21',t:5,req:['lesson-20','lesson-5'],why:'velocity · LateUpdate · isGrounded로 물리 주인공을 처음부터 짜요. 2D 이동 스크립트(레슨 5)를 3D 물리로 옮기는 단계예요.'},
+ {h:'lesson-22',t:6,req:['lesson-21'],why:'순찰하는 함정 · 체크포인트 · 기록 · 코루틴으로 3D 미니게임 한 판을 완성해요. 3D 레슨에서 익힌 것을 모두 모아요.'},
  {h:'lesson-16',t:3,req:['lesson-13','lesson-15','lesson-5'],why:'경고 표시(텔레그래프) · 탄막 · 체력 바 · 2페이즈 볼륨 · 히트박스로 보스전을 만들어요. 볼륨 · 프리팹 · 주인공 스크립트에서 익힌 것을 한데 모아요.'},
 ].filter(r=>LESSONS.some(L=>L.hash===r.h));
 if(window.TI18N)TI18N.add({"추천 학습 로드맵":["Recommended learning roadmap","おすすめ学習ロードマップ","推荐学习路线图"],
@@ -6207,6 +6607,45 @@ function rmState(){const S={};RM.forEach(r=>S[r.h]=rmStat(rmL(r.h)));
   return{S,recs:[...prog,...open].slice(0,3).map(r=>r.h)};
 }
 const rmCatDots=L=>`<span class="rm-cd" aria-hidden="true">${(L.cats||[]).map(c=>`<i class="c-${c}" title="${esc(_t(LCATN[c]))}"></i>`).join('')}</span>`;
+/* ---- 로드맵 필터: 차원 · 난이도 · 분류 · 진행 — 고르지 않은 카드는 어둡게 (기본 전체 · 그룹마다 하나씩 고름) ----
+   예제 카드는 앞 레슨(after)을 따라감 · 선은 양쪽 카드가 모두 보일 때만 밝게 */
+const RMF={dim:'all',lv:'all',cat:'all',st:'all'};
+const RMF_G=[
+ ['dim','차원',[['all','전체'],['2d','2D'],['3d','3D']]],
+ ['lv','난이도',[['all','전체'],['1','입문'],['2','초급'],['3','중급'],['4','중상급'],['5','상급']]],
+ ['cat','분류',[['all','전체'],['feature','기능'],['vs','비주얼 스크립트'],['cs','C# 스크립트']]],
+ ['st','진행',[['all','전체'],['todo','시작 전'],['prog','진행 중'],['done','완료']]]];
+const rmDim=L=>L&&L.dim==='3d'?'3d':'2d';
+const rmStK=s=>s.done?'done':s.n?'prog':'todo';
+const rmFOn=()=>Object.values(RMF).some(v=>v!=='all');
+const rmHas=(g,v,L,s)=>v==='all'||(g==='dim'?rmDim(L)===v:g==='lv'?String(L.lv)===v:g==='cat'?(L.cats||[]).includes(v):rmStK(s)===v);
+function rmMatch(h,S){
+  const r=rmAll().find(x=>x.h===h);if(!r)return true;
+  if(r.ex)return rmMatch(r.req[0],S);
+  const L=rmL(h),s=S[h];if(!L||!s)return true;
+  return RMF_G.every(([g])=>rmHas(g,RMF[g],L,s));
+}
+function rmFBar(S){
+  const shown=RM.filter(r=>rmMatch(r.h,S)).length;
+  return`<div class="rm-flt" id="rmFlt" role="group" aria-label="${esc(_t('로드맵 필터'))}">${RMF_G.map(([g,gn,opts])=>`<div class="rm-fg" role="group" aria-label="${esc(_t(gn))}"><span class="rm-fl">${esc(_t(gn))}</span>${opts.map(([v,n])=>{
+      const k=RM.filter(r=>rmHas(g,v,rmL(r.h),S[r.h])).length;if(!k&&v!=='all'&&RMF[g]!==v)return'';
+      const pre=g==='lv'&&v!=='all'?`<span class="lv${v}" aria-hidden="true"><span class="dots">${LV_DOTS}</span></span>`:g==='cat'&&v!=='all'?`<i class="rm-fc c-${v}" aria-hidden="true"></i>`:'';
+      return`<button type="button" class="rm-fb" data-rmf="${g}" data-v="${v}" aria-pressed="${RMF[g]===v}">${pre}<span>${esc(_t(n))}</span>${v!=='all'?`<b>${k}</b>`:''}</button>`}).join('')}</div>`).join('')}
+    <div class="rm-fs"${rmFOn()?'':' hidden'}><span aria-live="polite">${esc(_t('레슨 {n} / {t}개 보기',{n:shown,t:RM.length}))}</span><button type="button" class="rm-btn" id="rmFReset">${esc(_t('필터 초기화'))}</button></div></div>`;
+}
+function rmApplyF(){
+  const b=$('#rmBoard'),svg=$('#rmLn');if(!b)return;
+  const on=rmFOn(),S=on?rmState().S:null,M={};rmAll().forEach(r=>M[r.h]=!on||rmMatch(r.h,S));
+  b.classList.toggle('flt',on);
+  b.querySelectorAll('.rm-n').forEach(n=>{const off=!M[n.dataset.rm];n.classList.toggle('fo',off);if(off)n.dataset.fo='1';else delete n.dataset.fo});
+  if(svg)svg.querySelectorAll('[data-a]').forEach(p=>p.classList.toggle('fo',M[p.dataset.a]===false||M[p.dataset.b]===false));
+}
+function rmFUpd(focusSel){
+  const w=$('#rmFlt');if(w){w.outerHTML=rmFBar(rmState().S)}
+  rmApplyF();if(focusSel){const f=$(focusSel);if(f)f.focus({preventScroll:true})}
+}
+if(window.TI18N)TI18N.add({"로드맵 필터":["Roadmap filters","ロードマップの絞り込み","路线图筛选"],"차원":["Dimension","次元","维度"],"분류":["Category","分類","分类"],"진행":["Progress","進行","进度"],
+ "레슨 {n} / {t}개 보기":["Showing {n} / {t} lessons","レッスン {n} / {t} 件を表示","显示 {n} / {t} 课"],"필터 초기화":["Reset filters","絞り込みをリセット","重置筛选"]});
 let rmScrolled=false;
 function rmRender(){
   const box=$('#rm');if(!box||!RM.length)return;rmPopClose();rmFit();rmFitW=box.clientWidth;
@@ -6214,8 +6653,8 @@ function rmRender(){
   const node=(r,G)=>{const L=rmL(r.h),s=S[r.h],i=recs.indexOf(r.h),ok=r.req.every(q=>!S[q]||S[q].done);
     const cls=s.done?'done':(i===0?'rec next':i>0?'rec':'')+(s.prog?' prog':'')+(!s.done&&!s.prog&&!ok&&i<0?' later':'');
     const bd=s.done?'✓ '+_t('완료'):i===0?_t('다음 추천'):i>0?_t('추천'):s.prog?_t('진행 중'):'';
-    return`<button type="button" class="rm-n ${cls}" data-rm="${r.h}" style="width:${RM_G.w}px;left:${RM_G.px+r.t*(RM_G.w+RM_G.gx)}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t(L.title))}" aria-haspopup="dialog" aria-label="${esc(_t(L.title))} · ${esc(_t('난이도'))} ${esc(lvName(L))}${bd?' · '+esc(bd):''} · ${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}">
-      <span class="rm-nt">${rmCatDots(L)}<span class="lv${L.lv}" aria-hidden="true"><span class="dots">${LV_DOTS}</span></span>${bd?`<span class="rm-bd">${esc(bd)}</span>`:''}</span>
+    return`<button type="button" class="rm-n ${cls}" data-rm="${r.h}" style="width:${RM_G.w}px;left:${RM_G.px+r.t*(RM_G.w+RM_G.gx)}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t(L.title))}" aria-haspopup="dialog" aria-label="${esc(_t(L.title))} · ${rmDim(L)==='3d'?'3D':'2D'} · ${esc(_t('난이도'))} ${esc(lvName(L))}${bd?' · '+esc(bd):''} · ${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}">
+      <span class="rm-nt">${rmCatDots(L)}<span class="lv${L.lv}" aria-hidden="true"><span class="dots">${LV_DOTS}</span></span>${L.dim==='3d'?'<span class="rm-3d" aria-hidden="true">3D</span>':''}${bd?`<span class="rm-bd">${esc(bd)}</span>`:''}</span>
       <b>${esc(_t(L.title))}</b><span class="rm-nf"><span class="rm-pb"><i style="width:${s.t?s.n/s.t*100:0}%"></i></span><small>${s.n}/${s.t}</small></span></button>`};
   const exNode=(r,G)=>{const x=r.ex,lv=Math.min(3,Math.max(1,+x.level||1));
     return`<button type="button" class="rm-n rm-ex" data-rm="${r.h}" style="left:${RM_G.px+r.t*(RM_G.w+RM_G.gx)}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t('예제'))} · ${esc(x.title)} (${esc(_t(EX_LV[lv]))})" aria-haspopup="dialog" aria-label="${esc(_t('예제'))} · ${esc(x.title)} · ${esc(_t(EX_LV[lv]))} · ${esc(_t('참고용'))}"><img src="${esc(x.icon||x.thumb||'')}" alt="" width="64" height="64" draggable="false"></button>`};
@@ -6223,6 +6662,7 @@ function rmRender(){
     <div class="rm-sum"><span>${esc(_t('완료 {n} / {t}',{n:doneN,t:RM.length}))}</span><span class="rm-tb"><i style="width:${doneN/RM.length*100}%"></i></span><button type="button" class="rm-btn" id="rmMng"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${esc(_t('진행 관리'))}</button></div></div>
   <div class="rm-rec">${recs.length?`<span>${esc(_t('지금 추천'))}</span>${recs.map((h,i)=>`<button type="button" class="rm-rc${i?'':' top'}" data-rmgo="${h}">${i?'':'▶ '}${esc(_t(rmL(h).title))}</button>`).join('')}`:`<span class="rm-all-done">✓ ${esc(_t('모든 레슨을 마쳤어요! 다시하고 싶은 레슨을 골라 보세요.'))}</span>`}
     <span class="rm-lg"><span><i class="d"></i>${esc(_t('완료'))}</span><span><i class="p"></i>${esc(_t('진행 중'))}</span><span><i class="r"></i>${esc(_t('추천'))}</span><span><i class="x"></i>${esc(_t('예제 (참고용)'))}</span></span></div>
+  ${rmFBar(S)}
   <div class="rm-wrap" id="rmWrap"><div class="rm-scroll" id="rmScroll" tabindex="0" role="region" aria-label="${esc(_t('추천 학습 로드맵'))} · ${esc(_t('왼쪽 · 오른쪽으로 스크롤해 보세요'))}"><div class="rm-board" id="rmBoard"><svg class="rm-ln" id="rmLn" aria-hidden="true"></svg>
   ${(()=>{const G=rmLayout(),A=rmAll(),NC=G_COLS;return RM_TIERS.slice(0,NC).map((tn,ti)=>A.some(r=>r.t===ti)?`<div class="rm-th" style="left:${RM_G.px+ti*(RM_G.w+RM_G.gx)}px"><b>${ti+1}</b>${esc(_t(tn))}</div>`:'').join('')+A.map(r=>r.ex?exNode(r,G):node(r,G)).join('')+`<i class="rm-sz" style="width:${RM_G.px*2+(RM_G.lastW?(NC-1)*RM_G.w+RM_G.lastW:NC*RM_G.w)+(NC-1)*RM_G.gx}px;height:${RM_G.top+G.H+RM_G.pb}px"></i>`})()}
   </div></div></div>`;
@@ -6285,7 +6725,7 @@ function rmLines(S,recs){
     }
   }));
   svg.innerHTML=sec+main+dots;
-  rmHl(rmPopH||rmHov);
+  rmHl(rmPopH||rmHov);rmApplyF();
 }
 /* 마우스를 올린(또는 소개창을 연) 레슨과 이어진 선 · 카드만 또렷하게 */
 let rmHov=null;
@@ -6316,7 +6756,7 @@ function rmPopOpen(h,anchor){
   const L=rmL(h),r=RM.find(x=>x.h===h);if(!L||!r)return;
   const{S}=rmState(),s=S[h],p=rmPopEl();
   const go=s.done?'다시하기':s.n?'이어하기':'학습하기';
-  p.innerHTML=`<div class="rm-pk"><span>${esc(_t('{n}단계',{n:r.t+1}))} · ${esc(_t(RM_TIERS[r.t]))}</span><span class="chip lv${L.lv}"><span class="dots" aria-hidden="true">${LV_DOTS}</span>${esc(lvName(L))}</span>${(L.cats||[]).map(c=>`<span class="chip c-${c}">${esc(_t(LCATN[c]))}</span>`).join('')}<button type="button" class="rm-px" aria-label="${esc(_t('닫기'))}">×</button></div>
+  p.innerHTML=`<div class="rm-pk"><span>${esc(_t('{n}단계',{n:r.t+1}))} · ${esc(_t(RM_TIERS[r.t]))}</span><span class="chip lv${L.lv}"><span class="dots" aria-hidden="true">${LV_DOTS}</span>${esc(lvName(L))}</span><span class="chip">${rmDim(L)==='3d'?'3D':'2D'}</span>${(L.cats||[]).map(c=>`<span class="chip c-${c}">${esc(_t(LCATN[c]))}</span>`).join('')}<button type="button" class="rm-px" aria-label="${esc(_t('닫기'))}">×</button></div>
     <h3 id="rmPopT">${esc(_t(L.title))}</h3><p>${esc(_t(L.lead))}</p>
     <p class="rm-why"><b>${esc(_t('왜 이 단계에?'))}</b>${esc(r.why)}</p>
     ${r.req.length?`<div class="rm-req">${esc(_t('먼저 하면 좋아요'))}${r.req.map(q=>{const Q=rmL(q),ok=S[q]&&S[q].done;return Q?`<span class="${ok?'ok':''}">${ok?'✓ ':''}${esc(_t(Q.title))}</span>`:''}).join('')}</div>`:''}
@@ -6380,6 +6820,8 @@ function rmDlgOpen(){
 }
 document.addEventListener('click',e=>{
   if(!e.target.closest)return;
+  const fb=e.target.closest('#rm [data-rmf]');if(fb){RMF[fb.dataset.rmf]=fb.dataset.v;rmPopClose();rmFUpd(`#rmFlt [data-rmf="${fb.dataset.rmf}"][data-v="${fb.dataset.v}"]`);return}
+  if(e.target.closest('#rmFReset')){Object.keys(RMF).forEach(k=>RMF[k]='all');rmPopClose();rmFUpd('#rmFlt [data-rmf="dim"][data-v="all"]');return}
   const n=e.target.closest('#rm .rm-n');if(n){rmPopOpen(n.dataset.rm,n);return}
   const g=e.target.closest('#rm [data-rmgo]');if(g){const L=rmL(g.dataset.rmgo);if(L)pvStart(L);return}
   if(e.target.closest('#rmMng')){rmPopClose();rmDlgOpen()}
