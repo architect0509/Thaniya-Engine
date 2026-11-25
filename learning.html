@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Thaniya Engine Edu · 콘솔 출력</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <script src="i18n.js"></script>
 <script src="lang/common.js"></script>
@@ -717,6 +718,16 @@ html[data-theme="light"] .dq-nav button:hover{border-color:rgba(0,0,0,.32);backg
 .rm-ln path.go{stroke:#f6cd2a;stroke-dasharray:5 5;stroke-opacity:.85;animation:rmDash 1.2s linear infinite}
 .rm-ln circle{fill:rgba(255,255,255,.35)}.rm-ln circle.ok{fill:#4cd98a}.rm-ln circle.go{fill:#f6cd2a}
 @keyframes rmDash{to{stroke-dashoffset:-20}}
+.rm-board .rm-n.rm-g{flex-direction:row;align-items:center;gap:7px;padding:0 9px 0 6px;border-radius:9px;background:#201d12;border:1.5px solid rgba(246,205,42,.32)}
+.rm-n.rm-g:hover{border-color:#f6cd2a}.rm-n.rm-g.seen{background:#152a1e;border-color:rgba(76,217,138,.45)}
+.rm-gi{flex:none;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;background:linear-gradient(160deg,#ffd84a,#e9b80c);color:#2a1f00}
+.rm-gi .gd-i{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rm-n.rm-g b{flex:1;min-width:0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;-webkit-line-clamp:unset}
+.rm-gs{flex:none;font-size:11px;font-weight:800;color:#4cd98a}
+.rm-ln path.gd{stroke:rgba(246,205,42,.32)}.rm-ln.hl path.on.gd{stroke:#f6cd2a;stroke-opacity:1}
+.rm-lg .g{border-color:rgba(246,205,42,.7);background:#201d12;border-radius:3px}
+html[data-theme="light"] .rm-board .rm-n.rm-g{background:#fff8dc;border-color:rgba(190,150,0,.45)}html[data-theme="light"] .rm-n.rm-g.seen{background:#e6f6ec;border-color:rgba(30,150,80,.45)}
+html[data-theme="light"] .rm-ln path.gd{stroke:rgba(170,130,0,.45)}
 .rm-th{position:absolute;top:12px;z-index:1;display:flex;align-items:center;gap:7px;height:24px;font-size:12px;font-weight:600;color:var(--mut);white-space:nowrap}
 .rm-th b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.1);font:600 11px var(--m);color:var(--tx)}
 .rm-n{position:absolute;z-index:1;display:flex;flex-direction:column;gap:4px;width:164px;padding:6px 9px 7px;border-radius:10px;text-align:left;background:#1b1e26;border:1.5px solid rgba(255,255,255,.16);color:var(--tx);font:12px/1.4 var(--f);transition:transform .15s,border-color .15s,box-shadow .15s}
@@ -889,7 +900,8 @@ html[data-theme="light"] .rm-df .rm-dan{color:#fff;background:#c9434f}
 /* 바로가기 (홈의 index 바로가기와 같은 정사각형 블록) */
 .qk{max-width:1120px;margin:0 auto;padding:34px 24px 0}
 .qk .sec{margin:0 0 14px;font-size:20px;letter-spacing:-.01em}
-.qk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,262px));gap:18px}
+.qk-grid{display:grid;grid-template-columns:repeat(4,minmax(0,262px));gap:18px}
+.qk-gd{background:#0f1115;overflow:hidden}.qk-gd .mini{position:absolute;inset:0;transform-origin:0 0}.qk-gd .gd-sc{transform-origin:0 0}
 .qk-card{--qline:rgba(255,255,255,.12);position:relative;aspect-ratio:1/1;border-radius:18px;overflow:hidden;isolation:isolate;background:#16161c;border:1px solid var(--qline);box-shadow:0 14px 34px rgba(0,0,0,.35);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s,border-color .25s;color:#fff}
 .qk-card:hover,.qk-card:focus-within{transform:translateY(-4px);border-color:rgba(233,189,12,.45);box-shadow:0 22px 44px rgba(0,0,0,.45)}
 .qk-bg{position:absolute;inset:0;z-index:-1;width:100%;height:100%;object-fit:cover;transition:filter .35s,transform .45s ease}
@@ -1739,6 +1751,15 @@ html[data-theme="light"] .lnav button.lhome{background:#e9bd0c;color:#1a1400}
 </main>
 </div>
 
+<div id="gdView" hidden>
+<header class="top">
+  <button class="back" type="button" id="gdBack" aria-label="학습 홈으로">← 학습 홈</button>
+  <a class="brand" href="#" id="gdHome" title="학습 홈으로"><img class="mark" src="assets/thaniya-logo.png" alt="" aria-hidden="true">Thaniya Engine Edu</a>
+  <div class="lesson tool"><b>기능 가이드</b><span>엔진 기능 하나를 짧은 영상으로 익혀요</span></div>
+  <span class="spacer"></span><span class="thost"></span><span class="lhost"></span>
+</header>
+<main id="gdMain"></main>
+</div>
 <div id="exView" hidden>
 <header class="top">
   <button class="back" type="button" id="exBack" aria-label="학습 홈으로">← 학습 홈</button>
@@ -1790,6 +1811,7 @@ html[data-theme="light"] .lnav button.lhome{background:#e9bd0c;color:#1a1400}
 <script src="ui-builder.js?v=20261105d"></script>
 <script src="visual-script.js?v=20261108d"></script>
 <script src="learn-preview.js?v=20261124a"></script>
+<script src="guides.js?v=20261126a"></script>
 <script src="examples/examples.js?v=20261118b"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
@@ -6523,14 +6545,17 @@ if(window.TI18N)TI18N.add({"바로가기":["Shortcuts","ショートカット","
  "이 난이도의 예제를 준비하고 있어요":["Examples for this level are on the way","この難易度のサンプルは準備中です","此难度的示例正在准备中"],"예제 JSON 내려받기 (엔진 「파일 › 가져오기」로도 열 수 있어요)":["Download example JSON (can also be opened with File › Import in the engine)","サンプルJSONをダウンロード（エンジンの「ファイル › インポート」でも開けます）","下载示例 JSON（也可在引擎“文件 › 导入”中打开）"]});
 const EX_LV=['','쉬움','보통','어려움'];
 const EXS=()=>(window.THANIYA_EXAMPLES||[]).filter(x=>x&&x.id);
-const QK_IC={lessons:'<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/><path d="M9 9.5l-1.6 1.5L9 12.5M13 9.5l1.6 1.5-1.6 1.5"/>',examples:'<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9h17"/><path d="M10 13l4 2-4 2z"/>'};
+const QK_IC={guides:'<rect x="3" y="5" width="18" height="13" rx="2.5"/><path d="m10.5 9 4 2.5-4 2.5z"/><path d="M8 21h8"/>',lessons:'<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/><path d="M9 9.5l-1.6 1.5L9 12.5M13 9.5l1.6 1.5-1.6 1.5"/>',examples:'<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M3.5 9h17"/><path d="M10 13l4 2-4 2z"/>'};
 function qkRender(){
   const g=$('#qkGrid');if(!g)return;
   const done=LESSONS.filter(L=>L.problems.length&&L.problems.every(p=>st.done[p.id])).length,ex=EXS(),ic=k=>`<span class="qk-ic"><svg viewBox="0 0 24 24" aria-hidden="true">${QK_IC[k]}</svg></span>`;
   const card=(k,bg,t,cap,d,go,href,n)=>`<div class="qk-card" data-qk="${k}">${bg}${n?`<span class="qk-n">${esc(n)}</span>`:''}<div class="qk-cap"><b>${esc(_t(t))}</b><span>${esc(cap)}</span></div><div class="qk-ov">${ic(k)}<b class="qk-t">${esc(_t(t))}</b><span class="qk-d">${esc(_t(d))}</span><a class="qk-go" href="${href}">${esc(_t(go))}</a></div></div>`;
-  g.innerHTML=card('lessons','<img class="qk-bg" src="assets/learn/lesson-6-0.webp" alt="" loading="lazy" decoding="async" style="object-position:30% 50%">','레슨',_t('{n}개 레슨 · {d}개 완료',{n:LESSONS.length,d:done}),'엔진 화면과 C#을 문제를 풀며 차근차근 익혀요','레슨 보기','#lessons',done+' / '+LESSONS.length)
+  const GL=window.GUIDE?GUIDE.list:[],gSeen=GL.filter(x=>GUIDE.isSeen(x.id)).length;
+  if(window.GUIDE)GUIDE.injectCss();
+  g.innerHTML=(GL.length?card('guides',`<div class="qk-bg qk-gd">${GUIDE.miniMock(GL[0])}</div>`,'기능 가이드',_t('입문 · 엔진 기능을 짧은 영상으로'),'레슨보다 가볍게, 엔진 기능 하나를 짧은 영상과 그림으로 익혀요','가이드 보기','#guides',gSeen+' / '+GL.length):'')+card('lessons','<img class="qk-bg" src="assets/learn/lesson-6-0.webp" alt="" loading="lazy" decoding="async" style="object-position:30% 50%">','레슨',_t('{n}개 레슨 · {d}개 완료',{n:LESSONS.length,d:done}),'엔진 화면과 C#을 문제를 풀며 차근차근 익혀요','레슨 보기','#lessons',done+' / '+LESSONS.length)
    +card('search','<pre class="qk-bg qk-code" aria-hidden="true"><span class="k">void</span> <span class="t">Start</span>()\n{\n    <span class="c">// 체력을 콘솔에 출력</span>\n    <span class="t">Debug</span>.<span class="t">Log</span>(<span class="s">"HP: "</span> + hp);\n    hp -= <span class="n">10</span>;\n}</pre>','코드 검색',_t('레슨 아님 · 찾아보기'),'코드를 넣으면 쓰인 코드마다 설명과 예시를 보여 줘요','검색 열기','#search','')
    +card('examples',`<img class="qk-bg" src="${esc((ex[0]&&ex[0].thumb)||'assets/learning-screenshot.webp')}" alt="" loading="lazy" decoding="async">`,'예제',_t('완성된 프로젝트를 엔진에서 열어 보고 고쳐 봐요'),'완성된 프로젝트를 엔진에서 열어 보고 고쳐 봐요','예제 보기','#examples',_t('예제 {n}개',{n:ex.length}));
+  if(window.GUIDE)GUIDE.fillMinis(g);
 }
 /* ===================== 예제 페이지 (#examples) ===================== */
 let EXF='all';try{const v=localStorage.getItem('thaniya.exlv');if(['all','1','2','3'].includes(v))EXF=v}catch(e){}
@@ -6600,7 +6625,11 @@ if(window.TI18N)TI18N.add({"추천 학습 로드맵":["Recommended learning road
  "용어":["Terms","用語","术语"],"이전 코드":["Previous","前のコード","上一条"],"다음 코드":["Next","次のコード","下一条"],"다른 코드":["Shuffle","ほかのコード","换一条"]});
 const rmL=h=>LESSONS.find(L=>L.hash===h);
 const rmExs=()=>RM_EX.map(e=>{const x=(window.THANIYA_EXAMPLES||[]).find(q=>q&&q.id===e.id),p=RM.find(r=>r.h===e.after);return x&&p?{h:'ex-'+e.id,t:p.t+1,req:[e.after],ex:x}:null}).filter(Boolean);
-const rmAll=()=>RM.concat(rmExs());
+/* 기능 가이드 노드(로드맵 맨 왼쪽 열 · 모두 입문): to = 이어지는 첫 레슨(그 레슨이 속한 줄기의 뿌리로 모음) · out = 관련 레슨(마우스를 올렸을 때만 점선) */
+const rmHasG=()=>!!(window.GUIDE&&GUIDE.list.length);
+const rmGds=()=>{if(!rmHasG())return[];const root=h=>{let r=RM.find(x=>x.h===h),k=0;while(r&&r.req.length&&k++<20){const p=RM.find(x=>x.h===r.req[0]);if(!p)break;r=p}return r?r.h:null};
+  return GUIDE.list.map(g=>{const to=root(g.rm)||(RM[0]&&RM[0].h);return to?{h:'g-'+g.id,g,t:-1,req:[],to,out:(g.rel||[]).filter(x=>x!==to&&RM.some(r=>r.h===x))}:null}).filter(Boolean)};
+const rmAll=()=>RM.concat(rmExs()).concat(rmGds());
 function rmStat(L){const t=L.problems.length,n=L.problems.filter(p=>st.done[p.id]).length,rec=L.problems.some(p=>st.done[p.id]||st.code[p.id]!=null||st.vals[p.id]!=null);return{n,t,done:t>0&&n===t,prog:n>0&&n<t,rec}}
 function rmState(){const S={};RM.forEach(r=>S[r.h]=rmStat(rmL(r.h)));
   const prog=RM.filter(r=>S[r.h].prog),open=RM.filter(r=>!S[r.h].done&&!S[r.h].prog&&r.req.every(q=>!S[q]||S[q].done));
@@ -6622,6 +6651,7 @@ const rmHas=(g,v,L,s)=>v==='all'||(g==='dim'?rmDim(L)===v:g==='lv'?String(L.lv)=
 function rmMatch(h,S){
   const r=rmAll().find(x=>x.h===h);if(!r)return true;
   if(r.ex)return rmMatch(r.req[0],S);
+  if(r.g){const sn=GUIDE.isSeen(r.g.id);return(RMF.lv==='all'||RMF.lv==='1')&&(RMF.cat==='all'||RMF.cat==='feature')&&(RMF.st==='all'||(RMF.st==='done'?sn:RMF.st==='todo'?!sn:false))}
   const L=rmL(h),s=S[h];if(!L||!s)return true;
   return RMF_G.every(([g])=>rmHas(g,RMF[g],L,s));
 }
@@ -6653,18 +6683,20 @@ function rmRender(){
   const node=(r,G)=>{const L=rmL(r.h),s=S[r.h],i=recs.indexOf(r.h),ok=r.req.every(q=>!S[q]||S[q].done);
     const cls=s.done?'done':(i===0?'rec next':i>0?'rec':'')+(s.prog?' prog':'')+(!s.done&&!s.prog&&!ok&&i<0?' later':'');
     const bd=s.done?'✓ '+_t('완료'):i===0?_t('다음 추천'):i>0?_t('추천'):s.prog?_t('진행 중'):'';
-    return`<button type="button" class="rm-n ${cls}" data-rm="${r.h}" style="width:${RM_G.w}px;left:${RM_G.px+r.t*(RM_G.w+RM_G.gx)}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t(L.title))}" aria-haspopup="dialog" aria-label="${esc(_t(L.title))} · ${rmDim(L)==='3d'?'3D':'2D'} · ${esc(_t('난이도'))} ${esc(lvName(L))}${bd?' · '+esc(bd):''} · ${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}">
+    return`<button type="button" class="rm-n ${cls}" data-rm="${r.h}" style="width:${RM_G.w}px;height:${G.hOf(r.h)}px;left:${rmX(rmCol(r))}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t(L.title))}" aria-haspopup="dialog" aria-label="${esc(_t(L.title))} · ${rmDim(L)==='3d'?'3D':'2D'} · ${esc(_t('난이도'))} ${esc(lvName(L))}${bd?' · '+esc(bd):''} · ${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}">
       <span class="rm-nt">${rmCatDots(L)}<span class="lv${L.lv}" aria-hidden="true"><span class="dots">${LV_DOTS}</span></span>${L.dim==='3d'?'<span class="rm-3d" aria-hidden="true">3D</span>':''}${bd?`<span class="rm-bd">${esc(bd)}</span>`:''}</span>
       <b>${esc(_t(L.title))}</b><span class="rm-nf"><span class="rm-pb"><i style="width:${s.t?s.n/s.t*100:0}%"></i></span><small>${s.n}/${s.t}</small></span></button>`};
   const exNode=(r,G)=>{const x=r.ex,lv=Math.min(3,Math.max(1,+x.level||1));
-    return`<button type="button" class="rm-n rm-ex" data-rm="${r.h}" style="left:${RM_G.px+r.t*(RM_G.w+RM_G.gx)}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t('예제'))} · ${esc(x.title)} (${esc(_t(EX_LV[lv]))})" aria-haspopup="dialog" aria-label="${esc(_t('예제'))} · ${esc(x.title)} · ${esc(_t(EX_LV[lv]))} · ${esc(_t('참고용'))}"><img src="${esc(x.icon||x.thumb||'')}" alt="" width="64" height="64" draggable="false"></button>`};
+    return`<button type="button" class="rm-n rm-ex" data-rm="${r.h}" style="left:${rmX(rmCol(r))}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t('예제'))} · ${esc(x.title)} (${esc(_t(EX_LV[lv]))})" aria-haspopup="dialog" aria-label="${esc(_t('예제'))} · ${esc(x.title)} · ${esc(_t(EX_LV[lv]))} · ${esc(_t('참고용'))}"><img src="${esc(x.icon||x.thumb||'')}" alt="" width="64" height="64" draggable="false"></button>`};
+  const gdNode=(r,G)=>{const g=r.g,sn=GUIDE.isSeen(g.id);
+    return`<button type="button" class="rm-n rm-g${sn?' seen':''}" data-rm="${r.h}" style="width:${RM_G.gw}px;height:${RM_G.gh}px;left:${rmX(0)}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t('기능 가이드'))} · ${esc(_t(g.title))}" aria-haspopup="dialog" aria-label="${esc(_t('기능 가이드'))} · ${esc(_t(g.title))} · ${esc(_t('난이도'))} ${esc(_t('입문'))}${sn?' · '+esc(_t('봤어요')):''}"><span class="rm-gi">${GUIDE.ico(g.ic)}</span><b>${esc(_t(g.title))}</b>${sn?'<span class="rm-gs" aria-hidden="true">✓</span>':''}</button>`};
   box.innerHTML=`<div class="rm-hd"><div><h2 id="rmT">${esc(_t('추천 학습 로드맵'))}</h2><p>${esc(_t('분류와 상관없이 쉽고 중요한 것부터 차례로 이어져요. 카드를 누르면 소개가 보여요.'))} ${esc(_t('카드에 마우스를 올리면 이어진 레슨만 강조돼요.'))}</p></div>
     <div class="rm-sum"><span>${esc(_t('완료 {n} / {t}',{n:doneN,t:RM.length}))}</span><span class="rm-tb"><i style="width:${doneN/RM.length*100}%"></i></span><button type="button" class="rm-btn" id="rmMng"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${esc(_t('진행 관리'))}</button></div></div>
   <div class="rm-rec">${recs.length?`<span>${esc(_t('지금 추천'))}</span>${recs.map((h,i)=>`<button type="button" class="rm-rc${i?'':' top'}" data-rmgo="${h}">${i?'':'▶ '}${esc(_t(rmL(h).title))}</button>`).join('')}`:`<span class="rm-all-done">✓ ${esc(_t('모든 레슨을 마쳤어요! 다시하고 싶은 레슨을 골라 보세요.'))}</span>`}
-    <span class="rm-lg"><span><i class="d"></i>${esc(_t('완료'))}</span><span><i class="p"></i>${esc(_t('진행 중'))}</span><span><i class="r"></i>${esc(_t('추천'))}</span><span><i class="x"></i>${esc(_t('예제 (참고용)'))}</span></span></div>
+    <span class="rm-lg"><span><i class="d"></i>${esc(_t('완료'))}</span><span><i class="p"></i>${esc(_t('진행 중'))}</span><span><i class="r"></i>${esc(_t('추천'))}</span><span><i class="x"></i>${esc(_t('예제 (참고용)'))}</span>${rmHasG()?`<span><i class="g"></i>${esc(_t('기능 가이드'))}</span>`:''}</span></div>
   ${rmFBar(S)}
   <div class="rm-wrap" id="rmWrap"><div class="rm-scroll" id="rmScroll" tabindex="0" role="region" aria-label="${esc(_t('추천 학습 로드맵'))} · ${esc(_t('왼쪽 · 오른쪽으로 스크롤해 보세요'))}"><div class="rm-board" id="rmBoard"><svg class="rm-ln" id="rmLn" aria-hidden="true"></svg>
-  ${(()=>{const G=rmLayout(),A=rmAll(),NC=G_COLS;return RM_TIERS.slice(0,NC).map((tn,ti)=>A.some(r=>r.t===ti)?`<div class="rm-th" style="left:${RM_G.px+ti*(RM_G.w+RM_G.gx)}px"><b>${ti+1}</b>${esc(_t(tn))}</div>`:'').join('')+A.map(r=>r.ex?exNode(r,G):node(r,G)).join('')+`<i class="rm-sz" style="width:${RM_G.px*2+(RM_G.lastW?(NC-1)*RM_G.w+RM_G.lastW:NC*RM_G.w)+(NC-1)*RM_G.gx}px;height:${RM_G.top+G.H+RM_G.pb}px"></i>`})()}
+  ${(()=>{const G=rmLayout(),A=rmAll(),NC=G_COLS;return A.map(r=>r.g?gdNode(r,G):r.ex?exNode(r,G):node(r,G)).join('')+`<i class="rm-sz" style="width:${rmX(NC-1)+(RM_G.lastW||RM_G.w)+RM_G.px}px;height:${RM_G.top+G.H+RM_G.pb}px"></i>`})()}
   </div></div></div>`;
   const sc=$('#rmScroll');sc.addEventListener('scroll',()=>{rmFade();rmPopPlace()},{passive:true});
   requestAnimationFrame(()=>{rmLines(S,recs);
@@ -6676,34 +6708,59 @@ function rmRender(){
 let rmRO=null;
 function rmFade(){const sc=$('#rmScroll'),w=$('#rmWrap');if(!sc||!w)return;w.classList.toggle('rm-fl',sc.scrollLeft>4);w.classList.toggle('rm-fr',sc.scrollLeft+sc.clientWidth<sc.scrollWidth-4)}
 /* 트리 배치: 첫째 선행 레슨을 부모로 삼은 숲. 잎을 위에서부터 한 줄씩, 부모는 자식들의 가운데 */
-const RM_G={w:164,gx:72,rh:84,top:40,px:22,pb:14};
-/* 로드맵 칸 크기를 화면 너비에 맞춤: 가로 스크롤 없이 한 화면에 들어가게 카드 너비 · 열 간격을 정하고,
-   카드 제목이 두 줄로 넘어가는 것이 있을 때만 줄 간격을 넓힘 */
+const RM_G={w:164,gx:40,rh:84,top:14,px:16,pb:14,gw:146,gh:30,lastW:0};
+/* 로드맵 칸 크기를 화면 너비에 맞춤: 가로 스크롤 없이 한 화면에 들어가게 카드 너비 · 열 간격을 정함
+   맨 왼쪽 열은 기능 가이드(좁은 한 줄 카드), 레슨은 그다음 열부터 */
 let rmMeasure=null;
+const rmCol=r=>r.g?0:r.t+(rmHasG()?1:0);
+function rmX(c){return RM_G.px+(rmHasG()&&c>0?RM_G.gw+RM_G.gx+(c-1)*(RM_G.w+RM_G.gx):c*(RM_G.w+RM_G.gx))}
 function rmFit(){
-  const box=$('#rm');rmLayout();const NC=Math.max(1,G_COLS);
+  const box=$('#rm');rmLayout();const NC=Math.max(1,G_COLS),hg=rmHasG();
   const cs=box?getComputedStyle(box):null,avail=box?box.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-2:1180;
-  const px=16,gx=Math.round(Math.max(30,Math.min(56,avail*.03)));
-  const A=rmAll(),lastEx=NC>1&&A.filter(r=>r.t===NC-1).every(r=>r.ex);RM_G.lastW=lastEx?74:0;
-  RM_G.px=px;RM_G.gx=gx;RM_G.w=Math.floor(Math.max(128,Math.min(260,lastEx?(avail-px*2-(NC-1)*gx-74)/(NC-1):(avail-px*2-(NC-1)*gx)/NC)));
+  const px=14,gx=Math.round(Math.max(22,Math.min(40,avail*.022)));
+  const A=rmAll(),lastEx=NC>1&&A.filter(r=>rmCol(r)===NC-1).every(r=>r.ex);RM_G.lastW=lastEx?74:0;
+  const fixed=(hg?RM_G.gw:0)+(lastEx?74:0),nflex=Math.max(1,NC-(hg?1:0)-(lastEx?1:0));
+  RM_G.px=px;RM_G.gx=gx;RM_G.w=Math.floor(Math.max(124,Math.min(240,(avail-px*2-(NC-1)*gx-fixed)/nflex)));
   if(!rmMeasure)rmMeasure=document.createElement('canvas').getContext('2d');
   rmMeasure.font='600 12.5px '+(getComputedStyle(document.body).fontFamily||'sans-serif');
-  RM_G.top=36;
+  RM_G.top=14;
 }
 function rmWraps(h){const L=rmL(h);if(!L)return false;if(!rmMeasure){rmMeasure=document.createElement('canvas').getContext('2d');rmMeasure.font='600 12.5px sans-serif'}return rmMeasure.measureText(_t(L.title)).width>RM_G.w-21}
 let rmFitW=0;
 addEventListener('resize',()=>{clearTimeout(rmFit.t);rmFit.t=setTimeout(()=>{const b=$('#rm');if(!b||!b.offsetWidth||Math.abs(b.clientWidth-rmFitW)<8)return;try{rmRender()}catch(e){}},120)});
 let G_COLS=5;
+/* 트리 배치: 첫째 선행 레슨을 부모로 삼은 숲. 부모는 자식들의 가운데.
+   빽빽하게: 열마다 차지한 위아래 범위(윤곽)를 기억해 두고, 다음 줄기는 겹치지 않는 만큼만 띄워 위로 바짝 붙임.
+   기능 가이드는 맨 왼쪽 열에 자기 레슨(뿌리) 높이에 맞춰 한 줄씩 쌓음 */
 function rmLayout(){
-  const A=rmAll(),kids={},par={},Y={};let row=0;A.forEach(r=>kids[r.h]=[]);
-  A.forEach(r=>{const p=r.req.find(q=>kids[q]&&A.find(x=>x.h===q).t<r.t)||null;par[r.h]=p;if(p)kids[p].push(r.h)});
-  /* 예제 타일(정사각형 70px)은 위아래로 조금만 더 띄움: 앞에 .12줄 · 자기 자리 1.12줄 (세로가 너무 길어지지 않게) */
-  /* 세로 위치는 픽셀: 카드 높이(한 줄 65 · 두 줄 82 · 예제 70) + 간격 10 · 부모는 자식들의 가운데 */
-  const isEx=h=>String(h).startsWith('ex-'),GAP=10,hOf=h=>isEx(h)?70:rmWraps(h)?82:65;
-  const place=h=>{const k=kids[h];if(!k.length){Y[h]=row;row+=hOf(h)+GAP;return}k.forEach(place);const c=(Y[k[0]]+hOf(k[0])/2+Y[k[k.length-1]]+hOf(k[k.length-1])/2)/2;Y[h]=Math.round(c-hOf(h)/2)};
-  A.filter(r=>!par[r.h]).forEach(r=>place(r.h));
-  G_COLS=Math.max(...A.map(r=>r.t))+1;
-  return{kids,par,Y,rows:Math.max(1,row),H:Math.max(65,row-GAP)};
+  const A=rmAll(),kids={},par={},col={};A.forEach(r=>{kids[r.h]=[];col[r.h]=rmCol(r)});
+  const N=A.filter(r=>!r.g);
+  N.forEach(r=>{const p=r.req.find(q=>kids[q]&&A.find(x=>x.h===q).t<r.t)||null;par[r.h]=p;if(p)kids[p].push(r.h)});
+  const isEx=h=>String(h).startsWith('ex-'),GAP=8,RGAP=16,GG=5,hOf=h=>String(h).startsWith('g-')?RM_G.gh:isEx(h)?70:rmWraps(h)?82:65;
+  const addC=(C,c,a,b)=>{const o=C[c];C[c]=o?[Math.min(o[0],a),Math.max(o[1],b)]:[a,b]};
+  const fitOff=(C,s,gap)=>{let off=-Infinity;for(const c in s.C)if(C[c])off=Math.max(off,C[c][1]+gap-s.C[c][0]);return off};
+  const shift=(s,d)=>{for(const h in s.Y)s.Y[h]+=d;for(const c in s.C){s.C[c][0]+=d;s.C[c][1]+=d}};
+  const merge=(acc,s)=>{Object.assign(acc.Y,s.Y);for(const c in s.C)addC(acc.C,c,s.C[c][0],s.C[c][1])};
+  function lay(h){
+    const k=kids[h],hh=hOf(h),c=col[h];
+    if(!k.length){const s={Y:{[h]:0},C:{}};addC(s.C,c,0,hh);return s}
+    const acc={Y:{},C:{}};let lastY=-Infinity;
+    k.forEach(kh=>{const s=lay(kh);let off=fitOff(acc.C,s,GAP);if(!isFinite(off))off=0;off=Math.max(off,lastY-s.Y[kh]);shift(s,off);lastY=s.Y[kh];merge(acc,s)});
+    const f=k[0],l=k[k.length-1],cy=(acc.Y[f]+hOf(f)/2+acc.Y[l]+hOf(l)/2)/2,y=Math.round(cy-hh/2);
+    acc.Y[h]=y;addC(acc.C,c,y,y+hh);
+    k.forEach(kh=>{for(let cc=c+1;cc<col[kh];cc++)addC(acc.C,cc,cy-8,cy+8)}); /* 열을 건너뛰는 줄이 지나갈 자리 */
+    return acc;
+  }
+  const gs=A.filter(r=>r.g),glob={Y:{},C:{}};
+  N.filter(r=>!par[r.h]).forEach(r=>{
+    const s=lay(r.h),my=gs.filter(g=>g.to===r.h);
+    if(my.length){const H=my.length*RM_G.gh+(my.length-1)*GG,cy=s.Y[r.h]+hOf(r.h)/2;let y=cy-H/2;my.forEach(g=>{s.Y[g.h]=Math.round(y);y+=RM_G.gh+GG});addC(s.C,0,cy-H/2,cy+H/2)}
+    let off=fitOff(glob.C,s,RGAP);if(!isFinite(off))off=-Math.min(...Object.values(s.C).map(v=>v[0]));shift(s,off);merge(glob,s);
+  });
+  const Y=glob.Y,ys=Object.values(glob.C),min=Math.min(0,...ys.map(v=>v[0]));for(const h in Y)Y[h]=Math.round(Y[h]-min);
+  const H=Math.max(65,...ys.map(v=>v[1]-min));
+  G_COLS=Math.max(...A.map(r=>col[r.h]))+1;
+  return{kids,par,Y,H,hOf};
 }
 function rmLines(S,recs){
   const b=$('#rmBoard'),svg=$('#rmLn');if(!b||!svg||!b.offsetWidth)return;
@@ -6724,6 +6781,10 @@ function rmLines(S,recs){
       sec+=`<path class="sec ${k}" ${at} d="M${x1} ${y1}C${x1+m} ${y1} ${x2-m} ${y2} ${x2} ${y2}"/>`;
     }
   }));
+  rmGds().forEach(g=>{const A=box(g.h),C=box(g.to);if(!A||!C)return;
+    const x1=A.r,y1=A.c,x2=C.l-3,y2=C.c,xm=Math.round(x2-RM_G.gx/2),dy=y2-y1,sg=Math.sign(dy),rr=Math.min(8,Math.abs(dy)/2),at=`data-a="${g.h}" data-b="${g.to}"`;
+    main+=`<path class="gd" ${at} d="${Math.abs(dy)<1?`M${x1} ${y1}H${x2}`:`M${x1} ${y1}H${xm-rr}Q${xm} ${y1} ${xm} ${y1+sg*rr}V${y2-sg*rr}Q${xm} ${y2} ${xm+rr} ${y2}H${x2}`}"/>`;
+    g.out.forEach(q=>{const D=box(q);if(!D)return;const X2=D.l-3,Y2=D.c,m=Math.max(40,(X2-x1)*.45);sec+=`<path class="sec gd" data-a="${g.h}" data-b="${q}" d="M${x1} ${y1}C${x1+m} ${y1} ${X2-m} ${Y2} ${X2} ${Y2}"/>`})});
   svg.innerHTML=sec+main+dots;
   rmHl(rmPopH||rmHov);rmApplyF();
 }
@@ -6733,7 +6794,7 @@ function rmHl(h){
   const b=$('#rmBoard'),svg=$('#rmLn');if(!b||!svg)return;
   const A=rmAll(),r=h&&A.find(x=>x.h===h);
   b.classList.toggle('hl',!!r);svg.classList.toggle('hl',!!r);
-  const rel=new Set(r?[h,...r.req,...A.filter(x=>x.req.includes(h)).map(x=>x.h)]:[]);
+  const rel=new Set(r?[h,...r.req,...(r.g?[r.to,...r.out]:[]),...A.filter(x=>x.req.includes(h)||(x.g&&(x.to===h||x.out.includes(h)))).map(x=>x.h)]:[]);
   b.querySelectorAll('.rm-n').forEach(n=>n.classList.toggle('rel',rel.has(n.dataset.rm)));
   svg.querySelectorAll('[data-a]').forEach(p=>p.classList.toggle('on',!!r&&(p.dataset.a===h||p.dataset.b===h)));
 }
@@ -6744,6 +6805,7 @@ let rmPopH=null,rmPopA=null;
 function rmPopEl(){let p=$('#rmPop');if(!p){p=document.createElement('div');p.id='rmPop';p.className='rm-pop';p.setAttribute('role','dialog');p.hidden=true;document.body.append(p);
   p.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
     if(b.classList.contains('rm-px')){rmPopClose(true);return}
+    if(String(rmPopH).startsWith('g-')){if(b.classList.contains('rm-gdo')){const id=rmPopH.slice(2);rmPopClose();location.hash='guide-'+id}return}
     if(String(rmPopH).startsWith('ex-')){const id=rmPopH.slice(3);if(b.classList.contains('rm-exo')){rmPopClose();exOpen(id)}else if(b.classList.contains('rm-exp')){rmPopClose();location.hash='examples'}return}
     const L=rmL(rmPopH);if(!L)return;
     if(b.classList.contains('rm-go')){rmPopClose();pvStart(L);return}
@@ -6753,6 +6815,7 @@ function rmPopEl(){let p=$('#rmPop');if(!p){p=document.createElement('div');p.id
 function rmPopOpen(h,anchor){
   if(rmPopH===h&&$('#rmPop')&&!$('#rmPop').hidden){rmPopClose(true);return}
   if(String(h).startsWith('ex-')){rmExPop(h,anchor);return}
+  if(String(h).startsWith('g-')){rmGdPop(h,anchor);return}
   const L=rmL(h),r=RM.find(x=>x.h===h);if(!L||!r)return;
   const{S}=rmState(),s=S[h],p=rmPopEl();
   const go=s.done?'다시하기':s.n?'이어하기':'학습하기';
@@ -6762,6 +6825,19 @@ function rmPopOpen(h,anchor){
     ${r.req.length?`<div class="rm-req">${esc(_t('먼저 하면 좋아요'))}${r.req.map(q=>{const Q=rmL(q),ok=S[q]&&S[q].done;return Q?`<span class="${ok?'ok':''}">${ok?'✓ ':''}${esc(_t(Q.title))}</span>`:''}).join('')}</div>`:''}
     <div class="rm-pp"><span class="rm-pb${s.done?' ok':''}"><i style="width:${s.t?s.n/s.t*100:0}%"></i></span><span>${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}</span>${s.done?`<span class="ok">✓ ${esc(_t('완료'))}</span>`:''}</div>
     <div class="rm-pa"><button type="button" class="rm-go">${esc(_t(go))} →</button>${window.PV_DATA&&PV_DATA[L.hash]?`<button type="button" class="rm-btn rm-more">${esc(_t('자세히 보기'))}</button>`:''}${s.rec?`<button type="button" class="rm-btn rm-rs">${esc(_t('기록 초기화'))}</button>`:''}</div>`;
+  p.setAttribute('aria-labelledby','rmPopT');
+  $$('.rm-n.open').forEach(n=>n.classList.remove('open'));anchor.classList.add('open');
+  rmPopH=h;rmPopA=anchor;p.hidden=false;rmHl(h);rmPopPlace();p.querySelector('.rm-go').focus({preventScroll:true});
+}
+/* 기능 가이드 카드 소개창 */
+function rmGdPop(h,anchor){
+  const r=rmGds().find(x=>x.h===h);if(!r)return;const g=r.g,p=rmPopEl(),sn=GUIDE.isSeen(g.id);
+  const ls=[r.to,...r.out].map(rmL).filter(Boolean);
+  p.innerHTML=`<div class="rm-pk"><span>${esc(_t('기능 가이드'))}</span><span class="chip lv1"><span class="dots" aria-hidden="true">${LV_DOTS}</span>${esc(_t('입문'))}</span>${sn?`<span class="chip">✓ ${esc(_t('봤어요'))}</span>`:''}<button type="button" class="rm-px" aria-label="${esc(_t('닫기'))}">×</button></div>
+    <h3 id="rmPopT">${esc(_t(g.title))}</h3><p>${esc(_t(g.lead))}</p>
+    <p class="rm-why"><b>${esc(_t('이런 기능이에요'))}</b>${esc(_t(g.sum.replace(/<[^>]+>/g,'')))}</p>
+    ${ls.length?`<div class="rm-req">${esc(_t('이어서 해 볼 레슨'))}${ls.map(L=>`<span>${esc(_t(L.title))}</span>`).join('')}</div>`:''}
+    <div class="rm-pa"><button type="button" class="rm-go rm-gdo">${esc(_t(sn?'다시 보기':'가이드 보기'))} →</button></div>`;
   p.setAttribute('aria-labelledby','rmPopT');
   $$('.rm-n.open').forEach(n=>n.classList.remove('open'));anchor.classList.add('open');
   rmPopH=h;rmPopA=anchor;p.hidden=false;rmHl(h);rmPopPlace();p.querySelector('.rm-go').focus({preventScroll:true});
@@ -7279,11 +7355,14 @@ addEventListener('scroll',pvUpSync,{passive:true});
 $('#pvUp').onclick=()=>{window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});$('#pvStartT').focus({preventScroll:true})};
 $('#pvList').onclick=()=>{location.hash='lessons'};
 $('#pvBack').onclick=()=>{location.hash='lessons'};
-$('#hmBack').onclick=()=>{location.hash=''};$('#exBack').onclick=()=>{location.hash=''};$('#exHome').onclick=e=>{e.preventDefault();location.hash=''};
+$('#hmBack').onclick=()=>{location.hash=''};$('#gdBack').onclick=()=>{location.hash=''};$('#gdHome').onclick=e=>{e.preventDefault();location.hash=''};$('#exBack').onclick=()=>{location.hash=''};$('#exHome').onclick=e=>{e.preventDefault();location.hash=''};
 $('#pvHome').onclick=e=>{e.preventDefault();location.hash=''};
 function route(){
   const L=LESSONS.find(x=>'#'+x.hash===location.hash),S=location.hash==='#search',PVL=LESSONS.find(x=>'#about-'+x.hash===location.hash),X=location.hash==='#examples',LS=location.hash==='#lessons';
-  $('#home').hidden=!!L||S||!!PVL||X;$('#home').dataset.page=LS?'lessons':'hub';$('#exView').hidden=!X;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;$('#pvView').hidden=!PVL;
+  const GL=location.hash==='#guides',GD=window.GUIDE&&location.hash.startsWith('#guide-')?location.hash.slice(7):null,GV=!!window.GUIDE&&(GL||!!GD);
+  $('#home').hidden=!!L||S||!!PVL||X||GV;$('#home').dataset.page=LS?'lessons':'hub';$('#exView').hidden=!X;$('#lessonView').hidden=!L;$('#searchView').hidden=!S;$('#pvView').hidden=!PVL;$('#gdView').hidden=!GV;
+  if(!GV&&window.GUIDE)GUIDE.stop();
+  if(GV){playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);if(VSON)vsSetup(null);if(EN.on)enSetup(null);closePM();snRestore();if(GD)GUIDE.renderGuide(GD,$('#gdMain'));else{GUIDE.renderList($('#gdMain'));document.title='Thaniya Engine Edu · '+_t('기능 가이드')}window.scrollTo(0,0);try{lnavSync()}catch(_){}return}
   if(L){useLesson(L);document.title='Thaniya Engine Edu · '+L.title;show(st.cur);snRedraw()}
   else{playStop(true);if(SMON)smSetup(null);if(UBON)ubSetup(null);if(VSON)vsSetup(null);if(EN.on)enSetup(null);closePM();snRestore();document.title=S?'Thaniya Engine Edu · 코드 검색':PVL?'Thaniya Engine Edu · '+PVL.title+' 미리 살펴보기':X?'Thaniya Engine Edu · '+_t('예제'):LS?'Thaniya Engine Edu · '+_t('레슨'):'Thaniya Engine Edu';if(S)svOpen();else if(PVL)pvRender(PVL);else if(X)exRender();else renderHome()}
   window.scrollTo(0,0);
@@ -7291,7 +7370,7 @@ function route(){
 }
 let tkPass=false;
 /* ===== 학습 메뉴: 모든 화면 머리줄의 로고 옆에 「학습 홈 · 레슨 · 코드 검색 · 예제」 (지금 화면은 강조) ===== */
-const LNAV=[['','학습 홈','<path d="M3 11.2 12 4l9 7.2"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/>'],['lessons','레슨','<path d="M4 5.5c2.7-.8 5.4-.5 8 1.2v12.8c-2.6-1.7-5.3-2-8-1.2z"/><path d="M20 5.5c-2.7-.8-5.4-.5-8 1.2v12.8c2.6-1.7 5.3-2 8-1.2z"/>'],
+const LNAV=[['','학습 홈','<path d="M3 11.2 12 4l9 7.2"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5.5h4V20"/>'],['guides','기능 가이드','<rect x="3" y="5" width="18" height="13" rx="2.5"/><path d="m10.5 9 4 2.5-4 2.5z"/><path d="M8 21h8"/>'],['lessons','레슨','<path d="M4 5.5c2.7-.8 5.4-.5 8 1.2v12.8c-2.6-1.7-5.3-2-8-1.2z"/><path d="M20 5.5c-2.7-.8-5.4-.5-8 1.2v12.8c2.6-1.7 5.3-2 8-1.2z"/>'],
   ['search','코드 검색','<circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5"/>'],['examples','예제','<rect x="3.5" y="4.5" width="17" height="13" rx="2"/><path d="m9.5 9 5 2.5-5 2.5z"/><path d="M8 20.5h8"/>']];
 function lnavInit(){
   document.querySelectorAll('header.top').forEach(h=>{if(h.querySelector('.lnav'))return;const br=h.querySelector('.brand');if(!br)return;
@@ -7301,7 +7380,7 @@ function lnavInit(){
 }
 function lnavSync(){
   lnavInit();const h=location.hash.slice(1),L=LESSONS.some(x=>x.hash===h||'about-'+x.hash===h);
-  const cur=h===''?'':h==='search'?'search':h==='examples'?'examples':(h==='lessons'||L)?'lessons':'';
+  const cur=h===''?'':h==='search'?'search':h==='examples'?'examples':(h==='guides'||h.startsWith('guide-'))?'guides':(h==='lessons'||L)?'lessons':'';
   document.querySelectorAll('.lnav button').forEach(b=>{const on=b.dataset.lnav===cur;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
 }
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.lnav button');if(!b)return;const to=b.dataset.lnav;if(location.hash.slice(1)===to){window.scrollTo({top:0,behavior:'smooth'});return}location.hash=to});

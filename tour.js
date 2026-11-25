@@ -43,7 +43,7 @@ var TR={
 '만든 게임을 바로 실행해 본다.':['Run your game right away.','作ったゲームをすぐに実行します。','立即运行你的游戏。'],
 '학습 기능이 있다':['There’s a built-in Learn mode','学習機能があります','内置学习功能'],
 '「학습」을 누르면 Thaniya Engine Edu 학습 창이 엔진 위에 떠서, 레슨을 따라 하며 엔진과 C#을 배울 수 있다.':['Press “Learn” to open the Thaniya Engine Edu window on top of the engine and learn the engine and C# by following lessons.','「学習」を押すと Thaniya Engine Edu の学習ウィンドウがエンジンの上に開き、レッスンに沿ってエンジンと C# を学べます。','点击“学习”，Thaniya Engine Edu 学习窗口会浮现在引擎上方，跟着课程学习引擎和 C#。'],
-'패널마다 있는 작은 「학습」 버튼은 그 창과 관련된 레슨으로 바로 데려간다.':['The small “Learn” button on each panel jumps straight to lessons about that panel.','各パネルの小さな「学習」ボタンは、そのウィンドウに関するレッスンへ直接案内します。','每个面板上的小“学习”按钮会直接带你进入相关课程。'],
+'패널마다 있는 작은 「학습」 버튼은 그 창의 기능 가이드(짧은 영상과 사용법)로 바로 데려간다.':['The small “Learn” button on each panel opens that panel’s feature guide (a short video and how-to).','各パネルの小さな「学習」ボタンは、そのウィンドウの機能ガイド（短い動画と使い方）へ直接案内します。','每个面板上的小“学习”按钮会直接打开该面板的功能指南（短视频和用法）。'],
 '전체 화면을 권장한다':['We recommend full screen','全画面がおすすめです','建议使用全屏'],
 '브라우저 주소창과 탭이 사라져 작업 공간이 넓어지고, 단축키가 브라우저와 덜 겹친다.':['The address bar and tabs disappear for more workspace, and shortcuts clash less with the browser.','アドレスバーやタブが消えて作業スペースが広がり、ショートカットもブラウザと重なりにくくなります。','地址栏和标签页会隐藏，工作区更宽，快捷键也更少与浏览器冲突。'],
 '오른쪽 위 이 버튼이나 F11로 언제든 켜고 끌 수 있다.':['Toggle it anytime with this button at the top right or F11.','右上のこのボタンか F11 でいつでも切り替えられます。','随时可用右上角的此按钮或 F11 切换。'],
@@ -279,7 +279,7 @@ function render(){
     }else if(s.kind==='learn'){
       h=head(IC.learn,'학습 기능이 있다')+
         '<p class="tc-p">「학습」을 누르면 Thaniya Engine Edu 학습 창이 엔진 위에 떠서, 레슨을 따라 하며 엔진과 C#을 배울 수 있다.</p>'+
-        '<p class="tc-p tc-m">패널마다 있는 작은 「학습」 버튼은 그 창과 관련된 레슨으로 바로 데려간다.</p>'+
+        '<p class="tc-p tc-m">패널마다 있는 작은 「학습」 버튼은 그 창의 기능 가이드(짧은 영상과 사용법)로 바로 데려간다.</p>'+
         '<div class="tc-foot">'+dots()+navBtns()+'</div>';
     }else if(s.kind==='full'){
       var isFull=!!(document.fullscreenElement||document.webkitFullscreenElement);
