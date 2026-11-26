@@ -1,0 +1,79 @@
+/* ═══ Update Notifier 스타일 (Meow-PDF 에서, 색만 SoundLab 에 맞춤) ═══
+   색은 아래 변수만 바꾸면 돼요. 앱에 이미 같은 이름의 변수가 있으면 그걸 따라가요. */
+:root {
+  /* SoundLab 색 (index.html · app.css 의 변수를 따라가요) */
+  --upd-dialog: #1a1c20;
+  --upd-border: #30333a;
+  --upd-bar2: #121316;
+  --upd-hover: rgba(255, 255, 255, .06);
+  --upd-text: var(--text, #e8eaee);
+  --upd-muted: var(--muted, #8a8f99);
+  --upd-accent: var(--accent, #f2c230);
+  --upd-on-accent: #1a1500;
+}
+/* 밝은 테마 예시: <html data-theme="light"> 일 때 */
+:root[data-theme="light"] {
+  --upd-dialog: var(--dialog, #ffffff);
+  --upd-border: var(--border, #dcdcdc);
+  --upd-bar2: var(--bar2, #f4f4f4);
+  --upd-hover: var(--hover, rgba(0, 0, 0, .06));
+  --upd-text: var(--text, #1f1f1f);
+  --upd-muted: var(--muted, #6b6b6b);
+}
+
+/* 오른쪽 아래 자리 */
+#updStack { position: fixed; right: 18px; bottom: 18px; z-index: 160; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none }
+#updStack > * { pointer-events: auto }
+
+/* 작은 창 */
+.updwin, .upd-modal, .upd-toast { font-family: var(--font-body, 'Noto Sans KR', system-ui, sans-serif) }
+.updwin { position: relative; box-sizing: border-box; width: 348px; max-width: calc(100vw - 24px); padding: 14px 14px 12px; border-radius: 14px; background: var(--upd-dialog); color: var(--upd-text); border: 1px solid var(--upd-border); box-shadow: 0 18px 48px rgba(0, 0, 0, .42); font-size: 13px; animation: updIn .28s cubic-bezier(.2, .9, .3, 1.2) }
+@keyframes updIn { from { opacity: 0; transform: translateY(14px) scale(.97) } to { opacity: 1; transform: none } }
+.updwin[hidden] { display: none }
+.updx { position: absolute; right: 8px; top: 8px; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 7px; display: grid; place-items: center; background: none; color: var(--upd-muted); cursor: pointer }
+.updx:hover { background: var(--upd-hover); color: var(--upd-text) }
+.updx svg { width: 14px; height: 14px }
+.updh { display: flex; align-items: center; gap: 10px; padding-right: 24px }
+.updic { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex: none; background: var(--upd-accent); color: var(--upd-on-accent) }
+.updic svg { width: 18px; height: 18px }
+.updh b { display: block; font-size: 14px }
+.updh small { display: block; color: var(--upd-muted); font-size: 11.5px; margin-top: 1px }
+.updprog { height: 5px; margin: 12px 0 0; border-radius: 3px; background: var(--upd-bar2); overflow: hidden }
+.updprog i { display: block; height: 100%; background: var(--upd-accent); transition: width .25s }
+
+/* 단추 */
+.updbtns { display: flex; gap: 8px; margin-top: 12px }
+.updbtns .sb { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--upd-border); color: var(--upd-text); font: inherit; font-weight: 600; font-size: 12.5px; background: var(--upd-bar2); cursor: pointer }
+.updbtns .sb svg { width: 15px; height: 15px }
+.updbtns .sb:hover:not(:disabled) { background: var(--upd-hover) }
+.updbtns .sb.pri { background: var(--upd-accent); color: var(--upd-on-accent); border-color: transparent }
+.updbtns .sb.pri:hover:not(:disabled) { filter: brightness(1.07) }
+.updbtns .sb:disabled { opacity: .6; cursor: default }
+
+/* 바뀐 내용 목록 */
+.updlist { max-height: min(52vh, 420px); overflow: auto; padding-right: 4px }
+.updv { padding: 10px 12px; border: 1px solid var(--upd-border); border-radius: 10px; margin-bottom: 8px; background: var(--upd-bar2) }
+.updvh { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px }
+.updvh b { font-size: 13.5px; color: var(--upd-accent) }
+.updvh small { color: var(--upd-muted); font-size: 11.5px }
+.updv ul { margin: 0; padding-left: 17px; font-size: 12.5px; line-height: 1.55 }
+.updv li { margin: 2px 0 }
+.upd-desc { margin: 0 0 10px; color: var(--upd-muted); font-size: 12.5px; line-height: 1.5 }
+.upd-desc b { color: var(--upd-text) }
+
+/* 자세히 보기 창 */
+.upd-modal-bg { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .5); animation: updFade .18s }
+@keyframes updFade { from { opacity: 0 } }
+.upd-modal { position: relative; box-sizing: border-box; width: 560px; max-width: 100%; padding: 18px 18px 14px; border-radius: 14px; background: var(--upd-dialog); color: var(--upd-text); border: 1px solid var(--upd-border); box-shadow: 0 24px 64px rgba(0, 0, 0, .5); font-size: 13px }
+.upd-modal h3 { margin: 0 0 12px; padding-right: 30px; font-size: 16px }
+.upd-modal .updbtns { justify-content: flex-end }
+.upd-modal .updbtns .sb { flex: none; min-width: 96px }
+
+/* 설정 패널 */
+.upd-panel h3 { margin: 0 0 6px; font-size: 14px }
+.upd-panel-btns { flex-wrap: wrap }
+.upd-panel-btns .sb { flex: none }
+
+/* 토스트 (앱에 토스트가 없을 때) */
+.upd-toast { position: fixed; left: 50%; bottom: 28px; z-index: 210; max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 10px; background: var(--upd-dialog); color: var(--upd-text); border: 1px solid var(--upd-border); box-shadow: 0 10px 30px rgba(0, 0, 0, .35); font-size: 13px; opacity: 0; transform: translate(-50%, 10px); transition: opacity .2s, transform .2s; pointer-events: none }
+.upd-toast.on { opacity: 1; transform: translate(-50%, 0) }

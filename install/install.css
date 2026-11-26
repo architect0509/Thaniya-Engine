@@ -1,0 +1,83 @@
+/* ---------- 설치 섹션 (install/install.css) ---------- */
+.tsi-wrap { display: flex; flex-direction: column; gap: 72px; }
+.tsi-wrap.mobile-first .tsi-pc { order: 2; }
+
+.tsi-sub { margin-top: 10px; font-size: 14.5px; line-height: 1.75; color: var(--muted, #8a8f99); max-width: 600px; }
+
+.tsi-grid { display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); margin-top: 26px; }
+.tsi-grid.two { grid-template-columns: repeat(2, minmax(0, 450px)); }
+
+.tsi-card {
+  position: relative; display: flex; flex-direction: column; gap: 18px;
+  padding: 24px 24px 22px; border-radius: 16px;
+  background: var(--card, #16171b); border: 1px solid var(--line, #24262b);
+  transition: border-color .15s, background .15s;
+}
+.tsi-card.mine { border-color: var(--accent-line, rgba(242,194,48,.45)); background: linear-gradient(180deg, rgba(242,194,48,.06), transparent 70%), var(--card, #16171b); box-shadow: 0 0 0 1px var(--accent-line, rgba(242,194,48,.45)) inset; }
+.tsi-head { display: flex; align-items: center; gap: 12px; }
+.tsi-head svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; color: #fff; }
+.tsi-name { font-family: var(--font-display, sans-serif); font-weight: 700; font-size: 19px; color: #fff; }
+.tsi-badge {
+  margin-left: auto; padding: 3px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700;
+  background: var(--accent, #f2c230); color: var(--accent-ink, #1a1500); display: none;
+}
+.tsi-card.mine .tsi-badge { display: inline-block; }
+
+.tsi-btn { width: 100%; padding: 13px 16px; font-size: 15px; border-radius: 12px; }
+.tsi-btn svg.i { width: 16px; height: 16px; }
+.tsi-card.mine .tsi-btn {
+  background: var(--accent, #f2c230); color: var(--accent-ink, #1a1500); border-color: var(--accent, #f2c230);
+  box-shadow: 0 6px 20px rgba(242,194,48,.22), inset 0 1px 0 rgba(255,255,255,.35);
+}
+.tsi-card.mine .tsi-btn:hover { background: var(--accent-2, #ffd95a); border-color: var(--accent-2, #ffd95a); }
+.tsi-btn.done, .tsi-card.mine .tsi-btn.done { background: transparent; color: var(--accent, #f2c230); border-color: var(--accent-line, rgba(242,194,48,.45)); box-shadow: none; cursor: default; }
+
+.tsi-meta { font-size: 13px; color: var(--muted, #8a8f99); line-height: 1.5; }
+
+.tsi-warn { margin-top: 16px; font-size: 12.5px; color: var(--muted, #8a8f99); }
+.tsi-note {
+  margin-top: 22px; display: flex; gap: 16px; align-items: flex-start;
+  padding: 18px 22px; border-radius: 14px; border: 1px dashed var(--line-2, #30333a);
+  font-size: 13.5px; line-height: 1.75; color: var(--muted, #8a8f99);
+}
+.tsi-note b { color: #fff; }
+.tsi-note code { font-family: var(--font-mono, monospace); color: var(--text, #e8eaee); font-size: 12.5px; }
+.tsi-note svg { width: 22px; height: 22px; flex: none; margin-top: 2px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.tsi-checks { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+.tsi-checks li { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--text, #e8eaee); opacity: .88; }
+.tsi-checks svg { width: 16px; height: 16px; flex: none; fill: none; stroke: var(--accent, #f2c230); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 안내 창 */
+.tsi-modal { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.62); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.tsi-modal.open { display: flex; }
+.tsi-dialog {
+  width: 100%; max-width: 420px; padding: 26px 24px 22px; border-radius: 18px;
+  background: var(--panel, #121316); border: 1px solid var(--line-2, #30333a); box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  user-select: text; -webkit-user-select: text;
+}
+.tsi-dialog h3 { font-size: 19px; font-weight: 900; color: #fff; letter-spacing: -.3px; }
+.tsi-dialog p { margin-top: 10px; font-size: 14px; color: var(--muted, #8a8f99); line-height: 1.7; }
+.tsi-dialog ol { margin: 16px 0 0; padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 10px; }
+.tsi-dialog li { counter-increment: s; display: flex; gap: 12px; font-size: 14px; line-height: 1.6; color: var(--text, #e8eaee); }
+.tsi-dialog li::before {
+  content: counter(s); flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; margin-top: 1px;
+  background: var(--accent-dim, rgba(242,194,48,.12)); color: var(--accent, #f2c230); font: 700 12px var(--font-mono, monospace);
+}
+.tsi-dialog b { color: #fff; }
+.tsi-url { margin-top: 14px; display: flex; gap: 8px; }
+.tsi-url input {
+  flex: 1; min-width: 0; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line-2, #30333a);
+  background: var(--bg-deep, #070809); color: var(--text, #e8eaee); font: 500 13px var(--font-mono, monospace);
+}
+.tsi-close-row { margin-top: 20px; display: flex; justify-content: flex-end; }
+
+@media (max-width: 980px) {
+  .tsi-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .tsi-wrap { gap: 56px; }
+  .tsi-grid, .tsi-grid.two { grid-template-columns: 1fr; }
+  .tsi-card { padding: 20px 18px 18px; }
+  .tsi-note { padding: 16px; }
+}

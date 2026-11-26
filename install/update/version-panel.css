@@ -1,0 +1,57 @@
+/* 설정 › 버전 정보 (install/update/version-panel.css) */
+#setM .smRow.tvHero{justify-content:flex-start;gap:18px;padding:20px 22px;margin-bottom:14px;border:1px solid #2c2f36;border-radius:16px;
+  background:linear-gradient(135deg,rgba(242,194,48,.08),transparent 60%),#17181c}
+#setM .tvLogo{width:64px;height:64px;flex:none;border-radius:16px;overflow:hidden;background:#0e0f12;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+#setM .tvLogo img{width:100%;height:100%;object-fit:cover;display:block}
+#setM .tvMeta{min-width:0}
+#setM .tvName{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:20px;font-weight:800;color:#fff}
+#setM .tvBadge{font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;padding:4px 9px;border-radius:999px;background:rgba(242,194,48,.14);color:var(--accent);border:1px solid rgba(242,194,48,.3)}
+#setM .tvMeta p{margin:6px 0 0;font-size:13px;color:var(--muted)}
+#setM .tvMeta a{color:var(--accent);text-underline-offset:3px}
+
+#setM .smRow.tvLinks{justify-content:flex-start;gap:10px;padding:0 0 18px;flex-wrap:wrap}
+#setM .tvBtn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:12px;border:1px solid #33363e;background:#1b1d22;
+  color:var(--text);font:inherit;font-size:13.5px;font-weight:700;text-decoration:none;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+#setM .tvBtn:hover{border-color:rgba(242,194,48,.45);color:var(--accent);background:#202227}
+#setM .tvBtn svg.i{width:17px;height:17px}
+#setM .tvBtn .tvExt{width:14px;height:14px;opacity:.7}
+
+#setM .smRow.tvUpd{display:block;padding:18px 0;border-top:1px solid #24262c}
+#setM .tvUpd .upd-panel h3{font-size:14px;margin:0 0 6px}
+#setM .tvUpd .upd-desc{font-size:12.5px}
+#setM .tvUpd .updbtns .sb{text-decoration:none;height:34px}
+
+#setM .tvHistWrap{padding-top:18px;border-top:1px solid #24262c}
+#setM .tvH3{font-size:16px;margin:0 0 12px}
+#setM .tvEmpty{font-size:12.5px;color:var(--muted);padding:12px 0}
+
+#setM .tvGroup{border:1px solid #2a2d33;border-radius:14px;background:#17181c;margin-bottom:10px}
+#setM .tvGroup>summary,#setM .tvVer>summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;-webkit-user-select:none}
+#setM .tvGroup>summary::-webkit-details-marker,#setM .tvVer>summary::-webkit-details-marker{display:none}
+#setM .tvGroup>summary{padding:14px 16px}
+#setM .tvChev{width:14px;height:14px;flex:none;fill:none;stroke:var(--muted);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+#setM details[open]>summary>.tvChev{transform:rotate(90deg)}
+#setM .tvSer{font-size:17px;font-weight:800;color:#fff;flex:none}
+#setM .tvSum{flex:1;min-width:0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#setM .tvTag{flex:none;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(242,194,48,.14);color:var(--accent)}
+#setM .tvTag.new{background:var(--accent);color:#1a1500}
+#setM .tvVers{padding:0 12px 12px}
+#setM .tvVer{border:1px solid #26282e;border-radius:12px;background:#121317;margin-top:8px}
+#setM .tvVer.cur{border-color:rgba(242,194,48,.3)}
+#setM .tvVer>summary{padding:12px 14px}
+#setM .tvVer>summary b{font-size:15px;color:#fff}
+#setM .tvVer>summary small{font-size:12px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+#setM .tvVer>summary .tvTag{margin-left:2px}
+#setM .tvVer ul{margin:0;padding:0 18px 14px 46px;display:flex;flex-direction:column;gap:6px;user-select:text;-webkit-user-select:text}
+#setM .tvVer li{font-size:13px;line-height:1.6;color:#c9ccd3}
+#setM .tvVer li::marker{color:var(--accent)}
+
+@media (max-width:760px){
+  #setM .smRow.tvHero{flex-direction:row;align-items:center;padding:16px;gap:14px}
+  #setM .tvLogo{width:52px;height:52px;border-radius:13px}
+  #setM .tvName{font-size:17px}
+  #setM .smRow.tvLinks{flex-direction:row}
+  #setM .tvBtn{flex:1;justify-content:center;padding:0 12px}
+  #setM .tvSum{display:none}
+  #setM .tvVer ul{padding-left:38px}
+}

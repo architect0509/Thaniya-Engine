@@ -1,0 +1,19 @@
+{
+  "id": "./index.html",
+  "name": "응애모드 — Thaniya-SoundLab",
+  "short_name": "응애모드",
+  "description": "칸을 톡톡 누르면 노래가 되는 아주 쉬운 작곡 앱",
+  "lang": "ko",
+  "start_url": "./index.html?source=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f2f2f7",
+  "theme_color": "#f2f2f7",
+  "categories": ["music", "education", "kids"],
+  "icons": [
+    { "src": "../install/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "../install/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "../install/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
