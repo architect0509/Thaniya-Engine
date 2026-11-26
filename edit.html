@@ -3536,7 +3536,7 @@ function normProject(p){p.nextN=p.nextN||0;try{pfNorm(p)}catch(e){p.prefabs=[]}i
     if(fr&&heroCodeIsDef('free',fr.code))(p.maps||[]).forEach(m=>(m.objs||[]).forEach(o=>{if(o.type==='spawn'&&(o.scripts||[]).some(x=>x.sid===fr.id))giveHeroScript(o,p,'tile')}));
     p.heroTileInit=true}catch(e){}}
   /* 고치지 않은 첫 타일형 코드 → 새 코드 (한글 변환본은 한글로) */
-  try{const ts=heroScriptK('tile',p,false);if(ts){const t=String(ts.code||'').replace(/\r\n/g,'\n');if(t===HERO_TILE_V1||t===HERO_TILE_V2)ts.code=HERO_TILE_CODE;else if(t===enToKo(HERO_TILE_V1)||t===enToKo(HERO_TILE_V2))ts.code=enToKo(HERO_TILE_CODE)}}catch(e){}
+  try{const ts=heroScriptK('tile',p,false);if(ts){const t=String(ts.code||'').replace(/\r\n/g,'\n');if(t===HERO_TILE_V1||t===HERO_TILE_V2||t===HERO_TILE_V3)ts.code=HERO_TILE_CODE;else if(t===enToKo(HERO_TILE_V1)||t===enToKo(HERO_TILE_V2)||t===enToKo(HERO_TILE_V3))ts.code=enToKo(HERO_TILE_CODE)}}catch(e){}
   anMigrate(p);mgrNorm(p);return p}
 function load(){
   try{const s=localStorage.getItem(KEY);if(s){const p=JSON.parse(s);if(validProject(p))return normProject(p)}}catch(e){}
@@ -9857,7 +9857,7 @@ public class HeroMovement : MonoBehaviour
 }
 `;
 /* 주인공 이동 (타일형) · 기본 */
-const HERO_TILE_CODE=`using UnityEngine;
+const HERO_TILE_V3=`using UnityEngine;
 
 // 주인공 이동 스크립트 (타일형)
 // 주인공 컴포넌트를 추가하면 기본으로 붙습니다. 방향키/WASD를 누르면 칸 가운데에서 옆 칸 가운데로 한 칸씩 걸어갑니다 (좀비고처럼).
@@ -10012,6 +10012,27 @@ public class HeroTileMovement : MonoBehaviour
     }
 }
 `;
+/* 지금 타일형 코드: 멈춰 있는 동안(대화 · 잡힘 · 컷씬)이나 스크립트가 주인공을 멀리 옮기면 걷던 걸음을 끝냄
+   (예전엔 걸음이 남아 있어서 풀리거나 순간이동한 뒤 옛 목적지 쪽으로 계속 걸어갔음) · 세 번째 코드는 고치지 않았으면 이걸로 바꿈 */
+const HERO_TILE_CODE=HERO_TILE_V3.replace(`        if (!stepping)
+        {
+            // 새로 누르면 한 칸`,`        // 멈춰 있는 동안(대화 · 잡힘 · 컷씬)에는 걷던 걸음을 그 자리에서 끝냅니다
+        // (남겨 두면 풀린 뒤나 순간이동한 뒤에 옛 목적지로 계속 걸어갑니다)
+        if (!hero.canMove)
+        {
+            stepping = false;
+            queued = false;
+        }
+        // 스크립트가 주인공을 멀리 옮겼으면(되살아남 · 순간이동) 걷던 걸음은 취소
+        if (stepping && Vector2.Distance(hero.position, target) > 1.5f)
+        {
+            stepping = false;
+            queued = false;
+        }
+
+        if (!stepping)
+        {
+            // 새로 누르면 한 칸`);
 /* 두 번째 타일형 코드 (칸마다 아주 살짝 멈칫하던 것) · 고치지 않았으면 새 코드로 바꿈 */
 const HERO_TILE_V2=`using UnityEngine;
 
@@ -10273,7 +10294,7 @@ public class HeroTileMovement : MonoBehaviour
 }
 `;
 /* 주인공 이동 스크립트 두 가지: tile(타일형 · 기본) / free(픽셀형) — p.heroScripts={tile:id, free:id} · p.heroScript는 예전 저장 호환(픽셀형) */
-const HERO_KINDS={tile:{name:'HeroTileMovement',label:'주인공 이동 (타일형)',codes:()=>[HERO_TILE_CODE,HERO_TILE_V2,HERO_TILE_V1]},free:{name:HERO_SCRIPT,label:'주인공 이동 (픽셀형)',codes:()=>[HERO_CODE,HERO_CODE_V2]}};
+const HERO_KINDS={tile:{name:'HeroTileMovement',label:'주인공 이동 (타일형)',codes:()=>[HERO_TILE_CODE,HERO_TILE_V3,HERO_TILE_V2,HERO_TILE_V1]},free:{name:HERO_SCRIPT,label:'주인공 이동 (픽셀형)',codes:()=>[HERO_CODE,HERO_CODE_V2]}};
 const heroKindCode=k=>{const c=HERO_KINDS[k].codes()[0];return typeof setv!=='undefined'&&setv.ko?enToKo(c):c};
 function heroScriptK(kind,p,create){
   p=p||P;if(!p)return null;if(!Array.isArray(p.scripts))p.scripts=[];
