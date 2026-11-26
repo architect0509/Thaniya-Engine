@@ -1090,7 +1090,7 @@ TI18N.add({
 "칸 경계선을 표시한다":["Shows tile grid lines", "マスの境界線を表示します", "显示格子线"],
 "UI 요소와 UI 캔버스 표시를 숨긴다":["Hides UI elements and the UI canvas outline", "UI 要素と UI キャンバスの表示を隠します", "隐藏 UI 元素和 UI 画布"],
 "막힌 칸·허용 칸을 색으로 겹쳐 보여 준다":["Overlays blocked and allowed tiles in color", "ふさがったマス・通れるマスを色で重ねて表示します", "用颜色叠加显示阻挡格与允许格"],
-"버튼 · 글자 · 여백 등 엔진 화면 전체의 크기다. 브라우저를 확대 · 축소한 것과 같다. 기본값은 80%다. (슬라이더 더블클릭: 기본값)":["Size of the whole editor: buttons, text and spacing. Works like browser zoom. Default is 80%. (Double-click the slider: default)", "ボタン・文字・余白などエディター画面全体の大きさです。ブラウザーの拡大・縮小と同じです。既定は80%です。（スライダーをダブルクリック：既定値）", "按钮、文字、间距等整个编辑器界面的大小。与浏览器缩放相同。默认 80%。（双击滑块：默认值）"],
+"버튼 · 글자 · 여백 등 엔진 화면 전체의 크기다. 브라우저를 확대 · 축소한 것과 같다. 기본값은 90%다. (슬라이더 더블클릭: 기본값)":["Size of the whole editor: buttons, text and spacing. Works like browser zoom. Default is 90%. (Double-click the slider: default)", "ボタン・文字・余白などエディター画面全体の大きさです。ブラウザーの拡大・縮小と同じです。既定は90%です。（スライダーをダブルクリック：既定値）", "按钮、文字、间距等整个编辑器界面的大小。与浏览器缩放相同。默认 90%。（双击滑块：默认值）"],
 "막힌 칸·허용 칸과 3D 콜라이더 상자를 겹쳐 보여 준다":["Overlays blocked/allowed tiles and 3D collider boxes", "ふさがったマス・通れるマスと3Dコライダーの箱を重ねて表示します", "叠加显示阻挡格、允许格与3D碰撞体框"],
 "지금 편집 중이 아닌 레이어를 흐리게 그린다":["Draws layers you aren’t editing faded", "編集中でないレイヤーを薄く描きます", "将未编辑的图层淡化显示"],
 "씬의 어둠과 빛을 편집 중에도 보여 준다":["Shows the scene’s darkness and lights while editing", "シーンの暗さと光を編集中にも表示します", "编辑时也显示场景的黑暗与光照"],

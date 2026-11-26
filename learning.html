@@ -7,12 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<script src="i18n.js"></script>
+<script src="js/common/i18n.js?v=20261126b"></script>
 <script src="lang/common.js"></script>
 <script src="lang/edit.js?v=20261101h"></script>
 <script src="lang/learning.js?v=20261101j"></script>
-<script src="theme.js"></script>
-<script src="base-assets.js?v=20261101g"></script>
+<script src="js/common/theme.js?v=20261126b"></script>
+<script src="js/common/base-assets.js?v=20261126b"></script>
 <link rel="stylesheet" href="css/light-learning.css">
 <style>
 :root{
@@ -790,6 +790,121 @@ html[data-theme="light"] .rm-ln path.ex{stroke:rgba(20,120,160,.5)}html[data-the
 html[data-theme="light"] .rm-flt{background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.08)}
 html[data-theme="light"] .rm-fb{border-color:rgba(0,0,0,.18);background:rgba(0,0,0,.04)}
 html[data-theme="light"] .rm-fb:hover{background:rgba(0,0,0,.1);border-color:rgba(0,0,0,.32)}
+/* ---- 드롭다운 필터 ---- */
+.fdd{position:relative;display:inline-flex}
+.fdd-b{height:32px;display:inline-flex;align-items:center;gap:7px;padding:0 11px 0 13px;border-radius:999px;border:1px solid rgba(255,255,255,.17);background:rgba(255,255,255,.045);color:var(--tx);font:500 12.5px var(--f);cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,box-shadow .15s}
+.fdd-b:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.32)}
+.fdd-b:focus-visible{outline:2px solid #f6cd2a;outline-offset:2px}
+.fdd-l{color:var(--mut);font-weight:600;font-size:11.5px}
+.fdd-v{font-weight:600;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+.fdd-c{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#1a1400;color:#f6cd2a;font:700 10.5px var(--m)}
+.fdd-ch{opacity:.7;transition:transform .2s cubic-bezier(.3,1.4,.5,1)}
+.fdd.open .fdd-ch{transform:rotate(180deg)}
+.fdd.on .fdd-b{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);border-color:transparent;color:#1a1400}
+.fdd.on .fdd-l{color:rgba(26,20,0,.62)}
+.fdd.open .fdd-b{box-shadow:0 0 0 3px rgba(246,205,42,.22)}
+.fdd-p{position:absolute;z-index:60;top:calc(100% + 8px);left:0;width:300px;max-height:min(70vh,560px);overflow:auto;padding:8px;border-radius:16px;background:rgba(24,27,34,.97);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.13);box-shadow:0 22px 50px -12px rgba(0,0,0,.7),0 0 0 1px rgba(0,0,0,.3);transform-origin:20px -6px;animation:fddIn .18s cubic-bezier(.2,1.2,.4,1)}
+.fdd-p.wide{width:min(560px,calc(100vw - 40px))}
+.fdd-p[hidden]{display:none}
+@keyframes fddIn{from{opacity:0;transform:translateY(-6px) scale(.97)}}
+.fdd-s+.fdd-s{margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.07)}
+.fdd-h{margin:4px 8px 5px;font:700 10.5px var(--f);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.fdd-g{display:grid;gap:2px}
+.fdd-p.wide .fdd-g{grid-template-columns:1fr 1fr}
+.fdd-o{display:flex;align-items:center;gap:10px;width:100%;padding:7px 9px;border:0;border-radius:10px;background:transparent;color:var(--tx);text-align:left;cursor:pointer;font:inherit;transition:background .12s}
+.fdd-o:hover,.fdd-o:focus-visible{background:rgba(255,255,255,.07);outline:none}
+.fdd-o:focus-visible{box-shadow:inset 0 0 0 1.5px #f6cd2a}
+.fdd-o.z{opacity:.45}
+.fdd-ic{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.07);color:#cfd6e4}
+.fdd-ic .dots{gap:1.5px}.fdd-ic .dots i{width:3.5px;height:3.5px}
+.fdd-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.fdd-t b{font-size:12.5px;font-weight:600}
+.fdd-t small{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fdd-n{flex:none;font:500 10.5px var(--m);color:var(--mut);min-width:14px;text-align:right}
+.fdd-k{flex:none;width:18px;height:18px;border-radius:6px;border:1.5px solid rgba(255,255,255,.25);display:grid;place-items:center;color:transparent;transition:background .12s,border-color .12s,transform .15s}
+.fdd-o[aria-checked="true"]{background:rgba(246,205,42,.09)}
+.fdd-o[aria-checked="true"] .fdd-k{background:#f6cd2a;border-color:#f6cd2a;color:#1a1400;transform:scale(1.06)}
+.fdd-ft{display:flex;align-items:center;gap:6px;margin-top:8px;padding:8px 6px 2px;border-top:1px solid rgba(255,255,255,.07)}
+.fdd-ft span{flex:1;font-size:10.5px;color:var(--mut);line-height:1.35}
+.fdd-x{height:28px;padding:0 12px;border-radius:99px;border:1px solid rgba(255,255,255,.16);background:transparent;color:var(--tx);font:600 11.5px var(--f);cursor:pointer}
+.fdd-x:hover{background:rgba(255,255,255,.08)}.fdd-x:disabled{opacity:.35;cursor:default}
+.fdd-x.ok{background:#f6cd2a;border-color:#f6cd2a;color:#1a1400}
+.fdd-ic.t-2d{color:#7ee0a0;background:rgba(126,224,160,.12)}.fdd-ic.t-3d{color:#8fd4ec;background:rgba(143,212,236,.13)}
+.fdd-ic.t-gd{color:#f6cd2a;background:rgba(246,205,42,.13)}.fdd-ic.t-ed{color:#31c1ec;background:rgba(49,193,236,.13)}.fdd-ic.t-ui{color:#ff9b6a;background:rgba(255,155,106,.13)}
+.fdd-ic.t-anim{color:#ff7fc8;background:rgba(255,127,200,.13)}.fdd-ic.t-fx{color:#c3a6ff;background:rgba(195,166,255,.13)}.fdd-ic.t-csb{color:#d59bff;background:rgba(191,99,255,.14)}
+.fdd-ic.t-csg{color:#bf63ff;background:rgba(191,99,255,.2)}.fdd-ic.t-phys{color:#ffcf5c;background:rgba(255,207,92,.13)}.fdd-ic.t-vs{color:#10d35e;background:rgba(16,211,94,.13)}
+.fdd-ic.t-todo{color:#9aa3b5}.fdd-ic.t-prog{color:#f6cd2a;background:rgba(246,205,42,.12)}.fdd-ic.t-done{color:#4cd98a;background:rgba(76,217,138,.12)}
+html[data-theme="light"] .fdd-b{border-color:rgba(0,0,0,.18);background:rgba(0,0,0,.035)}
+html[data-theme="light"] .fdd-b:hover{background:rgba(0,0,0,.08)}
+html[data-theme="light"] .fdd-p{background:rgba(255,255,255,.98);border-color:rgba(0,0,0,.1);box-shadow:0 22px 50px -14px rgba(0,0,0,.28)}
+html[data-theme="light"] .fdd-o:hover,html[data-theme="light"] .fdd-o:focus-visible{background:rgba(0,0,0,.05)}
+html[data-theme="light"] .fdd-ic{background:rgba(0,0,0,.05);color:#465063}
+html[data-theme="light"] .fdd-k{border-color:rgba(0,0,0,.25)}
+html[data-theme="light"] .fdd-s+.fdd-s,html[data-theme="light"] .fdd-ft{border-color:rgba(0,0,0,.08)}
+html[data-theme="light"] .fdd-x{border-color:rgba(0,0,0,.18)}
+.rm-flt{gap:8px}
+.rm-fs{margin-left:0}
+.ls-fdd{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:6px;padding-left:12px;border-left:1px solid rgba(255,255,255,.12)}
+.ls-fdd .fdd-b{height:34px}
+.ls-clr{height:30px;padding:0 12px;border-radius:99px;border:1px dashed rgba(255,255,255,.25);background:transparent;color:var(--mut);font:500 12px var(--f);cursor:pointer}
+.ls-clr:hover{color:var(--tx);border-color:rgba(255,255,255,.45)}
+html[data-theme="light"] .ls-fdd{border-color:rgba(0,0,0,.12)}
+/* ---- 보기 방식 ---- */
+.rm-vw{margin-left:auto;display:inline-flex;padding:3px;gap:2px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.rm-vw button{height:28px;display:inline-flex;align-items:center;gap:6px;padding:0 11px;border:0;border-radius:9px;background:transparent;color:var(--mut);font:600 12px var(--f);cursor:pointer;transition:background .15s,color .15s}
+.rm-vw button:hover{color:var(--tx);background:rgba(255,255,255,.07)}
+.rm-vw button[aria-checked="true"]{background:#f6cd2a;color:#1a1400;box-shadow:0 2px 8px -2px rgba(246,205,42,.5)}
+.rm-vw button:focus-visible{outline:2px solid #f6cd2a;outline-offset:1px}
+html[data-theme="light"] .rm-vw{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+@media (max-width:760px){.rm-vw button span{display:none}.rm-vw{margin-left:0}}
+/* 한눈에 */
+.v-fit .rm-scroll{overflow:hidden}
+.v-fit .rm-board{transition:transform .25s ease}
+.rm-zoom{position:absolute;right:12px;top:10px;z-index:3;font:600 11px var(--m);color:var(--mut);padding:2px 8px;border-radius:99px;background:rgba(0,0,0,.35)}
+/* 탐험 */
+.v-explore .rm-scroll{height:min(480px,62vh);overflow:auto;scrollbar-width:none;cursor:grab;overscroll-behavior:contain;background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.07) 1px,transparent 0) 0 0/22px 22px}
+.v-explore .rm-scroll::-webkit-scrollbar{display:none}
+.v-explore .rm-scroll.drag{cursor:grabbing}
+.v-explore .rm-scroll.drag .rm-n{pointer-events:none}
+.v-explore .rm-n b{font-size:13.5px}
+.v-explore .rm-board .rm-n.rm-g b{font-size:12.5px}
+.rm-eh i{position:absolute;z-index:3;pointer-events:none;opacity:0;transition:opacity .18s}
+.rm-eh .l,.rm-eh .r{top:0;bottom:0;width:70px}.rm-eh .t,.rm-eh .b{left:0;right:0;height:60px}
+.rm-eh .l{left:0;border-radius:18px 0 0 18px;background:linear-gradient(90deg,rgba(246,205,42,.22),transparent)}
+.rm-eh .r{right:0;border-radius:0 18px 18px 0;background:linear-gradient(-90deg,rgba(246,205,42,.22),transparent)}
+.rm-eh .t{top:0;border-radius:18px 18px 0 0;background:linear-gradient(180deg,rgba(246,205,42,.2),transparent)}
+.rm-eh .b{bottom:0;border-radius:0 0 18px 18px;background:linear-gradient(0deg,rgba(246,205,42,.2),transparent)}
+.e-l .rm-eh .l,.e-r .rm-eh .r,.e-t .rm-eh .t,.e-b .rm-eh .b{opacity:1}
+.rm-mmw{position:absolute;right:12px;bottom:12px;z-index:4;padding:6px 7px 7px;border-radius:12px;background:rgba(14,16,20,.88);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);box-shadow:0 10px 24px -8px rgba(0,0,0,.6)}
+.rm-mmw>span{display:block;font:700 9.5px var(--f);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:0 0 4px 1px}
+.rm-mm{position:relative;cursor:crosshair;border-radius:6px;background:rgba(255,255,255,.04);overflow:hidden;touch-action:none}
+.rm-mm i{position:absolute;border-radius:1.5px;background:rgba(255,255,255,.4)}
+.rm-mm i.d{background:#4cd98a}.rm-mm i.r{background:#f6cd2a}.rm-mm i.p{background:#d9b53a}.rm-mm i.x{background:#8fd4ec}.rm-mm i.g{background:rgba(246,205,42,.55)}.rm-mm i.fo{opacity:.2}
+.rm-mm .vp{position:absolute;border:1.5px solid #fff;border-radius:3px;background:rgba(255,255,255,.1);box-shadow:0 0 0 999px rgba(0,0,0,.25);pointer-events:none}
+.rm-tip{position:absolute;left:14px;bottom:12px;z-index:4;margin:0;max-width:calc(100% - 260px);padding:5px 11px;border-radius:99px;font-size:11.5px;color:var(--mut);background:rgba(14,16,20,.82);border:1px solid rgba(255,255,255,.1);pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-theme="light"] .rm-mmw,html[data-theme="light"] .rm-tip{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.12)}
+html[data-theme="light"] .rm-mm{background:rgba(0,0,0,.05)}html[data-theme="light"] .rm-mm i{background:rgba(0,0,0,.3)}
+html[data-theme="light"] .rm-mm .vp{border-color:#1a1d24;box-shadow:0 0 0 999px rgba(0,0,0,.08)}
+html[data-theme="light"] .v-explore .rm-scroll{background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,.08) 1px,transparent 0)}
+/* 분류별 */
+.v-topic .rm-scroll{overflow:visible}
+.rm-tpv{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:12px;padding:14px}
+.rm-tc{display:flex;flex-direction:column;gap:7px;padding:10px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);transition:opacity .15s}
+.rm-tc.fo{opacity:.4}
+.rm-tc header{display:flex;align-items:center;gap:8px;padding:0 2px 4px}
+.rm-tc header b{flex:1;font-size:13px}
+.rm-tc header small{font:500 11px var(--m);color:var(--mut)}
+.rm-tci{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.07)}
+.rm-tc.t-gd .rm-tci{color:#f6cd2a;background:rgba(246,205,42,.13)}.rm-tc.t-ed .rm-tci{color:#31c1ec;background:rgba(49,193,236,.13)}.rm-tc.t-ui .rm-tci{color:#ff9b6a;background:rgba(255,155,106,.13)}
+.rm-tc.t-anim .rm-tci{color:#ff7fc8;background:rgba(255,127,200,.13)}.rm-tc.t-fx .rm-tci{color:#c3a6ff;background:rgba(195,166,255,.13)}.rm-tc.t-csb .rm-tci{color:#d59bff;background:rgba(191,99,255,.14)}
+.rm-tc.t-csg .rm-tci{color:#bf63ff;background:rgba(191,99,255,.2)}.rm-tc.t-phys .rm-tci{color:#ffcf5c;background:rgba(255,207,92,.13)}.rm-tc.t-vs .rm-tci{color:#10d35e;background:rgba(16,211,94,.13)}.rm-tc.t-3d .rm-tci{color:#8fd4ec;background:rgba(143,212,236,.13)}
+.rm-tcl{display:flex;flex-direction:column;gap:6px}
+.rm-tpv .rm-n{position:relative;width:auto}
+.rm-tpv .rm-n.rm-g{flex-direction:row;align-items:center;gap:7px;height:32px;padding:0 9px 0 6px;border-radius:9px;background:#201d12;border:1.5px solid rgba(246,205,42,.32)}
+.rm-tpv .rm-n.fo{opacity:.2;filter:grayscale(.85)}
+.rm-tpv .rm-n.fo:hover,.rm-tpv .rm-n.fo:focus-visible{opacity:.55}
+html[data-theme="light"] .rm-tc{background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.08)}
+html[data-theme="light"] .rm-tpv .rm-n.rm-g{background:#fff8dc;border-color:rgba(190,150,0,.45)}
 html[data-theme="light"] .rm-fb[aria-pressed="true"]{background:linear-gradient(180deg,#f6cd2a,#e9bd0c);border-color:transparent;color:#1a1400}
 html[data-theme="light"] .rm-3d{background:rgba(20,120,160,.12);color:#0b6f8f}
 @media (prefers-reduced-motion:reduce){.rm-n.next,.rm-ln path.go{animation:none}}
@@ -1590,6 +1705,11 @@ html[data-theme="light"] .vcm,html[data-theme="light"] .vxpop{--win:#f7f7f8;--sh
 .lnav{display:inline-flex;align-items:center;gap:2px;height:30px;padding:2px;border-radius:999px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);flex:none}
 .lnav button{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 11px;border:0;border-radius:999px;background:none;color:#b9bdc8;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
 .lnav button:hover{background:rgba(255,255,255,.08);color:#f2f2f5}
+.dockb{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px 0 10px;border-radius:999px;border:1px solid rgba(246,205,42,.45);background:rgba(246,205,42,.1);color:#ffd84a;font:inherit;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none;transition:background .15s}
+.dockb:hover{background:rgba(246,205,42,.2)}
+.dockb svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+html[data-theme="light"] .dockb{color:#8a6a00;border-color:rgba(170,130,0,.45);background:rgba(246,205,42,.16)}
+@media (max-width:900px){.dockb span{display:none}}
 .lnav button.on{background:rgba(233,189,12,.16);color:#ffd84a;box-shadow:inset 0 0 0 1px rgba(233,189,12,.38)}
 .lnav button.lhome{background:#e9bd0c;color:#1a1400}
 .lnav button.lhome:hover{background:#ffd23a;color:#1a1400}
@@ -1805,14 +1925,15 @@ html[data-theme="light"] .lnav button.lhome{background:#e9bd0c;color:#1a1400}
 </main>
 </div>
 
-<script src="script-engine.js?v=20261119a"></script>
-<script src="script-editor.js?v=20261118a"></script>
-<script src="anim-editor.js?v=20261107f"></script>
-<script src="ui-builder.js?v=20261105d"></script>
-<script src="visual-script.js?v=20261108d"></script>
-<script src="learn-preview.js?v=20261124a"></script>
-<script src="guides.js?v=20261126a"></script>
-<script src="examples/examples.js?v=20261118b"></script>
+<script src="js/engine/script-engine.js?v=20261126b"></script>
+<script src="js/engine/script-editor.js?v=20261126b"></script>
+<script src="js/engine/anim-editor.js?v=20261126b"></script>
+<script src="js/engine/ui-builder.js?v=20261126b"></script>
+<script src="js/engine/visual-script.js?v=20261126b"></script>
+<script src="js/learning/learn-preview.js?v=20261126b"></script>
+<script src="js/learning/guides.js?v=20261126b"></script>
+<script src="js/learning/lessons-plus.js?v=20261126b"></script>
+<script src="examples/examples.js?v=20261126a"></script>
 <script>
 /* ===== 학습 사이트용 실행기: 엔진의 C# 해석기를 그대로 사용하고, Debug.Log 출력만 가로챕니다 ===== */
 const _t=(s,v)=>window.TI18N?TI18N.t(s,v):String(s).replace(/\{(\w+)\}/g,(x,k)=>v&&k in v?v[k]:x);
@@ -4339,7 +4460,10 @@ const LESSONS=[
   {...L20,problems:L20P,hash:'lesson-20',cats:['feature','cs'],dim:'3d',lv:3,kw:['transform.Rotate','OnTriggerEnter','GetComponent'],preview:'void Update()\n{\n    transform.Rotate(0, spinSpeed * Time.deltaTime, 0);\n}\nvoid OnTriggerEnter(Collider other)\n{\n    if (other.tag != "Player") return;\n    manager.Add();\n}'},
   {...L21,problems:L21P,hash:'lesson-21',cats:['cs'],dim:'3d',lv:4,kw:['rb.velocity','LateUpdate','isGrounded'],preview:'rb.velocity = new Vector3(h * moveSpeed,\n                         rb.velocity.y,\n                         v * moveSpeed);\nif (rb.isGrounded && Input.GetButtonDown("Jump"))\n    rb.velocity = …jumpPower…;\nvoid LateUpdate() { cam.LookAt(transform.position); }'},
   {...L22,problems:L22P,hash:'lesson-22',cats:['feature','cs'],dim:'3d',lv:5,kw:['Vector3.MoveTowards','체크포인트','코루틴'],preview:'transform.position = Vector3.MoveTowards(\n    transform.position, target, speed * Time.deltaTime);\nif (other.tag == "Trap") Respawn();\nyield return new WaitForSeconds(2f);'},
-  {...L16,problems:L16P,hash:'lesson-16',cats:['feature','cs'],lv:3,kw:['보스전','텔레그래프','상태 머신'],preview:'패턴 고르기 → 경고 표시 → 공격 → 쉬기\nif (Vector2.Distance(hero.position, target) < slamRadius)\n    hero.TakeDamage(slamDamage);\n2페이즈 → rageVolume.weight → 1'}
+  {...L16,problems:L16P,hash:'lesson-16',cats:['feature','cs'],lv:3,kw:['보스전','텔레그래프','상태 머신'],preview:'패턴 고르기 → 경고 표시 → 공격 → 쉬기\nif (Vector2.Distance(hero.position, target) < slamRadius)\n    hero.TakeDamage(slamDamage);\n2페이즈 → rageVolume.weight → 1'},
+  {...L23,problems:L23P,hash:'lesson-23',cats:['feature','cs'],lv:3,kw:['Rigidbody2D','Physics2D.Raycast','OnCollisionEnter2D'],preview:'rb.velocity = new Vector2(x * moveSpeed, rb.velocity.y);\nbool grounded = Physics2D.Raycast(\n    transform.position, Vector2.down, 0.6f);\nif (grounded && Input.GetKeyDown(KeyCode.Space))\n    rb.velocity = new Vector2(rb.velocity.x, -jumpPower);'},
+  {...L24,problems:L24P,hash:'lesson-24',cats:['cs'],lv:3,kw:['Instantiate','코루틴','PlayerPrefs'],preview:'Instantiate(starPrefab, pos, Quaternion.identity);\nDestroy(gameObject);\nyield return new WaitForSeconds(5f);\nPlayerPrefs.SetInt("best", score);'},
+  {...L25,problems:L25P,hash:'lesson-25',cats:['vs'],lv:3,kw:['상태 그래프','전환','C# 메서드 부르기'],preview:'[순찰] ── 주인공과 거리 < 3 ──▶ [추격]\n[추격] ── 주인공과 거리 > 5 ──▶ [순찰]\n[추격] ── 거리 < 0.8 ──▶ [잡음]\n[잡음] ── 상태가 끝나면 ──▶ [순찰]'},
 ];
 /* ===== 난이도 · 키워드 (레슨 번호 대신) ===== */
 const LVN=['','입문','초급','중급','중상급','상급'];
@@ -6521,13 +6645,19 @@ show(st.cur);
 
 /* ===================== 메인 화면 · 화면 전환 ===================== */
 let LCF='all';try{const v=localStorage.getItem('thaniya.lcat');if(LCATS.some(c=>c[0]===v))LCF=v}catch(e){}
+/* 레슨 목록의 난이도 · 세부 분류 드롭다운 (여러 개 고르기 · 기억) */
+const LDF={lv:new Set,tp:new Set};try{const v=JSON.parse(localStorage.getItem('thaniya.ldf')||'{}');(v.lv||[]).forEach(x=>LDF.lv.add(String(x)));(v.tp||[]).forEach(x=>{if(TP_ALL.includes(x)&&x!=='gd')LDF.tp.add(x)})}catch(e){}
+const lsF=L=>({eng:[rmDim(L)],fn:(RM_TP[L.hash]||[]).filter(v=>TP_GOF(v)==='fn'),sc:(RM_TP[L.hash]||[]).filter(v=>TP_GOF(v)==='sc'),lv:String(L.lv),st:''});
+const ldMatch=L=>fMatch(lsF(L),LDF);
+const lsShown=()=>LORDER.filter(L=>inCat(L,LCF)&&ldMatch(L));
 function renderLvBar(refocus){
   const cnt=c=>LESSONS.filter(L=>inCat(L,c)).length;
   $('#lvbar').setAttribute('aria-label',_t('레슨 분류'));
-  $('#lvbar').innerHTML=LCATS.map(([c,n])=>{const k=cnt(c);return`<button type="button" class="lvb lcb c-${c}${k?'':' empty'}" data-lc="${c}" aria-pressed="${LCF===c}">${lcatSvg(c)}<span>${esc(_t(n))}</span>${k?`<b>${k}</b>`:`<b class="soon">${esc(_t('준비 중'))}</b>`}</button>`}).join('')+`<button type="button" class="lvb rvt" id="rvToggle" aria-pressed="${RV_ON}" title="${esc(_t('레슨 대신 레슨별 코드 모음 보기'))}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span>${esc(_t('코드 복습'))}</span></button>`;
+  $('#lvbar').innerHTML=LCATS.map(([c,n])=>{const k=cnt(c);return`<button type="button" class="lvb lcb c-${c}${k?'':' empty'}" data-lc="${c}" aria-pressed="${LCF===c}">${lcatSvg(c)}<span>${esc(_t(n))}</span>${k?`<b>${k}</b>`:`<b class="soon">${esc(_t('준비 중'))}</b>`}</button>`}).join('')+`<span class="ls-fdd">${fddHTML('ls','lv','난이도',FDD_LV(),LDF.lv,v=>LESSONS.filter(L=>inCat(L,LCF)&&String(L.lv)===v).length)}${fddHTML('ls','tp','세부 분류',FDD_TP(false),LDF.tp,v=>LESSONS.filter(L=>inCat(L,LCF)&&lsF(L)[TP_GOF(v)].includes(v)).length)}${LDF.lv.size+LDF.tp.size?`<button type="button" class="ls-clr" id="lsClr">${esc(_t('필터 초기화'))}</button>`:''}</span>`+`<button type="button" class="lvb rvt" id="rvToggle" aria-pressed="${RV_ON}" title="${esc(_t('레슨 대신 레슨별 코드 모음 보기'))}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span>${esc(_t('코드 복습'))}</span></button>`;
   if(refocus){const b=$('#lvbar .lvb[data-lc="'+LCF+'"]');if(b)b.focus()}
 }
 document.addEventListener('click',e=>{
+  if(e.target.closest&&e.target.closest('#lsClr')){LDF.lv.clear();LDF.tp.clear();FDD_SC.ls.upd('#lvbar .lvb[aria-pressed="true"]');return}
   const b=e.target.closest&&e.target.closest('#lvbar .lvb[data-lc]');if(!b)return;
   LCF=b.dataset.lc;try{localStorage.setItem('thaniya.lcat',LCF)}catch(_){}
   renderHome(true);
@@ -6582,7 +6712,7 @@ document.addEventListener('click',e=>{
 /* ===================== 추천 학습 로드맵 (왼쪽 → 오른쪽 트리 · 분류와 상관없이 쉽고 중요한 것부터) ===================== */
 const RM_TIERS=['첫걸음','기본 다지기','값과 상호작용','움직임과 구조','연출과 대화','심화','종합 프로젝트','예제로 응용'];
 /* 예제 카드(참고용): 학습 기록 · 완료 · 추천에는 들어가지 않음. after = 이 레슨 다음 열에 붙음 */
-const RM_EX=[{id:'coins',after:'lesson-4'},{id:'subway',after:'lesson-5'},{id:'escape',after:'lesson-10'},{id:'tycoon',after:'lesson-10'},{id:'boss',after:'lesson-16'},{id:'street',after:'lesson-20'},{id:'jump',after:'lesson-22'}];
+const RM_EX=[{id:'coins',after:'lesson-4'},{id:'subway',after:'lesson-5'},{id:'escape',after:'lesson-10'},{id:'tycoon',after:'lesson-10'},{id:'boss',after:'lesson-16'},{id:'street',after:'lesson-20'},{id:'jump',after:'lesson-22'},{id:'platform',after:'lesson-23'},{id:'stars',after:'lesson-24'},{id:'vsguard',after:'lesson-25'}];
 /* h 레슨 · t 단계(열) · req 먼저 하면 좋은 레슨(첫째 = 트리에서 이어지는 줄기, 나머지는 마우스를 올렸을 때만 점선) · why 이 단계에 두는 까닭 */
 const RM=[
  {h:'lesson-2',t:0,req:[],why:'모든 C# 스크립트의 출발점이에요. 값이 어떻게 바뀌는지 콘솔로 확인하는 법을 먼저 익혀 두면 이후 모든 레슨이 쉬워져요.'},
@@ -6607,6 +6737,10 @@ const RM=[
  {h:'lesson-21',t:5,req:['lesson-20','lesson-5'],why:'velocity · LateUpdate · isGrounded로 물리 주인공을 처음부터 짜요. 2D 이동 스크립트(레슨 5)를 3D 물리로 옮기는 단계예요.'},
  {h:'lesson-22',t:6,req:['lesson-21'],why:'순찰하는 함정 · 체크포인트 · 기록 · 코루틴으로 3D 미니게임 한 판을 완성해요. 3D 레슨에서 익힌 것을 모두 모아요.'},
  {h:'lesson-16',t:3,req:['lesson-13','lesson-15','lesson-5'],why:'경고 표시(텔레그래프) · 탄막 · 체력 바 · 2페이즈 볼륨 · 히트박스로 보스전을 만들어요. 볼륨 · 프리팹 · 주인공 스크립트에서 익힌 것을 한데 모아요.'},
+
+ {h:'lesson-23',t:4,req:['lesson-5','lesson-19'],why:'옆에서 보는 플랫포머를 리지드바디 2D · Raycast · 충돌 메서드로 만들어요. 주인공 이동 스크립트(레슨 5)를 물리로 바꾸는 단계예요.'},
+ {h:'lesson-24',t:4,req:['lesson-4','lesson-13'],why:'프리팹을 플레이 중에 찍어 내고(Instantiate) 지우고(Destroy), 코루틴과 PlayerPrefs로 난이도와 기록을 다뤄요. 거의 모든 게임에 쓰이는 패턴이에요.'},
+ {h:'lesson-25',t:3,req:['lesson-12'],why:'상태 그래프로 순찰 · 추격 · 잡음을 나누는 경비병 AI를 만들어요. 비주얼 스크립트에서 몬스터 AI를 짜는 표준 방법이에요.'},
 ].filter(r=>LESSONS.some(L=>L.hash===r.h));
 if(window.TI18N)TI18N.add({"추천 학습 로드맵":["Recommended learning roadmap","おすすめ学習ロードマップ","推荐学习路线图"],
  "분류와 상관없이 쉽고 중요한 것부터 차례로 이어져요. 카드를 누르면 소개가 보여요.":["Easy and important lessons first, regardless of category. Click a card for an overview.","分類に関係なく、やさしく大切なものから順につながります。カードを押すと紹介が表示されます。","不分类别，从简单重要的开始依次衔接。点击卡片查看简介。"],
@@ -6636,32 +6770,76 @@ function rmState(){const S={};RM.forEach(r=>S[r.h]=rmStat(rmL(r.h)));
   return{S,recs:[...prog,...open].slice(0,3).map(r=>r.h)};
 }
 const rmCatDots=L=>`<span class="rm-cd" aria-hidden="true">${(L.cats||[]).map(c=>`<i class="c-${c}" title="${esc(_t(LCATN[c]))}"></i>`).join('')}</span>`;
-/* ---- 로드맵 필터: 차원 · 난이도 · 분류 · 진행 — 고르지 않은 카드는 어둡게 (기본 전체 · 그룹마다 하나씩 고름) ----
+/* ---- 로드맵 필터 (드롭다운): 난이도 · 분류(엔진 · 기능 · 스크립트) · 진행 — 고르지 않은 카드는 어둡게 ----
+   같은 묶음 안에서는 하나라도 맞으면, 다른 묶음끼리는 모두 맞아야 보임. 아무것도 안 고르면 전체.
    예제 카드는 앞 레슨(after)을 따라감 · 선은 양쪽 카드가 모두 보일 때만 밝게 */
-const RMF={dim:'all',lv:'all',cat:'all',st:'all'};
-const RMF_G=[
- ['dim','차원',[['all','전체'],['2d','2D'],['3d','3D']]],
- ['lv','난이도',[['all','전체'],['1','입문'],['2','초급'],['3','중급'],['4','중상급'],['5','상급']]],
- ['cat','분류',[['all','전체'],['feature','기능'],['vs','비주얼 스크립트'],['cs','C# 스크립트']]],
- ['st','진행',[['all','전체'],['todo','시작 전'],['prog','진행 중'],['done','완료']]]];
+const RM_TP={'lesson-1':['ed','ui'],'lesson-2':['csb'],'lesson-3':['csb'],'lesson-4':['csb','ui'],'lesson-5':['csg'],'lesson-6':['anim'],'lesson-7':['ed'],'lesson-8':['csg','ed'],
+ 'lesson-9':['ui'],'lesson-10':['csg','ui'],'lesson-11':['vs'],'lesson-12':['vs','ui'],'lesson-13':['ed'],'lesson-14':['anim','csg'],'lesson-15':['fx'],'lesson-16':['csg','fx'],
+ 'lesson-17':['ed'],'lesson-18':['csg'],'lesson-19':['phys'],'lesson-20':['csg','phys'],'lesson-21':['phys','csg'],'lesson-22':['csg'],'lesson-23':['phys','csg'],'lesson-24':['csg','fx'],'lesson-25':['vs']};
+/* [묶음 키, 묶음 이름, [[값, 이름, 설명]]] */
+const TPG=[
+ ['eng','엔진',[['2d','2D 게임','타일맵 · 스프라이트로 만드는 2D'],['3d','3D 엔진','3D 씬 · 메시 · 3D 물리 · 3인칭 카메라']]],
+ ['fn','기능',[['gd','기능 가이드','짧은 영상으로 보는 기능 설명'],['ed','에디터 · 맵','타일맵 · 씬 · 프리팹 · 계층 구조'],['ui','UI 화면','UI 빌더 · 텍스트 · 버튼 · 대화창'],['anim','애니메이션 · 연출','애니메이터 · 타임라인 · 컷씬'],['fx','화면 효과','볼륨 · 후처리 · 파티클 · 흔들기']]],
+ ['sc','스크립트',[['csb','C# 기초','Debug.Log · 변수 · GetComponent'],['csg','C# 게임 로직','이동 · 매니저 · 코루틴 · 생성'],['phys','물리','리지드바디 · 콜라이더 · 충돌'],['vs','비주얼 스크립트','노드 · 이벤트 · 상태 그래프']]]];
+const TP_ALL=TPG.flatMap(g=>g[2].map(o=>o[0]));
+const TP_GOF=v=>(TPG.find(g=>g[2].some(o=>o[0]===v))||[])[0];
+const TP_NM=v=>{for(const g of TPG)for(const o of g[2])if(o[0]===v)return o[1];return v};
+const TP_IC={'2d':'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/>','3d':'<path d="M12 3 4 7.5v9L12 21l8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>',
+ gd:'<rect x="3" y="5" width="18" height="13" rx="2.5"/><path d="m10.5 9 4 2.5-4 2.5z"/>',ed:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17.5h7M17.5 14v7"/>',
+ ui:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 13h6M7 16h4"/>',anim:'<circle cx="12" cy="12" r="8.5"/><path d="m10 8.5 5 3.5-5 3.5z"/>',fx:'<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/>',
+ csb:'<path d="m8 8-4 4 4 4M16 8l4 4-4 4"/>',csg:'<path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/>',phys:'<circle cx="12" cy="7" r="3.5"/><path d="M12 10.5V21M7 21h10M6 14l-2 3M18 14l2 3"/>',vs:'<rect x="3" y="4" width="6" height="5" rx="1.2"/><rect x="15" y="15" width="6" height="5" rx="1.2"/><path d="M9 6.5h3a2 2 0 0 1 2 2v7a2 2 0 0 0 2 2"/>',
+ todo:'<circle cx="12" cy="12" r="8.5"/>',prog:'<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/>',done:'<circle cx="12" cy="12" r="8.5"/><path d="m8 12.5 2.8 2.8L16.5 9.5"/>'};
+const tpSvg=k=>`<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TP_IC[k]||''}</svg>`;
+const LV_D=['','엔진을 처음 켜 봐도 괜찮아요','기본 기능 · 문법을 하나씩','스크립트로 게임 규칙 만들기','여러 기능을 함께 엮기','한 판짜리 게임 완성'];
+const ST_G=[['todo','시작 전','아직 열어 보지 않은 레슨'],['prog','진행 중','몇 문제 풀어 본 레슨'],['done','완료','모든 문제를 통과한 레슨']];
+const RMF={lv:new Set,tp:new Set,st:new Set};
 const rmDim=L=>L&&L.dim==='3d'?'3d':'2d';
 const rmStK=s=>s.done?'done':s.n?'prog':'todo';
-const rmFOn=()=>Object.values(RMF).some(v=>v!=='all');
-const rmHas=(g,v,L,s)=>v==='all'||(g==='dim'?rmDim(L)===v:g==='lv'?String(L.lv)===v:g==='cat'?(L.cats||[]).includes(v):rmStK(s)===v);
+const rmFOn=()=>RMF.lv.size+RMF.tp.size+RMF.st.size>0;
+/* 레슨 · 가이드의 면(facet): eng · fn · sc · lv · st */
+function itemF(r,S){
+  if(r.g){const sn=GUIDE.isSeen(r.g.id);return{eng:['2d','3d'],fn:['gd'],sc:[],lv:'1',st:sn?'done':'todo'}}
+  const L=rmL(r.h),s=S&&S[r.h],tp=RM_TP[r.h]||[];
+  return{eng:[rmDim(L)],fn:tp.filter(v=>TP_GOF(v)==='fn'),sc:tp.filter(v=>TP_GOF(v)==='sc'),lv:String(L.lv),st:s?rmStK(s):'todo'};
+}
+function fMatch(F,sel,skip){
+  if(skip!=='lv'&&sel.lv.size&&!sel.lv.has(F.lv))return false;
+  if(skip!=='st'&&sel.st&&sel.st.size&&!sel.st.has(F.st))return false;
+  for(const [g] of TPG){if(skip===g)continue;const want=[...sel.tp].filter(v=>TP_GOF(v)===g);if(want.length&&!want.some(v=>F[g].includes(v)))return false}
+  return true;
+}
 function rmMatch(h,S){
   const r=rmAll().find(x=>x.h===h);if(!r)return true;
   if(r.ex)return rmMatch(r.req[0],S);
-  if(r.g){const sn=GUIDE.isSeen(r.g.id);return(RMF.lv==='all'||RMF.lv==='1')&&(RMF.cat==='all'||RMF.cat==='feature')&&(RMF.st==='all'||(RMF.st==='done'?sn:RMF.st==='todo'?!sn:false))}
-  const L=rmL(h),s=S[h];if(!L||!s)return true;
-  return RMF_G.every(([g])=>rmHas(g,RMF[g],L,s));
+  if(!r.g&&(!rmL(h)||!S[h]))return true;
+  return fMatch(itemF(r,S),RMF);
 }
+/* ---- 예쁜 드롭다운 (로드맵 · 레슨 목록이 함께 씀) ----
+   scope: 'rm' | 'ls' · key: 'lv' | 'tp' | 'st' · groups: [[묶음 이름|null, [[값, 이름, 설명, 아이콘 HTML]]]] */
+let FDD_OPEN=null;
+function fddHTML(scope,key,label,groups,sel,count){
+  const id=scope+'-'+key,open=FDD_OPEN===id,vals=[...sel],all=groups.flatMap(g=>g[1]);
+  const nm=v=>{const o=all.find(o=>o[0]===v);return o?_t(o[1]):v};
+  const val=!vals.length?_t('전체'):vals.length===1?nm(vals[0]):_t('{a} 외 {n}',{a:nm(vals[0]),n:vals.length-1});
+  return`<div class="fdd${open?' open':''}${vals.length?' on':''}" data-fdd="${id}" data-fs="${scope}" data-fk="${key}">
+    <button type="button" class="fdd-b" aria-haspopup="true" aria-expanded="${open}" aria-controls="fddp-${id}"><span class="fdd-l">${esc(_t(label))}</span><span class="fdd-v">${esc(val)}</span>${vals.length>1?`<b class="fdd-c">${vals.length}</b>`:''}<svg class="fdd-ch" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="fdd-p${groups.length>1?' wide':''}" id="fddp-${id}" role="menu" aria-label="${esc(_t(label))}"${open?'':' hidden'}>
+      ${groups.map(([gn,opts])=>`<div class="fdd-s">${gn?`<p class="fdd-h">${esc(_t(gn))}</p>`:''}<div class="fdd-g">${opts.map(([v,n,d,ic])=>{const k=count(v),on=sel.has(v);
+        return`<button type="button" class="fdd-o${k?'':' z'}" role="menuitemcheckbox" aria-checked="${on}" data-fv="${v}"><span class="fdd-ic t-${v}">${ic||''}</span><span class="fdd-t"><b>${esc(_t(n))}</b>${d?`<small>${esc(_t(d))}</small>`:''}</span><span class="fdd-n">${k}</span><span class="fdd-k" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span></button>`}).join('')}</div></div>`).join('')}
+      <div class="fdd-ft"><span>${esc(_t(groups.length>1?'같은 묶음은 하나라도, 다른 묶음끼리는 모두 맞는 것만':'여러 개를 함께 고를 수 있어요'))}</span><button type="button" class="fdd-x" data-fclr${vals.length?'':' disabled'}>${esc(_t('초기화'))}</button><button type="button" class="fdd-x ok" data-fok>${esc(_t('완료'))}</button></div>
+    </div></div>`;
+}
+const lvDots=v=>`<span class="lv${v}"><span class="dots">${LV_DOTS}</span></span>`;
+const FDD_LV=()=>[[null,[1,2,3,4,5].map(v=>[String(v),LVN[v],LV_D[v],lvDots(v)])]];
+const FDD_TP=(withGd)=>TPG.map(([g,gn,opts])=>[gn,opts.filter(o=>withGd||o[0]!=='gd').map(o=>[o[0],o[1],o[2],tpSvg(o[0])])]);
+const FDD_ST=()=>[[null,ST_G.map(o=>[o[0],o[1],o[2],tpSvg(o[0])])]];
 function rmFBar(S){
-  const shown=RM.filter(r=>rmMatch(r.h,S)).length;
-  return`<div class="rm-flt" id="rmFlt" role="group" aria-label="${esc(_t('로드맵 필터'))}">${RMF_G.map(([g,gn,opts])=>`<div class="rm-fg" role="group" aria-label="${esc(_t(gn))}"><span class="rm-fl">${esc(_t(gn))}</span>${opts.map(([v,n])=>{
-      const k=RM.filter(r=>rmHas(g,v,rmL(r.h),S[r.h])).length;if(!k&&v!=='all'&&RMF[g]!==v)return'';
-      const pre=g==='lv'&&v!=='all'?`<span class="lv${v}" aria-hidden="true"><span class="dots">${LV_DOTS}</span></span>`:g==='cat'&&v!=='all'?`<i class="rm-fc c-${v}" aria-hidden="true"></i>`:'';
-      return`<button type="button" class="rm-fb" data-rmf="${g}" data-v="${v}" aria-pressed="${RMF[g]===v}">${pre}<span>${esc(_t(n))}</span>${v!=='all'?`<b>${k}</b>`:''}</button>`}).join('')}</div>`).join('')}
-    <div class="rm-fs"${rmFOn()?'':' hidden'}><span aria-live="polite">${esc(_t('레슨 {n} / {t}개 보기',{n:shown,t:RM.length}))}</span><button type="button" class="rm-btn" id="rmFReset">${esc(_t('필터 초기화'))}</button></div></div>`;
+  const items=RM.concat(rmGds()),F=items.map(r=>itemF(r,S)),shown=RM.filter(r=>rmMatch(r.h,S)).length;
+  const cnt=(key,v)=>F.filter((f,i)=>key==='lv'?f.lv===v:key==='st'?f.st===v:(TP_GOF(v)==='eng'&&items[i].g?false:f[TP_GOF(v)].includes(v))).length;
+  return`<div class="rm-flt" id="rmFlt" role="group" aria-label="${esc(_t('로드맵 필터'))}">
+    ${fddHTML('rm','lv','난이도',FDD_LV(),RMF.lv,v=>cnt('lv',v))}${fddHTML('rm','tp','분류',FDD_TP(rmHasG()),RMF.tp,v=>cnt('tp',v))}${fddHTML('rm','st','진행',FDD_ST(),RMF.st,v=>cnt('st',v))}
+    <div class="rm-fs"${rmFOn()?'':' hidden'}><span aria-live="polite">${esc(_t('레슨 {n} / {t}개 보기',{n:shown,t:RM.length}))}</span><button type="button" class="rm-btn" id="rmFReset">${esc(_t('필터 초기화'))}</button></div>
+    ${rmVwBar()}</div>`;
 }
 function rmApplyF(){
   const b=$('#rmBoard'),svg=$('#rmLn');if(!b)return;
@@ -6669,13 +6847,114 @@ function rmApplyF(){
   b.classList.toggle('flt',on);
   b.querySelectorAll('.rm-n').forEach(n=>{const off=!M[n.dataset.rm];n.classList.toggle('fo',off);if(off)n.dataset.fo='1';else delete n.dataset.fo});
   if(svg)svg.querySelectorAll('[data-a]').forEach(p=>p.classList.toggle('fo',M[p.dataset.a]===false||M[p.dataset.b]===false));
+  b.querySelectorAll('.rm-tc').forEach(c=>{const ns=[...c.querySelectorAll('.rm-n')];c.classList.toggle('fo',!!ns.length&&ns.every(n=>n.classList.contains('fo')))});
+  if(RMV==='explore')rmMini();
 }
 function rmFUpd(focusSel){
   const w=$('#rmFlt');if(w){w.outerHTML=rmFBar(rmState().S)}
   rmApplyF();if(focusSel){const f=$(focusSel);if(f)f.focus({preventScroll:true})}
 }
-if(window.TI18N)TI18N.add({"로드맵 필터":["Roadmap filters","ロードマップの絞り込み","路线图筛选"],"차원":["Dimension","次元","维度"],"분류":["Category","分類","分类"],"진행":["Progress","進行","进度"],
- "레슨 {n} / {t}개 보기":["Showing {n} / {t} lessons","レッスン {n} / {t} 件を表示","显示 {n} / {t} 课"],"필터 초기화":["Reset filters","絞り込みをリセット","重置筛选"]});
+/* 드롭다운 열기 · 닫기 · 고르기 (scope별 상태 · 다시 그리기) */
+const FDD_SC={
+  rm:{sel:k=>RMF[k],upd:f=>{rmPopClose();rmFUpd(f)}},
+  ls:{sel:k=>LDF[k],upd:f=>{try{localStorage.setItem('thaniya.ldf',JSON.stringify({lv:[...LDF.lv],tp:[...LDF.tp]}))}catch(_){ }renderHome();if(f){const e=$(f);if(e)e.focus({preventScroll:true})}}}};
+function fddClose(){if(!FDD_OPEN)return;const d=document.querySelector(`.fdd[data-fdd="${FDD_OPEN}"]`);FDD_OPEN=null;if(d){d.classList.remove('open');d.querySelector('.fdd-p').hidden=true;d.querySelector('.fdd-b').setAttribute('aria-expanded','false')}}
+document.addEventListener('click',e=>{
+  if(!e.target.closest)return;const d=e.target.closest('.fdd');if(!d)return;
+  const sc=FDD_SC[d.dataset.fs],k=d.dataset.fk,id=d.dataset.fdd,sel=sc.sel(k);
+  if(e.target.closest('.fdd-b')){const was=FDD_OPEN===id;fddClose();if(!was){FDD_OPEN=id;d.classList.add('open');d.querySelector('.fdd-p').hidden=false;d.querySelector('.fdd-b').setAttribute('aria-expanded','true');const f=d.querySelector('.fdd-o');if(f&&e.detail===0)f.focus()}return}
+  const o=e.target.closest('.fdd-o');if(o){const v=o.dataset.fv;sel.has(v)?sel.delete(v):sel.add(v);sc.upd(`.fdd[data-fdd="${id}"] .fdd-o[data-fv="${v}"]`);return}
+  if(e.target.closest('[data-fclr]')){sel.clear();sc.upd(`.fdd[data-fdd="${id}"] .fdd-b`);return}
+  if(e.target.closest('[data-fok]')){fddClose();const b=d.querySelector('.fdd-b');if(b)b.focus()}
+});
+document.addEventListener('pointerdown',e=>{if(FDD_OPEN&&!(e.target.closest&&e.target.closest('.fdd')))fddClose()});
+document.addEventListener('keydown',e=>{if(!FDD_OPEN)return;const d=document.querySelector(`.fdd[data-fdd="${FDD_OPEN}"]`);
+  if(e.key==='Escape'){e.stopPropagation();fddClose();const b=d&&d.querySelector('.fdd-b');if(b)b.focus();return}
+  if((e.key==='ArrowDown'||e.key==='ArrowUp')&&d){const os=[...d.querySelectorAll('.fdd-o')],i=os.indexOf(document.activeElement);if(!os.length)return;e.preventDefault();const n=e.key==='ArrowDown'?(i+1)%os.length:(i<=0?os.length-1:i-1);os[n].focus()}},true);
+if(window.TI18N)TI18N.add({"로드맵 필터":["Roadmap filters","ロードマップの絞り込み","路线图筛选"],"분류":["Category","分類","分类"],"진행":["Progress","進行","进度"],
+ "레슨 {n} / {t}개 보기":["Showing {n} / {t} lessons","レッスン {n} / {t} 件を表示","显示 {n} / {t} 课"],"필터 초기화":["Reset filters","絞り込みをリセット","重置筛选"],
+ "{a} 외 {n}":["{a} +{n}","{a} ほか {n}","{a} 等 {n} 项"],"같은 묶음은 하나라도, 다른 묶음끼리는 모두 맞는 것만":["Any within a group, all across groups","同じグループはどれか、グループ間はすべて一致","同组任一匹配，不同组需全部匹配"],"여러 개를 함께 고를 수 있어요":["You can pick several","複数選べます","可以多选"],
+ "엔진":["Engine","エンジン","引擎"],"기능":["Features","機能","功能"],"스크립트":["Scripting","スクリプト","脚本"],"2D 게임":["2D games","2D ゲーム","2D 游戏"],"3D 엔진":["3D engine","3D エンジン","3D 引擎"],
+ "에디터 · 맵":["Editor · Maps","エディター・マップ","编辑器 · 地图"],"UI 화면":["UI screens","UI 画面","UI 界面"],"애니메이션 · 연출":["Animation · Staging","アニメーション・演出","动画 · 演出"],"화면 효과":["Screen effects","画面効果","画面效果"],
+ "C# 기초":["C# basics","C# 基礎","C# 基础"],"C# 게임 로직":["C# game logic","C# ゲームロジック","C# 游戏逻辑"],"물리":["Physics","物理","物理"],
+ "타일맵 · 스프라이트로 만드는 2D":["2D with tilemaps and sprites","タイルマップ・スプライトで作る 2D","用瓦片地图和精灵制作 2D"],"3D 씬 · 메시 · 3D 물리 · 3인칭 카메라":["3D scenes · meshes · 3D physics · third-person camera","3D シーン・メッシュ・3D 物理・三人称カメラ","3D 场景 · 网格 · 3D 物理 · 第三人称相机"],
+ "짧은 영상으로 보는 기능 설명":["Short video walkthroughs of features","短い動画で見る機能説明","用短视频了解功能"],"타일맵 · 씬 · 프리팹 · 계층 구조":["Tilemaps · scenes · prefabs · hierarchy","タイルマップ・シーン・プレハブ・ヒエラルキー","瓦片地图 · 场景 · 预制体 · 层级"],
+ "UI 빌더 · 텍스트 · 버튼 · 대화창":["UI builder · text · buttons · dialogs","UI ビルダー・テキスト・ボタン・会話ウィンドウ","UI 构建器 · 文本 · 按钮 · 对话框"],"애니메이터 · 타임라인 · 컷씬":["Animator · timeline · cutscenes","アニメーター・タイムライン・カットシーン","动画控制器 · 时间轴 · 过场"],
+ "볼륨 · 후처리 · 파티클 · 흔들기":["Volumes · post-processing · particles · shake","ボリューム・ポストエフェクト・パーティクル・揺れ","体积 · 后期处理 · 粒子 · 震动"],"Debug.Log · 변수 · GetComponent":["Debug.Log · variables · GetComponent","Debug.Log・変数・GetComponent","Debug.Log · 变量 · GetComponent"],
+ "이동 · 매니저 · 코루틴 · 생성":["Movement · managers · coroutines · spawning","移動・マネージャー・コルーチン・生成","移动 · 管理器 · 协程 · 生成"],"리지드바디 · 콜라이더 · 충돌":["Rigidbodies · colliders · collisions","リジッドボディ・コライダー・衝突","刚体 · 碰撞体 · 碰撞"],"노드 · 이벤트 · 상태 그래프":["Nodes · events · state graphs","ノード・イベント・ステートグラフ","节点 · 事件 · 状态图"],
+ "엔진을 처음 켜 봐도 괜찮아요":["Fine even if it's your first time","エンジンが初めてでも大丈夫","第一次打开引擎也没关系"],"기본 기능 · 문법을 하나씩":["Basic features and syntax, one by one","基本機能・文法をひとつずつ","逐个掌握基本功能和语法"],"스크립트로 게임 규칙 만들기":["Write game rules in scripts","スクリプトでゲームのルールを作る","用脚本编写游戏规则"],
+ "여러 기능을 함께 엮기":["Combine several features","複数の機能を組み合わせる","组合多个功能"],"한 판짜리 게임 완성":["Finish a complete game","一本のゲームを完成させる","完成一整局游戏"],
+ "아직 열어 보지 않은 레슨":["Lessons you haven't opened","まだ開いていないレッスン","尚未打开的课程"],"몇 문제 풀어 본 레슨":["Lessons with some problems solved","いくつか解いたレッスン","已做部分题目的课程"],"모든 문제를 통과한 레슨":["Lessons with every problem passed","すべて合格したレッスン","全部通过的课程"],
+ "완료":["Done","完了","完成"],"초기화":["Reset","リセット","重置"],"세부 분류":["Topic","詳細分類","细分"]});
+/* ---- 로드맵 보기 방식: 트리 · 한눈에(화면에 맞춰 축소) · 탐험(작은 창 · 가장자리로 이동 · 미니맵) · 분류별 ---- */
+const RM_VIEWS=[['tree','트리','왼쪽에서 오른쪽으로 이어지는 추천 순서','<path d="M5 6h4M5 12h4M5 18h4"/><path d="M9 6h3a2 2 0 0 1 2 2v8a2 2 0 0 0 2 2h3M14 12h5"/>'],
+ ['fit','한눈에','전체 로드맵을 화면 하나에 맞춰 줄여 보기','<path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/><rect x="8.5" y="8.5" width="7" height="7" rx="1"/>'],
+ ['explore','탐험','작은 창에서 크게 · 가장자리로 마우스를 가져가면 그쪽으로 움직여요','<circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>'],
+ ['topic','분류별','주제마다 한 줄로 모아 보기','<rect x="3.5" y="4" width="4.5" height="16" rx="1.2"/><rect x="9.75" y="4" width="4.5" height="11" rx="1.2"/><rect x="16" y="4" width="4.5" height="13.5" rx="1.2"/>']];
+let RMV='tree';try{const v=localStorage.getItem('thaniya.rmview');if(RM_VIEWS.some(x=>x[0]===v))RMV=v}catch(e){}
+const rmVwBar=()=>`<div class="rm-vw" role="radiogroup" aria-label="${esc(_t('보기 방식'))}">${RM_VIEWS.map(([k,n,d,ic])=>`<button type="button" role="radio" aria-checked="${RMV===k}" data-rmv="${k}" title="${esc(_t(n))} · ${esc(_t(d))}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ic}</svg><span>${esc(_t(n))}</span></button>`).join('')}</div>`;
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#rm [data-rmv]');if(!b||b.dataset.rmv===RMV)return;
+  RMV=b.dataset.rmv;try{localStorage.setItem('thaniya.rmview',RMV)}catch(_){ }rmScrolled=false;rmRender();const f=$(`#rm [data-rmv="${RMV}"]`);if(f)f.focus({preventScroll:true})});
+/* 한눈에: 보드를 줄여 화면 너비 · 높이에 맞춤 */
+function rmFitScale(){
+  if(RMV!=='fit')return;const sc=$('#rmScroll'),b=$('#rmBoard'),z=b&&b.querySelector('.rm-sz');if(!sc||!b||!z)return;
+  const W=z.offsetWidth,H=z.offsetHeight,aw=sc.clientWidth,ah=Math.max(300,innerHeight-230);
+  const s=Math.max(.3,Math.min(1,aw/W,ah/H));
+  b.style.transformOrigin='0 0';b.style.transform=`scale(${s})`;b.style.marginLeft=Math.max(0,(aw-W*s)/2)+'px';
+  sc.style.height=Math.ceil(H*s)+'px';sc.dataset.s=s.toFixed(2);
+  const k=$('#rmZoomN');if(k)k.textContent=Math.round(s*100)+'%';
+}
+/* 탐험: 가장자리 자동 이동 · 끌어서 이동 · 미니맵 */
+const RMX={vx:0,vy:0,raf:0,drag:null,mm:null};
+function rmEdge(e){
+  const sc=$('#rmScroll'),w=$('#rmWrap');if(!sc||!w||RMV!=='explore'){RMX.vx=RMX.vy=0;return}
+  const r=sc.getBoundingClientRect(),x=e.clientX,y=e.clientY,inside=x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;
+  let vx=0,vy=0;
+  const pop=$('#rmPop'),mm=e.target.closest&&e.target.closest('#rmMM');
+  if(inside&&!RMX.drag&&!mm&&!(pop&&!pop.hidden)&&!FDD_OPEN){const Z=Math.min(80,r.width*.14,r.height*.18),M=15,f=d=>d<Z?Math.pow(1-d/Z,1.5)*M:0;
+    vx=f(r.right-x)-f(x-r.left);vy=f(r.bottom-y)-f(y-r.top);
+    if(vx>0&&sc.scrollLeft+sc.clientWidth>=sc.scrollWidth-1)vx=0;if(vx<0&&sc.scrollLeft<=0)vx=0;
+    if(vy>0&&sc.scrollTop+sc.clientHeight>=sc.scrollHeight-1)vy=0;if(vy<0&&sc.scrollTop<=0)vy=0}
+  RMX.vx=vx;RMX.vy=vy;
+  w.classList.toggle('e-l',vx<0);w.classList.toggle('e-r',vx>0);w.classList.toggle('e-t',vy<0);w.classList.toggle('e-b',vy>0);
+  if((vx||vy)&&!RMX.raf)RMX.raf=requestAnimationFrame(rmEdgeTick);
+}
+function rmEdgeTick(){RMX.raf=0;const sc=$('#rmScroll');if(!sc||RMV!=='explore'||(!RMX.vx&&!RMX.vy))return;sc.scrollLeft+=RMX.vx;sc.scrollTop+=RMX.vy;RMX.raf=requestAnimationFrame(rmEdgeTick)}
+document.addEventListener('pointermove',e=>{if(RMV!=='explore')return;
+  if(RMX.drag){const sc=$('#rmScroll'),d=RMX.drag;if(!sc)return;const dx=e.clientX-d.x,dy=e.clientY-d.y;if(Math.abs(dx)+Math.abs(dy)>4)d.moved=true;sc.scrollLeft=d.l-dx;sc.scrollTop=d.t-dy;return}
+  if(RMX.mm){rmMiniGo(e);return}
+  rmEdge(e)},{passive:true});
+document.addEventListener('pointerdown',e=>{if(RMV!=='explore'||e.button!==0||!e.target.closest)return;
+  if(e.target.closest('#rmMM')){RMX.mm=true;rmMiniGo(e);e.preventDefault();return}
+  const sc=e.target.closest('#rmScroll');if(!sc||e.target.closest('.rm-n'))return;
+  RMX.drag={x:e.clientX,y:e.clientY,l:sc.scrollLeft,t:sc.scrollTop,moved:false};sc.classList.add('drag');RMX.vx=RMX.vy=0});
+addEventListener('pointerup',()=>{if(RMX.drag){const sc=$('#rmScroll');if(sc)sc.classList.remove('drag');if(RMX.drag.moved)RMX.lastMoved=Date.now();RMX.drag=null}RMX.mm=null});
+document.addEventListener('pointerleave',()=>{RMX.vx=RMX.vy=0});
+addEventListener('blur',()=>{RMX.vx=RMX.vy=0;RMX.drag=null;RMX.mm=null});
+function rmMini(){
+  const mm=$('#rmMM'),b=$('#rmBoard'),sc=$('#rmScroll');if(!mm||!b||!sc)return;
+  const z=b.querySelector('.rm-sz'),W=z?z.offsetWidth:b.scrollWidth,H=z?z.offsetHeight:b.scrollHeight,k=Math.min(196/W,128/H);
+  mm.style.width=Math.ceil(W*k)+'px';mm.style.height=Math.ceil(H*k)+'px';mm.dataset.k=k;
+  mm.innerHTML=[...b.querySelectorAll('.rm-n')].map(n=>{const c=n.classList,t=c.contains('rm-ex')?'x':c.contains('rm-g')?'g':c.contains('done')?'d':c.contains('rec')?'r':c.contains('prog')?'p':'';
+    return`<i class="${t}${c.contains('fo')?' fo':''}" style="left:${(n.offsetLeft*k).toFixed(1)}px;top:${(n.offsetTop*k).toFixed(1)}px;width:${Math.max(2,n.offsetWidth*k).toFixed(1)}px;height:${Math.max(2,n.offsetHeight*k).toFixed(1)}px"></i>`}).join('')+'<b class="vp" id="rmVP"></b>';
+  rmMiniVP();
+}
+function rmMiniVP(){const mm=$('#rmMM'),vp=$('#rmVP'),sc=$('#rmScroll');if(!mm||!vp||!sc)return;const k=+mm.dataset.k||0;
+  vp.style.left=sc.scrollLeft*k+'px';vp.style.top=sc.scrollTop*k+'px';vp.style.width=Math.min(mm.offsetWidth,sc.clientWidth*k)+'px';vp.style.height=Math.min(mm.offsetHeight,sc.clientHeight*k)+'px'}
+function rmMiniGo(e){const mm=$('#rmMM'),sc=$('#rmScroll');if(!mm||!sc)return;const r=mm.getBoundingClientRect(),k=+mm.dataset.k||1;
+  sc.scrollLeft=(e.clientX-r.left)/k-sc.clientWidth/2;sc.scrollTop=(e.clientY-r.top)/k-sc.clientHeight/2}
+/* 분류별: 주제마다 한 줄 (레슨은 첫째 주제 · 3D 레슨은 3D 엔진 줄) */
+function rmTopicCols(){
+  const cols=[];const add=(k,h)=>{let c=cols.find(x=>x.k===k);if(!c){c={k,hs:[]};cols.push(c)}c.hs.push(h)};
+  const order=['gd','ed','ui','anim','fx','csb','csg','phys','vs','3d'];order.forEach(k=>cols.push({k,hs:[]}));
+  rmGds().forEach(g=>add('gd',g.h));
+  RM.slice().sort((a,b)=>rmL(a.h).lv-rmL(b.h).lv||RM.indexOf(a)-RM.indexOf(b)).forEach(r=>{const L=rmL(r.h);add(rmDim(L)==='3d'?'3d':(RM_TP[r.h]||['csg'])[0],r.h)});
+  return cols.filter(c=>c.hs.length);
+}
+if(window.TI18N)TI18N.add({"보기 방식":["View","表示方法","查看方式"],"트리":["Tree","ツリー","树状"],"한눈에":["Overview","全体","全览"],"탐험":["Explore","探検","探索"],"분류별":["By topic","分類別","按分类"],
+ "왼쪽에서 오른쪽으로 이어지는 추천 순서":["Recommended order from left to right","左から右へ続くおすすめ順","从左到右的推荐顺序"],"전체 로드맵을 화면 하나에 맞춰 줄여 보기":["Shrink the whole roadmap to fit one screen","ロードマップ全体を一画面に縮小","将整个路线图缩放到一屏"],
+ "작은 창에서 크게 · 가장자리로 마우스를 가져가면 그쪽으로 움직여요":["Large cards in a small window · move the mouse to an edge to pan","小さな窓で大きく・端にマウスを寄せるとその方向へ移動","小窗口大卡片 · 鼠标移到边缘即向该方向移动"],"주제마다 한 줄로 모아 보기":["Group lessons by topic","テーマごとにまとめて表示","按主题分组查看"],
+ "가장자리로 마우스를 가져가면 그쪽으로 움직여요 · 끌어서 이동 · 미니맵을 눌러 이동":["Move the mouse to an edge to pan · drag to move · click the minimap to jump","端にマウスを寄せると移動・ドラッグで移動・ミニマップをクリックでジャンプ","鼠标移到边缘平移 · 拖动移动 · 点击小地图跳转"],"미니맵":["Minimap","ミニマップ","小地图"],"레슨 {n}개":["{n} lessons","レッスン {n} 件","{n} 课"],"가이드 {n}개":["{n} guides","ガイド {n} 件","{n} 个指南"]});
 let rmScrolled=false;
 function rmRender(){
   const box=$('#rm');if(!box||!RM.length)return;rmPopClose();rmFit();rmFitW=box.clientWidth;
@@ -6683,30 +6962,34 @@ function rmRender(){
   const node=(r,G)=>{const L=rmL(r.h),s=S[r.h],i=recs.indexOf(r.h),ok=r.req.every(q=>!S[q]||S[q].done);
     const cls=s.done?'done':(i===0?'rec next':i>0?'rec':'')+(s.prog?' prog':'')+(!s.done&&!s.prog&&!ok&&i<0?' later':'');
     const bd=s.done?'✓ '+_t('완료'):i===0?_t('다음 추천'):i>0?_t('추천'):s.prog?_t('진행 중'):'';
-    return`<button type="button" class="rm-n ${cls}" data-rm="${r.h}" style="width:${RM_G.w}px;height:${G.hOf(r.h)}px;left:${rmX(rmCol(r))}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t(L.title))}" aria-haspopup="dialog" aria-label="${esc(_t(L.title))} · ${rmDim(L)==='3d'?'3D':'2D'} · ${esc(_t('난이도'))} ${esc(lvName(L))}${bd?' · '+esc(bd):''} · ${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}">
+    return`<button type="button" class="rm-n ${cls}" data-rm="${r.h}"${G?` style="width:${RM_G.w}px;height:${G.hOf(r.h)}px;left:${rmX(rmCol(r))}px;top:${RM_G.top+G.Y[r.h]}px"`:''} title="${esc(_t(L.title))}" aria-haspopup="dialog" aria-label="${esc(_t(L.title))} · ${rmDim(L)==='3d'?'3D':'2D'} · ${esc(_t('난이도'))} ${esc(lvName(L))}${bd?' · '+esc(bd):''} · ${esc(_t('{n} / {t} 문제',{n:s.n,t:s.t}))}">
       <span class="rm-nt">${rmCatDots(L)}<span class="lv${L.lv}" aria-hidden="true"><span class="dots">${LV_DOTS}</span></span>${L.dim==='3d'?'<span class="rm-3d" aria-hidden="true">3D</span>':''}${bd?`<span class="rm-bd">${esc(bd)}</span>`:''}</span>
       <b>${esc(_t(L.title))}</b><span class="rm-nf"><span class="rm-pb"><i style="width:${s.t?s.n/s.t*100:0}%"></i></span><small>${s.n}/${s.t}</small></span></button>`};
   const exNode=(r,G)=>{const x=r.ex,lv=Math.min(3,Math.max(1,+x.level||1));
     return`<button type="button" class="rm-n rm-ex" data-rm="${r.h}" style="left:${rmX(rmCol(r))}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t('예제'))} · ${esc(x.title)} (${esc(_t(EX_LV[lv]))})" aria-haspopup="dialog" aria-label="${esc(_t('예제'))} · ${esc(x.title)} · ${esc(_t(EX_LV[lv]))} · ${esc(_t('참고용'))}"><img src="${esc(x.icon||x.thumb||'')}" alt="" width="64" height="64" draggable="false"></button>`};
   const gdNode=(r,G)=>{const g=r.g,sn=GUIDE.isSeen(g.id);
-    return`<button type="button" class="rm-n rm-g${sn?' seen':''}" data-rm="${r.h}" style="width:${RM_G.gw}px;height:${RM_G.gh}px;left:${rmX(0)}px;top:${RM_G.top+G.Y[r.h]}px" title="${esc(_t('기능 가이드'))} · ${esc(_t(g.title))}" aria-haspopup="dialog" aria-label="${esc(_t('기능 가이드'))} · ${esc(_t(g.title))} · ${esc(_t('난이도'))} ${esc(_t('입문'))}${sn?' · '+esc(_t('봤어요')):''}"><span class="rm-gi">${GUIDE.ico(g.ic)}</span><b>${esc(_t(g.title))}</b>${sn?'<span class="rm-gs" aria-hidden="true">✓</span>':''}</button>`};
+    return`<button type="button" class="rm-n rm-g${sn?' seen':''}" data-rm="${r.h}"${G?` style="width:${RM_G.gw}px;height:${RM_G.gh}px;left:${rmX(0)}px;top:${RM_G.top+G.Y[r.h]}px"`:''} title="${esc(_t('기능 가이드'))} · ${esc(_t(g.title))}" aria-haspopup="dialog" aria-label="${esc(_t('기능 가이드'))} · ${esc(_t(g.title))} · ${esc(_t('난이도'))} ${esc(_t('입문'))}${sn?' · '+esc(_t('봤어요')):''}"><span class="rm-gi">${GUIDE.ico(g.ic)}</span><b>${esc(_t(g.title))}</b>${sn?'<span class="rm-gs" aria-hidden="true">✓</span>':''}</button>`};
   box.innerHTML=`<div class="rm-hd"><div><h2 id="rmT">${esc(_t('추천 학습 로드맵'))}</h2><p>${esc(_t('분류와 상관없이 쉽고 중요한 것부터 차례로 이어져요. 카드를 누르면 소개가 보여요.'))} ${esc(_t('카드에 마우스를 올리면 이어진 레슨만 강조돼요.'))}</p></div>
     <div class="rm-sum"><span>${esc(_t('완료 {n} / {t}',{n:doneN,t:RM.length}))}</span><span class="rm-tb"><i style="width:${doneN/RM.length*100}%"></i></span><button type="button" class="rm-btn" id="rmMng"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${esc(_t('진행 관리'))}</button></div></div>
   <div class="rm-rec">${recs.length?`<span>${esc(_t('지금 추천'))}</span>${recs.map((h,i)=>`<button type="button" class="rm-rc${i?'':' top'}" data-rmgo="${h}">${i?'':'▶ '}${esc(_t(rmL(h).title))}</button>`).join('')}`:`<span class="rm-all-done">✓ ${esc(_t('모든 레슨을 마쳤어요! 다시하고 싶은 레슨을 골라 보세요.'))}</span>`}
     <span class="rm-lg"><span><i class="d"></i>${esc(_t('완료'))}</span><span><i class="p"></i>${esc(_t('진행 중'))}</span><span><i class="r"></i>${esc(_t('추천'))}</span><span><i class="x"></i>${esc(_t('예제 (참고용)'))}</span>${rmHasG()?`<span><i class="g"></i>${esc(_t('기능 가이드'))}</span>`:''}</span></div>
   ${rmFBar(S)}
-  <div class="rm-wrap" id="rmWrap"><div class="rm-scroll" id="rmScroll" tabindex="0" role="region" aria-label="${esc(_t('추천 학습 로드맵'))} · ${esc(_t('왼쪽 · 오른쪽으로 스크롤해 보세요'))}"><div class="rm-board" id="rmBoard"><svg class="rm-ln" id="rmLn" aria-hidden="true"></svg>
+  <div class="rm-wrap v-${RMV}" id="rmWrap">${RMV==='topic'?`<div class="rm-scroll" id="rmScroll" role="region" aria-label="${esc(_t('추천 학습 로드맵'))} · ${esc(_t('분류별'))}"><div class="rm-tpv" id="rmBoard">${rmTopicCols().map(c=>{const ls=c.hs.filter(h=>!String(h).startsWith('g-')),dn=ls.filter(h=>S[h]&&S[h].done).length;
+      return`<section class="rm-tc t-${c.k}" aria-label="${esc(_t(TP_NM(c.k)))}"><header><span class="rm-tci">${tpSvg(c.k)}</span><b>${esc(_t(TP_NM(c.k)))}</b><small>${c.k==='gd'?esc(_t('가이드 {n}개',{n:c.hs.length})):`${dn} / ${ls.length}`}</small></header><div class="rm-tcl">${c.hs.map(h=>{const r=rmAll().find(x=>x.h===h);return r.g?gdNode(r,null):node(r,null)}).join('')}</div></section>`}).join('')}</div></div>`
+   :`<div class="rm-scroll" id="rmScroll" tabindex="0" role="region" aria-label="${esc(_t('추천 학습 로드맵'))} · ${esc(_t(RMV==='explore'?'가장자리로 마우스를 가져가면 그쪽으로 움직여요 · 끌어서 이동 · 미니맵을 눌러 이동':'왼쪽 · 오른쪽으로 스크롤해 보세요'))}"><div class="rm-board" id="rmBoard"><svg class="rm-ln" id="rmLn" aria-hidden="true"></svg>
   ${(()=>{const G=rmLayout(),A=rmAll(),NC=G_COLS;return A.map(r=>r.g?gdNode(r,G):r.ex?exNode(r,G):node(r,G)).join('')+`<i class="rm-sz" style="width:${rmX(NC-1)+(RM_G.lastW||RM_G.w)+RM_G.px}px;height:${RM_G.top+G.H+RM_G.pb}px"></i>`})()}
-  </div></div></div>`;
-  const sc=$('#rmScroll');sc.addEventListener('scroll',()=>{rmFade();rmPopPlace()},{passive:true});
-  requestAnimationFrame(()=>{rmLines(S,recs);
-    if(!rmScrolled&&recs[0]){const n=sc.querySelector(`[data-rm="${recs[0]}"]`);if(n&&n.offsetLeft+n.offsetWidth>sc.clientWidth)sc.scrollLeft=n.offsetLeft-60;rmScrolled=true}
-    rmFade()});
-  if(!rmRO&&window.ResizeObserver){rmRO=new ResizeObserver(()=>{const s=rmState();rmLines(s.S,s.recs);rmFade()})}
+  </div></div>${RMV==='explore'?`<div class="rm-eh" aria-hidden="true"><i class="l"></i><i class="r"></i><i class="t"></i><i class="b"></i></div><div class="rm-mmw"><span>${esc(_t('미니맵'))}</span><div class="rm-mm" id="rmMM" title="${esc(_t('미니맵'))}"></div></div><p class="rm-tip">${esc(_t('가장자리로 마우스를 가져가면 그쪽으로 움직여요 · 끌어서 이동 · 미니맵을 눌러 이동'))}</p>`:''}${RMV==='fit'?`<span class="rm-zoom" id="rmZoomN"></span>`:''}`}</div>`;
+  const sc=$('#rmScroll');sc.addEventListener('scroll',()=>{rmFade();rmPopPlace();if(RMV==='explore')rmMiniVP()},{passive:true});
+  requestAnimationFrame(()=>{rmLines(S,recs);rmFitScale();
+    if(!rmScrolled&&recs[0]&&RMV!=='topic'&&RMV!=='fit'){const n=sc.querySelector(`[data-rm="${recs[0]}"]`);
+      if(n&&RMV==='explore'){sc.scrollLeft=n.offsetLeft-sc.clientWidth*.3;sc.scrollTop=n.offsetTop-sc.clientHeight/2+n.offsetHeight/2}
+      else if(n&&n.offsetLeft+n.offsetWidth>sc.clientWidth)sc.scrollLeft=n.offsetLeft-60;rmScrolled=true}
+    if(RMV==='explore')rmMini();rmFade()});
+  if(!rmRO&&window.ResizeObserver){rmRO=new ResizeObserver(()=>{const s=rmState();rmLines(s.S,s.recs);rmFitScale();if(RMV==='explore')rmMini();rmFade()})}
   if(rmRO){rmRO.disconnect();rmRO.observe($('#rmBoard'))}
 }
 let rmRO=null;
-function rmFade(){const sc=$('#rmScroll'),w=$('#rmWrap');if(!sc||!w)return;w.classList.toggle('rm-fl',sc.scrollLeft>4);w.classList.toggle('rm-fr',sc.scrollLeft+sc.clientWidth<sc.scrollWidth-4)}
+function rmFade(){const sc=$('#rmScroll'),w=$('#rmWrap');if(!sc||!w)return;if(RMV!=='tree'){w.classList.remove('rm-fl','rm-fr');return}w.classList.toggle('rm-fl',sc.scrollLeft>4);w.classList.toggle('rm-fr',sc.scrollLeft+sc.clientWidth<sc.scrollWidth-4)}
 /* 트리 배치: 첫째 선행 레슨을 부모로 삼은 숲. 잎을 위에서부터 한 줄씩, 부모는 자식들의 가운데 */
 const RM_G={w:164,gx:40,rh:84,top:14,px:16,pb:14,gw:146,gh:30,lastW:0};
 /* 로드맵 칸 크기를 화면 너비에 맞춤: 가로 스크롤 없이 한 화면에 들어가게 카드 너비 · 열 간격을 정함
@@ -6717,13 +7000,13 @@ function rmX(c){return RM_G.px+(rmHasG()&&c>0?RM_G.gw+RM_G.gx+(c-1)*(RM_G.w+RM_G
 function rmFit(){
   const box=$('#rm');rmLayout();const NC=Math.max(1,G_COLS),hg=rmHasG();
   const cs=box?getComputedStyle(box):null,avail=box?box.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-2:1180;
-  const px=14,gx=Math.round(Math.max(22,Math.min(40,avail*.022)));
+  const px=RMV==='explore'?48:14,gx=RMV==='explore'?64:RMV==='fit'?34:Math.round(Math.max(22,Math.min(40,avail*.022)));
   const A=rmAll(),lastEx=NC>1&&A.filter(r=>rmCol(r)===NC-1).every(r=>r.ex);RM_G.lastW=lastEx?74:0;
   const fixed=(hg?RM_G.gw:0)+(lastEx?74:0),nflex=Math.max(1,NC-(hg?1:0)-(lastEx?1:0));
-  RM_G.px=px;RM_G.gx=gx;RM_G.w=Math.floor(Math.max(124,Math.min(240,(avail-px*2-(NC-1)*gx-fixed)/nflex)));
+  RM_G.px=px;RM_G.gx=gx;RM_G.w=RMV==='explore'?212:RMV==='fit'?178:Math.floor(Math.max(124,Math.min(240,(avail-px*2-(NC-1)*gx-fixed)/nflex)));
   if(!rmMeasure)rmMeasure=document.createElement('canvas').getContext('2d');
   rmMeasure.font='600 12.5px '+(getComputedStyle(document.body).fontFamily||'sans-serif');
-  RM_G.top=14;
+  RM_G.top=RMV==='explore'?40:14;
 }
 function rmWraps(h){const L=rmL(h);if(!L)return false;if(!rmMeasure){rmMeasure=document.createElement('canvas').getContext('2d');rmMeasure.font='600 12.5px sans-serif'}return rmMeasure.measureText(_t(L.title)).width>RM_G.w-21}
 let rmFitW=0;
@@ -6860,7 +7143,7 @@ function rmPopPlace(){
   const p=$('#rmPop');if(!p||p.hidden||!rmPopA)return;
   if(!rmPopA.isConnected){rmPopClose();return}
   const a=rmPopA.getBoundingClientRect(),sc=$('#rmScroll').getBoundingClientRect();
-  if(a.right<sc.left+10||a.left>sc.right-10){p.style.visibility='hidden';return}p.style.visibility='';
+  if(a.right<sc.left+10||a.left>sc.right-10||(RMV==='explore'&&(a.bottom<sc.top+10||a.top>sc.bottom-10))){p.style.visibility='hidden';return}p.style.visibility='';
   const w=p.offsetWidth,h=p.offsetHeight,vw=innerWidth,vh=innerHeight;
   let x=a.right+10,y=a.top+a.height/2-h/2;
   if(x+w>vw-12){x=a.left-w-10;if(x<12){x=Math.min(Math.max(12,a.left+a.width/2-w/2),vw-w-12);y=a.bottom+8;if(y+h>vh-12)y=a.top-h-8}}
@@ -6896,9 +7179,8 @@ function rmDlgOpen(){
 }
 document.addEventListener('click',e=>{
   if(!e.target.closest)return;
-  const fb=e.target.closest('#rm [data-rmf]');if(fb){RMF[fb.dataset.rmf]=fb.dataset.v;rmPopClose();rmFUpd(`#rmFlt [data-rmf="${fb.dataset.rmf}"][data-v="${fb.dataset.v}"]`);return}
-  if(e.target.closest('#rmFReset')){Object.keys(RMF).forEach(k=>RMF[k]='all');rmPopClose();rmFUpd('#rmFlt [data-rmf="dim"][data-v="all"]');return}
-  const n=e.target.closest('#rm .rm-n');if(n){rmPopOpen(n.dataset.rm,n);return}
+  if(e.target.closest('#rmFReset')){Object.values(RMF).forEach(v=>v.clear());rmPopClose();rmFUpd('#rmFlt .fdd-b');return}
+  const n=e.target.closest('#rm .rm-n');if(n){if(RMX.drag&&RMX.drag.moved)return;if(RMX.lastMoved&&Date.now()-RMX.lastMoved<60)return;rmPopOpen(n.dataset.rm,n);return}
   const g=e.target.closest('#rm [data-rmgo]');if(g){const L=rmL(g.dataset.rmgo);if(L)pvStart(L);return}
   if(e.target.closest('#rmMng')){rmPopClose();rmDlgOpen()}
 });
@@ -6919,7 +7201,7 @@ function renderHome(refocus){
   dqRender();
   rmRender();
   renderLvBar(refocus);
-  const shown=LORDER.filter(L=>inCat(L,LCF));
+  const shown=lsShown();
   $('#cards').innerHTML=shown.map(L=>{
     const n=L.problems.filter(p=>st.done[p.id]).length,t=L.problems.length,done=n===t;
     const label=done?'다시하기':n?'이어하기':'시작하기',state=done?'완료':n?'진행 중':'시작 전';
@@ -6927,7 +7209,7 @@ function renderHome(refocus){
       <div class="ctop">${lvChip(L)}${catChips(L)}<span class="state${done?' done':''}">${done?'✓ ':''}${state}</span></div>
       <h2>${esc(L.title)}</h2><p title="${esc(L.lead)}">${esc(L.lead)}</p>${kwList(L)}<pre>${csHighlight(L.preview)}</pre>
       <div class="cfoot"><div class="cbar"><i style="width:${n/t*100}%"></i></div><span class="cnum">${esc(_t('{n} / {t} 문제',{n,t}))}</span><span class="go">${label}</span></div></button>`;
-  }).join('')+(shown.length?(LCF==='all'?`<div class="card soon" aria-hidden="true"><p>다음 레슨을 준비하고 있어요</p></div>`:''):`<div class="card soon empty-cat"><div class="ec-ic" aria-hidden="true">${lcatSvg(LCF)}</div><p><b>${esc(_t(LCF==='vs'?'비주얼 스크립트 레슨을 준비하고 있어요':'다음 레슨을 준비하고 있어요'))}</b>${LCF==='vs'?`<span>${esc(_t('노드를 선으로 이어 만드는 레슨이 곧 나와요. 그동안 엔진의 「비주얼 스크립트」 창에서 먼저 만들어 보세요.'))}</span>`:''}</p></div>`);
+  }).join('')+(shown.length?(LCF==='all'&&!(LDF.lv.size+LDF.tp.size)?`<div class="card soon" aria-hidden="true"><p>다음 레슨을 준비하고 있어요</p></div>`:''):(LDF.lv.size+LDF.tp.size)?`<div class="card soon empty-cat"><p><b>${esc(_t('고른 난이도 · 분류에 맞는 레슨이 없어요'))}</b><span>${esc(_t('드롭다운에서 고른 것을 줄이거나 필터를 초기화해 보세요.'))}</span></p></div>`:`<div class="card soon empty-cat"><div class="ec-ic" aria-hidden="true">${lcatSvg(LCF)}</div><p><b>${esc(_t(LCF==='vs'?'비주얼 스크립트 레슨을 준비하고 있어요':'다음 레슨을 준비하고 있어요'))}</b>${LCF==='vs'?`<span>${esc(_t('노드를 선으로 이어 만드는 레슨이 곧 나와요. 그동안 엔진의 「비주얼 스크립트」 창에서 먼저 만들어 보세요.'))}</span>`:''}</p></div>`);
   $('#cards').hidden=RV_ON;$('#rvList').hidden=!RV_ON;if(RV_ON)rvRender();
   qkRender();
 }
@@ -7253,7 +7535,7 @@ const RV_DATA={"lesson-1": {"note": "코드를 쓰지 않고 화면을 직접 �
 const RV_OPEN=new Set();let RV_ON=false;try{RV_ON=localStorage.getItem('thaniya.rvon')==='1'}catch(e){}
 function rvCode(c){return c==='@L5_FINAL'?L5_FINAL:c}
 const rvLv=L=>`<span class="rv-lv"><span class="dots lv${L.lv}" aria-hidden="true">${LV_DOTS}</span>${esc(lvName(L))}</span>`;
-const rvList=()=>LORDER.filter(L=>inCat(L,LCF));
+const rvList=()=>lsShown();
 let RV_CUR='';
 function rvRender(){
   $('#rvList').innerHTML=rvList().map(L=>{const n=((RV_DATA[L.hash]||{}).items||[]).length;
@@ -7376,8 +7658,19 @@ function lnavInit(){
   document.querySelectorAll('header.top').forEach(h=>{if(h.querySelector('.lnav'))return;const br=h.querySelector('.brand');if(!br)return;
     const n=document.createElement('nav');n.className='lnav';n.setAttribute('aria-label',_t('학습 메뉴'));
     n.innerHTML=LNAV.map(([k,l,ic])=>`<button type="button" data-lnav="${k}"${k?'':' class="lhome"'} title="${esc(_t(l))}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg><span>${esc(_t(l))}</span></button>`).join('');
-    br.after(n)});
+    br.after(n);
+    if(dockOk()&&!h.querySelector('.dockb')){const d=document.createElement('button');d.type='button';d.className='dockb';d.title=_t('이 창을 닫고 엔진 위의 학습 창으로 다시 열기 (지금 화면 그대로)');
+      d.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M14 17h-4v-4"/><path d="m10 17 6-6"/></svg><span>${esc(_t('엔진 창으로 되돌리기'))}</span>`;n.after(d)}});
 }
+/* 엔진(edit.html)이 새 창으로 꺼낸 학습 창이면 「엔진 창으로 되돌리기」 */
+function dockOk(){try{const o=window.opener;return window.self===window.top&&new URLSearchParams(location.search).get('from')==='edit'&&!!o&&!o.closed&&o.location.origin===location.origin&&/edit\.html$/.test(o.location.pathname)}catch(e){return false}}
+document.addEventListener('click',async e=>{const b=e.target.closest&&e.target.closest('.dockb');if(!b)return;
+  if(!dockOk()){b.remove();return}
+  if(tkLeaveDirty()&&!(await lConfirm(_t('엔진 창으로 되돌릴까요?'),_t('지금 풀던 문제에서 해 둔 것은 저장되지 않아요. 통과한 문제와 작성한 코드는 그대로 남아요.'),_t('되돌리기'),_t('계속 풀기'))))return;
+  try{window.opener.postMessage({thaniyaGuide:1,t:'dock',hash:location.hash},location.origin)}catch(_){ }
+  setTimeout(()=>{try{window.close()}catch(_){ }},60)});
+if(window.TI18N)TI18N.add({"엔진 창으로 되돌리기":["Back to engine window","エンジンのウィンドウに戻す","放回引擎窗口"],"이 창을 닫고 엔진 위의 학습 창으로 다시 열기 (지금 화면 그대로)":["Close this window and reopen it as the learning window over the engine (same page)","このウィンドウを閉じ、エンジン上の学習ウィンドウで開き直します（同じ画面）","关闭此窗口，在引擎上的学习窗口中重新打开（保持当前页面）"],
+ "엔진 창으로 되돌릴까요?":["Move back to the engine window?","エンジンのウィンドウに戻しますか？","要放回引擎窗口吗？"],"지금 풀던 문제에서 해 둔 것은 저장되지 않아요. 통과한 문제와 작성한 코드는 그대로 남아요.":["Work on the current problem won't be saved. Passed problems and your code stay.","今解いている問題の作業は保存されません。合格した問題と書いたコードは残ります。","当前题目的操作不会保存。已通过的题目和代码会保留。"],"되돌리기":["Move back","戻す","放回"]});
 function lnavSync(){
   lnavInit();const h=location.hash.slice(1),L=LESSONS.some(x=>x.hash===h||'about-'+x.hash===h);
   const cur=h===''?'':h==='search'?'search':h==='examples'?'examples':(h==='guides'||h.startsWith('guide-'))?'guides':(h==='lessons'||L)?'lessons':'';
@@ -7392,7 +7685,20 @@ $('#lFull').onclick=()=>{const d=document,on=d.fullscreenElement||d.webkitFullsc
 document.addEventListener('fullscreenchange',lfsSync);document.addEventListener('webkitfullscreenchange',lfsSync);
 if(window.TI18N)TI18N.add({"학습 홈":["Learn home","学習ホーム","学习首页"],"학습 메뉴":["Learning menu","学習メニュー","学习菜单"],"전체 화면":["Full screen","全画面","全屏"],"전체 화면 끝내기":["Exit full screen","全画面を終了","退出全屏"],"전체 화면 끝내기 (Esc)":["Exit full screen (Esc)","全画面を終了 (Esc)","退出全屏 (Esc)"],"전체 화면 (F11)":["Full screen (F11)","全画面 (F11)","全屏 (F11)"]});
 
+/* 레슨을 하다가 머리줄(학습 메뉴 · 로고 · 레슨 목록) · 뒤로 가기로 레슨 밖으로 나가면 먼저 물어봄 (다른 레슨으로 넘어가는 것은 제외 · 다 끝낸 레슨은 묻지 않음) */
+const lsLeaveAsk=dirty=>lConfirm(_t('레슨을 멈추고 나갈까요?'),dirty?_t('지금 풀던 문제에서 해 둔 것은 저장되지 않아요. 통과한 문제와 작성한 코드는 남아 있어 나중에 이어서 할 수 있어요.'):_t('통과한 문제와 작성한 코드는 저장돼 있어요. 나중에 「이어하기」로 계속할 수 있어요.'),_t('나가기'),_t('계속 학습하기'));
+if(window.TI18N)TI18N.add({"레슨을 멈추고 나갈까요?":["Leave this lesson?","レッスンを中断して移動しますか？","要离开这节课吗？"],"지금 풀던 문제에서 해 둔 것은 저장되지 않아요. 통과한 문제와 작성한 코드는 남아 있어 나중에 이어서 할 수 있어요.":["Work on the current problem won't be saved. Passed problems and code you wrote are kept, so you can continue later.","今解いている問題の作業は保存されません。合格した問題と書いたコードは残るので、あとで続けられます。","当前题目的操作不会保存。已通过的题目和写好的代码会保留，之后可以继续。"],
+ "통과한 문제와 작성한 코드는 저장돼 있어요. 나중에 「이어하기」로 계속할 수 있어요.":["Passed problems and your code are saved. You can pick up later with “Continue”.","合格した問題と書いたコードは保存されています。あとで「続ける」から再開できます。","已通过的题目和代码已保存，之后可以用“继续”接着学。"],"나가기":["Leave","移動する","离开"],"계속 학습하기":["Keep learning","学習を続ける","继续学习"],
+ "고른 난이도 · 분류에 맞는 레슨이 없어요":["No lessons match the chosen level and topic","選んだ難易度・分類に合うレッスンがありません","没有符合所选难度和分类的课程"],"드롭다운에서 고른 것을 줄이거나 필터를 초기화해 보세요.":["Pick fewer options or reset the filters.","選択を減らすか、絞り込みをリセットしてください。","减少所选项或重置筛选。"]});
 addEventListener('hashchange',async e=>{
+  if(!tkPass){let oh='';try{oh=new URL(e.oldURL).hash}catch(_){ }
+    const OL=LESSONS.find(x=>'#'+x.hash===oh),NL=LESSONS.find(x=>'#'+x.hash===location.hash);
+    if(OL&&!NL&&!$('#lessonView').hidden&&OL.problems.some(p=>!st.done[p.id])){
+      const to=location.hash,dirty=tkLeaveDirty();try{history.replaceState(history.state,'',e.oldURL)}catch(_){ }
+      if(!(await lsLeaveAsk(dirty)))return;
+      tkPass=true;location.hash=to||'#';return;
+    }
+  }
   if(!tkPass&&tkLeaveDirty()){
     const to=location.hash;try{history.replaceState(history.state,'',e.oldURL)}catch(_){ }
     if(!(await tkLeaveAsk()))return;
